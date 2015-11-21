@@ -1,4 +1,4 @@
 ---
 title: The first link
-url: http://google.com/
+link: http://google.com/
 ---
