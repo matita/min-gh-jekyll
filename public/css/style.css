@@ -1,9 +1,32 @@
 body {
   font-family: Georgia;
   font-size: 20px;
+  color: #333;
+  background-color: #eee;
 }
 
 .container {
   max-width: 800px;
   margin: 0 auto;
+}
+
+.link {
+  display: block;
+  background: #fff;
+  border-bottom: 3px solid #aaa;
+  color: #333;
+}
+
+.link-title {
+  display: block;
+  font-size: 1.2em;
+  margin-bottom: .5em;
+}
+
+.link-description {
+  margin-bottom: .5em;
+}
+
+.link-url {
+  color: #999;
 }
