@@ -8,10 +8,10 @@ title: Home
 <div class="links">
 {% for page in site.posts %}
   <a class="link" href="{{ page.link }}">
-    <span class="link-title">{{ page.title }}</span>
-    <span class="link-description">{{ page.description }}</span>
-    <span class="link-url">{{ page.link }}</span>
-    <span class="link-date">Saved on {{ page.date | date: "%Y-%m-%d" }}</span>
+    <h3 class="link-title">{{ page.title }}</h3>
+    <p class="link-description">{{ page.description }}</p>
+    <p class="link-url">{{ page.link }}</p>
+    <p class="link-date">Saved on {{ page.date | date: "%Y-%m-%d" }}</p>
   </a>
 {% endfor %}
 </div>
