@@ -4,7 +4,7 @@
 
 body {
   font-family: Georgia;
-  font-size: 20px;
+  font-size: 16px;
   color: #333;
   background-color: #eee;
 }
@@ -22,10 +22,21 @@ body {
   color: #333;
   padding: 1em;
   text-decoration: none;
+  margin-top: 1em;
+  margin-bottom: 1em;
+}
+
+.link-title {
+  margin-top: 0;
+  font-size: 1.2em;
 }
 
 .link-url,
 .link-date {
   color: #999;
-  font-size: .7em;
+  font-size: .9em;
+}
+
+.link-date {
+  margin-bottom: 0;
 }
