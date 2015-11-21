@@ -19,22 +19,8 @@ body {
   text-decoration: none;
 }
 
-.link-title {
-  display: block;
-  font-size: 1.2em;
-  margin-bottom: .5em;
-}
-
-.link-description {
-  margin-bottom: .5em;
-}
-
-.link-url {
+.link-url,
+.link-date {
   color: #999;
   font-size: .7em;
-}
-
-.link-date {
-  display: block;
-  color: #999;
 }
