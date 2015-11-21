@@ -7,10 +7,12 @@ title: Home
 <p>Something</p>
 
 <h2>Links</h2>
-<ul>
+<div class="links">
 {% for link in site.posts %}
-  <li>
-    <a href="{{ link.link }}">{{ link.title }}</a>
-  </li>
+  <a class="link" href="{{ link.link }}">
+    <span class="link-title">{{ link.title }}</span>
+    <span class="link-description">{{ link.description }}</span>
+    <span class="link-url">{{ link.link }}</span>
+  </a>
 {% endfor %}
-</ul>
+</div>
