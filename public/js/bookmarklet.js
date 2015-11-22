@@ -4,30 +4,34 @@ var title = getMetaValue('title') ||
   document.title;
 var description = getMetaValue('description') ||
   getMetaValue('og:description', 'property');
+var url = window.location.href;
 
 
 var filename = getFileName(title);
 var frontMatter = '---' +
   '\r\ntitle: ' + title +
   '\r\ndescription: ' + description +
-  '\r\nlink: ' + window.location +
+  '\r\nlink: ' + url +
   '\r\nsaved: ' + formatDate() +
   '\r\n---';
 
 
-var parent = getContentHtml();
-console.log('containers', parent);
+var html = getContentHtml();
+console.log('containers', html);
 //window.open('https://github.com/matita/min-gh-jekyll/new/gh-pages/?filename=_posts/' + encodeURIComponent(filename) + '.md&value=' + encodeURIComponent(frontMatter));
 
 var w = window.contentW || window.open();
 w.document.head.innerHTML = '<style>' +
-  'body { font-family: Georgia; font-size: 20px; max-width: 800px; margin: 0 auto; color: #333; line-height: 1.6; padding-top: 2em; padding-bottom: 2em; }' + 
-  'a { color: #6a9fb5; text-decoration: none; }' +
-  'a:hover { text-decoration: underline; }' +
+  'body { font-family: Georgia; font-size: 20px; max-width: 800px; margin: 0 auto; color: #333; line-height: 1.8; padding: 2em 10px; }' + 
+  'h1, h2, h3, h4, h5, h6 { font-family: Arial, Helvetica, sans-serif; line-height: 1.2; }' +
+  'a[href] { color: #6a9fb5; text-decoration: none; }' +
+  'a[href]:hover { text-decoration: underline; }' +
+  'img { max-width: 100%; display: block; margin: 0 auto; text-align: center }' +
+  'iframe { max-width: 100%; display: block; margin: 0 auto; }' +
   '</style>';
 
 w.document.body.innerHTML = '<h1>' + title + '</h1>' +
-  parent.innerHTML;
+  html;
   
 
 
@@ -86,6 +90,55 @@ function getContentHtml() {
       maxIndex = parentIndex;
     }
   }
-  
-  return parents[maxIndex];
+
+  var parent = parents[maxIndex];
+  var html;
+
+  if (parent) {
+    var cln = parent.cloneNode(true);
+    sanitizeNode(cln);
+
+    html = cln.innerHTML;
+  }
+
+  return html;
+}
+
+
+function sanitizeNode(node) {
+  var nodes, n, i;
+
+  // remove scripts
+  nodes = node.getElementsByTagName('script');
+  for (i = 0; i < nodes.length; i++) {
+    n = nodes[i];
+    n.parentNode.removeChild(n);
+  }
+
+  // remove styles
+  nodes = node.getElementsByTagName('style');
+  for (i = 0; i < nodes.length; i++) {
+    n = nodes[i];
+    n.parentNode.removeChild(n);
+  }
+
+  // remove empty divs
+  nodes = node.getElementsByTagName('div');
+  for (i = 0; i < nodes.length; i++) {
+    n = nodes[i];
+    if (!n.lastChild)
+      n.parentNode.removeChild(n);
+  }
+
+  // normalize links
+  nodes = node.getElementsByTagName('a');
+  for (i = 0; i < nodes.length; i++) {
+    n = nodes[i];
+    if (!n.href) // do not normalize local links
+      continue;
+    else if (n.host == location.host && n.pathname == location.pathname && n.search == location.search)
+      n.href = n.hash;
+    else
+      n.href = n.href;
+  }
 }
