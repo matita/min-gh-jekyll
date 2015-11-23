@@ -31,7 +31,7 @@ w.document.head.innerHTML = '<style>' +
   'pre { padding: 1em; background: #eee; }'
   '</style>';
 
-w.document.body.innerHTML = '<h1>' + title + '</h1>' +
+w.document.body.innerHTML = '<h1 style="border-bottom: 1px solid #eee; padding-bottom: 1em; margin-bottom: 1em;">' + title + '</h1>' +
   html;
   
 
@@ -66,6 +66,21 @@ function getMetaValue(name, nameAttr) {
 
 
 function getContentHtml() {
+  var parent = getBestParent();
+  var html;
+
+  if (parent) {
+    var cln = parent.cloneNode(true);
+    sanitizeNode(cln);
+
+    html = cln.innerHTML;
+  }
+
+  return html;
+}
+
+
+function getBestParent() {
   var ps = document.getElementsByTagName('p');
   var parents = [];
   var contents = [];
@@ -99,16 +114,7 @@ function getContentHtml() {
   }
 
   var parent = parents[maxIndex];
-  var html;
-
-  if (parent) {
-    var cln = parent.cloneNode(true);
-    sanitizeNode(cln);
-
-    html = cln.innerHTML;
-  }
-
-  return html;
+  return parent;
 }
 
 
