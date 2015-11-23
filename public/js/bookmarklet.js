@@ -22,7 +22,7 @@ console.log('containers', html);
 
 var w = window.contentW || window.open();
 w.document.head.innerHTML = '<style>' +
-  'body { font-family: Georgia; font-size: 17px; max-width: 800px; margin: 0 auto; color: #333; line-height: 1.8; padding: 2em 10px; }' + 
+  'body { font-family: Georgia; font-size: 17px; max-width: 700px; margin: 0 auto; color: #555; line-height: 1.8; padding: 2em 10px; }' + 
   'h1, h2, h3, h4, h5, h6 { font-family: Arial, Helvetica, sans-serif; line-height: 1.2; }' +
   'a[href] { color: #6a9fb5; text-decoration: none; }' +
   'a[href]:hover { text-decoration: underline; }' +
@@ -152,6 +152,15 @@ function sanitizeNode(node) {
   // normalize img urls
   var a = document.createElement('a');
   nodes = node.getElementsByTagName('img');
+  for (i = 0; i < nodes.length; i++) {
+    n = nodes[i];
+    var src = n.getAttribute('data-src') || n.src;
+    a.href = src;
+    n.src = a.href;
+  }
+
+  // normalize iframes urls
+  nodes = node.getElementsByTagName('iframe');
   for (i = 0; i < nodes.length; i++) {
     n = nodes[i];
     var src = n.getAttribute('data-src') || n.src;
