@@ -150,7 +150,8 @@ function sanitizeNode(node) {
   nodes = node.getElementsByTagName('img');
   for (i = 0; i < nodes.length; i++) {
     n = nodes[i];
-    a.href = n.src;
+    var src = n.getAttribute('data-src') || n.src;
+    a.href = src;
     n.src = a.href;
   }
 }
