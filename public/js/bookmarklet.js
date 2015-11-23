@@ -22,12 +22,13 @@ console.log('containers', html);
 
 var w = window.contentW || window.open();
 w.document.head.innerHTML = '<style>' +
-  'body { font-family: Georgia; font-size: 20px; max-width: 800px; margin: 0 auto; color: #333; line-height: 1.8; padding: 2em 10px; }' + 
+  'body { font-family: Georgia; font-size: 17px; max-width: 800px; margin: 0 auto; color: #333; line-height: 1.8; padding: 2em 10px; }' + 
   'h1, h2, h3, h4, h5, h6 { font-family: Arial, Helvetica, sans-serif; line-height: 1.2; }' +
   'a[href] { color: #6a9fb5; text-decoration: none; }' +
   'a[href]:hover { text-decoration: underline; }' +
   'img { max-width: 100%; display: block; margin: 0 auto; text-align: center }' +
   'iframe { max-width: 100%; display: block; margin: 0 auto; }' +
+  'pre { padding: 1em; background: #eee; }'
   '</style>';
 
 w.document.body.innerHTML = '<h1>' + title + '</h1>' +
