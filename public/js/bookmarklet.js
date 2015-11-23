@@ -75,8 +75,12 @@ function getContentHtml() {
   for (var i = 0; i < ps.length; i++) {
     var p = ps[i];
     var parent = p.parentNode;
+    
     if (parent.tagName == 'FORM')
       continue;
+    if (parent.className.toLowerCase().match(/(\b|-|_)comments\b/i))
+      continue;
+    
     var parentIndex = parents.indexOf(parent);
     if (parentIndex == -1) {
       parentIndex = parents.length;
