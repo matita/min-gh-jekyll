@@ -31,9 +31,11 @@ w.document.head.innerHTML = '<style>' +
   'pre { padding: 1em; background: #eee; }'
   '</style>';
 
-w.document.body.innerHTML = '<h1 style="border-bottom: 1px solid #eee; padding-bottom: 1em; margin-bottom: 1em;">' + title + '</h1>' +
+html = '<h1 style="border-bottom: 1px solid #eee; padding-bottom: 1em; margin-bottom: 1em;">' + title + '</h1>' +
+  '<p>chars: ' + html.length + '</p>' +
   html;
-  
+
+w.document.body.innerHTML = html;
 
 
 function getFileName(title) {
