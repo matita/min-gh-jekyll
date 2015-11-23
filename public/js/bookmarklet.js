@@ -144,4 +144,13 @@ function sanitizeNode(node) {
     else
       n.href = n.href;
   }
+
+  // normalize img urls
+  var a = document.createElement('a');
+  nodes = node.getElementsByTagName('img');
+  for (i = 0; i < nodes.length; i++) {
+    n = nodes[i];
+    a.href = n.src;
+    n.src = a.href;
+  }
 }
