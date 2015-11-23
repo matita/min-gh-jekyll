@@ -32,7 +32,6 @@ w.document.head.innerHTML = '<style>' +
   '</style>';
 
 html = '<h1 style="border-bottom: 1px solid #eee; padding-bottom: 1em; margin-bottom: 1em;">' + title + '</h1>' +
-  '<p>chars: ' + html.length + '</p>' +
   html;
 
 w.document.body.innerHTML = html;
