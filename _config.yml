@@ -16,6 +16,7 @@ defaults:
       path: ""
     values:
       layout: "post"
+      category: "to_read"
   -
     scope:
       path: "archive"

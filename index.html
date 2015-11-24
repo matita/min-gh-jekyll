@@ -6,7 +6,7 @@ title: Home
 <h1>Links</h1>
 
 <div class="links">
-{% for page in site.posts %}
+{% for page in site.categories.to_read %}
   <a class="link" href="{{ site.baseurl }}{{ page.url }}" target="_blank">
     <h3 class="link-title">{{ page.title }}</h3>
     <p class="link-description">{{ page.description }}</p>
