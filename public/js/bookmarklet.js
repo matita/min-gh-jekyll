@@ -9,10 +9,10 @@ var url = window.location.href;
 
 var filename = getFileName(title);
 var frontMatter = '---' +
-  '\r\ntitle: ' + title +
-  '\r\ndescription: ' + description +
-  '\r\nlink: ' + url +
-  '\r\nsaved: ' + formatDate() +
+  '\r\ntitle: "' + title + '"' +
+  '\r\ndescription: "' + description + '"' +
+  '\r\nlink: "' + url + '"' +
+  '\r\nsaved: "' + formatDate() + '"' +
   '\r\n---';
 
 
