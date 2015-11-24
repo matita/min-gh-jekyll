@@ -11,6 +11,6 @@ baseurl:  /min-gh-jekyll
 defaults:
   -
     scope:
-      path: "_posts"
+      path: ""
     values:
       layout: "post"
