@@ -16,7 +16,7 @@ var frontMatter = '---' +
   '\r\n---';
 
 
-var html = getContentHtml();
+var originalHtml = getContentHtml();
 console.log('containers', html);
 //window.open('https://github.com/matita/min-gh-jekyll/new/gh-pages/?filename=_posts/' + encodeURIComponent(filename) + '.md&value=' + encodeURIComponent(frontMatter));
 
@@ -32,18 +32,18 @@ wDoc.head.innerHTML = '<base href="' + url + '"><style>' +
   'iframe { max-width: 100%; display: block; margin: 0 auto; }' +
   'pre { padding: 1em; background: #eee; font-size: 14px; overflow: auto; }' +
   'blockquote { border-left: 5px solid #ddd; margin-left: 0; padding-left: 1em; }' +
-  '#html-content { width: 100%; display: block; }' +
+  '#html-content { width: 100%; display: block; height: 300px; }' +
   '</style>';
 
-html = '<h1 style="border-bottom: 1px solid #eee; padding-bottom: 1em; margin-bottom: 1em;">' + title + '</h1>' +
-  html +
+var html = '<h1 style="border-bottom: 1px solid #eee; padding-bottom: 1em; margin-bottom: 1em;">' + title + '</h1>' +
+  originalHtml +
   '<hr>' +
   '<textarea id="html-content"></textarea>' +
   '<a href="https://github.com/matita/min-gh-jekyll/new/master/?filename=' + encodeURIComponent('_posts/' + filename) + '&value=' + encodeURIComponent(frontMatter) + '" target="_blank">Add to repository</a>';
 
 
 wDoc.body.innerHTML = html;
-wDoc.getElementById('html-content').value = html;
+wDoc.getElementById('html-content').value = originalHtml;
 
 
 function getFileName(title) {
@@ -51,7 +51,7 @@ function getFileName(title) {
   return now.getFullYear() + '-' +
     pad(now.getMonth() + 1) + '-' +
     pad(now.getDate()) + '-' +
-    (title || '').toLowerCase().replace(/\W+/g, '-');
+    (title || '').toLowerCase().replace(/^\W+(.*)\W+$/, '$1').replace(/\W+/g, '-');
 }
 
 function formatDate(date) {
