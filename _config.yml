@@ -8,6 +8,8 @@ title:    Minimal GitHub Pages Jekyll
 url:      https://matita.github.io
 baseurl:  /min-gh-jekyll
 
+ghuser:   matita
+
 defaults:
   -
     scope:
