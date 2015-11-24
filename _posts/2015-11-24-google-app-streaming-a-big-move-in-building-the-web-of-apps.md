@@ -1,14 +1,15 @@
 ---
-title: "Google App Streaming: A Big Move In Building The Web Of Apps"
-description: "A world where you can search through and move between apps as easily as with the web? Google's new app streaming service may usher this in."
-link: http://marketingland.com/google-app-streaming-web-of-apps-152449?utm_source=SitePoint&utm_medium=email&utm_campaign=Versioning
+title: Google App Streaming A Big Move In Building The Web Of Apps
+description: A world where you can search through and move between apps as easily as with the web Google new app streaming service may usher this in
+link: http://marketingland.com/google-app-streaming-web-of-apps-152449
 saved: 2015-11-24 14:41:18
 ---
+
+## Some markdown text
+
 <div class="sharing_content_channel">
-								
-							</div>
-							
-							<p><img class="aligncenter size-large wp-image-146345" src="http://marketingland.com/wp-content/ml-loads/2015/10/google-us-map2-ss-1920-800x450.jpg" alt="google-us-map2-ss-1920" width="800" height="450"></p>
+</div>
+<p><img class="aligncenter size-large wp-image-146345" src="http://marketingland.com/wp-content/ml-loads/2015/10/google-us-map2-ss-1920-800x450.jpg" alt="google-us-map2-ss-1920" width="800" height="450"></p>
 <p>Google App Streaming <a href="http://insidesearch.blogspot.com/2015/11/new-ways-to-find-and-stream-app-content.html">became a reality today</a>, and with it, a new era of Google pushing to create a “web of apps,” the ability to easily find and browse content within apps as easily as people use the web today.</p>
 <p>Below, I’ll explain how the new service that’s in testing works and how it might change things. To start, I’d like to revisit the web itself.</p>
 <h2>How The Web Could Have Been Lost</h2>
@@ -80,51 +81,43 @@ Google Chrome For iOS</strong></p>
 <p>For a very <a href="http://searchengineland.com/google-search-app-chrome-now-serving-up-app-content-directly-in-search-results-on-ios-devices-222377">small set of apps</a>, Google’s search results within the Google App for iOS or Chrome for iOS may contain web-to-app links, if you’re signed in to Google and if Google knows you have an app installed. Even with the few supported apps, such as Eat24, YouTube or Pinterest, you might find this doesn’t always work. That was my experience in testing the situation for this article. I couldn’t get it to work with several supposedly supported apps in the Google App. I had more luck with Chrome.</p>
 <h2>More For Publishers &amp; Marketers</h2>
 <p>Want to know more about how Google App Indexing and App Streaming works? See also our related story at Search Engine Land, <a href="http://searchengineland.com/google-expands-app-indexing-to-find-stream-content-only-within-apps-236288">Google Expands App Indexing To Find &amp; Stream App-Only Content</a>.</p>
-							
-							<hr>
-														
-							<div id="div-gpt-ad-ml-ch-mobile-articlemodule" class="hidden-sm hidden-xs hidden-md" style="margin-top: -10px !important;"><div id="google_ads_iframe_/1038259/ml-ch-mobile-articlemodule_0__container__" style="border: 0pt none;"><iframe id="google_ads_iframe_/1038259/ml-ch-mobile-articlemodule_0" name="google_ads_iframe_/1038259/ml-ch-mobile-articlemodule_0" width="800" height="440" scrolling="no" marginwidth="0" marginheight="0" frameborder="0" src="javascript:&quot;<html><body style='background:transparent'></body></html>&quot;" style="border: 0px; vertical-align: bottom;"></iframe></div></div>
+<hr>
+<div id="div-gpt-ad-ml-ch-mobile-articlemodule" class="hidden-sm hidden-xs hidden-md" style="margin-top: -10px !important;"><div id="google_ads_iframe_/1038259/ml-ch-mobile-articlemodule_0__container__" style="border: 0pt none;"><iframe id="google_ads_iframe_/1038259/ml-ch-mobile-articlemodule_0" name="google_ads_iframe_/1038259/ml-ch-mobile-articlemodule_0" width="800" height="440" scrolling="no" marginwidth="0" marginheight="0" frameborder="0" src="javascript:&quot;<html><body style='background:transparent'></body></html>&quot;" style="border: 0px; vertical-align: bottom;"></iframe></div></div>
 <br>							
-							<div class="about-author row hidden-xs">
-	<h3>About The Author</h3>
-	<div class="information col-lg-12 col-md-12 col-sm-12">
-		<div class="author-module">
-			<div class="avatar">
-			<img src="/images/authors/DannySullivan-lg.jpg">			</div>
-			<div class="about">
-				<div class="name">
-					<strong><a href="http://marketingland.com/author/danny-sullivan" title="Posts by Danny Sullivan" rel="author">Danny Sullivan</a></strong>
-				</div>
-				<div class="twitter">
-									
-					<iframe id="twitter-widget-0" src="http://platform.twitter.com/widgets/follow_button.1392079123.html#_=1392650032615&amp;id=twitter-widget-0&amp;lang=en&amp;screen_name=dannysullivan&amp;show_count=true&amp;show_screen_name=true&amp;size=m" class="twitter-follow-button twitter-follow-button" title="Twitter Follow Button" data-twttr-rendered="true" style="width: 251px; height: 20px;"></iframe>
-									</div>
-				Danny Sullivan is a Founding Editor of Marketing Land. He’s a widely <a href="http://daggle.com/danny-sullivan-quoted" rel="nofollow">cited</a> authority on search engines and search marketing issues who has covered the space since 1996. Danny also serves as Chief Content Officer for <a href="http://thirddoormedia.com/">Third Door Media</a>, which publishes Marketing Land and produces the <a href="http://searchmarketingexpo.com/">SMX: Search Marketing Expo conference series</a>. He has a personal blog called <a rel="me" href="http://daggle.com/">Daggle</a> (and keeps his <a href="http://daggle.com/disclosure" rel="nofollow">disclosures</a> page there). He can be found on <a rel="me" href="http://www.facebook.com/daggle">Facebook</a>, <a rel="me" href="https://plus.google.com/+DannySullivan/posts">Google +</a> and microblogs on Twitter as <a rel="me" href="http://twitter.com/dannysullivan">@dannysullivan</a>.			</div>
-		</div>
-	</div>
-</div>							
-							<br>
-								
-							<div class="related row hidden-xs">
-	<div class="secondary entries col-lg-12">
-		<h3>Related Articles</h3>				<div class="related-article col-lg-3 col-md-3 col-sm-4 hidden-sm col-xs-12">
-				<a href="http://marketingland.com/study-mobile-users-will-go-on-roughly-4-dates-with-apps-before-breaking-up-151568" onclick="_gaq.push(['_trackEvent','internal','read','main+content+related+stories']);"><span class="image" style="background-image:url('http://marketingland.com/wp-content/ml-loads/2015/10/YPS_1510_WC151015_facebook_1920-600x338.jpg');"></span>Study: Mobile Users Will Go On Roughly 4 Dates With Apps Before Breaking Up</a>
-				</div>
-						<div class="related-article col-lg-3 col-md-3 col-sm-4 hidden-sm col-xs-12">
-				<a href="http://marketingland.com/android-6-marshmallow-seo-series-googles-private-index-screen-crawling-151341" onclick="_gaq.push(['_trackEvent','internal','read','main+content+related+stories']);"><span class="image" style="background-image:url('http://marketingland.com/wp-content/ml-loads/2015/05/android-logo-textured-1920-600x338.jpg');"></span>Android 6 “Marshmallow” &amp; SEO Series: Google’s Private Index &amp; Screen Crawling</a>
-				</div>
-						<div class="related-article col-lg-3 col-md-3 col-sm-4 hidden-sm col-xs-12">
-				<a href="http://marketingland.com/mobile-vs-desktop-mobile-won-might-still-losing-148800" onclick="_gaq.push(['_trackEvent','internal','read','main+content+related+stories']);"><span class="image" style="background-image:url('http://marketingland.com/wp-content/ml-loads/2014/10/awards-winner-trophies-ss-1920-600x337.jpg');"></span>Mobile Vs. Desktop: Mobile Won, But You Might Still Be Losing</a>
-				</div>
-						<div class="related-article col-lg-3 col-md-3 col-sm-4 hidden-sm col-xs-12">
-				<a href="http://marketingland.com/apples-ios-9-means-marketers-hint-search-ux-particular-143335" onclick="_gaq.push(['_trackEvent','internal','read','main+content+related+stories']);"><span class="image" style="background-image:url('http://marketingland.com/wp-content/ml-loads/2014/08/apple-iphone-ios-1920-600x337.jpg');"></span>What Apple's iOS 9 Means To Marketers (Hint: Search And UX In Particular)</a>
-				</div>
-			</div>
-				
-	<div class="secondary topics col-lg-12">
-				<a href="http://marketingland.com/library/channel/mobile-marketing">Channel: Mobile Marketing</a><a href="http://marketingland.com/library/google/google-app-indexing">Google: App Indexing</a><a href="http://marketingland.com/library/mobile-marketing-news/app-indexing-deep-links">Mobile Marketing: App Indexing &amp; Deep Links</a>	</div>
+<div class="about-author row hidden-xs">
+<h3>About The Author</h3>
+<div class="information col-lg-12 col-md-12 col-sm-12">
+<div class="author-module">
+<div class="avatar">
+<img src="/images/authors/DannySullivan-lg.jpg">			</div>
+<div class="about">
+<div class="name">
+<strong><a href="http://marketingland.com/author/danny-sullivan" title="Posts by Danny Sullivan" rel="author">Danny Sullivan</a></strong>
 </div>
-							
-							<h6>(Some images used under license from <a href="http://www.shutterstock.com/" rel="nofollow">Shutterstock.com</a>.)</h6>
-							<br>
-						
+<div class="twitter">
+<iframe id="twitter-widget-0" src="http://platform.twitter.com/widgets/follow_button.1392079123.html#_=1392650032615&amp;id=twitter-widget-0&amp;lang=en&amp;screen_name=dannysullivan&amp;show_count=true&amp;show_screen_name=true&amp;size=m" class="twitter-follow-button twitter-follow-button" title="Twitter Follow Button" data-twttr-rendered="true" style="width: 251px; height: 20px;"></iframe>
+</div>
+Danny Sullivan is a Founding Editor of Marketing Land. He’s a widely <a href="http://daggle.com/danny-sullivan-quoted" rel="nofollow">cited</a> authority on search engines and search marketing issues who has covered the space since 1996. Danny also serves as Chief Content Officer for <a href="http://thirddoormedia.com/">Third Door Media</a>, which publishes Marketing Land and produces the <a href="http://searchmarketingexpo.com/">SMX: Search Marketing Expo conference series</a>. He has a personal blog called <a rel="me" href="http://daggle.com/">Daggle</a> (and keeps his <a href="http://daggle.com/disclosure" rel="nofollow">disclosures</a> page there). He can be found on <a rel="me" href="http://www.facebook.com/daggle">Facebook</a>, <a rel="me" href="https://plus.google.com/+DannySullivan/posts">Google +</a> and microblogs on Twitter as <a rel="me" href="http://twitter.com/dannysullivan">@dannysullivan</a>.			</div>
+</div>
+</div>
+</div>							
+<br>
+<div class="related row hidden-xs">
+<div class="secondary entries col-lg-12">
+<h3>Related Articles</h3>				<div class="related-article col-lg-3 col-md-3 col-sm-4 hidden-sm col-xs-12">
+<a href="http://marketingland.com/study-mobile-users-will-go-on-roughly-4-dates-with-apps-before-breaking-up-151568" onclick="_gaq.push(['_trackEvent','internal','read','main+content+related+stories']);"><span class="image" style="background-image:url('http://marketingland.com/wp-content/ml-loads/2015/10/YPS_1510_WC151015_facebook_1920-600x338.jpg');"></span>Study: Mobile Users Will Go On Roughly 4 Dates With Apps Before Breaking Up</a>
+</div>
+<div class="related-article col-lg-3 col-md-3 col-sm-4 hidden-sm col-xs-12">
+<a href="http://marketingland.com/android-6-marshmallow-seo-series-googles-private-index-screen-crawling-151341" onclick="_gaq.push(['_trackEvent','internal','read','main+content+related+stories']);"><span class="image" style="background-image:url('http://marketingland.com/wp-content/ml-loads/2015/05/android-logo-textured-1920-600x338.jpg');"></span>Android 6 “Marshmallow” &amp; SEO Series: Google’s Private Index &amp; Screen Crawling</a>
+</div>
+<div class="related-article col-lg-3 col-md-3 col-sm-4 hidden-sm col-xs-12">
+<a href="http://marketingland.com/mobile-vs-desktop-mobile-won-might-still-losing-148800" onclick="_gaq.push(['_trackEvent','internal','read','main+content+related+stories']);"><span class="image" style="background-image:url('http://marketingland.com/wp-content/ml-loads/2014/10/awards-winner-trophies-ss-1920-600x337.jpg');"></span>Mobile Vs. Desktop: Mobile Won, But You Might Still Be Losing</a>
+</div>
+<div class="related-article col-lg-3 col-md-3 col-sm-4 hidden-sm col-xs-12">
+<a href="http://marketingland.com/apples-ios-9-means-marketers-hint-search-ux-particular-143335" onclick="_gaq.push(['_trackEvent','internal','read','main+content+related+stories']);"><span class="image" style="background-image:url('http://marketingland.com/wp-content/ml-loads/2014/08/apple-iphone-ios-1920-600x337.jpg');"></span>What Apple's iOS 9 Means To Marketers (Hint: Search And UX In Particular)</a>
+</div>
+</div>
+<div class="secondary topics col-lg-12">
+<a href="http://marketingland.com/library/channel/mobile-marketing">Channel: Mobile Marketing</a><a href="http://marketingland.com/library/google/google-app-indexing">Google: App Indexing</a><a href="http://marketingland.com/library/mobile-marketing-news/app-indexing-deep-links">Mobile Marketing: App Indexing &amp; Deep Links</a>	</div>
+</div>
+<h6>(Some images used under license from <a href="http://www.shutterstock.com/" rel="nofollow">Shutterstock.com</a>.)</h6>
