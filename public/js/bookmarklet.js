@@ -21,7 +21,9 @@ console.log('containers', html);
 //window.open('https://github.com/matita/min-gh-jekyll/new/gh-pages/?filename=_posts/' + encodeURIComponent(filename) + '.md&value=' + encodeURIComponent(frontMatter));
 
 var w = window.contentW || window.open();
-w.document.head.innerHTML = '<base href="' + url + '"><style>' +
+var wDoc = w.document;
+
+wDoc.head.innerHTML = '<base href="' + url + '"><style>' +
   'body { font-family: Georgia; font-size: 20px; max-width: 700px; margin: 0 auto; color: #555; line-height: 1.8; padding: 2em 10px; }' + 
   'h1, h2, h3, h4, h5, h6 { font-family: Arial, Helvetica, sans-serif; line-height: 1.2; }' +
   'a[href] { color: #6a9fb5; text-decoration: none; }' +
@@ -30,12 +32,18 @@ w.document.head.innerHTML = '<base href="' + url + '"><style>' +
   'iframe { max-width: 100%; display: block; margin: 0 auto; }' +
   'pre { padding: 1em; background: #eee; font-size: 14px; overflow: auto; }' +
   'blockquote { border-left: 5px solid #ddd; margin-left: 0; padding-left: 1em; }' +
+  '#html-content { width: 100%; display: block; }' +
   '</style>';
 
 html = '<h1 style="border-bottom: 1px solid #eee; padding-bottom: 1em; margin-bottom: 1em;">' + title + '</h1>' +
-  html;
+  html +
+  '<hr>' +
+  '<textarea id="html-content"></textarea>' +
+  '<a href="https://github.com/matita/min-gh-jekyll/new/master/?filename=' + encodeURIComponent('_posts/' + filename) + '&value=' + encodeURIComponent(frontMatter) + '" target="_blank">Add to repository</a>';
 
-w.document.body.innerHTML = html;
+
+wDoc.body.innerHTML = html;
+wDoc.getElementById('html-content').value = html;
 
 
 function getFileName(title) {
