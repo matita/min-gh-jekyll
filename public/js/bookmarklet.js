@@ -28,7 +28,8 @@ w.document.head.innerHTML = '<style>' +
   'a[href]:hover { text-decoration: underline; }' +
   'img { max-width: 100%; height: auto; display: block; margin: 0 auto; text-align: center }' +
   'iframe { max-width: 100%; display: block; margin: 0 auto; }' +
-  'pre { padding: 1em; background: #eee; font-size: 14px; overflow: auto; }'
+  'pre { padding: 1em; background: #eee; font-size: 14px; overflow: auto; }' +
+  'blockquote { border-left: 5px solid #ddd; margin-left: 0; padding-left: 1em; }' +
   '</style>';
 
 html = '<h1 style="border-bottom: 1px solid #eee; padding-bottom: 1em; margin-bottom: 1em;">' + title + '</h1>' +
