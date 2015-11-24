@@ -16,3 +16,8 @@ defaults:
       path: ""
     values:
       layout: "post"
+  -
+    scope:
+      path: "_archive"
+    values:
+      category: "archive"
