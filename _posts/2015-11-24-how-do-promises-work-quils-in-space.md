@@ -2,7 +2,7 @@
 title: How do Promises Work? - Quils in Space
 description: Extending Fold and Unfold to Exponential Embarassing-ness
 link: http://robotlolita.me/2015/11/15/how-do-promises-work.html?utm_source=SitePoint&utm_medium=email&utm_campaign=Versioning
-saved: 2015-11-24 15:37:29
+saved: 2015-11-24 15:42:02
 ---
 
 
@@ -78,7 +78,7 @@ life.</p>
 
 <h3 id="interlude-the-girl-who-hated-queues">Interlude: The Girl Who Hated Queues</h3>
 
-<p class="pull-left"><img src="/files/2015/09/promises-01.png" alt="">
+<p class="pull-left"><img src="http://robotlolita.me/files/2015/09/promises-01.png" alt="">
 <em>Girfriends trying to have dinner at a very popular food place.</em></p>
 
 <p>Alissa P. Hacker and her girlfriend decided to have dinner at a very
@@ -94,7 +94,7 @@ perfect solution for her.</p>
   <p>“This is a magical device that represents your future table…”</p>
 </blockquote>
 
-<p class="pull-right"><img src="/files/2015/09/promises-02.png" alt="">
+<p class="pull-right"><img src="http://robotlolita.me/files/2015/09/promises-02.png" alt="">
 <em>A device that represents your future table in the restaurant.</em></p>
 
 <p>“Worry not, my dear, just hold on to this device, and everything will be
@@ -115,7 +115,7 @@ the restaurant, promises exist to represent <em>something</em> that will be
 available in the future. In a programming language, these things are
 values.</p>
 
-<p class="pull-left"><img src="/files/2015/09/promises-03.png" alt="">
+<p class="pull-left"><img src="http://robotlolita.me/files/2015/09/promises-03.png" alt="">
 <em>Whole apple in, apple slices out.</em></p>
 
 <p>In the synchronous world, it’s very simple to understand computations
@@ -142,7 +142,7 @@ time, come back to get the value we need.</p>
   <p>Promises are representations of eventual values.</p>
 </blockquote>
 
-<p class="centred-image"><img src="/files/2015/09/promises-04.png" alt="">
+<p class="centred-image"><img src="http://robotlolita.me/files/2015/09/promises-04.png" alt="">
 <em>Whole apple in, ticket for rescuing our delicious apple slices later out.</em></p>
 
 <h3 id="interlude-order-of-execution">Interlude: Order of Execution</h3>
@@ -213,7 +213,7 @@ expressions. Which, in essence, means that expressions are executed as
 soon as all of its components are ready, even if other things are
 already executing.</p>
 
-<p class="centred-image full-image"><img src="/files/2015/09/promises-05.png" alt="">
+<p class="centred-image full-image"><img src="http://robotlolita.me/files/2015/09/promises-05.png" alt="">
 <em>The dependency graph for our simple example.</em></p>
 
 <p>Instead of having to declare which order the program should use when
@@ -249,9 +249,9 @@ this representation. And something that creates a dependency between one
 expression and a value, creating a new promise for the result of the
 expression.</p>
 
-<p class="pull-left width-350"><img src="/files/2015/09/promises-06.png" alt="">
+<p class="pull-left width-350"><img src="http://robotlolita.me/files/2015/09/promises-06.png" alt="">
 <em>Creating representations of future values.</em>
-<img src="/files/2015/09/promises-07.png" alt="">
+<img src="http://robotlolita.me/files/2015/09/promises-07.png" alt="">
 <em>Creating dependencies between values and expressions.</em></p>
 
 <p>Our promises represent values that we haven’t computed yet. This
@@ -647,7 +647,7 @@ can’t handle a form of “Failure”. This alone already allows us to write
 entire programs that may continue executing even when faced with a
 computation that can’t produce a valid value:</p>
 
-<p class="centred-image full-image"><img src="/files/2015/09/promises-08.png" alt="">
+<p class="centred-image full-image"><img src="http://robotlolita.me/files/2015/09/promises-08.png" alt="">
 <em>Branching on partial functions</em></p>
 
 <p>Branching on each possible failure is a reasonable way of handling them,
@@ -655,7 +655,7 @@ but not necessarily a practical one. For example, if we compose three
 computations that could fail, that means we’d have to define at least 6
 different branches, for the simplest composition!</p>
 
-<p class="centred-image full-image"><img src="/files/2015/09/promises-09.png" alt="">
+<p class="centred-image full-image"><img src="http://robotlolita.me/files/2015/09/promises-09.png" alt="">
 <em>Branching on every partial function</em></p>
 
 <blockquote class="note trivia">
@@ -678,7 +678,7 @@ assign a “failure handler” to a block of code where failures may
 happen. JavaScript allows the latter approach through the <code>try/catch</code>
 statement, for example.</p>
 
-<p class="centred-image full-image"><img src="/files/2015/09/promises-10.png" alt="">
+<p class="centred-image full-image"><img src="http://robotlolita.me/files/2015/09/promises-10.png" alt="">
 <em>One of the approaches for handling failures in a practical way</em></p>
 
 <h3 id="handling-errors-with-promises">4.1. Handling Errors With Promises</h3>
@@ -689,7 +689,7 @@ result. This is a problem if we were to run a computation like <code>a / b</code
 inside a promise, because if <code>b</code> is 0, like in <code>2 / 0</code>, that computation
 can’t produce a valid result.</p>
 
-<p class="pull-left"><img src="/files/2015/09/promises-11.png" alt="">
+<p class="pull-left"><img src="http://robotlolita.me/files/2015/09/promises-11.png" alt="">
 <em>Possible states of our new promise</em></p>
 
 <p>We can modify our promise to contemplate the representation of failures
@@ -1016,7 +1016,7 @@ first-class objects, they have a concrete representation of failures and
 successes, which we can inspect and react to whenever we want, not just
 at the point they are created.</p>
 
-<p class="pull-right"><img src="/files/2015/09/promises-12.png" alt="">
+<p class="pull-right"><img src="http://robotlolita.me/files/2015/09/promises-12.png" alt="">
 <em>Possible lifecycle of a promise chain</em></p>
 
 <p>In order to be able to achieve something similar to <code>try/catch</code> we first
@@ -2088,7 +2088,7 @@ primitive for all use cases. Promises are placeholders for values that
 will eventually be computed, so they can only make sense in contexts
 where you would use those values themselves.</p>
 
-<p class="centred-image full-image"><img src="/files/2015/09/promises-13.png" alt="">
+<p class="centred-image full-image"><img src="http://robotlolita.me/files/2015/09/promises-13.png" alt="">
 <em>Promises only make sense in the <strong>value</strong> context</em></p>
 
 <p>Trying to use promises for anything besides that is going to result in
