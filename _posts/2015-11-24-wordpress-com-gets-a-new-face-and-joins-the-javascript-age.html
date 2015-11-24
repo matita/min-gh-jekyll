@@ -1,0 +1,64 @@
+---
+title: WordPress.com Gets A New Face And Joins the Javascript Age
+description: WordPress has unveiled a new, totally rewritten admin interface today. And below the surface, you'll see something remarkable: JavaScript instead of PHP.
+link: http://www.wired.com/2015/11/wordpress-com-gets-a-new-face-and-joins-the-javascript-age/?utm_source=SitePoint&utm_medium=email&utm_campaign=Versioning
+saved: 2015-11-24 16:37:30
+---
+
+
+
+			<p><span class="lede" tabindex="-1">The popular blogging </span>site WordPress.com unveiled a new admin interface today for managing blogs, posting content, and reading other people’s sites. If you’re a regular user, you’ll notice a new look and feel. If you’re a code geek, you’ll notice something more remarkable below the surface: JavaScript instead of PHP.</p>
+<p>If you run the open source version of WordPress on your own server, you can activate the new interface on your own site through the plugin <a href="https://wordpress.org/plugins/jetpack/" onclick="var x=&quot;.tl(&quot;;s_objectID=&quot;https://wordpress.org/plugins/jetpack/_1&quot;;return this.s_oc?this.s_oc(e):true">Jetpack</a>. Automattic, the company behind WordPress.com—the commercial version of WordPress—also released a WordPress application for Macintosh OS X. And it made available the <a href="https://github.com/Automattic" onclick="var x=&quot;.tl(&quot;;s_objectID=&quot;https://github.com/Automattic_1&quot;;return this.s_oc?this.s_oc(e):true">code that powers the new interface</a> as open source software for everyone.</p>
+<p data-js="fader" class="pullquote carve fader fade-in-up">
+	'We realized that the tech wasn't going to take us to the next decade.'	<span class="attribution">Matt Mullenweg, WordPress</span>
+</p>
+
+<p>WordPress has come a long way since Matt Mullenweg co-founded the project in 2003 as an open source project to continue develping the defunct blogging software b2/cafelog. The software now powers about 25 percent of all websites, according to technology survey outfit <a href="http://w3techs.com/technologies/history_overview/content_management/all/y" onclick="var x=&quot;.tl(&quot;;s_objectID=&quot;http://w3techs.com/technologies/history_overview/content_management/all/y_1&quot;;return this.s_oc?this.s_oc(e):true">W3Techs</a>. Automattic, the company Mullenweg founded to commercialize WordPress, turned 10 years old this year and now employs more than 400 people. But the software under the hood at WordPress was starting to show its age. “We realized that the tech wasn’t going to take us to the next decade,” he says.</p>
+<p>The Automattic team started a complete overhaul of the WordPress admin interface about a year-and-a-half ago, endeavoring to make it faster and more responsive. Over that time, the company has quietly rolled out some of the new interface features to select users, but today marks the first time it’s been available to everyone.</p>
+<p>Asked whether the new interface, dubbed Calypso, would become part of the main open source WordPress project, Mullenweg says he hopes so, but that will depend on what the community wants. There could be some technical challenges involved in integrating the new interface because Calypso isn’t just a visual redesign but a complete technical overhaul.</p>
+<figure attachment_1936928="" class="wp-caption landscape alignnone fader" data-js="fader"><a href="javascript:;" onclick="var x=&quot;.tl(&quot;;s_objectID=&quot;http://www.wired.com/wp-content/uploads/2015/11/animation-128-nodither-532.gif_1&quot;;return this.s_oc?this.s_oc(e):true" tabindex="-1" aria-hidden="true" role="presentation"><img class="size-text-column-width wp-image-1936928 cursor-zoom" src="http://www.wired.com/wp-content/uploads/2015/11/animation-128-nodither-532.gif" alt="WordPress. " width="482" height="362" data-ui="overlayOpen" data-order="0"><span class="visually-hidden">Click to Open Overlay Gallery</span></a><figcaption class="wp-caption-text link-underline"><span class="credit link-underline-sm"><span aria-hidden="true" class="ui ui ui-illo inline-block ui-credit relative opacity-5 marg-r-micro"></span> WordPress</span></figcaption></figure>
+<h3>Getting with the Program</h3>
+<p>WordPress was was written in a programming language called PHP, which has long been popular with web developers for making it fast and easy to write new programs. Much of WordPress remains written in PHP, but most of the new interface has been re-written in JavaScript.</p>
+
+<div id="related" class="col sm-col-18 med-col-9 big-col-9 carve border-t-big card smart no-box-shadow">
+
+	<h4 class="ambroise-hdr pad clearfix">More Code</h4>
+
+	<ul class="story-list border-t no-underline list-none no-marg" data-js="most-recent">
+					<li class="no-marg">
+				<a href="http://www.wired.com/2015/11/i-turned-off-javascript-for-a-whole-week-and-it-was-glorious/" class="clearfix pad no-hover" onclick="var x=&quot;.tl(&quot;;s_objectID=&quot;http://www.wired.com/2015/11/i-turned-off-javascript-for-a-whole-week-and-it-was-glorious/_1&quot;;return this.s_oc?this.s_oc(e):true">
+											<img role="presentation" data-pin-description="I Turned Off JavaScript for a Whole Week and It Was Glorious" tabindex="-1" aria-hidden="true" src="http://www.wired.com/wp-content/uploads/2015/11/JS2-150x150-e1447811618213.jpg" alt="I Turned Off JavaScript for a Whole Week and It Was Glorious" class="landscape thumbnail  thumb col mob-col-6 med-col-6 big-col-6" width="150" height="150" itemprop="image">										<div>
+												<h5 class="title exchange-sm">I Turned Off JavaScript for a Whole Week and It Was Glorious</h5>
+					</div>
+				</a>
+			</li>
+			<hr>
+					<li class="no-marg">
+				<a href="http://www.wired.com/2015/11/google-open-sources-its-artificial-intelligence-engine/" class="clearfix pad no-hover" onclick="var x=&quot;.tl(&quot;;s_objectID=&quot;http://www.wired.com/2015/11/google-open-sources-its-artificial-intelligence-engine/_1&quot;;return this.s_oc?this.s_oc(e):true">
+											<img role="presentation" data-pin-description="Google Just Open Sourced TensorFlow, Its Artificial Intelligence Engine" tabindex="-1" aria-hidden="true" src="http://www.wired.com/wp-content/uploads/2015/11/google-tensor-flow-logo-F-150x150.jpg" alt="Google Just Open Sourced TensorFlow, Its Artificial Intelligence Engine" class="landscape thumbnail  thumb col mob-col-6 med-col-6 big-col-6" width="150" height="150" itemprop="image">										<div>
+												<h5 class="title exchange-sm">Google Just Open Sourced TensorFlow, Its Artificial Intelligence Engine</h5>
+					</div>
+				</a>
+			</li>
+			<hr>
+					<li class="no-marg">
+				<a href="http://www.wired.com/2015/10/vine-perfect-loops/" class="clearfix pad no-hover" onclick="var x=&quot;.tl(&quot;;s_objectID=&quot;http://www.wired.com/2015/10/vine-perfect-loops/_1&quot;;return this.s_oc?this.s_oc(e):true">
+											<img role="presentation" data-pin-description="Writing Good Code Is a Lot Like Making Beautiful Music" tabindex="-1" aria-hidden="true" src="http://www.wired.com/wp-content/uploads/2015/09/device_communication-featured-150x150.jpg" alt="Writing Good Code Is a Lot Like Making Beautiful Music" class="landscape thumbnail  thumb col mob-col-6 med-col-6 big-col-6" width="150" height="150" itemprop="image">										<div>
+												<h5 class="title exchange-sm">Writing Good Code Is a Lot Like Making Beautiful Music</h5>
+					</div>
+				</a>
+			</li>
+			<hr>
+			</ul>
+
+</div>
+
+<p>JavaScript, originally created to run software only in web browsers, has radically changed the way developers build software, thanks to several new technologies that make it possible to build far more complex applications using the language. Developers can now use JavaScript for both the client-side part of their applications as well as the server side, which makes it much faster and easier to create web applications, like Google Docs or Gmail, that feel more like desktop apps. For the user-facing, or “front end” components of the new interface, the Automattic team used <a href="https://facebook.github.io/react/" onclick="var x=&quot;.tl(&quot;;s_objectID=&quot;https://facebook.github.io/react/_1&quot;;return this.s_oc?this.s_oc(e):true">React</a>, a JavaScript framework developed by Facebook to create cross-platform user interfaces. </p>
+<p>For the backend code, the team used the popular server-side JavaScript platform <a href="http://www.wired.com/2012/01/node-dot-js/" onclick="var x=&quot;.tl(&quot;;s_objectID=&quot;http://www.wired.com/2012/01/node-dot-js/_1&quot;;return this.s_oc?this.s_oc(e):true">Node.js</a>. For users who host their own version of WordPress, Automattic will host the Node.js portion of the code on their own server, with which the Jetpack plugin will communicate, freeing up web hosts from having to support Node.js.</p>
+<p>Mullenweg says Automattic is using the same set of technologies to build the Mac desktop app, as well as its mobile apps, which will reduce the amount of work developers have to do in order to bring new features to new platforms. It’s WordPress, the next iteration.</p>
+
+			<a class="visually-hidden skip-to-text-link focusable bg-white" href="#start-of-content" onclick="var x=&quot;.tl(&quot;;s_objectID=&quot;http://www.wired.com/2015/11/wordpress-com-gets-a-new-face-and-joins-the-javascript-age/?utm_sour_3&quot;;return this.s_oc?this.s_oc(e):true">Go Back to Top. Skip To: Start of Article.</a>
+
+			
+<ul id="article-tags" aria-label="Tags for this Story." class="list-none center metadata marg-t-50 pad-b-med border-t border-b" data-js="articleTags">
+	<li class="no-underline pad-t-med pad-r-sm no-marg" itemprop="articleSection"><a href="http://www.wired.com/tag/gallery/" rel="tag" onclick="var x=&quot;.tl(&quot;;s_objectID=&quot;http://www.wired.com/tag/gallery/_1&quot;;return this.s_oc?this.s_oc(e):true">gallery</a></li><li class="no-underline pad-t-med pad-r-sm no-marg" itemprop="articleSection"><a href="http://www.wired.com/tag/javascript/" rel="tag" onclick="var x=&quot;.tl(&quot;;s_objectID=&quot;http://www.wired.com/tag/javascript/_1&quot;;return this.s_oc?this.s_oc(e):true">JavaScript</a></li><li class="no-underline pad-t-med pad-r-sm no-marg" itemprop="articleSection"><a href="http://www.wired.com/tag/open-source/" rel="tag" onclick="var x=&quot;.tl(&quot;;s_objectID=&quot;http://www.wired.com/tag/open-source/_1&quot;;return this.s_oc?this.s_oc(e):true">open-source</a></li><li class="no-underline pad-t-med pad-r-sm no-marg" itemprop="articleSection"><a href="http://www.wired.com/tag/wordpress/" rel="tag" onclick="var x=&quot;.tl(&quot;;s_objectID=&quot;http://www.wired.com/tag/wordpress/_1&quot;;return this.s_oc?this.s_oc(e):true">WordPress</a></li></ul>		
