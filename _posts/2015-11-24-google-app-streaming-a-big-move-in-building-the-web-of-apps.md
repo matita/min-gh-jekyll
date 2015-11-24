@@ -1,4 +1,5 @@
 ---
+layout: post
 title: Google App Streaming A Big Move In Building The Web Of Apps
 description: A world where you can search through and move between apps as easily as with the web Google new app streaming service may usher this in
 link: http://marketingland.com/google-app-streaming-web-of-apps-152449
