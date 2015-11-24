@@ -52,7 +52,7 @@ function getFileName(title) {
     pad(now.getMonth() + 1) + '-' +
     pad(now.getDate()) + '-' +
     (title || '').toLowerCase().replace(/^\W*(.*)\W*$/, '$1').replace(/\W+/g, '-') +
-    '.md';
+    '.html';
 }
 
 function formatDate(date) {
