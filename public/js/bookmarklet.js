@@ -39,7 +39,7 @@ var html = '<h1 style="border-bottom: 1px solid #eee; padding-bottom: 1em; margi
   originalHtml +
   '<hr>' +
   '<textarea id="html-content"></textarea>' +
-  '<a href="https://github.com/matita/min-gh-jekyll/new/master/?filename=' + encodeURIComponent('_posts/' + filename) + '&value=' + encodeURIComponent(frontMatter) + '" target="_blank">Add to repository</a>';
+  '<a href="https://github.com/matita/min-gh-jekyll/new/gh-pages/?filename=' + encodeURIComponent('_posts/' + filename) + '&value=' + encodeURIComponent(frontMatter) + '" target="_blank">Add to repository</a>';
 
 
 wDoc.body.innerHTML = html;
