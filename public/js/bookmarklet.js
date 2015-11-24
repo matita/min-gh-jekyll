@@ -32,14 +32,14 @@ wDoc.head.innerHTML = '<style>' +
   'iframe { max-width: 100%; display: block; margin: 0 auto; }' +
   'pre { padding: 1em; background: #eee; font-size: 14px; overflow: auto; }' +
   'blockquote { border-left: 5px solid #ddd; margin-left: 0; padding-left: 1em; }' +
-  '#html-content { width: 100%; display: block; height: 300px; }' +
+  '#html-content { width: 100%; display: block; height: 100px; }' +
   '</style>';
 
 var html = '<h1 style="border-bottom: 1px solid #eee; padding-bottom: 1em; margin-bottom: 1em;">' + title + '</h1>' +
-  originalHtml +
+  '<textarea id="html-content" onclick="this.select()"></textarea>' +
+  'Copy above text and <a href="https://github.com/matita/min-gh-jekyll/new/gh-pages/?filename=' + encodeURIComponent('_posts/' + filename) + '&value=' + encodeURIComponent(frontMatter) + '">Save post</a>' +
   '<hr>' +
-  '<textarea id="html-content"></textarea>' +
-  '<a href="https://github.com/matita/min-gh-jekyll/new/gh-pages/?filename=' + encodeURIComponent('_posts/' + filename) + '&value=' + encodeURIComponent(frontMatter) + '" target="_blank">Add to repository</a>';
+  originalHtml;
 
 
 wDoc.body.innerHTML = html;
