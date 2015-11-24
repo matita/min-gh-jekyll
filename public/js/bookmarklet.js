@@ -23,7 +23,7 @@ console.log('containers', html);
 var w = window.contentW || window.open();
 var wDoc = w.document;
 
-wDoc.head.innerHTML = '<base href="' + url + '"><style>' +
+wDoc.head.innerHTML = '<style>' +
   'body { font-family: Georgia; font-size: 20px; max-width: 700px; margin: 0 auto; color: #555; line-height: 1.8; padding: 2em 10px; }' + 
   'h1, h2, h3, h4, h5, h6 { font-family: Arial, Helvetica, sans-serif; line-height: 1.2; }' +
   'a[href] { color: #6a9fb5; text-decoration: none; }' +
@@ -154,7 +154,7 @@ function sanitizeNode(node) {
       n.parentNode.removeChild(n);
   }
 
-  /*
+  
   // normalize links
   nodes = node.getElementsByTagName('a');
   for (i = 0; i < nodes.length; i++) {
@@ -185,5 +185,4 @@ function sanitizeNode(node) {
     a.href = src;
     n.src = a.href;
   }
-  */
 }
