@@ -1,0 +1,182 @@
+---
+title: "Tobias Ahlin"
+description: "Tobias Ahlin | Designer and developer"
+link: "http://tobiasahlin.com/blog/how-to-animate-box-shadow/?utm_source=SitePoint&utm_medium=email&utm_campaign=Versioning"
+saved: "2015-11-27 11:50:20"
+---
+
+		<div class="blog-banner banner-purple">
+  <div class="blog-banner-content" style="height: 90px;">
+    
+  </div>
+
+  
+
+</div>
+
+<p>How do you animate the <code>box-shadow</code> property in CSS without causing re-paints on every frame, and heavily impacting the performance of your page? Short answer: you don't. Animating a change of <code>box-shadow</code> <em>will</em> hurt performance.</p>
+
+<p>There's an easy way of mimicking the same effect, however, with minimal re-paints, that should let your animations run at a solid 60 FPS: animate the <code>opacity</code> of a pseudo-element.</p>
+
+<!--more-->
+
+<h2>Demo</h2>
+
+<p><a href="http://tobiasahlin.com/demo/animate-box-shadow/"><img src="http://tobiasahlin.com/static/animate-box-shadow/demo.gif" alt="Recording of box-shadow demo in action"></a></p>
+
+<p><a href="http://tobiasahlin.com/demo/animate-box-shadow/">Have a look at the demo</a> and compare the two different techniques we'll be exploring. If the two examples look the same to you, that's the point. The only difference is how we apply and animate the shadow. On the left we're animating <code>box-shadow</code> on <code>hover</code>, and on the right we're adding a pseudo-element with <code>:after</code>, applying the shadow to that, and animating the <code>opacity</code> of that element.</p>
+
+<p>If you bring up your developer tools and hover one of these items, you should see something similar to this (green bars are paints; less is better):</p>
+
+<p><a href="http://tobiasahlin.com/demo/animate-box-shadow/"><img src="http://tobiasahlin.com/static/animate-box-shadow/animation-performance.png" alt="Animation performance when hovering the different boxes"></a></p>
+
+<p>There are clearly more re-paints when hovering the cards on the left side (animating <code>box-shadow</code>), compared to hovering the cards on the right side (which animate the <code>opacity</code> of their pseudo-element).</p>
+
+<p>Why are we seeing this effect? There are <a href="http://csstriggers.com/">very few CSS properties</a> that can be animated without constantly triggering repaints for every frame, namely <code>opacity</code> and <code>transform</code>. We minimize the amount of repaints (and work that your browser has to do) by sticking to only changing these two properties during the animation. </p>
+
+<p>This is the <strong>critical difference</strong> between the two techniques, stripping out all of the other layout styles:</p>
+<div class="highlight"><pre><code class="language-css" data-lang="css"><span class="c">/* The slow way */</span>
+<span class="nc">.make-it-slow</span> <span class="p">{</span>
+  <span class="n">box</span><span class="o">-</span><span class="n">shadow</span><span class="o">:</span> <span class="m">0</span> <span class="m">1px</span> <span class="m">2px</span> <span class="n">rgba</span><span class="p">(</span><span class="m">0</span><span class="o">,</span><span class="m">0</span><span class="o">,</span><span class="m">0</span><span class="o">,</span><span class="m">0</span><span class="o">.</span><span class="m">15</span><span class="p">);</span>
+  <span class="n">transition</span><span class="o">:</span> <span class="n">box</span><span class="o">-</span><span class="n">shadow</span> <span class="m">0.3s</span> <span class="n">ease</span><span class="o">-</span><span class="n">in</span><span class="o">-</span><span class="n">out</span><span class="o">:</span>
+<span class="p">}</span>
+
+<span class="c">/* Transition to a bigger shadow on hover */</span>
+<span class="nc">.make-it-slow</span><span class="nd">:hover</span> <span class="p">{</span>
+  <span class="n">box</span><span class="o">-</span><span class="n">shadow</span><span class="o">:</span> <span class="m">0</span> <span class="m">5px</span> <span class="m">15px</span> <span class="n">rgba</span><span class="p">(</span><span class="m">0</span><span class="o">,</span><span class="m">0</span><span class="o">,</span><span class="m">0</span><span class="o">,</span><span class="m">0</span><span class="o">.</span><span class="m">3</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="c">/* The fast way */</span>
+<span class="nc">.make-it-fast</span> <span class="p">{</span>
+  <span class="n">box</span><span class="o">-</span><span class="n">shadow</span><span class="o">:</span> <span class="m">0</span> <span class="m">1px</span> <span class="m">2px</span> <span class="n">rgba</span><span class="p">(</span><span class="m">0</span><span class="o">,</span><span class="m">0</span><span class="o">,</span><span class="m">0</span><span class="o">,</span><span class="m">0</span><span class="o">.</span><span class="m">15</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="c">/* Pre-render the bigger shadow, but hide it */</span>
+<span class="nc">.make-it-fast</span><span class="nd">:after</span> <span class="p">{</span>
+  <span class="n">box</span><span class="o">-</span><span class="n">shadow</span><span class="o">:</span> <span class="m">0</span> <span class="m">5px</span> <span class="m">15px</span> <span class="n">rgba</span><span class="p">(</span><span class="m">0</span><span class="o">,</span><span class="m">0</span><span class="o">,</span><span class="m">0</span><span class="o">,</span><span class="m">0</span><span class="o">.</span><span class="m">3</span><span class="p">);</span>
+  <span class="k">opacity</span><span class="o">:</span> <span class="m">0</span><span class="p">;</span>
+  <span class="n">transition</span><span class="o">:</span> <span class="k">opacity</span> <span class="m">0.3s</span> <span class="n">ease</span><span class="o">-</span><span class="n">in</span><span class="o">-</span><span class="n">out</span><span class="o">:</span>
+<span class="p">}</span>
+
+<span class="c">/* Transition to showing the bigger shadow on hover */</span>
+<span class="nc">.make-it-fast</span><span class="nd">:hover:after</span> <span class="p">{</span>
+  <span class="k">opacity</span><span class="o">:</span> <span class="m">1</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>In the example that performs better we have two layers: one for the box, and one for the shadow, and only animate the <code>opacity</code> property of the shadow layer.</p>
+
+<h2>Breaking it down</h2>
+
+<p>With the fundamentals in place, let's look at how to create <a href="http://tobiasahlin.com/demo/animate-box-shadow/">the 3D card effect showcased in the demo</a>. The first step is to move the shadow to a pseudo-element, like we did above. Let's also add all of the layout code to create the card:</p>
+<div class="highlight"><pre><code class="language-css" data-lang="css"><span class="c">/* All HTML you need is &lt;div class="box"&gt;&lt;/div&gt; */</span>
+
+<span class="c">/* Create a simple white box, and add the shadow for the initial state */</span>
+<span class="nc">.box</span> <span class="p">{</span>
+  <span class="k">position</span><span class="o">:</span> <span class="k">relative</span><span class="p">;</span>
+  <span class="k">display</span><span class="o">:</span> <span class="k">inline</span><span class="o">-</span><span class="k">block</span><span class="p">;</span>
+  <span class="k">width</span><span class="o">:</span> <span class="m">100px</span><span class="p">;</span>
+  <span class="k">height</span><span class="o">:</span> <span class="m">100px</span><span class="p">;</span>
+  <span class="k">border</span><span class="o">-</span><span class="n">radius</span><span class="o">:</span> <span class="m">5px</span><span class="p">;</span>
+  <span class="k">background-color</span><span class="o">:</span> <span class="m">#fff</span><span class="p">;</span>
+  <span class="n">box</span><span class="o">-</span><span class="n">shadow</span><span class="o">:</span> <span class="m">0</span> <span class="m">1px</span> <span class="m">2px</span> <span class="n">rgba</span><span class="p">(</span><span class="m">0</span><span class="o">,</span><span class="m">0</span><span class="o">,</span><span class="m">0</span><span class="o">,</span><span class="m">0</span><span class="o">.</span><span class="m">15</span><span class="p">);</span>
+  <span class="n">transition</span><span class="o">:</span> <span class="n">all</span> <span class="m">0.3s</span> <span class="n">ease</span><span class="o">-</span><span class="n">in</span><span class="o">-</span><span class="n">out</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="c">/* Create the hidden pseudo-element */</span>
+<span class="c">/* include the shadow for the end state */</span>
+<span class="nc">.box</span><span class="nd">:after</span> <span class="p">{</span>
+  <span class="k">content</span><span class="o">:</span> <span class="s1">''</span><span class="p">;</span>
+  <span class="k">position</span><span class="o">:</span> <span class="k">absolute</span><span class="p">;</span>
+  <span class="k">width</span><span class="o">:</span> <span class="m">100%</span><span class="p">;</span>
+  <span class="k">height</span><span class="o">:</span> <span class="m">100%</span><span class="p">;</span>
+  <span class="k">opacity</span><span class="o">:</span> <span class="m">0</span><span class="p">;</span>
+  <span class="k">border</span><span class="o">-</span><span class="n">radius</span><span class="o">:</span> <span class="m">5px</span><span class="p">;</span>
+  <span class="n">box</span><span class="o">-</span><span class="n">shadow</span><span class="o">:</span> <span class="m">0</span> <span class="m">5px</span> <span class="m">15px</span> <span class="n">rgba</span><span class="p">(</span><span class="m">0</span><span class="o">,</span><span class="m">0</span><span class="o">,</span><span class="m">0</span><span class="o">,</span><span class="m">0</span><span class="o">.</span><span class="m">3</span><span class="p">);</span>
+  <span class="n">transition</span><span class="o">:</span> <span class="k">opacity</span> <span class="m">0.3s</span> <span class="n">ease</span><span class="o">-</span><span class="n">in</span><span class="o">-</span><span class="n">out</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>Note that we're adding a <code>transition</code> to both the <code>.box</code>, and <code>.box:after</code>, since we're going to animate both of these elements: <code>transform</code> for <code>.box</code>, and <code>opacity</code> for <code>.box:after</code>. </p>
+
+<p>These styles give us a white box with a subtle <code>box-shadow</code>. The stronger shadow from <code>.box:after</code> is completely hidden at this point, and you can't interact with the box:</p>
+
+<div class="post-demo-content">
+  
+
+  <style>
+
+  .box {
+    position: relative;
+    display: inline-block;
+    width: 100px;
+    height: 100px;
+    border-radius: 5px;
+    background-color: #fff;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+    transition: all 0.3s ease-in-out;
+  }
+  </style>
+</div>
+
+<p>To create the same effect as in the <a href="http://tobiasahlin.com/demo/animate-box-shadow/">demo</a>, now all we need to do is to scale up the <code>.box</code> on hover, and fade in the pseudo-element and its shadow:</p>
+<div class="highlight"><pre><code class="language-css" data-lang="css"><span class="c">/* Scale up the box */</span>
+<span class="nc">.box</span><span class="nd">:hover</span> <span class="p">{</span>
+  <span class="n">transform</span><span class="o">:</span> <span class="n">scale</span><span class="p">(</span><span class="m">1</span><span class="o">.</span><span class="m">2</span><span class="o">,</span> <span class="m">1</span><span class="o">.</span><span class="m">2</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="c">/* Fade in the pseudo-element with the bigger shadow */</span>
+<span class="nc">.box</span><span class="nd">:hover:after</span> <span class="p">{</span>
+  <span class="k">opacity</span><span class="o">:</span> <span class="m">1</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>That's it! Hover the box to preview the effect:</p>
+
+<div class="post-demo-content">
+  
+
+  
+</div>
+
+<p>To summarize, here's all the CSS, with all vendor prefixes, and some custom easing for additional ✨👌:</p>
+<div class="highlight"><pre><code class="language-css" data-lang="css"><span class="nc">.box</span> <span class="p">{</span>
+  <span class="k">position</span><span class="o">:</span> <span class="k">relative</span><span class="p">;</span>
+  <span class="k">display</span><span class="o">:</span> <span class="k">inline</span><span class="o">-</span><span class="k">block</span><span class="p">;</span>
+  <span class="k">width</span><span class="o">:</span> <span class="m">100px</span><span class="p">;</span>
+  <span class="k">height</span><span class="o">:</span> <span class="m">100px</span><span class="p">;</span>
+  <span class="k">background-color</span><span class="o">:</span> <span class="m">#fff</span><span class="p">;</span>
+  <span class="k">border</span><span class="o">-</span><span class="n">radius</span><span class="o">:</span> <span class="m">5px</span><span class="p">;</span>
+  <span class="n">box</span><span class="o">-</span><span class="n">shadow</span><span class="o">:</span> <span class="m">0</span> <span class="m">1px</span> <span class="m">2px</span> <span class="n">rgba</span><span class="p">(</span><span class="m">0</span><span class="o">,</span> <span class="m">0</span><span class="o">,</span> <span class="m">0</span><span class="o">,</span> <span class="m">0</span><span class="o">.</span><span class="m">1</span><span class="p">);</span>
+  <span class="k">border</span><span class="o">-</span><span class="n">radius</span><span class="o">:</span> <span class="m">5px</span><span class="p">;</span>
+  <span class="o">-</span><span class="n">webkit</span><span class="o">-</span><span class="n">transition</span><span class="o">:</span> <span class="n">all</span> <span class="m">0.6s</span> <span class="n">cubic</span><span class="o">-</span><span class="n">bezier</span><span class="p">(</span><span class="m">0</span><span class="o">.</span><span class="m">165</span><span class="o">,</span> <span class="m">0</span><span class="o">.</span><span class="m">84</span><span class="o">,</span> <span class="m">0</span><span class="o">.</span><span class="m">44</span><span class="o">,</span> <span class="m">1</span><span class="p">);</span>
+  <span class="n">transition</span><span class="o">:</span> <span class="n">all</span> <span class="m">0.6s</span> <span class="n">cubic</span><span class="o">-</span><span class="n">bezier</span><span class="p">(</span><span class="m">0</span><span class="o">.</span><span class="m">165</span><span class="o">,</span> <span class="m">0</span><span class="o">.</span><span class="m">84</span><span class="o">,</span> <span class="m">0</span><span class="o">.</span><span class="m">44</span><span class="o">,</span> <span class="m">1</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="nc">.box</span><span class="nd">:after</span> <span class="p">{</span>
+  <span class="k">content</span><span class="o">:</span> <span class="s2">""</span><span class="p">;</span>
+  <span class="k">border</span><span class="o">-</span><span class="n">radius</span><span class="o">:</span> <span class="m">5px</span><span class="p">;</span>
+  <span class="k">position</span><span class="o">:</span> <span class="k">absolute</span><span class="p">;</span>
+  <span class="k">top</span><span class="o">:</span> <span class="m">0</span><span class="p">;</span>
+  <span class="k">left</span><span class="o">:</span> <span class="m">0</span><span class="p">;</span>
+  <span class="k">width</span><span class="o">:</span> <span class="m">100%</span><span class="p">;</span>
+  <span class="k">height</span><span class="o">:</span> <span class="m">100%</span><span class="p">;</span>
+  <span class="n">box</span><span class="o">-</span><span class="n">shadow</span><span class="o">:</span> <span class="m">0</span> <span class="m">5px</span> <span class="m">15px</span> <span class="n">rgba</span><span class="p">(</span><span class="m">0</span><span class="o">,</span> <span class="m">0</span><span class="o">,</span> <span class="m">0</span><span class="o">,</span> <span class="m">0</span><span class="o">.</span><span class="m">3</span><span class="p">);</span>
+  <span class="k">opacity</span><span class="o">:</span> <span class="m">0</span><span class="p">;</span>
+  <span class="o">-</span><span class="n">webkit</span><span class="o">-</span><span class="n">transition</span><span class="o">:</span> <span class="n">all</span> <span class="m">0.6s</span> <span class="n">cubic</span><span class="o">-</span><span class="n">bezier</span><span class="p">(</span><span class="m">0</span><span class="o">.</span><span class="m">165</span><span class="o">,</span> <span class="m">0</span><span class="o">.</span><span class="m">84</span><span class="o">,</span> <span class="m">0</span><span class="o">.</span><span class="m">44</span><span class="o">,</span> <span class="m">1</span><span class="p">);</span>
+  <span class="n">transition</span><span class="o">:</span> <span class="n">all</span> <span class="m">0.6s</span> <span class="n">cubic</span><span class="o">-</span><span class="n">bezier</span><span class="p">(</span><span class="m">0</span><span class="o">.</span><span class="m">165</span><span class="o">,</span> <span class="m">0</span><span class="o">.</span><span class="m">84</span><span class="o">,</span> <span class="m">0</span><span class="o">.</span><span class="m">44</span><span class="o">,</span> <span class="m">1</span><span class="p">)</span>
+<span class="p">}</span>
+
+<span class="nc">.box</span><span class="nd">:hover</span> <span class="p">{</span>
+  <span class="o">-</span><span class="n">webkit</span><span class="o">-</span><span class="n">transform</span><span class="o">:</span> <span class="n">scale</span><span class="p">(</span><span class="m">1</span><span class="o">.</span><span class="m">25</span><span class="o">,</span> <span class="m">1</span><span class="o">.</span><span class="m">25</span><span class="p">);</span>
+  <span class="n">transform</span><span class="o">:</span> <span class="n">scale</span><span class="p">(</span><span class="m">1</span><span class="o">.</span><span class="m">25</span><span class="o">,</span> <span class="m">1</span><span class="o">.</span><span class="m">25</span><span class="p">)</span>
+<span class="p">}</span>
+
+<span class="nc">.box</span><span class="nd">:hover:after</span> <span class="p">{</span>
+    <span class="k">opacity</span><span class="o">:</span> <span class="m">1</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>That's certainly a lot of CSS to achieve the same effect as simply animating <code>box-shadow</code>, just with improved performance. Why bother?</p>
+
+<p>Even if your desktop likely handles animating <code>box-shadow</code> without any issues, your phone may not, and even your desktop may start to stutter when animating a more complex layout.</p>
+
+<p>Keep transitions and animations to only <code>transform</code> and <code>opacity</code>, and you're certain to achieve the best possible performance, and with that, the best possible user experience.</p>
+
+	
