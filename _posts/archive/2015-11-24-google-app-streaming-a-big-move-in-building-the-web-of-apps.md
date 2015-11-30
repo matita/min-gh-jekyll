@@ -6,7 +6,6 @@ link: http://marketingland.com/google-app-streaming-web-of-apps-152449
 saved: 2015-11-24 14:41:18
 ---
 
-## Some markdown text
 
 <div class="sharing_content_channel">
 </div>
