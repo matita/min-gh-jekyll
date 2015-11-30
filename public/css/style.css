@@ -27,13 +27,18 @@ body {
   margin-bottom: 1em;
 }
 
+.link > :last-child {
+  margin-bottom: 0;
+}
+
 .link-title {
   margin-top: 0;
   font-size: 1.2em;
 }
 
 .link-url,
-.link-date {
+.link-date,
+.reading-time {
   color: #999;
   font-size: .9em;
 }
@@ -46,9 +51,5 @@ body {
 }
 
 .link-date {
-  margin-bottom: 0;
-}
-
-.reading-time {
-  color: #999;
+  
 }
