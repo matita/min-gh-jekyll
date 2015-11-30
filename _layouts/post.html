@@ -18,5 +18,17 @@
         {% include post-actions.html %}
       </footer>
     </article>
+
+
+    <script>
+      var d = document.createElement('div');
+      d.className = 'progress-bar';
+      d.style.width = '0';
+      document.body.appendChild(d);
+
+      document.onscroll = function() {
+        d.style.width = (document.body.scrollTop + window.innerHeight) * 100 / document.body.scrollHeight + '%';
+      }
+    </script>
   </body>
 </html>
