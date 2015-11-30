@@ -37,9 +37,8 @@ body {
 }
 
 .link-url,
-.link-date,
-.reading-time {
-  color: #999;
+.link-date {
+  color: #ccc;
   font-size: .9em;
 }
 
@@ -48,8 +47,4 @@ body {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-}
-
-.link-date {
-  
 }
