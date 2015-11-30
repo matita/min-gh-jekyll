@@ -10,7 +10,9 @@ title: Home
   <a class="link" href="{{ site.baseurl }}{{ page.url }}" target="_blank">
     <h3 class="link-title">{{ page.title }}</h3>
     <p class="link-url">{{ page.link }}</p>
+    {% if page.description %}
     <p class="link-description">{{ page.description }}</p>
+    {% endif %}
     <p class="link-date">Saved on {{ page.date | date: "%Y-%m-%d" }} &middot; {% include reading-time.html %}</p>
   </a>
 {% endfor %}
@@ -23,7 +25,9 @@ title: Home
   <a class="link" href="{{ site.baseurl }}{{ page.url }}" target="_blank">
     <h3 class="link-title">{{ page.title }}</h3>
     <p class="link-url">{{ page.link }}</p>
+    {% if page.description %}
     <p class="link-description">{{ page.description }}</p>
+    {% endif %}
     <p class="link-date">Saved on {{ page.date | date: "%Y-%m-%d" }} &middot; {% include reading-time.html %}</p>
   </a>
 {% endfor %}
