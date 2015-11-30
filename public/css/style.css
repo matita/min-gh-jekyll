@@ -16,6 +16,7 @@ body {
 }
 
 .link {
+  font-family: Helvetica, arial, sans-serif;
   display: block;
   background: #fff;
   border-bottom: 3px solid #ccc;
@@ -35,6 +36,13 @@ body {
 .link-date {
   color: #999;
   font-size: .9em;
+}
+
+.link-url {
+  width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .link-date {
