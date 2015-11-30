@@ -3,7 +3,7 @@
 }
 
 body {
-  font-family: Georgia;
+  font-family: Helvetica, arial, sans-serif;
   font-size: 16px;
   color: #333;
   background-color: #eee;
@@ -16,7 +16,6 @@ body {
 }
 
 .link {
-  font-family: Helvetica, arial, sans-serif;
   display: block;
   background: #fff;
   border-bottom: 3px solid #ccc;
@@ -47,4 +46,11 @@ body {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+h1 {
+  text-align: center;
+  color: #999;
+  margin-top: 2em;
+  margin-bottom: 2em;
 }
