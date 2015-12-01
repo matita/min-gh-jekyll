@@ -7,7 +7,7 @@ title: Home
 
 <div class="links">
 {% for page in site.categories.to_read %}
-  <a class="link" href="{{ site.baseurl }}{{ page.url }}" target="_blank">
+  <a class="link" href="{{ site.baseurl }}{{ page.url }}">
     <h3 class="link-title">{{ page.title }}</h3>
     <p class="link-url">{{ page.link }}</p>
     {% if page.description %}
@@ -22,7 +22,7 @@ title: Home
 
 <div class="links">
 {% for page in site.categories.archive %}
-  <a class="link" href="{{ site.baseurl }}{{ page.url }}" target="_blank">
+  <a class="link" href="{{ site.baseurl }}{{ page.url }}">
     <h3 class="link-title">{{ page.title }}</h3>
     <p class="link-url">{{ page.link }}</p>
     {% if page.description %}
