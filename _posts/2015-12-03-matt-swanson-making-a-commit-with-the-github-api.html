@@ -1,0 +1,140 @@
+---
+title: "Matt Swanson - Making a commit with the Github API"
+description: "writing on software, book writeups and projects by a software engineer from Indianapolis"
+link: "http://mdswanson.com/blog/2011/07/23/digging-around-the-github-api-take-2.html"
+saved: "2015-12-03 17:47:38"
+---
+<p>The <a href="http://mdswanson.com/blog/2011/07/09/digging-around-the-github-v3-api.html">last time I was playing around with the Github API</a> I was able to pull
+out all of the files and their contents for a given repository.</p>
+
+<p>The next task I want to be able to do was make a commit. The <a href="http://developer.github.com/v3/git/">process</a> looks
+fairly involved from the outside; you have to make the blob, find and update
+the trees and make the commit all manually. As mentioned on <a href="http://news.ycombinator.com/">HN</a>, the guys at
+Github <a href="http://news.ycombinator.com/item?id=2746877">acknowledged this was a pain point</a> and may introduce some helper methods
+like those used for creating and editing Gists.</p>
+
+<p>I was kind of dreading doing all the git internal stuff because, frankly,
+I am not an expert on it and it's not exactly something I want to spend my weekend 
+debugging.</p>
+
+<p>But I found a <a href="https://github.com/plu/Pithub">Perl library</a> (which seems to be the first to support all of the v3
+methods) that has an example of making a commit. Between that sample code and
+the instructions on the API documentation, I felt like I had enough information
+to give it a solid attempt.</p>
+
+<h3>Letting myself do stuff to my own stuff on my own behalf</h3>
+
+<p>So I started making a few calls to the API but I ended up realizing that I need
+to authenticate myself in order to do most of the POST operations. The API allows
+for you to send your username and password directly or use an OAuth token.</p>
+
+<p><em>Aside: I think Github could make it more clear which methods require authorization.
+Maybe I wasn't looking in the right place, but it would have been helpful to have
+a little note saying "This method requires auth" below the "Create a blob" section.</em></p>
+
+<p>OAuth and I don't get along at all, usually because I want to call the APIs from
+the command line or a one-off script and OAuth seems to want me to build a whole web app first. 
+But I know that I'll need to use OAuth at some point, so better to bite the bullet now.</p>
+
+<p>Initially, I thought that I could use the <code>API token</code> from the Github
+<a href="https://github.com/account/admin">Account Settings page</a> -- but that isn't the OAuth access token. I ended up using
+a script from a <a href="https://github.com/jwilger/github-v3-api">Ruby library</a> and making a test application to extract my
+access token.</p>
+
+<p>When you make requests, you need to include the token in the headers like this:  </p>
+
+<p><code>Authorization: token YOUR-TOKEN-HERE</code></p>
+
+<p>Also, I spent way too long banging my head against the wall because I was putting
+the encoding and contents in the headers as well, instead of the POST body. Doh. You need to 
+use JSON in the body as well, something like:  </p>
+<div class="highlight"><pre><code class="language-text" data-lang="text">{
+  "content": "test commit",
+  "encoding": "utf-8"
+}
+</code></pre></div>
+<h3>Make a commit in just five easy* steps!</h3>
+
+<p>After some investigating, I determined that the follow steps would result in a commit
+being added:</p>
+
+<ul>
+<li>GET <code>/repos/:user/:repo/git/refs/heads/master</code>
+<ul><li>Store the SHA for the latest commit (SHA-LATEST-COMMIT)</li></ul><br></li>
+<li>GET <code>/repos/:user/:repo/git/commits/SHA-LATEST-COMMIT</code>
+<ul><li>Store the SHA for the tree (SHA-BASE-TREE)</li></ul></li>
+<li>POST <code>/repos/:user/:repo/git/trees/</code> while authenticated
+
+<ul>
+<li>Set <code>base_tree</code> to be SHA-BASE-TREE</li>
+<li>Set <code>path</code> to be the full path of the file you are creating or editing</li>
+<li>Set <code>content</code> to be the full contents of the file</li>
+<li>From the response, get the top-level SHA (SHA-NEW-TREE)</li>
+</ul></li>
+<li>POST <code>/repos/:user/:repo/git/commits</code> while authenticated
+
+<ul>
+<li>Set <code>parents</code> to be an array containing SHA-LATEST-COMMIT</li>
+<li>Set <code>tree</code> to be SHA-NEW-TREE</li>
+<li>From the response, get the top-level SHA (SHA-NEW-COMMIT)</li>
+</ul></li>
+<li>POST <code>/repos/:user/:repo/git/refs/head/master</code> while authenticated
+
+<ul>
+<li>Set <code>sha</code> to be SHA-NEW-COMMIT</li>
+<li>You may need to set <code>force</code> to be true</li>
+</ul></li>
+</ul>
+
+<p>Now view your repository and make sure everything is correct. This approach skips the manual <code>blob</code> creation
+since setting <code>tree.content</code> automatically builds one for you. The <code>/trees</code> API also handles deep paths and
+recursively rewrites subtrees. These two shortcuts saved me an even bigger headache.</p>
+
+<p>I'd like to see some abstraction, as I mentioned before, where you can POST something like this and it would
+magically work:</p>
+<div class="highlight"><pre><code class="language-text" data-lang="text"> {
+   "parent_commit": sha,
+   "message": "commit msg",
+   "content": [
+       {
+           "path":"path/to/file",
+           "mode":"edit",
+           "data":"editted version of file"
+       },
+       {
+           "path":"path/to/new/file",
+           "mode":"add",
+           "data":"newly added file"
+       }
+   ]
+ }
+</code></pre></div>
+<p>There is likely lots of complexity with branches and doing less trivial commits, but for the simple
+use-case of making a new commit on the latest version on the <code>master</code> branch I think it could work.</p>
+
+<h3>What's the point again?</h3>
+
+<p>So the question is now, "Why are you doing all this Github API stuff anyways?". I made a vague reference
+to a project idea in my first post so here are the details.</p>
+
+<p>I want to make a web-based editor for <a href="http://jekyllrb.com/">Jekyll-based</a>, <a href="http://pages.github.com/">Github Pages</a> hosted blogs (like my own). The idea being
+that I can add a static page to my blog that will allow me to login with my Github credentials, create and 
+edit posts, and push the commits back to the underlying repo all from the browser. </p>
+
+<p>The page would have a WYSIWYG Markdown previewer and some kind of file browser showing all items in your 
+<code>_posts</code> directory.</p>
+
+<p>"But why don't you just write the posts in <code>gvim</code>?" Yeah, I know -- I can (and do) write most of my posts from 
+<code>gvim</code> and push the changes up with the terminal. But sometimes I am not on my machine and don't want to setup my
+SSH keys or install <code>git</code>. I also like the WYSIWYG side-by-side previews that you get from using something like
+<a href="http://www.ctrlshift.net/project/markdowneditor/">this online Markdown editor</a>.</p>
+
+<p>A web-based editor also makes Jekyll more approachable for non-technical users. Most people that use WordPress
+or something similar don't care that static files are faster or that they need to update constantly to avoid
+security vulnerability; they use WordPress, in part, because it's easy to make posts in the browser.</p>
+
+<p>Plus, the project will give me a chance to play with <a href="http://diveintohtml5.org/">HTML5</a>, <a href="http://documentcloud.github.com/backbone/">Backbone.js</a>, and making a single-page app.</p>
+
+<p>I plan to continue writing posts as I work on the project. The <a href="http://mdswanson.com/blog/2010/10/24/weekly-noise.html">Weekly Noise</a> approach kind of fizzled out
+the last time I tried it (for my first Node.js project) but I liked the idea of keeping an "engineering 
+notebook" as I work.</p>
