@@ -1,3 +1,5 @@
+(function() {
+
 var meta;
 var title = getMetaValue('title') ||
   getMetaValue('og:title', 'property') ||
@@ -5,6 +7,8 @@ var title = getMetaValue('title') ||
 var description = getMetaValue('description') ||
   getMetaValue('og:description', 'property');
 var url = window.location.href;
+var auth = window.__gh_read_auth;
+delete window.__gh_read_auth;
 
 
 var filename = getFileName(title);
@@ -201,7 +205,7 @@ saveBtn.onclick = function() {
   var repoName = 'min-gh-jekyll';
   var branch = 'gh-pages';
   var commitMessage = 'Saved from ' + url;
-  var authToken = prompt('GitHub auth token');
+  var authToken = auth || prompt('GitHub auth token');
 
   if (!authToken)
     return;
@@ -228,3 +232,5 @@ saveBtn.onclick = function() {
     }
   });
 }
+
+})();
