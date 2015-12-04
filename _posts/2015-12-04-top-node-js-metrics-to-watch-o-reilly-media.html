@@ -1,0 +1,104 @@
+---
+title: "Top Node.js metrics to watch - O'Reilly Media"
+description: "null"
+link: "https://www.oreilly.com/ideas/top-nodejs-metrics-to-watch?utm_source=SitePoint&utm_medium=email&utm_campaign=Versioning"
+saved: "2015-12-04 14:43:55"
+---
+
+        
+                              <figure class="article-image right">
+  <img src="https://d17g9nj5ejnv3l.cloudfront.net/360x240/meters-1400-e0bf06dcfee8bb9888c4ab2fdc0b7db9.jpg" alt="Meters" srcset="https://d17g9nj5ejnv3l.cloudfront.net/360x240/meters-1400-e0bf06dcfee8bb9888c4ab2fdc0b7db9.jpg 360w, https://d17g9nj5ejnv3l.cloudfront.net/720x480/meters-1400-e0bf06dcfee8bb9888c4ab2fdc0b7db9.jpg 720w, https://d17g9nj5ejnv3l.cloudfront.net/1440x960/meters-1400-e0bf06dcfee8bb9888c4ab2fdc0b7db9.jpg 1440w" sizes="(min-width: 1390px) 420px, (min-width: 600px) 45vw, 100vw" class="">
+  <figcaption>Meters
+          <span class="source-name">
+                  (source: <a class="secondary" target="_blank" href="https://pixabay.com/">Pixabay</a>).
+        
+        
+      </span>
+    
+    
+  <figcaption>
+</figcaption></figcaption></figure>
+          
+        
+
+        
+
+        <p>Monitoring Node.js Applications presents special challenges. The dynamic nature of the language provides many "opportunities" for developers to produce memory leaks, and a single function blocking the event queue can have a huge impact on the overall application performance. Parallel execution of jobs is done using multiple worker processes using the "cluster" functionality to take full advantage of multi-core CPUs — but the master and worker processes belong to a single application, which means that they should be monitored together. Let's have a deep look at the top metrics in Node.js applications to get a better understanding of why they are so important to monitor.</p>
+
+<p><strong>Garbage Collection &amp; Process Memory</strong> – Node.js is based on Google’s Chrome V8 Javascript engine. Garbage Collection reclaims memory used by objects that are no longer required. The V8 garbage collection stops the program execution. Incremental GC cycles (scavenging) process only a part of the Heap and are very fast. Full GC cycles deal with objects that survived multiple incremental GC runs. Full GC runs are executed less frequently to minimize pauses in the program execution.</p>
+
+<p>With regard to garbage collection metrics, we should first measure all the time spent for garbage collection. In addition, it is useful to see how often a full GC cycle — or incremental GC cycle — is executed. The size of heap memory can be compared with the size of the last GC run to see if there is a growing trend. That's why the following metrics should be monitored:</p><div itemscope="" itemtype="http://schema.org/Product" class="block-product    right">              <h4 class="kicker ">BOOK</h4>                      <div class="thumb orientation-vertical">          <a itemprop="url" href="https://shop.oreilly.com/product/0636920030355.do"><img itemprop="image" src="https://akamaicovers.oreilly.com/images/9781449368425/cat.gif" class="orientation-vertical"></a>                  </div>                  <div class="title">      <h2><a href="https://shop.oreilly.com/product/0636920030355.do" itemprop="name">Lean Enterprise</a></h2>          </div>    <div class="meta">                          <div class="byline">    By  <span class="author" itemscope="" itemtype="http://schema.org/Person"><a href="https://shop.oreilly.com/product/0636920030355.do" itemprop="name">Barry  O'Reilly</a></span><span class="author" itemscope="" itemtype="http://schema.org/Person"><a href="https://shop.oreilly.com/product/0636920030355.do" itemprop="name">Matthew Humble</a></span><span class="author" itemscope="" itemtype="http://schema.org/Person"><a href="https://shop.oreilly.com/product/0636920030355.do" itemprop="name">Joanne Molesky</a></span></div>                          <a href="https://shop.oreilly.com/product/0636920030355.do" class="more">          Shop now  <span class="icon t-bkg icon-arrow-right icon-round   ">  <svg role="img">    <title>arrow-right</title>    <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="/assets/icons-5641b0a7.svg#arrow-right"></use>  </svg></span>        </a>          </div></div>
+
+<ul>
+<li>Time consumed for garbage collection</li>
+<li>Counters for full GC cycles</li>
+<li>Counters for incremental GC cycles</li>
+</ul>
+
+<p><em>Note: All images in this post are from Sematext’s <a href="https://sematext.com/spm/">SPM Performance Monitoring</a> tool and its <a href="https://sematext.com/spm/integrations/nodejs-monitoring.html">Node.js integration</a>.</em></p>
+
+<figure id="Garbage collection metrics"><img alt="Garbage collection metrics" src="https://d3ansictanv2wj.cloudfront.net/fig_1_gc_metrics-8fc33de8fa2c8186f2c0be2e1e1d4334.png">
+<figcaption>Garbage collection metrics</figcaption>
+</figure>
+
+<p>Aside from how often GC happens and how long it takes, we can measure the effect on memory by providing the following metrics:</p>
+
+<ul>
+<li>Released memory between GC cycles (see above)</li>
+<li>Process Heap Size and Heap Usage</li>
+</ul>
+
+<figure id="Process memory information"><img src="https://d3ansictanv2wj.cloudfront.net/fig_2_process_memory-bdc647c625b0a1b0a65c11c5fb7d9055.png" alt="Process memory information">
+<figcaption>Process memory information</figcaption>
+</figure>
+
+<p><strong>Event Loop</strong> – The secret of Node.js’s performance is its ability to be CPU bound and use async operations; in that way CPU can be highly utilized and doesn’t waste cycles waiting for I/O operations. This means a server can take many connections and will not be blocked for async operations. As soon as the operation is finished callback functions are used to continue processing.   The implementation is based on a single event loop, which processes the async function calls in a separate thread. Using synchronous operations drags down performance because other operations need to wait to be executed.  That’s why the golden rule for Node.js performance is “<em>don’t block the event loop</em>”.</p>
+
+<p>The metric to watch is the Latency to process the next event:
+- Slowest Event Handling (Max Latency)
+- Average Event Loop Latency
+- Fastest Event Handling (Min Latency)</p><div itemscope="" itemtype="http://schema.org/Product" class="block-product    right">              <h4 class="kicker ">BOOK</h4>                      <div class="thumb orientation-vertical">          <a itemprop="url" href="https://shop.oreilly.com/product/0636920033080.do"><img itemprop="image" src="https://akamaicovers.oreilly.com/images/9781491949887/cat.gif" class="orientation-vertical"></a>                  </div>                  <div class="title">      <h2><a href="https://shop.oreilly.com/product/0636920033080.do" itemprop="name">Designing Delivery</a></h2>          </div>    <div class="meta">                          <div class="byline">    By  <span class="author" itemscope="" itemtype="http://schema.org/Person"><a href="https://shop.oreilly.com/product/0636920033080.do" itemprop="name">Jeff Sussna</a></span></div>                          <a href="https://shop.oreilly.com/product/0636920033080.do" class="more">          Shop now  <span class="icon t-bkg icon-arrow-right icon-round   ">  <svg role="img">    <title>arrow-right</title>    <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="/assets/icons-5641b0a7.svg#arrow-right"></use>  </svg></span>        </a>          </div></div>
+
+<figure id="slow average fast"><img src="https://d3ansictanv2wj.cloudfront.net/fig_3_event_processing-a8068e6b8f8a4242d408f6415a970e65.png" alt="Slowest, average and fastest event processing">
+<figcaption>Slowest, average and fastest event processing</figcaption>
+</figure>
+
+<p>A high latency in the event loop might indicate the use of blocking (sync) or time consuming functions in event handlers, which could impact the performance of the whole Node.js application.</p>
+
+<p><strong>Cluster Mode and number of processes</strong> – To scale Node.js beyond the capacity of a single process the use of master and worker processes is required — the so called "cluster" mode. Master processes share sockets with the forked worker process and can exchange messages with it. A typical use case for web servers is forking N worker processes, which operate on the shared server socket and handle the requests in round robin (since Node v0.12). In many cases programs choose N with the number of CPUs the server provides — that's why a constant number of worker processes should be the regular case.  If this number changes it means worker processes have been terminated for some reason.  In the case of processing queues, workers might be started on demand.  In this scenario it would be normal that the number of workers changes all the time, but it might be interesting to see how long a higher number of workers was active. Using a tool like <a href="https://sematext.com/spm/integrations/nodejs-monitoring.html">SPM for Node.js</a> lets one track the number of workers. When picking a monitoring solution or developing your own monitoring for Node.js, make sure it is capable of filtering by hostname and worker ID.  Keep in mind Node.js workers can have a very short lifetime that traditional monitoring tools may not be able to handle well.</p>
+
+<figure id="Worker count"><img src="https://d3ansictanv2wj.cloudfront.net/fig_4_worker_count-b2fa089d6d3ac6282d6aa9e1a30d0593.png" alt="Worker count">
+<figcaption>Worker count</figcaption>
+</figure>
+
+<p>For example, to compare event loop latency in different Node.js sub-processes, we need to be able to select workers we want to compare:</p>
+
+<figure id="Event loop latency for each worker"><img src="https://d3ansictanv2wj.cloudfront.net/fig_5_event_loop-30fd5598d480ca7aefc258e8567e44d8.png" alt="Event loop latency for each worker">
+<figcaption>Event loop latency for each worker</figcaption>
+</figure>
+
+<p><strong>Web Frameworks</strong> – There is a steadily growing number of frameworks to build web services using Node.js.  The most popular are: Express, Hapi.js, Restify, Mean.io, Meteor, and many more. When doing HTTP monitoring, here are some of the key  metrics to pay attention to:</p><div itemscope="" itemtype="http://schema.org/Product" class="block-product    right">              <h4 class="kicker ">VIDEO</h4>                  <div class="thumb">        <div class="fake-image">          <div class="t-bkg">            <a href="https://shop.oreilly.com/product/110000679.do" class="block-link"></a>            <div class="block-icon">              <span class="icon icon-video t-fill">  <svg role="img">    <title>video</title>    <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="/assets/icons-5641b0a7.svg#video"></use>  </svg></span>            </div>            <div class="title">              <h2>Engineering Practices for Continuous Delivery</h2>            </div>          </div>        </div>      </div>        <div class="title">      <h2><a href="https://shop.oreilly.com/product/110000679.do" itemprop="name">Engineering Practices for Continuous Delivery</a></h2>          </div>    <div class="meta">                          <div class="byline">    By  <span class="author" itemscope="" itemtype="http://schema.org/Person"><a href="https://shop.oreilly.com/product/110000679.do" itemprop="name">Neal Ford</a></span></div>                          <a href="https://shop.oreilly.com/product/110000679.do" class="more">          Shop now  <span class="icon t-bkg icon-arrow-right icon-round   ">  <svg role="img">    <title>arrow-right</title>    <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="/assets/icons-5641b0a7.svg#arrow-right"></use>  </svg></span>        </a>          </div></div>
+
+<ul>
+<li>Response time (http/https)</li>
+<li>Request rate</li>
+<li>Error rates (total, error categories)</li>
+<li>Request/Response content size</li>
+</ul>
+
+<figure id="HTTP/HTTPS metrics overview"><img src="https://d3ansictanv2wj.cloudfront.net/fig_6_metrics_overview-34520009795b7f4b74295f8356dcf5cf.png" alt="HTTP/HTTPS metrics overview">
+<figcaption>HTTP/HTTPS metrics overview</figcaption>
+</figure>
+
+<p>Of course, Node.js apps don’t run in a vacuum.  They connect to other services, other types of applications, caches, data stores, etc.  As such, while knowing what key Node.js metrics are, monitoring Node.js alone or monitoring it separately from other parts of the infrastructure is not the best practice.  If there is one piece of advice I can give to anyone looking into (Node.js) monitoring it is this: when you buy a monitoring solution or if you are building it for your own use, make sure you end up with a solution that is capable of showing you the big picture.  For example, Node.js is often used with Elasticsearch (see <a href="http://radar.oreilly.com/2015/04/10-elasticsearch-metrics-to-watch.html">10 Elasticsearch Metrics to Watch</a>), Redis, etc.  Seeing metrics for all the systems that surround Node.js apps is precious.  Here is just a small example of a dashboard showing a few Node.js and Elasticsearch metrics together.</p>
+
+<figure id="Combined dashboard"><img src="https://d3ansictanv2wj.cloudfront.net/fig_7_dashboard-c40cb7f52a4bf8cdcb68145f0f8e9656.png" alt="Combined dashboard of Node.js and Elasticsearch metrics">
+<figcaption>Combined dashboard of Node.js and Elasticsearch metrics</figcaption>
+</figure>
+
+<p>There you have it — the Top Node.js metrics to watch.</p>
+
+<hr>
+<em>This post is part of a collaboration between O’Reilly and Sematext. See our <a href="http://www.oreilly.com/about/editorial_independence.html">statement of editorial independence</a>.</em>
+
+      
