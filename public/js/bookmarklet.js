@@ -212,18 +212,18 @@ saveBtn.onclick = function() {
   });
 
   var repo = github.getRepo(userName, repoName);
-  var btnLabel = btn.innerHTML;
-  btn.disabled = true;
-  btn.innerHTML = 'Saving...';
+  var saveBtnLabel = saveBtn.innerHTML;
+  saveBtn.disabled = true;
+  saveBtn.innerHTML = 'Saving...';
   repo.write(branch, '_posts/' + filename, originalHtml, commitMessage, function(err) {
-    btn.disabled = false;
-    btn.innerHTML = btnLabel;
+    saveBtn.disabled = false;
+    saveBtn.innerHTML = saveBtnLabel;
     
     if (err)
       alert('Error while saving: ' + err);
     else {
-      btn.disabled = true;
-      btn.innerHTML = 'Saved';
+      saveBtn.disabled = true;
+      saveBtn.innerHTML = 'Saved';
       setTimeout(function() { w.close(); }, 2000);
     }
   });
