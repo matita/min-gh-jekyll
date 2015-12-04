@@ -1,0 +1,203 @@
+
+
+          <div class="google-ad">
+        
+      </div>
+
+        <p><em class="explanation">The following is a guest post by <a href="http://twitter.com/jonbellah">Jon Bellah</a>, an Engineering Manager at <a href="http://10up.com/">10up</a>. Jon reached out to us about writing on the idea of visual regression testing, which is a form of CSS testing (i.e. making sure you don't screw up your site by accident). I thought the use-case was particularly interesting: re-architecting CSS (converting to Sass, splitting up files, etc) and making sure there wasn't regressions during that process. Here Jon will go into all that as well as some of the challenges of visual testing (e.g. changing content changes visual result) with clever workarounds.</em></p>
+<p><span id="more-234940"></span></p>
+<p>Inheriting a codebase from new client is one of the most common, and most difficult, challenges I’ve faced while working at an agency. In some cases, a client is transitioning to a new agency because the previous agency was not producing quality work. In an almost every case, the previous agency didn’t do things the way I would have.</p>
+<p>I find myself in this situation often. Not every client has the need, desire, or budget to rebuild from the ground up.</p>
+<p>Recently, my team inherited a codebase from a new client and were tasked with doing a little bit of cleanup and to quickly transition into building out new features. As we dug in, we felt we could improve their codebase, and set ourselves up for an easier path forward, by transitioning their stylesheets to Sass. </p>
+<p>While we could certainly just rename the files and include them in a single pre-compiled stylesheet (without doing any cleanup), we felt there was much to be gained by re-architecting their styles. Doing so would cost a bit more upfront, but we felt that it would ultimately save them a lot of time and money down the road. Most importantly, it would allow us to iterate more quickly with greater confidence.</p>
+<p>In the past, I would consider such an undertaking to be rather <strong>high risk</strong>. After all, the C in CSS does stand for cascading... order absolutely matters. Restructuring a handful of stylesheets means changing the order in which things appear, which naturally introduces a high risk of breaking things.</p>
+<p>As a result, it's always been something that was either tested manually (slowly) or was just deemed to be cost prohibitive.</p>
+<p>This time, though, we decided to build a visual regression testing suite.</p>
+<p>Visual regression testing has recently started gaining popularity- and for good reason. At its most basic, it's a series of tests that run through your site, take screenshots of various components, compare those screenshots against a baseline, and alert you when things change.</p>
+<p>That may sound counter-intuitive to some folks. We change CSS because we want things to look differently. Why would we want a build process telling us that we broke something every time we commit a change to our stylesheets?</p>
+<p>Whether you're re-architecting a client's styles or just working with a team, it's easy to make changes to CSS that we think only affects one component, only to find out later that we broke that component on an entirely different page.</p>
+<p>To truly understand why visual regression testing can be beneficial, I think it’s helpful to understand what makes humans bad for the job.</p>
+<h3>Man versus Machine</h3>
+<p>It turns out that we humans are actually pretty terrible at spotting changes in visual stimuli. In fact, our inability to notice changes has become an increasingly studied set of physiological and psychological phenomena.</p>
+<p>We've even made games out of it. Do you remember the old "spot the differences" pictures? </p>
+<figure id="post-234941" class="align-right media-234941"><img src="https://cdn.css-tricks.com/wp-content/uploads/2015/11/spot-difference-globe.jpg" alt=""></figure>
+<p>There are a number of real world problems that psychologists are keen to understand, such as how these phenomena affect things like eyewitness testimony or driving ability; but found in their research is a lot of knowledge that can be applied to our work in web development. </p>
+<p>One phenomenon that I feel is particularly relevant to the conversation is change blindness.</p>
+<h3>Change Blindness</h3>
+<p>Research on the concept of change blindness dates back to the 1970s. In 1996, though, George McConkie and Christopher Currie, a couple of professors at the University of Illinois Urbana-Champaign, conducted a set of studies that is credited with sparking significant interest into the phenomena of change blindness.</p>
+<p>Change blindness is a perceptual deficiency, whereby changes in visual stimulus can be made without the observer noticing them. It's not linked to any visual defects, it's purely psychological.</p>
+<p>In the McConkie &amp; Currie study, they found that, in some cases, changes of up to a fifth of the picture area could regularly go unnoticed. <a href="https://www.youtube.com/watch?v=ubNF9QNEQLA">This video</a> provides an excellent example of just how much change can be missed if you're not looking for it.</p>
+<h3>The Tools</h3>
+<p>When it comes to building your test suite, there is a wide array of tools to choose from. I always recommend looking around, comparing tools, and figuring out what works best for you.</p>
+<p>With that in mind, I've chosen PhantomCSS as my go-to tool for visual regression testing. I chose it for a couple of reasons.</p>
+<p>First, because it has a relatively active and healthy community on GitHub. When it comes to open source software, I always like to check and make sure that a tool or library is still being actively developed. Relying on abandonware can quickly become a pain.</p>
+<p>The second reason I chose PhantomCSS is because it has a handy <a href="https://github.com/micahgodbolt/grunt-phantomcss">Grunt plugin</a> that allowed it to easily integrate with my existing workflow.</p>
+<p>At it’s core, PhantomCSS is a combination of three key components:</p>
+<ul>
+<li><strong>PhantomJS</strong> or <strong>SlimerJS</strong> - A headless browser. PhantomJS is the headless version of WebKit, while Slimer is the Gecko engine used by Firefox.</li>
+<li><strong>CasperJS</strong> - Casper is a JavaScript navigation scripting and testing utility. It allows us to define a set of actions to occur inside our headless browser.</li>
+<li><strong>ResembleJS</strong> - Resemble is a JavaScript / HTML5 library for making image comparisons. It will test our new tests against our baseline and alert us of any differences between the two.</li>
+</ul>
+<p>And finally, as mentioned, we'll be using Grunt to run our tests.</p>
+<h3>The Implementation</h3>
+<p>Now that we know the what’s and the why’s, let’s walk through the steps of setting up and implementing your visual regression testing suite.</p>
+<h4>Setting up Grunt</h4>
+<p>First, we need to setup Grunt to run our test suite, so you'll want to make sure you have <a href="http://gruntjs.com/getting-started">Grunt</a> installed.</p>
+<p>In the command line, <code>$ cd /path/to/your-site</code> and run:</p>
+<pre rel="Shell"><code>$ npm install @micahgodbolt/grunt-phantomcss --save-dev</code></pre>
+<p>Open your project’s `Gruntfile` and load the PhantomCSS task and define the task in the <code>grunt.initConfig()</code>, like so:</p>
+<pre rel="Gruntfile" class=" language-javascript"><code class=" language-javascript">grunt<span class="token punctuation">.</span><span class="token function">loadNpmTasks<span class="token punctuation">(</span></span><span class="token string">'@micahgodbolt/grunt-phantomcss'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+grunt<span class="token punctuation">.</span><span class="token function">initConfig<span class="token punctuation">(</span></span><span class="token punctuation">{</span>
+  phantomcss<span class="token punctuation">:</span> <span class="token punctuation">{</span>
+    desktop<span class="token punctuation">:</span> <span class="token punctuation">{</span>
+      options<span class="token punctuation">:</span> <span class="token punctuation">{</span>
+        screenshots<span class="token punctuation">:</span> <span class="token string">'baselines/desktop'</span><span class="token punctuation">,</span>
+        results<span class="token punctuation">:</span> <span class="token string">'results/desktop'</span><span class="token punctuation">,</span>
+        viewportSize<span class="token punctuation">:</span> <span class="token punctuation">[</span><span class="token number">1280</span><span class="token punctuation">,</span> <span class="token number">800</span><span class="token punctuation">]</span>
+      <span class="token punctuation">}</span><span class="token punctuation">,</span>
+      src<span class="token punctuation">:</span> <span class="token punctuation">[</span>
+        <span class="token string">'tests/phantomcss/start.js'</span><span class="token punctuation">,</span>
+        <span class="token string">'tests/phantomcss/*-test.js'</span>
+      <span class="token punctuation">]</span>
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span></code></pre>
+<h3>Testing Different Breakpoints</h3>
+<p>I like using <a href="https://github.com/sass-mq/sass-mq">Sass MQ</a> to manage my breakpoints. This approach has the added benefit of giving me a list of all my breakpoints, that I can easily use to set up my tests.</p>
+<p>With PhantomCSS, you are able to manipulate the browser width within your actual test definition, but I prefer to abstract that out of my tests to give a little more flexibility to my visual testing suite. Instead, choosing to define it in my Grunt task.</p>
+<p>With grunt-phantomcss, we can define a set of tests to run at different breakpoints and, as an added bonus, save them to different folders.</p>
+<p>To keep things a bit more organized and semantic, I also name each testing subtask to match its corresponding Sass MQ breakpoint.</p>
+<p>So, for example:</p>
+<pre rel="Gruntfile" class=" language-javascript"><code class=" language-javascript">grunt<span class="token punctuation">.</span><span class="token function">initConfig<span class="token punctuation">(</span></span> <span class="token punctuation">{</span>
+  pkg<span class="token punctuation">:</span> grunt<span class="token punctuation">.</span>file<span class="token punctuation">.</span><span class="token function">readJSON<span class="token punctuation">(</span></span><span class="token string">'package.json'</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+  phantomcss<span class="token punctuation">:</span> <span class="token punctuation">{</span>
+    desktop<span class="token punctuation">:</span> <span class="token punctuation">{</span>
+      options<span class="token punctuation">:</span> <span class="token punctuation">{</span>
+        screenshots<span class="token punctuation">:</span> <span class="token string">'baselines/desktop'</span><span class="token punctuation">,</span>
+        results<span class="token punctuation">:</span> <span class="token string">'results/desktop'</span><span class="token punctuation">,</span>
+        viewportSize<span class="token punctuation">:</span> <span class="token punctuation">[</span><span class="token number">1024</span><span class="token punctuation">,</span> <span class="token number">768</span><span class="token punctuation">]</span>
+      <span class="token punctuation">}</span><span class="token punctuation">,</span>
+      src<span class="token punctuation">:</span> <span class="token punctuation">[</span>
+        <span class="token string">'tests/phantomcss/start.js'</span><span class="token punctuation">,</span>
+        <span class="token string">'tests/phantomcss/*-test.js'</span>
+      <span class="token punctuation">]</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    mobile<span class="token punctuation">:</span> <span class="token punctuation">{</span>
+      options<span class="token punctuation">:</span> <span class="token punctuation">{</span>
+        screenshots<span class="token punctuation">:</span> <span class="token string">'baselines/mobile'</span><span class="token punctuation">,</span>
+        results<span class="token punctuation">:</span> <span class="token string">'results/mobile'</span><span class="token punctuation">,</span>
+        viewportSize<span class="token punctuation">:</span> <span class="token punctuation">[</span><span class="token number">320</span><span class="token punctuation">,</span> <span class="token number">480</span><span class="token punctuation">]</span>
+      <span class="token punctuation">}</span><span class="token punctuation">,</span>
+      src<span class="token punctuation">:</span> <span class="token punctuation">[</span>
+        <span class="token string">'tests/phantomcss/start.js'</span><span class="token punctuation">,</span>
+        <span class="token string">'test/phantomcss/*-test.js'</span>
+      <span class="token punctuation">]</span>
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span></code></pre>
+<p>Here we are running through the same set of tests, but running them at different breakpoints and saving them to subfolders within our baselines and results.</p>
+<h3>Setting Up Your Test Suite</h3>
+<p>In our Grunt definition, you can see that we run begin by running `tests/phantomcss/start.js`. This file fires up Casper (which then fires up our our scripting tool and our headless browser), and should look like:</p>
+<pre rel="JavaScript" class=" language-javascript"><code class=" language-javascript">phantom<span class="token punctuation">.</span>casperTest <span class="token operator">=</span> <span class="token keyword">true</span><span class="token punctuation">;</span>
+casper<span class="token punctuation">.</span><span class="token function">start<span class="token punctuation">(</span></span><span class="token punctuation">)</span><span class="token punctuation">;</span></code></pre>
+<p>Now, back in our Grunt definition, you can see that we then run all files in our tests/phantomcss/ directory that end in `-test.js`. Grunt will loop through each of these files in alphabetical order.</p>
+<p>How you organize your test files is entirely up to you. Personally, I like to create a test file for each component in my site. </p>
+<h3>Writing Your First Test</h3>
+<p>Once you’ve got your `start.js` file set up, it’s time to write your first test. We’ll call this file `header-test.js`. </p>
+<pre rel="JavaScript" class=" language-javascript"><code class=" language-javascript">casper<span class="token punctuation">.</span><span class="token function">thenOpen<span class="token punctuation">(</span></span><span class="token string">'http://mysite.dev/'</span><span class="token punctuation">)</span>
+
+<span class="token punctuation">.</span><span class="token function">then<span class="token punctuation">(</span></span><span class="token keyword">function</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  phantomcss<span class="token punctuation">.</span><span class="token function">screenshot<span class="token punctuation">(</span></span><span class="token string">'.site-header'</span><span class="token punctuation">,</span> <span class="token string">'site-header'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span></code></pre>
+<p>At the top of the file, we tell Casper to open the root URL, and then in our first test we grab a screenshot of the entire <code>.site-header</code> element. The second parameter is the name of our screenshot file. I prefer to name screenshots after the element or component that they're responsible for, as it makes my test suite that much more semantic and easier to share with teammates.</p>
+<p>In its simplest form, that’s all you need to write for your first test. However, we can build a much more robust testing suite, covering more of the actual element, page, and application states.</p>
+<h3>Scripting Interactions</h3>
+<p>Casper allows us to automate interactions that occur within our headless browser. For example, if we want to test the hover state of a button, we could write that as:</p>
+<pre rel="JavaScript" class=" language-javascript"><code class=" language-javascript">casper<span class="token punctuation">.</span><span class="token function">then<span class="token punctuation">(</span></span><span class="token keyword">function</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">this</span><span class="token punctuation">.</span>mouse<span class="token punctuation">.</span><span class="token function">move<span class="token punctuation">(</span></span><span class="token string">'.button'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  phantomcss<span class="token punctuation">.</span><span class="token function">screenshot<span class="token punctuation">(</span></span><span class="token string">'.button'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span></code></pre>
+<p>You can also test logged in and logged out states. In our `start.js` file, we can write a little function that will fill out the WordPress login form as soon as we spin up our Casper instance.</p>
+<pre rel="JavaScript" class=" language-javascript"><code class=" language-javascript">casper<span class="token punctuation">.</span><span class="token function">start<span class="token punctuation">(</span></span><span class="token string">'http://default.wordpress.dev/wp-admin/'</span><span class="token punctuation">,</span> <span class="token keyword">function</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">this</span><span class="token punctuation">.</span><span class="token function">fill<span class="token punctuation">(</span></span><span class="token string">'form#loginform'</span><span class="token punctuation">,</span> <span class="token punctuation">{</span>
+    <span class="token string">'log'</span><span class="token punctuation">:</span> <span class="token string">'admin'</span><span class="token punctuation">,</span>
+    <span class="token string">'pwd'</span><span class="token punctuation">:</span> <span class="token string">'password'</span>
+  <span class="token punctuation">}</span><span class="token punctuation">,</span> <span class="token keyword">true</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+  <span class="token keyword">this</span><span class="token punctuation">.</span><span class="token function">click<span class="token punctuation">(</span></span><span class="token string">'#wp-submit'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+  console<span class="token punctuation">.</span><span class="token function">log<span class="token punctuation">(</span></span><span class="token string">'Logging in...'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span></code></pre>
+<p>You’ll notice that we’re running this on <code>casper.start()</code> instead of inside it’s own individual test. Setting up your session on <code>casper.start()</code> in your `start.js` file makes the session available to other files in your test suite, since it will always be run first.</p>
+<p>I recommend taking a look at the <a href="http://docs.casperjs.org/en/latest/">Casper documentation</a> for more information on scripting interactions.</p>
+<h3>Running Your Tests</h3>
+<p>Now that we've built a basic test suite, it's time to run our tests. In the command line, run <code>$ grunt phantomcss</code>. </p>
+<p>PhantomCSS will automatically set the screenshots from your first run as the baselines to compare all future tests against.</p>
+<figure id="post-234942" class="align-right media-234942"><img src="https://cdn.css-tricks.com/wp-content/uploads/2015/11/bash.png" alt=""></figure>
+<p>If your test does fail, like the one above, PhantomCSS will output three different screenshots to your results folder. It will output the original, a `.diff.png`, and a `.fail.png`.</p>
+<p>For example, we have changed the font size of text in an article page, but inadvertently decreased the font size in an archive view. PhantomCSS will give us these diffs to compare:</p>
+<figure id="post-234943" class="align-right media-234943"><img src="https://cdn.css-tricks.com/wp-content/uploads/2015/11/output.png" alt=""></figure>
+<h3>The Challenges</h3>
+<p>Building a visual regression testing suite is certainly not without its challenges. The two biggest challenges that I have encountered are dynamic content and distributing tests amongst a team.</p>
+<h4>Dynamic Content</h4>
+<p>The first, and in some ways most difficult, challenge that I have encountered is how exactly to handle dynamic content. The test suite is running through each of these pages, taking screenshots, and comparing them. If content is different, the test is going to fail.</p>
+<p>If you're working with a team, odds are everyone will be testing against their own local environment. Testing against a single staging environment doesn't always fix the issue, because content may still change there; i.e., a randomly ordered set of related posts.</p>
+<p>To solve this issue, there are two approaches that I’ve come to favor.</p>
+<p>The first, and my favorite, approach is to use Javascript to replace content within the elements you're testing with a set of representative demo content.</p>
+<p>Since these tests should not be deployed to your production server, you don't have to worry about the XSS vulnerabilities. As such, I like to use <code>.html()</code> in my tests to replace the dynamic content with static content from a JSON object that I include in my code repo, prior to taking the screenshot.</p>
+<p>The second approach is to use a tool called <a href="https://github.com/trulia/hologram">Hologram</a> or <a href="https://github.com/jonathantneal/mdcss">mdcss</a>, which allow you to use comments in your CSS to create auto-generated style guides. This approach has more overhead, in that it requires the biggest shift in workflow, but has the added benefit of creating excellent documentation for your front-end components.</p>
+<h4>Distribution</h4>
+<p>The second major challenge that I encountered with regression testing is in determining the best way to distribute these tests amongst a team of engineers. So far in our tests we’ve hardcoded our testing URL, this will cause issues when working with a team where everyone may not be using the same URL for their local environment.</p>
+<p>To get around this, my team and I have registered our <code>$ grunt test</code> task to accept a <code>--url</code> parameter, which is then saved to a file locally, using grunt.log.</p>
+<pre rel="Gruntfile" class=" language-javascript"><code class=" language-javascript"><span class="token comment" spellcheck="true">// All a variable to be passed, eg. --url=http://test.dev
+</span><span class="token keyword">var</span> localURL <span class="token operator">=</span> grunt<span class="token punctuation">.</span><span class="token function">option<span class="token punctuation">(</span></span> <span class="token string">'url'</span> <span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token comment" spellcheck="true">/**
+ * Register a custom task to save the local URL, which is then read by the PhantomCSS test file.
+ * This file is saved so that "grunt test" can then be run in the future without passing your local URL each time.
+ *
+ * Note: Make sure test/visual/.local_url is added to your .gitignore
+ *
+ * Props to Zack Rothauser for this approach.
+ */</span>
+grunt<span class="token punctuation">.</span><span class="token function">registerTask<span class="token punctuation">(</span></span><span class="token string">'test'</span><span class="token punctuation">,</span> <span class="token string">'Runs PhantomCSS and stores the --url parameter'</span><span class="token punctuation">,</span> <span class="token keyword">function</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">if</span> <span class="token punctuation">(</span>localURL<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    grunt<span class="token punctuation">.</span>log<span class="token punctuation">.</span><span class="token function">writeln<span class="token punctuation">(</span></span> <span class="token string">'Local URL: '</span> <span class="token operator">+</span> localURL <span class="token punctuation">)</span><span class="token punctuation">;</span>
+    grunt<span class="token punctuation">.</span>file<span class="token punctuation">.</span><span class="token function">write<span class="token punctuation">(</span></span> <span class="token string">'test/visual/.local_url'</span><span class="token punctuation">,</span> localURL <span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token punctuation">}</span>
+
+  grunt<span class="token punctuation">.</span>task<span class="token punctuation">.</span><span class="token function">run<span class="token punctuation">(</span></span><span class="token punctuation">[</span><span class="token string">'phantomcss'</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span></code></pre>
+<p>Then, at the top of your test file, you’ll use:</p>
+<pre rel="JavaScript" class=" language-javascript"><code class=" language-javascript"><span class="token keyword">var</span> fs <span class="token operator">=</span> <span class="token function">require<span class="token punctuation">(</span></span><span class="token string">'fs'</span><span class="token punctuation">)</span><span class="token punctuation">,</span> siteURL<span class="token punctuation">;</span>
+
+<span class="token keyword">try</span> <span class="token punctuation">{</span>
+  siteURL <span class="token operator">=</span> fs<span class="token punctuation">.</span><span class="token function">read<span class="token punctuation">(</span></span> <span class="token string">'test/visual/.local_url'</span> <span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span> <span class="token keyword">catch</span><span class="token punctuation">(</span>err<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  siteURL <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token keyword">typeof</span> siteURL <span class="token operator">===</span> <span class="token string">'undefined'</span><span class="token punctuation">)</span> <span class="token operator">?</span> <span class="token string">'http://local.wordpress.dev'</span> <span class="token punctuation">:</span> siteURL<span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+
+casper<span class="token punctuation">.</span><span class="token function">thenOpen<span class="token punctuation">(</span></span>siteURL <span class="token operator">+</span> <span class="token string">'/path/to/template'</span><span class="token punctuation">)</span><span class="token punctuation">;</span></code></pre>
+<p>Your suite will now look for the `.local_url` file whenever it is run, but if the file is not present, it will default to using `http://local.wordpress.dev`. </p>
+<h3>In Closing</h3>
+<p>There are a host of benefits that visual regression testing can bring to your projects. Rapid iteration and continuous integration are increasingly the mantra of today’s developers, it only makes sense to build yourself a safety net.</p>
+<p>A visual regression testing suite is also great for working with people on open source projects. In fact, the WordPress project is working towards <a href="https://github.com/helenhousandi/wp-style-guide">a pattern library</a> with an accompanying regression testing suite. This test suite will provide the groundwork that allows the WordPress project to move forward with plans to restore sanity to their stylesheets.</p>
+<h3>Alternatives</h3>
+<p>PhantomCSS is not the only tool available, it’s simply the one that I felt was right for me, my team, and our workflow. If visual regression testing sounds cool to you but PhantomCSS doesn’t sound like your thing, or if you’re just interested in alternatives, I recommend taking a look at:</p>
+<ul>
+<li><a href="http://www.seleniumhq.org/">Selenium</a></li>
+<li><a href="https://github.com/BBC-News/wraith">Wraith</a></li>
+</ul>
+
+        
+        <h5 class="share-on-title">Share On</h5>
+
+        <a class="share-on-link share-on-twitter" href="https://twitter.com/intent/tweet?text=Visual%20Regression%20Testing%20with%20PhantomCSS&amp;url=https://css-tricks.com/visual-regression-testing-with-phantomcss/&amp;via=real_css_tricks">Twitter</a>
+
+        <a class="share-on-link share-on-facebook" href="https://www.facebook.com/sharer/sharer.php?u=https://css-tricks.com/visual-regression-testing-with-phantomcss/">Facebook</a>
+
+        <a class="share-on-link share-on-googleplus" href="https://plus.google.com/share?url=https://css-tricks.com/visual-regression-testing-with-phantomcss/">Google+</a>
+
+        
+      
