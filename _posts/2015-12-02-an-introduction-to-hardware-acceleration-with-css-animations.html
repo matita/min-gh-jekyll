@@ -1,0 +1,143 @@
+---
+title: "An Introduction to Hardware Acceleration with CSS Animations"
+description: "Artem Tabalin shows you how to improve the performance of your CSS animations by taking advantage of hardware acceleration."
+link: "http://www.sitepoint.com/introduction-to-hardware-acceleration-css-animations/?utm_source=SitePoint&utm_medium=email&utm_campaign=Versioning&utm_medium=email&utm_campaign=Versioning+373&utm_content=Versioning+373+Version+B+CID_d358151cde7c6a19903a66503c5afc89&utm_source=CampaignMonitor%20SitePoint&utm_term=how%20to%20use%20that%20thing"
+saved: "2015-12-02 16:27:15"
+---
+
+    <p>In the last couple of years we’ve often heard about hardware acceleration and how it helps to improve animation on web pages, making them nice and smooth even on mobile browsers. But I think a lot of less experienced developers don’t know how hardware acceleration works and how we can use it properly to make our animations shine.</p>
+<p>The term itself sounds like something overly complicated, close to higher mathematics. In this article, I’ll shed some light on this subject and demonstrate how to utilize this technique in your front-end projects.</p>
+
+<h2 id="why-should-i-care">Why Should I Care?</h2>
+<p>Let’s look at a simple animation example containing several balls stacked on top of one another (that is, on the z-axis, so it looks like one ball). The goal is to move this group of balls with animation. The easiest way to do this is to adjust the <code class=" language-undefined">left</code> and <code class=" language-undefined">top</code> properties. We could do this with JavaScript, but we’ll use CSS animations instead. Please note that I’m excluding any vendor prefixes but you should use something like <a href="https://github.com/postcss/autoprefixer">Autoprefixer</a> to ensure full compatibility.</p>
+<pre class=" language-css"><code class=" language-css"><span class="token selector"><span class="token class">.ball-running</span> </span><span class="token punctuation">{</span>
+  <span class="token property">animation</span><span class="token punctuation">:</span> run-around <span class="token number">4</span>s infinite<span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+
+<span class="token atrule"><span class="token rule">@keyframes</span> run-around</span> <span class="token punctuation">{</span>
+  <span class="token selector">0%: </span><span class="token punctuation">{</span>
+    <span class="token property">top</span><span class="token punctuation">:</span> <span class="token number">0</span><span class="token punctuation">;</span>
+    <span class="token property">left</span><span class="token punctuation">:</span> <span class="token number">0</span><span class="token punctuation">;</span>
+  <span class="token punctuation">}</span>
+
+  <span class="token selector">25% </span><span class="token punctuation">{</span>
+    <span class="token property">top</span><span class="token punctuation">:</span> <span class="token number">0</span><span class="token punctuation">;</span>
+    <span class="token property">left</span><span class="token punctuation">:</span> <span class="token number">200</span>px<span class="token punctuation">;</span>
+  <span class="token punctuation">}</span>
+
+  <span class="token selector">50% </span><span class="token punctuation">{</span>
+    <span class="token property">top</span><span class="token punctuation">:</span> <span class="token number">200</span>px<span class="token punctuation">;</span>
+    <span class="token property">left</span><span class="token punctuation">:</span> <span class="token number">200</span>px<span class="token punctuation">;</span>
+  <span class="token punctuation">}</span>
+
+  <span class="token selector">75% </span><span class="token punctuation">{</span>
+    <span class="token property">top</span><span class="token punctuation">:</span> <span class="token number">200</span>px<span class="token punctuation">;</span>
+    <span class="token property">left</span><span class="token punctuation">:</span> <span class="token number">0</span><span class="token punctuation">;</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span></code></pre>
+<p>Here is a live demo that uses a button to initiate the animation with JavaScript:</p>
+<div><iframe id="cp_embed_WQVxQQ" src="http://codepen.io/SitePoint/embed/preview/WQVxQQ?height=544&amp;theme-id=6441&amp;slug-hash=WQVxQQ&amp;default-tab=result&amp;user=SitePoint&amp;preview=true" scrolling="no" frameborder="0" height="544" allowtransparency="true" allowfullscreen="true" name="CodePen Embed" title="CodePen Embed" class="cp_embed_iframe undefined" style="width: 100%; overflow: hidden;"></iframe></div>
+<p></p>
+<p>After clicking the “Start Animation” button, you’ll notice that the animation doesn’t look very smooth, even on a desktop browser. If you test the animation on your mobile device, you’ll see that it’s far from 60fps. To fix this, we can use CSS transform using the <code class=" language-undefined">translate()</code> function, instead of animating the <code class=" language-undefined">top</code> and <code class=" language-undefined">left</code> values.</p>
+<pre class=" language-css"><code class=" language-css"><span class="token selector"><span class="token class">.ball-running</span> </span><span class="token punctuation">{</span>
+  <span class="token property">animation</span><span class="token punctuation">:</span> run-around <span class="token number">4</span>s infinite<span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+
+<span class="token atrule"><span class="token rule">@keyframes</span> run-around</span> <span class="token punctuation">{</span>
+  <span class="token selector">0%: </span><span class="token punctuation">{</span>
+    <span class="token property">transform</span><span class="token punctuation">:</span> <span class="token function">translate</span><span class="token punctuation">(</span><span class="token number">0</span>, <span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token punctuation">}</span>
+
+  <span class="token selector">25% </span><span class="token punctuation">{</span>
+    <span class="token property">transform</span><span class="token punctuation">:</span> <span class="token function">translate</span><span class="token punctuation">(</span><span class="token number">200</span>px, <span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token punctuation">}</span>
+
+  <span class="token selector">50% </span><span class="token punctuation">{</span>
+    <span class="token property">transform</span><span class="token punctuation">:</span> <span class="token function">translate</span><span class="token punctuation">(</span><span class="token number">200</span>px, <span class="token number">200</span>px<span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token punctuation">}</span>
+
+  <span class="token selector">75% </span><span class="token punctuation">{</span>
+    <span class="token property">transform</span><span class="token punctuation">:</span> <span class="token function">translate</span><span class="token punctuation">(</span><span class="token number">0</span>, <span class="token number">200</span>px<span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span></code></pre>
+<p>Try the above code in the demo below:</p>
+<div><iframe id="cp_embed_OyKXyK" src="http://codepen.io/SitePoint/embed/preview/OyKXyK?height=524&amp;theme-id=6441&amp;slug-hash=OyKXyK&amp;default-tab=result&amp;user=SitePoint&amp;preview=true" scrolling="no" frameborder="0" height="524" allowtransparency="true" allowfullscreen="true" name="CodePen Embed" title="CodePen Embed" class="cp_embed_iframe undefined" style="width: 100%; overflow: hidden;"></iframe></div>
+<p><script async="" src="//assets.codepen.io/assets/embed/ei.js"></script></p>
+<p>Now the animation is nice and smooth. Great! So why did this help? Well, CSS transforms don’t cause repaints, unlike animations with the <code class=" language-undefined">left</code> and <code class=" language-undefined">top</code> properties. Let’s look at the Timeline panel in Chrome’s DevTools during the animation execution:</p>
+<p><img src="http://dab1nmslvvntp.cloudfront.net/wp-content/uploads/2015/11/1448781624hardware-acc-01.png" alt="DevTools Timeline during the animation with left and top" width="868" height="353" class="aligncenter size-full wp-image-119968"></p>
+<p>In the <code class=" language-undefined">left</code> and <code class=" language-undefined">top</code> example, we can see green bars at each animation step. This is an expensive repainting operation. The animation frame rate is less than 60fps, which we always aim at achieving to make the animation smooth.</p>
+<p>Now look at the timeline in the case of CSS transforms:</p>
+<p><img src="http://dab1nmslvvntp.cloudfront.net/wp-content/uploads/2015/11/1448781628hardware-acc-02.png" alt="DevTools Timeline during the animation with CSS transform" width="861" height="351" class="aligncenter size-full wp-image-119969"></p>
+<p>As you can see, there are no green bars during the animation.</p>
+<p>Another feature available in Chrome’s DevTools to track the repainting process is “Enable paint flashing”. You can find this option by opening the DevTools, hitting the ESC key, then choosing the “Rendering” tab. When this feature is turned on, green boxes (i.e. paint rectangles) will appear around repainted areas. In the <code class=" language-undefined">left</code> and <code class=" language-undefined">top</code> example, the balls have a green box for the entire animation process, indicating the repaints.</p>
+<p><img src="http://dab1nmslvvntp.cloudfront.net/wp-content/uploads/2015/11/1448804173hardware-acc-03.jpg" alt="Show painting rectangles during the animation with left and top" width="800" height="393" class="aligncenter size-full wp-image-119991"></p>
+<p>On the other hand, in the CSS transforms example, the paint rectangle is displayed only on the first and last animation frames.</p>
+<p>So how exactly do transforms render the animation without repaints? The basic answer is that CSS transforms occur directly in the <abbr title="Graphics Processing Unit">GPU</abbr> memory that utilizes hardware acceleration, which avoids software rendering. Let’s look at this in more detail.</p>
+<h2 id="how-hardware-acceleration-works">How Hardware Acceleration Works</h2>
+<p>When the browser receives a page’s markup, it parses it to build the DOM Tree. The DOM Tree and CSS allow the browser to build the Render Tree. The Render Tree consists of render objects – the elements to be rendered on the page. Each render object is assigned to a graphic layer. Each layer is uploaded to GPU as a texture. The trick here is that the layer may be transformed in the GPU without repainting, like in the case of 3D graphics. These transformations are made by the separate Compositor process. You can find more information about <a href="https://www.chromium.org/developers/design-documents/gpu-accelerated-compositing-in-chrome">the composition in Chrome here</a>.</p>
+<p>In our example, the CSS transform creates a new composite layer that can be transformed directly in the GPU. Chrome’s DevTools allow for viewing composite layers using the “Show layer borders” option. Each composite layer has an orange border.</p>
+<p>Our balls with the CSS transformation have orange borders and are moved to separate composite layers:</p>
+<p><img src="http://dab1nmslvvntp.cloudfront.net/wp-content/uploads/2015/11/1448804178hardware-acc-04.jpg" alt="Show layer borders during the animation with css transform" width="800" height="340" class="aligncenter size-full wp-image-119992"></p>
+<p>At this point, you might ask: When does a browser create a separate composite layer?</p>
+<p>It does so in the following cases:</p>
+<ul>
+<li>For 3D or perspective CSS transforms (in our example)</li>
+<li>For <code class=" language-undefined">&lt;video&gt;</code> or <code class=" language-undefined">&lt;canvas&gt;</code> elements</li>
+<li>When using CSS filters</li>
+<li>For an element that overlaps another element extracted to a composite layer (e.g., using <code class=" language-undefined">z-index</code>)</li>
+</ul>
+<p>You might be thinking, ‘Hold on. This example used 2D translation, not 3D transforms’. And you’re right. That’s why there are two extra repainting operations – at the start and end of the animation process in our timeline.</p>
+<p><img src="http://dab1nmslvvntp.cloudfront.net/wp-content/uploads/2015/11/1448781619hardware-acc-05.png" alt="2D css transformations initiate repainting before and after animation" width="861" height="351" class="aligncenter size-full wp-image-119967"></p>
+<p>The difference between the 3D and 2D transforms is that 3D transforms make the browser create a separate composite layer beforehand, while 2D transforms do it on the fly. At the start of the animation, a new composite layer is created and the textures are loaded to the GPU, which initiates the repainting. Then the animation is performed by the Compositor in the GPU. When the animation is finished, the additional composite layer is removed, which results in another repainting operation.</p>
+<h2 id="rendering-elements-in-the-gpu">Rendering Elements in the GPU</h2>
+<p>Not all CSS property changes on elements can be handled directly in the GPU. Only the following properties are supported:</p>
+<ul>
+<li><code class=" language-undefined">transform</code></li>
+<li><code class=" language-undefined">opacity</code></li>
+<li><code class=" language-undefined">filter</code></li>
+</ul>
+<p>And so to ensure the best chance for a smooth, high-quality animation, we should always try to use these GPU-friendly properties.</p>
+<h2 id="forcing-an-element-to-be-rendered-in-gpu">Forcing an Element to Be Rendered in GPU</h2>
+<p>In certain cases, it may be required to render an element in the GPU even before the animation has begun. This helps avoid the first repainting operation caused by the new layer creation. To achieve this, the so called “transform hack” may come in handy.</p>
+<pre class=" language-css"><code class=" language-css"><span class="token selector"><span class="token class">.example1</span> </span><span class="token punctuation">{</span>
+  <span class="token property">transform</span><span class="token punctuation">:</span> <span class="token function">translateZ</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+
+<span class="token selector"><span class="token class">.example2</span> </span><span class="token punctuation">{</span>
+  <span class="token property">transform</span><span class="token punctuation">:</span> <span class="token function">rotateZ</span><span class="token punctuation">(</span><span class="token number">360</span>deg<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span></code></pre>
+<p>What this does is let the browser know that we want to perform a 3D transform. This makes the browser create a separate layer and move the element to the GPU beforehand, thus triggering hardware acceleration.</p>
+<p>This technique can also be useful when the repainting of one element is too expensive due to another element behind it. Let’s go back to the first example, and slightly change it so that it contains a single ball and a container with a background image blurred using CSS filters. The ball is animated with the <code class=" language-undefined">left</code> and <code class=" language-undefined">top</code> properties.</p>
+<div><iframe id="cp_embed_LpwZbJ" src="http://codepen.io/SitePoint/embed/preview/LpwZbJ?height=527&amp;theme-id=6441&amp;slug-hash=LpwZbJ&amp;default-tab=result&amp;user=SitePoint&amp;preview=true" scrolling="no" frameborder="0" height="527" allowtransparency="true" allowfullscreen="true" name="CodePen Embed" title="CodePen Embed" class="cp_embed_iframe undefined" style="width: 100%; overflow: hidden;"></iframe></div>
+<p></p>
+<p>Again, the ball movement is jerky. This happens because each repainting operation costs too much due to the blurred background.</p>
+<p>Now let’s add the transform hack to the container.</p>
+<div><iframe id="cp_embed_zvgBNp" src="http://codepen.io/SitePoint/embed/preview/zvgBNp?height=547&amp;theme-id=6441&amp;slug-hash=zvgBNp&amp;default-tab=result&amp;user=SitePoint&amp;preview=true" scrolling="no" frameborder="0" height="547" allowtransparency="true" allowfullscreen="true" name="CodePen Embed" title="CodePen Embed" class="cp_embed_iframe undefined" style="width: 100%; overflow: hidden;"></iframe></div>
+<p><script async="" src="//assets.codepen.io/assets/embed/ei.js"></script></p>
+<p>The result is not too bad and the animation works well. Why? Because now the blurred paint-expensive background is moved to another composite layer, and the repainting of the ball at each animation step is cheap.</p>
+<h2 id="use-hardware-acceleration-with-caution">Use Hardware Acceleration with Caution</h2>
+<p>Nothing comes for free. There are some issues related to hardware acceleration.</p>
+<p><strong>Memory</strong> <br>
+The most important issue is related to memory. Loading too many textures to the GPU may cause memory issues. This is really critical on mobile devices and can even crash a mobile browser. Mind the consequences and don’t use hardware acceleration for every element on a page.</p>
+<p><strong>Font rendering</strong> <br>
+Rendering in the GPU influences font anti-aliasing. This happens because GPU and CPU have different rendering mechanisms. Thus, even if you turn off hardware acceleration at the end of an animation, the text will be displayed blurred during the animation. You can read more about font rendering issues in <a href="http://keithclark.co.uk/articles/gpu-text-rendering-in-webkit/">this post by Keith Clark</a>.</p>
+<h2 id="the-near-future">The Near Future</h2>
+<p>The necessity to use the “transform hack” to create separate composite layers is cumbersome. Browsers should definitely provide a straightforward way to do this. That’s why the <a href="https://drafts.csswg.org/css-will-change/">will-change property</a> has been introduced. This feature allows you to inform the browser which property is going to change, so the browser can make corresponding optimizations beforehand. Here’s an example that informs the browser that the <code class=" language-undefined">transform</code> property will be changed:</p>
+<pre class=" language-css"><code class=" language-css"><span class="token selector"><span class="token class">.example</span> </span><span class="token punctuation">{</span>
+  <span class="token property">will-change</span><span class="token punctuation">:</span> transform<span class="token punctuation">;</span>
+<span class="token punctuation">}</span></code></pre>
+<p>Unfortunately, <a href="http://caniuse.com/#feat=will-change">not all browsers support will-change</a>. You can learn more about <code class=" language-undefined">will-change</code> in the following resources:</p>
+<ul>
+<li><a href="http://www.sitepoint.com/introduction-css-will-change-property/">An Introduction to the CSS will-change Property</a> by Nick Salloum</li>
+<li><a href="https://dev.opera.com/articles/css-will-change-property/">Everything You Need to Know About the CSS will-change Property</a> by Sara Soueidan.</li>
+</ul>
+<h2 id="conclusion">Conclusion</h2>
+<p>To summarize what we covered:</p>
+<ul>
+<li>Utilizing GPU can improve the quality of your animations</li>
+<li>GPU-rendered animations should be 60fps on every device</li>
+<li>Use GPU-friendly CSS properties</li>
+<li>Understand how to force an element to be rendered in the GPU using the “transform hack”.</li>
+</ul>
+<p>If you’ve used these techniques, or have any feedback, please feel free to offer your comments.</p>
+  
