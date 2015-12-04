@@ -215,7 +215,7 @@ saveBtn.onclick = function() {
   var saveBtnLabel = saveBtn.innerHTML;
   saveBtn.disabled = true;
   saveBtn.innerHTML = 'Saving...';
-  repo.write(branch, '_posts/' + filename, originalHtml, commitMessage, function(err) {
+  repo.write(branch, '_posts/' + filename, frontMatter + '\n' + originalHtml, commitMessage, function(err) {
     saveBtn.disabled = false;
     saveBtn.innerHTML = saveBtnLabel;
     
