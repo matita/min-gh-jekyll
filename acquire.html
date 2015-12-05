@@ -3,5 +3,9 @@ layout: post
 title: Acquire
 ---
 <script>
-  console.log('acquire');
+  window.addEventListener('message', receiveMessage, false);
+
+  function receiveMessage(e) {
+    console.log('message', e);
+  }
 </script>
