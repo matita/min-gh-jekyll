@@ -2,6 +2,7 @@
 layout: post
 title: Acquire
 ---
+<script src="{{ site.baseurl }}/public/js/bookmarklet.js"></script>
 <script>
   var params = location.search.substr(1)
     .split('&')
@@ -18,11 +19,59 @@ title: Acquire
   function receiveMessage(e) {
     if (origin.indexOf(e.origin) == -1)
       return;
+    
     var data = e.data;
-    if (data) {
-      document.querySelector('main').innerText = data.body;
-    }
+    var doc = document.implementation.createHTMLDocument();
+    doc.head.innerHTML = data.head;
+    doc.body.innerHTML = data.body;
+
+    var post = analyze(doc, origin);
+    
+    document.title = post.title;
+    document.querySelector('article h1').innerText = post.title;
+    document.querySelector('.reading-time').innerHTML = Math.round(post.node.innerText.split(/\W+/).length / 180) + ' min read';
+    document.querySelector('main').innerHTML = post.content;
   }
 
   window.opener.postMessage('loaded', origin);
+</script>
+
+
+
+<script>
+  // save on github
+  // Save on GitHub
+  var saveBtn = wDoc.getElementById('save-btn');
+  saveBtn.onclick = function() {
+    var userName = 'matita';
+    var repoName = 'min-gh-jekyll';
+    var branch = 'gh-pages';
+    var commitMessage = 'Saved from ' + url;
+    var authToken = auth || prompt('GitHub auth token');
+
+    if (!authToken)
+      return;
+
+    var github = new Github({
+      token: authToken,
+      auth: 'oauth'
+    });
+
+    var repo = github.getRepo(userName, repoName);
+    var saveBtnLabel = saveBtn.innerHTML;
+    saveBtn.disabled = true;
+    saveBtn.innerHTML = 'Saving...';
+    repo.write(branch, '_posts/' + filename, frontMatter + '\n' + originalHtml, commitMessage, function(err) {
+      saveBtn.disabled = false;
+      saveBtn.innerHTML = saveBtnLabel;
+      
+      if (err)
+        alert('Error while saving: ' + err);
+      else {
+        saveBtn.disabled = true;
+        saveBtn.innerHTML = 'Saved';
+        setTimeout(function() { w.close(); }, 2000);
+      }
+    });
+  }
 </script>
