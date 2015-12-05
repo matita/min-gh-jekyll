@@ -17,7 +17,7 @@ title: Acquire
 
   function receiveMessage(e) {
     alert('received message from ' + e.origin);
-    if (e.origin != origin)
+    if (origin.indexOf(e.origin) == -1)
       return;
     console.log('message', e);
   }
