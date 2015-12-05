@@ -16,7 +16,6 @@ title: Acquire
   window.addEventListener('message', receiveMessage, false);
 
   function receiveMessage(e) {
-    alert('received message from ' + e.origin);
     if (origin.indexOf(e.origin) == -1)
       return;
     console.log('message', e);
