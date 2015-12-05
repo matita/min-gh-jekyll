@@ -31,6 +31,7 @@ title: Acquire
     document.querySelector('article h1').innerText = post.title;
     document.querySelector('.reading-time').innerHTML = Math.round(post.node.innerText.split(/\W+/).length / 180) + ' min read';
     document.querySelector('main').innerHTML = post.content;
+    Array.prototype.forEach.call(document.querySelectorAll('view-original'), function(a) { a.href = origin; });
   }
 
   window.opener.postMessage('loaded', origin);
@@ -39,7 +40,6 @@ title: Acquire
 
 
 <script>
-  // save on github
   // Save on GitHub
   var saveBtn = wDoc.getElementById('save-btn');
   saveBtn.onclick = function() {

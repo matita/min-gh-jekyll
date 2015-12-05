@@ -1,5 +1,5 @@
-        <a href="{{ page.link }}">View original</a>
+        <a class="view-original" href="{{ page.link }}">View original</a>
         &middot;
-        <a href="https://github.com/{{ site.ghuser }}{{ site.baseurl }}/delete/gh-pages/{{ page.path }}">Delete</a>
+        <a class="delete-link" href="https://github.com/{{ site.ghuser }}{{ site.baseurl }}/delete/gh-pages/{{ page.path }}">Delete</a>
         &middot;
-        <a href="https://github.com/{{ site.ghuser }}{{ site.baseurl }}/edit/gh-pages/{{ page.path }}?filename={{ page.path | replace: '_posts', 'archive' }}">Archive</a>
+        <a class="archive-link" href="https://github.com/{{ site.ghuser }}{{ site.baseurl }}/edit/gh-pages/{{ page.path }}?filename={{ page.path | replace: '_posts', 'archive' }}">Archive</a>
