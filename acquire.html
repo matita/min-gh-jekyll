@@ -18,7 +18,10 @@ title: Acquire
   function receiveMessage(e) {
     if (origin.indexOf(e.origin) == -1)
       return;
-    console.log('message', e);
+    var data = e.data;
+    if (data) {
+      document.querySelector('main').innerText = data.body;
+    }
   }
 
   window.opener.postMessage('loaded', origin);

@@ -5,6 +5,6 @@ javascript:(function(){
     console.log('message', e);
     if (u.indexOf(e.origin) == -1)
       return;
-    w.postMessage({test:'some data'}, u);
+    w.postMessage({head:document.head.innerHTML, body:document.body.innerHTML}, u);
   }, false);
 })()
