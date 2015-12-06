@@ -1,11 +1,15 @@
-        <span class="gh-only-acquirer">
-          <a class="gh-save" href="#">Save article</a>
+        <div class="gh-post-actions">
+          <span class="gh-only-acquirer">
+            <a class="gh-save" href="#">Save article</a>
+            &middot;
+          </span>
+          <a class="view-original" href="{{ page.link }}">View original</a>
           &middot;
-        </span>
-        <a class="view-original" href="{{ page.link }}">View original</a>
-        &middot;
-        <span class="gh-not-acquirer">
-          <a class="delete-link" href="https://github.com/{{ site.ghuser }}{{ site.baseurl }}/delete/gh-pages/{{ page.path }}">Delete</a>
+          <span class="gh-not-acquirer">
+            <a class="delete-link" href="https://github.com/{{ site.ghuser }}{{ site.baseurl }}/delete/gh-pages/{{ page.path }}">Delete</a>
+            &middot;
+            <a class="archive-link" href="https://github.com/{{ site.ghuser }}{{ site.baseurl }}/edit/gh-pages/{{ page.path }}?filename={{ page.path | replace: '_posts', 'archive' }}">Archive</a>
+          </span>
           &middot;
-          <a class="archive-link" href="https://github.com/{{ site.ghuser }}{{ site.baseurl }}/edit/gh-pages/{{ page.path }}?filename={{ page.path | replace: '_posts', 'archive' }}">Archive</a>
-        </span>
+          <span class="reading-time">{% include reading-time.html %}</span>
+        </div>
