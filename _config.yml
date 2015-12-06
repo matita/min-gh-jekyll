@@ -7,6 +7,7 @@ relative_permalinks: true
 title:    Minimal GitHub Pages Jekyll
 url:      https://matita.github.io
 baseurl:  /min-gh-jekyll
+permalink:  /link/:title
 
 ghuser:   matita
 
