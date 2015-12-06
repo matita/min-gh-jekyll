@@ -4,6 +4,8 @@ title: Acquire
 ---
 <script src="{{ site.baseurl }}/public/js/bookmarklet.js"></script>
 <script>
+  document.body.className += ' gh-acquirer';
+
   var params = location.search.substr(1)
     .split('&')
     .reduce(function(p, e) {

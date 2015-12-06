@@ -52,3 +52,11 @@ blockquote { border-left: 5px solid #ddd; margin-left: 0; padding-left: 1em; }
   color: #ccc;
   font-size: .9em;
 }
+
+body:not(.gh-acquirer) .gh-only-acquirer {
+  display: none;
+}
+
+.gh-acquirer .gh-not-acquirer {
+  display: none;
+}
