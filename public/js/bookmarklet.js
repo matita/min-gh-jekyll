@@ -165,11 +165,4 @@ function analyze(doc, href) {
       n.src = a.href;
     }
   }
-
-
-
-
-
-
-
 }
