@@ -71,7 +71,7 @@ function analyze(doc, href) {
 
 
   function getBestParent() {
-    var ps = doc.getElementsByTagName('p');
+    var ps = doc.querySelectorAll('p,br');
     var parents = [];
     var contents = [];
     var maxLength = 0;
