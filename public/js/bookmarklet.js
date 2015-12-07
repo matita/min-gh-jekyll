@@ -71,15 +71,27 @@ function analyze(doc, href) {
 
 
   function getBestParent() {
+    var parent = doc.querySelector('article main');
+
+    if (parent)
+      return parent;
+
+    parent = doc.querySelector('article');
+    if (parent)
+      return parent;
+
+    parent = null;
+
     var ps = doc.querySelectorAll('p,br');
     var parents = [];
     var contents = [];
     var maxLength = 0;
     var maxIndex = 0;
+    var parent;
 
     for (var i = 0; i < ps.length; i++) {
       var p = ps[i];
-      var parent = p.parentNode;
+      parent = p.parentNode;
       
       if (parent.tagName == 'FORM')
         continue;
@@ -103,7 +115,7 @@ function analyze(doc, href) {
       }
     }
 
-    var parent = parents[maxIndex];
+    parent = parents[maxIndex];
     return parent;
   }
 
