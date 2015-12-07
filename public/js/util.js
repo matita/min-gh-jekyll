@@ -11,7 +11,7 @@ window.util = (function() {
     btn.addEventListener('click', function() {
       parent.replaceChild(s, btn);
 
-      action(fn);
+      return action(fn);
     }, false);
   }
 
