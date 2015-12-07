@@ -3,6 +3,7 @@ layout: post
 title: Acquire
 ---
 <script src="{{ site.baseurl }}/public/js/bookmarklet.js"></script>
+<script src="{{ site.baseurl }}/public/js/util.js"></script>
 <script>
   document.body.className += ' gh-acquirer';
 
@@ -37,13 +38,20 @@ title: Acquire
   }
 
   window.opener.postMessage('loaded', origin);
+
+
+  util.actionBtn('save-btn', function(callback) {
+    setTimeout(function() {
+      callback();
+    }, 1000);
+  }, 'Saving...');
 </script>
 
 
 
 <script>
   // Save on GitHub
-  var saveBtn = wDoc.getElementById('save-btn');
+  /*var saveBtn = wDoc.getElementById('save-btn');
   saveBtn.onclick = function() {
     var userName = 'matita';
     var repoName = 'min-gh-jekyll';
@@ -75,5 +83,5 @@ title: Acquire
         setTimeout(function() { w.close(); }, 2000);
       }
     });
-  }
+  }*/
 </script>
