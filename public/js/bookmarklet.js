@@ -7,6 +7,9 @@ function analyze(doc, href) {
   var description = getMetaValue('description') ||
     getMetaValue('og:description', 'property');
   var url = href;
+  var base = document.createElement('base');
+  base.href = href;
+  doc.head.appendChild(base);
 
 
   var filename = getFileName(title);
