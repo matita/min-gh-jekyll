@@ -33,7 +33,7 @@ function receiveMessage(e) {
 window.opener.postMessage('loaded', origin);
 
 
-window.util.actionBtn('gh-save', function(callback) {
+window.util.actionBtn('.gh-save', function(callback) {
   setTimeout(function() {
     callback();
   }, 1000);
