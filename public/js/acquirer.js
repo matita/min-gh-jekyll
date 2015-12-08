@@ -55,7 +55,7 @@ window.util.actionBtn('.gh-save', function(callback) {
     if (err)
       alert('Error while saving: ' + err);
     else {
-      setTimeout(function() { w.close(); }, 2000);
+      setTimeout(function() { window.close(); }, 2000);
     }
     callback();
   });
