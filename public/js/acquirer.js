@@ -9,6 +9,7 @@ var params = location.search.substr(1)
   }, {});
 
 var origin = params.origin;
+var post;
 console.log('origin', origin);
 window.addEventListener('message', receiveMessage, false);
 
@@ -21,7 +22,7 @@ function receiveMessage(e) {
   doc.head.innerHTML = data.head;
   doc.body.innerHTML = data.body;
 
-  var post = analyze(doc, origin);
+  post = analyze(doc, origin);
   
   document.title = post.title;
   document.querySelector('article h1').innerText = post.title;
@@ -37,7 +38,7 @@ window.util.actionBtn('.gh-save', function(callback) {
   var userName = 'matita';
   var repoName = 'min-gh-jekyll';
   var branch = 'gh-pages';
-  var commitMessage = 'Saved from ' + url;
+  var commitMessage = 'Saved from ' + post.url;
   var authToken = localStorage['gh-auth'] || prompt('GitHub auth token');
   
   if (!authToken)
@@ -50,7 +51,7 @@ window.util.actionBtn('.gh-save', function(callback) {
   });
 
   var repo = github.getRepo(userName, repoName);
-  repo.write(branch, '_posts/' + filename, frontMatter + '\n' + originalHtml, commitMessage, function(err) {
+  repo.write(branch, '_posts/' + post.filename, post.frontMatter + '\n' + post.content, commitMessage, function(err) {
     if (err)
       alert('Error while saving: ' + err);
     else {
