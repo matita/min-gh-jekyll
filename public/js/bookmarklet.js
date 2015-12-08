@@ -140,6 +140,20 @@ function analyze(doc, href) {
       n.parentNode.removeChild(n);
     }
 
+    // remove headers
+    nodes = node.getElementsByTagName('header');
+    for (i = 0; i < nodes.length; i++) {
+      n = nodes[i];
+      n.parentNode.removeChild(n)
+    }
+
+    // remove footers
+    nodes = node.getElementsByTagName('footer');
+    for (i = 0; i < nodes.length; i++) {
+      n = nodes[i];
+      n.parentNode.removeChild(n)
+    }
+
     // remove empty divs
     nodes = node.getElementsByTagName('div');
     for (i = 0; i < nodes.length; i++) {
