@@ -126,32 +126,11 @@ function analyze(doc, href) {
   function sanitizeNode(node) {
     var nodes, n, i;
 
-    // remove scripts
-    nodes = node.getElementsByTagName('script');
+    // remove some html elements
+    nodes = node.querySelectorAll('script, style, header, footer, form');
     for (i = 0; i < nodes.length; i++) {
       n = nodes[i];
       n.parentNode.removeChild(n);
-    }
-
-    // remove styles
-    nodes = node.getElementsByTagName('style');
-    for (i = 0; i < nodes.length; i++) {
-      n = nodes[i];
-      n.parentNode.removeChild(n);
-    }
-
-    // remove headers
-    nodes = node.getElementsByTagName('header');
-    for (i = 0; i < nodes.length; i++) {
-      n = nodes[i];
-      n.parentNode.removeChild(n)
-    }
-
-    // remove footers
-    nodes = node.getElementsByTagName('footer');
-    for (i = 0; i < nodes.length; i++) {
-      n = nodes[i];
-      n.parentNode.removeChild(n)
     }
 
     // remove empty divs
