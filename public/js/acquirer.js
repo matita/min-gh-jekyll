@@ -34,8 +34,30 @@ window.opener.postMessage('loaded', origin);
 
 
 window.util.actionBtn('.gh-save', function(callback) {
-  setTimeout(function() {
+  var userName = 'matita';
+  var repoName = 'min-gh-jekyll';
+  var branch = 'gh-pages';
+  var commitMessage = 'Saved from ' + url;
+  var authToken = localStorage['gh-auth'] || prompt('GitHub auth token');
+  
+  if (!authToken)
+    return;
+  localStorage['gh-auth'] = authToken;
+
+  var github = new Github({
+    token: authToken,
+    auth: 'oauth'
+  });
+
+  var repo = github.getRepo(userName, repoName);
+  repo.write(branch, '_posts/' + filename, frontMatter + '\n' + originalHtml, commitMessage, function(err) {
+    if (err)
+      alert('Error while saving: ' + err);
+    else {
+      setTimeout(function() { w.close(); }, 2000);
+    }
     callback();
-  }, 1000);
+  });
+
   return false;
 }, 'Saving...');
