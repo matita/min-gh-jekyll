@@ -28,7 +28,7 @@ function receiveMessage(e) {
   document.querySelector('article h1').innerText = post.title;
   Array.prototype.forEach.call(document.querySelectorAll('.reading-time'), function(s) { s.innerHTML = Math.round(post.node.innerText.split(/\W+/).length / 180) + ' min read'; });
   document.querySelector('main').innerHTML = post.content;
-  Array.prototype.forEach.call(document.querySelectorAll('view-original'), function(a) { a.href = origin; });
+  Array.prototype.forEach.call(document.querySelectorAll('view-original'), function(a) { a.href = post.url; });
 }
 
 window.opener.postMessage('loaded', origin);
