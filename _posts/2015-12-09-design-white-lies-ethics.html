@@ -1,0 +1,745 @@
+---
+title: "Design, White Lies & Ethics"
+description: "Dan Turner explores the gray areas of user expectations, honest interfaces, and making design decisions with integrity."
+link: "http://alistapart.com/article/design-white-lies-ethics"
+saved: "2015-12-09 17:30:23"
+---
+
+
+			
+
+			 
+
+			
+
+			
+
+			
+
+			<div class="main-content" itemprop="articleBody">
+
+				
+
+				
+
+				<p>Unless you’re a fan of <a href="http://www.darkpatterns.org/">dark</a> or <a href="https://medium.com/@ddt/shady-patterns-a55d0cc1bbc7">shady</a> patterns, you probably struggle occasionally with integrity in your design practice: balancing stakeholder wishes against user needs, for example, or guiding users to hero paths while also granting them freedom to explore.</p>
+
+
+				<div class="aside-breaker"><b>Article Continues Below</b></div>
+
+				<aside class="content-minutiae">
+
+					
+   <a href="http://alistapart.com/article/design-white-lies-ethics?utm_source=SitePoint&amp;utm_medium=email&amp;utm_campaign=Versioning#comments" class="comment-bubble">
+   
+      5 comments
+   
+   </a>
+
+					
+
+	
+
+
+
+
+
+
+					 
+
+				</aside>
+
+
+										
+						
+
+						<div class="utility-side-bar">
+
+							<aside id="deck-target" class="the-deck in-article"><div class="deck-inner"><p><a href="http://www.coudal.com/deck/">Ad via The Deck</a></p></div></aside><!--
+
+							--><aside id="job-board-target" class="job-board in-article"><h4>Job Board</h4><div class="job">
+  <a href="https://weworkremotely.com/jobs/2330-junior-rails-developer">Chargify is looking for a Junior Rails Developer.</a>
+</div>
+
+<p class="board-link">Job listings via <a href="https://weworkremotely.com/?source=ala">We Work Remotely</a></p></aside>
+							
+						</div>
+<p>Recently, I worked on redesigning a mobile timebanking app, which helps neighbors share services and build supportive relationships. The public-good aspect of the project was appealing; the app’s values of community, trust, and support kept us focused on meeting users’ needs and being honest in our design. So of course we wanted to show users only information that was literally, concretely true. But what if a slight deviation from the truth would make users happier and more efficient in achieving their goals? What if fudging an interface helped reassure and speed the user along her way?</p>
+
+<p>This isn’t an uncommon issue. You’ve probably run into “Close Door” buttons that don’t really close the elevator, or sneaky progress bars that fill at an arbitrary rate—these false affordances and placebo buttons are everywhere, and might make life seem a bit easier. But is this ethical design? And can we build a framework for working with false affordances and designing with integrity?</p>
+
+<h2 id="section1">What’s the hubbub?<a class="subhead-anchor" href="http://alistapart.com/article/design-white-lies-ethics?utm_source=SitePoint&amp;utm_medium=email&amp;utm_campaign=Versioning#section1">#section1</a></h2>
+
+<p>Timebanks are local, virtual exchanges in which neighbors can post requests for and offers of service in exchange for “timedollars,” a non-fungible <a href="https://en.wikipedia.org/wiki/Time-based_currency">alternative currency</a> based on an hour of service. For example, if I do an hour of sewing for you, I can turn around and “spend” that one timedollar I earned on having someone mow my lawn for an hour. Granted, I can’t sew and don’t have a lawn, but you get the idea.</p>
+
+<p>By enabling neighbors to connect and help each other, timebanks create community in what was <em>just</em> a location. Through mobile timebanking, people feel more connected with their neighbors and supported in their daily lives—in fact, that’s the value proposition that guided our project.</p>
+
+<p>With teams recruited from <a href="https://www.parc.com/">PARC</a>, Pennsylvania State University, and Carnegie Mellon University, our goal was to redesign the existing timebanking mobile app to be more usable and to connect users more easily through context-aware and matching technologies.</p>
+
+<p>We started by evaluating issues with the existing app (mapping the IA, noting dead ends and redundancies, auditing the content) and analyzing the data on user actions that seemed most problematic. For instance, offers and requests for timebanking services were, in the existing app, placed in multilevel, hierarchical category lists—like Craigslist, but many layers deep.</p>
+
+<figure id="figure1">
+<img src="http://alistapart.com/d/435/timebank1.jpg" alt="Two screens showing long category lists for services. The third screen shows a pop-up message that reads, “No search result. Post a task in this category!”">
+<figcaption>Layers of hierarchy in the old app, requiring navigation and cognitive tasks. These categories were often empty.</figcaption>		
+</figure>
+
+<p>Our analyses showed us two interesting things: first, that the service requested most often was a ride (such as to the doctor or for groceries; the user population was often older and less physically mobile); and second, that many postings by users to offer or request rides were abandoned at some point in the process.</p>
+
+<p>We speculated that perhaps the timely nature of ride needs discouraged users from posting a request to a static list; perhaps drivers wouldn’t think of diving down into a static list to say, “Hey, I commute from near <i>X</i> to <i>Y</i> at about this time a few days a week—need a lift?” So we incorporated walk-throughs of the old app into semi-structured interviews we were already conducting in our research on <a href="http://dl.acm.org/citation.cfm?id=2702272">peer-to-peer sharing motivations</a>; participants’ actions and  responses supported our speculations.</p>
+
+<p>With that in mind, we proposed and started prototyping a new feature, TransportShare, at the top level of the app. We hoped that its presence on the app’s home screen would encourage use, and its similarity to popular ride-requesting apps would ease users into the experience.</p>
+
+<p>We created a list of parameters the user would have to specify: starting/pickup point, ending/drop-off point, pickup time, “fudge factor” (how flexible this time is), one-way/roundtrip, and a text field for any special needs or considerations. Then we built prototypes, moving from sketches to low-fidelity mockups to higher-fidelity, interactive prototypes using Sketch and Invision.</p>
+
+<h2 id="section2">The choices we make<a class="subhead-anchor" href="http://alistapart.com/article/design-white-lies-ethics?utm_source=SitePoint&amp;utm_medium=email&amp;utm_campaign=Versioning#section2">#section2</a></h2>
+
+<p>Our ethical dilemma emerged as we designed the ride-request process. After the user specifies “Start” and “End” points for a ride, the app shows a summary screen with these points, the time of the ride, and a few options.</p>
+
+<figure id="figure2">
+<img src="http://alistapart.com/d/435/timebank2.jpg" alt="Screenshot of the ride request summary, showing a map with markers for “Start” and “End,” but no path between them.">
+<figcaption>Image credit: Dan Turner and Stephanie Snipes</figcaption>		
+</figure>
+
+<p>Since you’re all crackerjack designers, you’ve noticed that there is no line connecting the Start and End points, the way there is in other apps that plot a route, such as Google or Apple Maps. This was intentional. Our user research showed that people offering rides were often running other errands or may need to make detours. Since we could not anticipate these needs, we could not guarantee a specific route; showing a route would be, to some high degree of probability, wrong. And—particularly in an app that hinged on community values and honesty—that felt deceptive. </p>
+
+<p>Being truthful to the <i>n</i>th degree is the ethical choice, right? We wouldn’t want to display anything that might not be 100 percent accurate and deceive the user, right? Doing so would be bad, right? Right? </p>
+
+<p>Oh, I was wrong. So, so wrong.</p>
+
+<h2 id="section3">And lo, came…a test<a class="subhead-anchor" href="http://alistapart.com/article/design-white-lies-ethics?utm_source=SitePoint&amp;utm_medium=email&amp;utm_campaign=Versioning#section3">#section3</a></h2>
+
+<p>At this point, we had solid research questions we wouldn’t have had at an earlier stage and clean, clickable prototypes in Invision we could present to participants. With no budget for testing, I found prospective participants at a Meetup designed to let people share and test their projects and selected the ones who had used some form of peer-to-peer app. (We are planning subsequent usability tests with more senior participants, specifically for readability and accessibility.)</p>
+
+<p>I conducted the tests with one user at a time, first briefing them on the nature of timebanks (you’ve lived through that already), and setting the scenario that they are in need of a neighbor to drive them to a nearby location. They were given latitude in choosing if this would be a ride for now or later, and one-way or roundtrip. Thinking out loud was encouraged, of course. </p>
+
+<p>As they stepped through the task, I measured both the time spent per screen (or subtask) and the emotional response (gauged by facial expression and tone of responses).</p>
+
+<figure id="figure3">
+<table>
+<caption>Task: Request Ride</caption>
+<thead>
+<tr>
+<th scope="col">Subtask</th>
+<th scope="col">Average</th>
+<th scope="col">Outlier</th>
+<th scope="col">Emotion</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td data-title="Subtask">1: Set request time</td>
+<td data-title="Average">11s</td>
+<td data-title="Outlier">12s</td>
+<td data-title="Emotion" title="green"></td>
+</tr>
+<tr>
+<td data-title="Subtask">2: Set one-way/round-trip</td>
+<td data-title="Average">10s</td>
+<td data-title="Outlier">17s</td>
+<td data-title="Emotion" title="yellow"></td>
+</tr>
+<tr>
+<td data-title="Subtask">3: Pick start</td>
+<td data-title="Average">7.5s</td>
+<td data-title="Outlier">11s</td>
+<td data-title="Emotion" title="green"></td>
+</tr>
+<tr>
+<td data-title="Subtask">4: Pick destination</td>
+<td data-title="Average">6s</td>
+<td data-title="Outlier">8s</td>
+<td data-title="Emotion" title="green"></td>
+</tr>
+<tr>
+<td data-title="Subtask">5: Confirm request</td>
+<td data-title="Average">9.5s</td>
+<td data-title="Outlier">14s</td>
+<td data-title="Emotion" title="yellow"></td>
+</tr>
+<tr>
+<td data-title="Subtask">6: Review request</td>
+<td data-title="Average">14.8s</td>
+<td data-title="Outlier">18s</td>
+<td data-title="Emotion" title="red"></td>
+</tr>
+</tbody>
+</table>
+<p></p><figcaption></figcaption><p></p>
+</figure>
+<p> <br>
+The users tended to move easily through the entire task until they hit Subtask 6 (reviewing the request at the summary screen), and I saw there was a problem.</p>
+
+<p>Participants visibly hesitated; they said things like “ummm…”; their fingers and eyes traced back and forth over the map, roughly between the tagged Start and End points. When I asked open-ended questions such as, “What are you seeing?” and “What did you expect to see?” the participants said they were expecting to see route lines between the Start and the End.</p>
+
+<p>In debrief sessions, participants said they knew that any route they might have seen on the summary screen wouldn’t be the “real” route, that drivers may take different paths at their own discretion. But the lack of lines connecting the Start and End points disconcerted them and caused hesitation and unease.</p>
+
+<p>Users were accustomed to seeing lines connecting the end points of their trip. I could see this in the time it took them to interact with that screen, in their faces, and in their think-alouds. Some thought they couldn’t complete the task or that the app wasn’t finished with its job; others reported a lower level of trust in the app. We’d made an assumption—grounded in honesty—about what users wanted to see, and discovered that it did not work for them.</p>
+
+<h2 id="section4">The retesting<a class="subhead-anchor" href="http://alistapart.com/article/design-white-lies-ethics?utm_source=SitePoint&amp;utm_medium=email&amp;utm_campaign=Versioning#section4">#section4</a></h2>
+
+<p>With these results in mind, I decided to run a smaller usability test with the same protocol and screens, with one change: a line connecting the Start and End points.</p>
+
+<figure id="figure4">
+<img src="http://alistapart.com/d/435/timebank3.jpg" alt="The same screenshot of the ride request summary, showing a map with markers for “Start” and “End,” this time with a path connecting them.">
+<figcaption>Image credit: Dan Turner and Stephanie Snipes</figcaption>		
+</figure><p> </p>
+
+<p>This time, the participants said they knew the drivers might not take that route, but it didn’t matter—route lines were what they expected to see. (Perhaps this is an indication they may not trust Google or Apple Maps pathfinding, but we’re not at that level of cynicism, not yet.)</p>
+
+<figure id="figure5">
+<table>
+<caption>Task: Request Ride</caption>
+<thead>
+<tr>
+<th scope="col">Subtask</th>
+<th scope="col">Average</th>
+<th scope="col">Outlier</th>
+<th scope="col">Emotion</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td data-title="Subtask">1: Set request time</td>
+<td data-title="Average">7.8s</td>
+<td data-title="Outlier">13s</td>
+<td data-title="Emotion" title="green"></td>
+</tr>
+<tr>
+<td data-title="Subtask">2: Set one-way/roundtrip</td>
+<td data-title="Average">9.8s</td>
+<td data-title="Outlier">11s</td>
+<td data-title="Emotion" title="yellow"></td>
+</tr>
+<tr>
+<td data-title="Subtask">3: Pick start</td>
+<td data-title="Average">6.5s</td>
+<td data-title="Outlier">8s</td>
+<td data-title="Emotion" title="green"></td>
+</tr>
+<tr>
+<td data-title="Subtask">4: Pick destination</td>
+<td data-title="Average">5.3</td>
+<td data-title="Outlier">6s</td>
+<td data-title="Emotion" title="green"></td>
+</tr>
+<tr>
+<td data-title="Subtask">5: Confirm request</td>
+<td data-title="Average">6.8s</td>
+<td data-title="Outlier">8s</td>
+<td data-title="Emotion" title="green"></td>
+</tr>
+<tr>
+<td data-title="Subtask">6: Review request</td>
+<td data-title="Average">8s</td>
+<td data-title="Outlier">9s</td>
+<td data-title="Emotion" title="green"></td>
+</tr>
+</tbody>
+</table>
+</figure>
+<p>&nbsp; <br>
+I graphed out the average user time per screen and averaged emotional response (observed: positive, negative, meh). I think it’s not unreasonable to see low time per interaction plus positive emotion as a good sign, while high time per interaction plus negative emotion as a sign that I needed to go back and look at a problem.</p>
+
+<figure id="figure6">
+<img src="http://alistapart.com/d/435/timebank4.jpg" alt="Two charts showing the time per interaction for the tested subtasks, with and without the route line on the map. The test using a route line were faster than those without.">
+</figure>
+
+<p>The difference is just a line—a line participants are either explicitly or implicitly aware isn’t a true representation of reality. But the participants found the line comforting, to the point where, without it, usability took a serious hit.</p>
+
+<h2 id="section5">Toward a heuristic<a class="subhead-anchor" href="http://alistapart.com/article/design-white-lies-ethics?utm_source=SitePoint&amp;utm_medium=email&amp;utm_campaign=Versioning#section5">#section5</a></h2>
+
+<p>So when you get in an elevator, do you press the “Close Door” button? If so, what prompted you? Did you press it once and wait, or keep pressing until the door actually closed? How did that make you feel, the pressing, or even just the existence, of said button?</p>
+
+<p>Of course, <a href="http://www.straightdope.com/columns/read/595/do-close-door-buttons-on-elevators-ever-actually-work">we now know</a> that the “Close Door” button does exactly nothing. It’s a false affordance, or <a href="http://youarenotsosmart.com/2010/02/10/placebo-buttons/">placebo button</a>.</p>
+
+<p>Which brings us back to the ethical question. Should I design in elements that do not technically mislead, but reassure and increase comfort and effectiveness of the product for the user? Does intention prevent this from being a dark pattern?</p>
+
+<p>Remember, dark patterns are dark not because they aren’t effective—they’re <em>very</em> effective—but because they put the user in positions of acting against their own interests. Kim Goodwin speaks of well-designed services and products acting as considerate humans should act; perhaps sometimes a considerate human tells white lies (I’m not judging your relationships, by the way). But then again, sometimes white lies are a seed that turns into an intractable problem or a bad habit. Is there a way to build a framework so that we can judge when such a design decision is ethical, instead of just effective?</p>
+
+<p>I originally wrote about this only to ask a question and open a conversation. As a result, the heuristics below are in the early stages. I welcome feedback and discussion.</p>
+
+<ol>
+<li><b>Match between affordance and real world.</b> The affordance (false or placebo) should relate directly to the situation the user is in, rather than lead the user away to a new context.</li>
+
+<li><b>Provide positive emotional value.</b> The designed affordance should reassure and increase comfort, not create anxiety. Lulling into a stupor is going too far, though.</li>
+
+<li><b>Provide relief from anxiety or tension.</b> If the product cannot provide positive emotional value, the affordance should serve to reduce or resolve any additional anxiety.</li>
+
+<li><b>Increase the user’s effectiveness.</b> The affordance should help improve efficiency by reducing steps, distractions, and confusion.</li>
+
+<li><b>Provide actionable intelligence.</b> The affordance should help the user know what is going on and where to go next.</li>
+
+<li><b>Add context.</b> The affordance should offer more signal, not introduce noise.</li>
+
+<li><b>Move the user toward their desired outcome.</b> The affordance should help the user make an informed decision, process data, or otherwise proceed towards their goal. Note that business goals are not the same as user goals.</li>
+
+<li><b>Resolve potential conflict.</b> An affordance should help the user decide between choices that might otherwise be confusing or misleading.</li>
+</ol>
+
+<p>These are not mutually exclusive, nor are they a checklist. Checking off the entire list won’t guarantee that all of your ethical obligations are met, but I hope that meeting most or all of them will weed out design that lacks integrity.</p>
+
+<p>One unresolved question I’d like to raise for debate is the representation of the false affordance or placebo. The “Close Door” button wouldn’t work if labeled “This Doesn’t Close the Door but Press it Anyway,” but in my case we do want to make the user aware that the route line is not the route the ride will necessarily take. How to balance this? When does it become deception?</p>
+
+<p>In addition, I can recommend Dan Lockton’s <a href="http://designwithintent.co.uk/introduction-to-the-design-with-intent-toolkit/">Design with Intent toolkit</a>, licensed under the Creative Commons 3.0 standard. And Cennydd Bowles has written and spoken on the larger issues of ethical design; if this is a topic of interest (and indeed, you’ve read many words on the topic to get to this point), it’s worth diving into <a href="http://www.cennydd.com/">his site</a>.</p>
+
+<p>I hope to keep thinking about and refining these heuristics with additional feedback from designers like you. Together, let’s build tools to help us design with integrity.</p>
+
+				
+
+				
+
+				<!-- START RELATED SIDEBAR -->
+				
+				
+				
+				<aside id="related" class="sidebar var1">
+				<i class="widget-branding ala"></i>
+				
+				<!-- if this article does not have a follow up, and the issue has two articles show the other article -->
+				
+					 
+						
+					
+				<!-- end first block -->
+				<!-- show categories -->
+				
+					
+	
+   <section class="related-articles">
+
+
+
+   <h1 class="primary-cat-header">
+      Further reading about
+      <a href="http://alistapart.com/topic/user-research" data-trackevent="Related sidebar: Related by category">User Research</a>
+   </h1>
+
+   <article>
+
+
+
+<h2><a href="http://alistapart.com/blog/post/feedback-phases-and-personas">Feedback Phases and Personas</a></h2>
+   <p>These five feedback personas will help you get valuable feedback for your project, right when you need it most.</p><h2><a href="http://alistapart.com/column/the-distance-to-here">The Distance to Here</a></h2>
+   <p>If decision makers aren’t attuned to user problems, they focus on marketable “features” that may not improve the product.</p>
+
+   </article>
+
+</section>
+ 
+   
+
+
+				
+				
+					
+						<section class="related-articles events">
+						<h1>The December 2nd event recap</h1>
+
+<article>
+<h2><a href="http://alistapart.com/events/drweb">Ask Dr. Web—Live</a></h2>
+
+<p>Design your career like you’d design a website. Listen in on this recording of our fearless leader Jeffrey Zeldman and his co-host Sarah Parmenter answering audience questions about their web careers.</p>
+</article>
+						</section>
+					
+				
+				</aside>
+				<!-- END RELATED SIDEBAR -->
+
+				
+
+				
+<aside class="promo-box email-promo">
+   <b>Get our latest articles in your inbox.</b> <a href="http://alistapart.com/email-signup" data-trackevent="Post-article: email promo">Sign up for email alerts</a>.
+</aside>
+
+			</div>
+
+			<div class="post-article">
+
+				<div class="column-holder unequal-columns">
+
+					<section id="comments" class="column comment-holder">
+
+						
+							<h1 class="classy" itemprop="commentCount">5 Reader Comments</h1>
+
+							
+
+							
+														<ol class="article-comments" id="comments-parent" data-xid="4d87dbc35d51675174c1d2c591a0f82678447e53">
+							
+							
+							<li id="339946" data-count="1" class="comment">
+								
+								<img src="http://alistapart.com/d/_made/pix/authors/avatars/avatar_128343_60_51_c1.jpg" class="commenter-avatar" alt="" width="60" height="51">
+								
+								<p class="comment-byline">
+
+									<span class="commenter-name" aria-label="commenter name">
+										
+										Harry Brignull
+										
+									</span>
+
+																		<time datetime="1449589984" aria-label="comment posted on"><a href="http://alistapart.com/comments/design-white-lies-ethics#339946">10:53 am on December 08, 2015</a></time>
+								</p>
+								<div itemprop="comment" class="comment-body">
+									<p>Fantastic article. With the user research figures, the average times look very quanty. I’ve got a feeling it was qual research though. How many users did you interview? And if you used think-aloud, didn’t the user’s choice to verbalise/not verbalise have a big effect on their time-taken?</p>
+								</div>
+
+								<div class="comment-tools">
+									 
+									<a href="http://alistapart.com/article/design-white-lies-ethics?utm_source=SitePoint&amp;utm_medium=email&amp;utm_campaign=Versioning#" class="embed-link">Embed</a>
+								</div>
+
+								
+
+								<div class="embed-comment">
+
+									Copy &amp; paste the code below to embed this comment.
+									<textarea class="embed-code">&lt;figure class="embedded-quote" id="ala-embedded-comment-339946"&gt;&lt;blockquote&gt;	&lt;p&gt;Fantastic article. With the user research figures, the average times look very quanty. I’ve got a feeling it was qual research though. How many users did you interview? And if you used think-aloud, didn’t the user’s choice to verbalise/not verbalise have a big effect on their time-taken?&lt;/p&gt;&lt;/blockquote&gt;&lt;figcaption&gt;— Harry Brignull on &lt;a href="http://alistapart.com/comments/design-white-lies-ethics#339946"&gt;Design, White Lies &amp; Ethics&lt;/a&gt;&lt;/figcaption&gt;&lt;/figure&gt;
+&lt;script async data-comment="339946" charset="utf-8" src="//alistapart.com/components/assets/js/comment-embed.min.js"&gt;&lt;/script&gt;</textarea>
+
+									<div class="button-holder">
+										<input type="submit" name="cancel" value="Close" class="cancel-embed">
+									</div>
+								</div>
+
+							</li>
+
+							<li id="339947" data-count="2" class="comment">
+								
+								<img src="http://alistapart.com/pix/authors/avatars/uploads/avatar_144478.jpg" class="commenter-avatar" alt="" width="48" height="48">
+								
+								<p class="comment-byline">
+
+									<span class="commenter-name" aria-label="commenter name">
+										
+										<a href="http://t.co/6Q8fodb62e">Will Kesling</a>
+										
+									</span>
+
+																		<time datetime="1449595878" aria-label="comment posted on"><a href="http://alistapart.com/comments/design-white-lies-ethics#339947">12:31 pm on December 08, 2015</a></time>
+								</p>
+								<div itemprop="comment" class="comment-body">
+									<p>This is an interesting article. It think it is ok to use the “route line” as long as it is communicated to the parties involved that routes may very. Have you continued working on this project? I would like to learn more about follow up tests and outcomes. Maybe interviewing groups or people that do rideshares could be of interest. With a taxi or Uber, since it is a paid service the time and expectation of getting to a place are pretty fixed. For a free service, there could be a lot of variables.</p>
+								</div>
+
+								<div class="comment-tools">
+									 
+									<a href="http://alistapart.com/article/design-white-lies-ethics?utm_source=SitePoint&amp;utm_medium=email&amp;utm_campaign=Versioning#" class="embed-link">Embed</a>
+								</div>
+
+								
+
+								<div class="embed-comment">
+
+									Copy &amp; paste the code below to embed this comment.
+									<textarea class="embed-code">&lt;figure class="embedded-quote" id="ala-embedded-comment-339947"&gt;&lt;blockquote&gt;	&lt;p&gt;This is an interesting article. It think it is ok to use the “route line” as long as it is communicated to the parties involved that routes may very. Have you continued working on this project? I would like to learn more about follow up tests and outcomes. Maybe interviewing groups or people that do rideshares could be of interest. With a taxi or Uber, since it is a paid service the time and expectation of getting to a place are pretty fixed. For a free service, there could be a lot of variables.&lt;/p&gt;&lt;/blockquote&gt;&lt;figcaption&gt;— Will Kesling on &lt;a href="http://alistapart.com/comments/design-white-lies-ethics#339947"&gt;Design, White Lies &amp; Ethics&lt;/a&gt;&lt;/figcaption&gt;&lt;/figure&gt;
+&lt;script async data-comment="339947" charset="utf-8" src="//alistapart.com/components/assets/js/comment-embed.min.js"&gt;&lt;/script&gt;</textarea>
+
+									<div class="button-holder">
+										<input type="submit" name="cancel" value="Close" class="cancel-embed">
+									</div>
+								</div>
+
+							</li>
+
+							<li id="339948" data-count="3" class="comment">
+								
+								<img src="http://alistapart.com/pix/authors/avatars/uploads/avatar_144481.jpg" class="commenter-avatar" alt="" width="50" height="50">
+								
+								<p class="comment-byline">
+
+									<span class="commenter-name" aria-label="commenter name">
+										
+										<a href="http://www.facebook.com/profile.php?id=10205119312048314">Michael Long 1</a>
+										
+									</span>
+
+																		<time datetime="1449597462" aria-label="comment posted on"><a href="http://alistapart.com/comments/design-white-lies-ethics#339948">12:57 pm on December 08, 2015</a></time>
+								</p>
+								<div itemprop="comment" class="comment-body">
+									<p>First thought was to simply dash the line, indicating that the route is tentative.</p>
+
+<p>Second thought was that if the user was expecting to see a line connecting the start and endpoints, why not draw a line and arrowhead from the start point directly to the endpoint?</p>
+								</div>
+
+								<div class="comment-tools">
+									 
+									<a href="http://alistapart.com/article/design-white-lies-ethics?utm_source=SitePoint&amp;utm_medium=email&amp;utm_campaign=Versioning#" class="embed-link">Embed</a>
+								</div>
+
+								
+
+								<div class="embed-comment">
+
+									Copy &amp; paste the code below to embed this comment.
+									<textarea class="embed-code">&lt;figure class="embedded-quote" id="ala-embedded-comment-339948"&gt;&lt;blockquote&gt;	&lt;p&gt;First thought was to simply dash the line, indicating that the route is tentative.&lt;/p&gt;&lt;p&gt;Second thought was that if the user was expecting to see a line connecting the start and endpoints, why not draw a line and arrowhead from the start point directly to the endpoint?&lt;/p&gt;&lt;/blockquote&gt;&lt;figcaption&gt;— Michael Long 1 on &lt;a href="http://alistapart.com/comments/design-white-lies-ethics#339948"&gt;Design, White Lies &amp; Ethics&lt;/a&gt;&lt;/figcaption&gt;&lt;/figure&gt;
+&lt;script async data-comment="339948" charset="utf-8" src="//alistapart.com/components/assets/js/comment-embed.min.js"&gt;&lt;/script&gt;</textarea>
+
+									<div class="button-holder">
+										<input type="submit" name="cancel" value="Close" class="cancel-embed">
+									</div>
+								</div>
+
+							</li>
+
+							<li id="339949" data-count="4" class="comment article-author">
+								
+								<img src="http://alistapart.com/pix/authors/avatars/uploads/avatar_135330.png" class="commenter-avatar" alt="" width="48" height="48">
+								
+								<p class="comment-byline">
+
+									<span class="commenter-name" aria-label="commenter name">
+										
+										<a href="http://twoangstroms.com/">Dan Turner</a>
+										
+									</span>
+
+									<span class="commenter-is-author">(article author)</span>									<time datetime="1449597562" aria-label="comment posted on"><a href="http://alistapart.com/comments/design-white-lies-ethics#339949">12:59 pm on December 08, 2015</a></time>
+								</p>
+								<div itemprop="comment" class="comment-body">
+									<p>Thanks for reading! And the comments.</p>
+
+<p>@Harry: I take your last sentence to mean that if the user weren’t thinking out loud, that might reduce the time value? That’s a good point, and if we were to go into more “how do you justify this” detail, something we probably should quantify better, but participants roughly said about the same amount of stuff; the delta was observed confusion. Perhaps I could have made that more clear in the article, so thanks for the feedback.</p>
+
+<p>@Will: Also thanks. Yes, we’re still working on it, though the nature of the teams and that it’s a part-time project for us all means things like academic calendars and CHI paper submissions can put this on delay at times. And good point: we are planning on putting a small “actual route may vary” on the screen (as opposed to, you know, me saying it). Since this is volunteer (actual sharing), not a service, the people offering rides probably have their own needs in terms of routing.</p>
+								</div>
+
+								<div class="comment-tools">
+									 
+									<a href="http://alistapart.com/article/design-white-lies-ethics?utm_source=SitePoint&amp;utm_medium=email&amp;utm_campaign=Versioning#" class="embed-link">Embed</a>
+								</div>
+
+								
+
+								<div class="embed-comment">
+
+									Copy &amp; paste the code below to embed this comment.
+									<textarea class="embed-code">&lt;figure class="embedded-quote" id="ala-embedded-comment-339949"&gt;&lt;blockquote&gt;	&lt;p&gt;Thanks for reading! And the comments.&lt;/p&gt;&lt;p&gt;@Harry: I take your last sentence to mean that if the user weren’t thinking out loud, that might reduce the time value? That’s a good point, and if we were to go into more “how do you justify this” detail, something we probably should quantify better, but participants roughly said about the same amount of stuff; the delta was observed confusion. Perhaps I could have made that more clear in the article, so thanks for the feedback.&lt;/p&gt;&lt;p&gt;@Will: Also thanks. Yes, we’re still working on it, though the nature of the teams and that it’s a part-time project for us all means things like academic calendars and &lt;span class="caps"&gt;CHI&lt;/span&gt; paper submissions can put this on delay at times. And good point: we are planning on putting a small “actual route may vary” on the screen (as opposed to, you know, me saying it). Since this is volunteer (actual sharing), not a service, the people offering rides probably have their own needs in terms of routing.&lt;/p&gt;&lt;/blockquote&gt;&lt;figcaption&gt;— Dan Turner on &lt;a href="http://alistapart.com/comments/design-white-lies-ethics#339949"&gt;Design, White Lies &amp; Ethics&lt;/a&gt;&lt;/figcaption&gt;&lt;/figure&gt;
+&lt;script async data-comment="339949" charset="utf-8" src="//alistapart.com/components/assets/js/comment-embed.min.js"&gt;&lt;/script&gt;</textarea>
+
+									<div class="button-holder">
+										<input type="submit" name="cancel" value="Close" class="cancel-embed">
+									</div>
+								</div>
+
+							</li>
+
+							<li name="latest" id="339952" data-count="5" class="comment">
+								
+								<img src="http://alistapart.com/pix/authors/avatars/uploads/avatar_144498.jpg" class="commenter-avatar" alt="" width="50" height="50">
+								
+								<p class="comment-byline">
+
+									<span class="commenter-name" aria-label="commenter name">
+										
+										<a href="http://www.facebook.com/profile.php?id=10156273888785527">Muhammad Sherbeeny</a>
+										
+									</span>
+
+																		<time datetime="1449630879" aria-label="comment posted on"><a href="http://alistapart.com/comments/design-white-lies-ethics#339952">10:14 pm on December 08, 2015</a></time>
+								</p>
+								<div itemprop="comment" class="comment-body">
+									<p>That reminded me of something my waves professor have told us in the faculty of Engineering, Cairo univ.:<br>
+When he helped inventing the microchip antennas, there was no more need for that long piece of plastic/antenna to be part of any mobile phones.. But the marketing team claimed that the users would think the phone is the reason why they are getting a weak or no signal in some places while it’s a network coverage problem, not a phone problem!</p>
+
+<p>So, they decided to sell two groups of models at the same time:<br>
+1. A group with no long antennas at all.<br>
+2. And a group with a fake antennas.</p>
+
+<p>The ones with no antennas struggled a lot in the market for some time as people were more comfortable with the long antennas (they didn’t know they were fake antennas) thinking they’ll get better network signal.</p>
+
+<p>I think it’s all related to the common conceptual model at that time. So, timing of the design is a very important factor in deciding to be honest or having to fake something to make the users more comfortable reaching their goals… without deceiving them and making them seeking other goals they wouldn’t have wanted if they realized everything well enough.</p>
+
+<p>Is it ethical for doctors to use the placebo effect?<br>
+http://www.webmd.com/pain-management/what-is-the-placebo-effect?page=2</p>
+
+<p>They use it to help some cases (like depression) which have no real cure by giving them blank pills and telling them that these pills are the most advanced and have 100% healing rates… And it usually works as their brains and bodies behave differently and kind of heal itself!</p>
+
+<p>I believe the designer’s “intention” is the primary factor in determining whether the design is ethical or not.</p>
+								</div>
+
+								<div class="comment-tools">
+									 
+									<a href="http://alistapart.com/article/design-white-lies-ethics?utm_source=SitePoint&amp;utm_medium=email&amp;utm_campaign=Versioning#" class="embed-link">Embed</a>
+								</div>
+
+								
+
+								<div class="embed-comment">
+
+									Copy &amp; paste the code below to embed this comment.
+									<textarea class="embed-code">&lt;figure class="embedded-quote" id="ala-embedded-comment-339952"&gt;&lt;blockquote&gt;	&lt;p&gt;That reminded me of something my waves professor have told us in the faculty of Engineering, Cairo univ.:&lt;br /&gt;When he helped inventing the microchip antennas, there was no more need for that long piece of plastic/antenna to be part of any mobile phones.. But the marketing team claimed that the users would think the phone is the reason why they are getting a weak or no signal in some places while it’s a network coverage problem, not a phone problem!&lt;/p&gt;&lt;p&gt;So, they decided to sell two groups of models at the same time:&lt;br /&gt;1. A group with no long antennas at all.&lt;br /&gt;2. And a group with a fake antennas.&lt;/p&gt;&lt;p&gt;The ones with no antennas struggled a lot in the market for some time as people were more comfortable with the long antennas (they didn’t know they were fake antennas) thinking they’ll get better network signal.&lt;/p&gt;&lt;p&gt;I think it’s all related to the common conceptual model at that time. So, timing of the design is a very important factor in deciding to be honest or having to fake something to make the users more comfortable reaching their goals… without deceiving them and making them seeking other goals they wouldn’t have wanted if they realized everything well enough.&lt;/p&gt;&lt;p&gt;Is it ethical for doctors to use the placebo effect?&lt;br /&gt;http://www.webmd.com/pain-management/what-is-the-placebo-effect?page=2&lt;/p&gt;&lt;p&gt;They use it to help some cases (like depression) which have no real cure by giving them blank pills and telling them that these pills are the most advanced and have 100% healing rates… And it usually works as their brains and bodies behave differently and kind of heal itself!&lt;/p&gt;&lt;p&gt;I believe the designer’s “intention” is the primary factor in determining whether the design is ethical or not.&lt;/p&gt;&lt;/blockquote&gt;&lt;figcaption&gt;— Muhammad Sherbeeny on &lt;a href="http://alistapart.com/comments/design-white-lies-ethics#339952"&gt;Design, White Lies &amp; Ethics&lt;/a&gt;&lt;/figcaption&gt;&lt;/figure&gt;
+&lt;script async data-comment="339952" charset="utf-8" src="//alistapart.com/components/assets/js/comment-embed.min.js"&gt;&lt;/script&gt;</textarea>
+
+									<div class="button-holder">
+										<input type="submit" name="cancel" value="Close" class="cancel-embed">
+									</div>
+								</div>
+
+							</li>
+
+							
+						</ol><ol class="article-comments form">
+
+	<li id="commenter-signin" class="commenter-signin ">
+
+	<h3 class="form-heading">Got something to say?</h3>
+ 	
+ 	<div class="outer-ajax-container">
+
+	 	<div class="ajax-container">
+	 	
+			
+
+    
+
+		
+
+		
+
+		</div>
+
+		<div class="placeholder loader">
+			
+			<div class="label animated-background">label</div>
+			<div class="field">field</div>
+			<div class="label animated-background">label</div>
+			<div class="field">field</div>
+			<!-- <div class="button primary">Submit</div> -->
+		</div>
+
+	</div>
+	
+	<div id="login-buttons" class="active">
+	
+		<h4 class="form-heading">Or, sign in with</h4>
+
+		<ul class="login-buttons">
+			<li class="twitter">
+		
+			
+				<a href="http://alistapart.com/?ACT=154&amp;provider=twitter&amp;RET=http://alistapart.com/article/design-white-lies-ethics#comment-form">Twitter</a>
+			
+		
+
+			</li>
+			<li class="facebook">
+		
+			
+				<a href="http://alistapart.com/?ACT=154&amp;provider=facebook&amp;RET=http://alistapart.com/article/design-white-lies-ethics#comment-form">Facebook</a>
+			
+		
+			</li>
+
+		</ul>
+
+	</div>
+
+	</li>
+
+</ol>
+							 
+
+
+						 
+
+					</section>
+
+					<aside class="column more-content">
+
+						
+						<h1 class="classy">More from ALA</h1>
+
+						<h2>Columns</h2>
+						
+
+						
+						<article class="item-summary article">
+
+							<span class="column-name">Rachel Andrew <i>on</i> the Business of Web Dev</span>
+
+							<h1><a href="http://alistapart.com/column/know-people" data-trackevent="More from ALA: column">It’s the People They Know</a></h1>
+
+							
+					<img src="http://alistapart.com/d/_made/pix/authors/uploads/photo_131322_60_60_c1.jpg" alt="">
+
+							<p>Sometimes your best clients come to you via very roundabout paths, so stay open to many kinds of people and situations.</p>
+
+							
+
+						</article><article class="item-summary article">
+
+							<span class="column-name">Ask Dr. Web <i>with</i> Jeffrey Zeldman</span>
+
+							<h1><a href="http://alistapart.com/column/standing-out-from-the-crowd" data-trackevent="More from ALA: column">Looking for Love: Standing Out from the Crowd of Web Job Seekers</a></h1>
+
+							
+					<img src="http://alistapart.com/d/_made/pix/authors/uploads/photo_116023_60_60_c1.jpg" alt="">
+
+							<p>When you have a solid resume but can’t seem to connect with the right job, reframe your career niche or refocus your work persona to open different hiring tracks.
+</p>
+
+							
+
+						</article>
+
+						<h2>From the Blog</h2>
+						
+
+						
+						<article class="item-summary article">
+
+							<h1><a href="http://alistapart.com/blog/post/planning-organizing-workshops" data-trackevent="More from ALA: blog">Planning and Organizing Workshops</a></h1>
+
+						<p>Good workshops start long before you get everyone in the room. Senongo Akpem shows how to prepare a successful workshop.</p>
+
+							
+
+						</article><article class="item-summary article">
+
+							<h1><a href="http://alistapart.com/blog/post/writing-css-on-growing-teams" data-trackevent="More from ALA: blog">Writing CSS on Growing Teams</a></h1>
+
+						<p>Writing strong, modular CSS as your team grows is less about the CSS, and more about the process. </p>
+
+							
+
+						</article><article class="item-summary article">
+
+							<h1><a href="http://alistapart.com/blog/post/career-QA-dr-web" data-trackevent="More from ALA: blog">Career Consultation with Dr. Web—Live</a></h1>
+
+						<p>There’s more to making a career thrive than learning skills and holding jobs—our next live event covers ways to keep this complex thing healthy for a long time.</p>
+
+							
+
+						</article><article class="item-summary article">
+
+							<h1><a href="http://alistapart.com/blog/post/using-roleplay-to-prepare-design-managers" data-trackevent="More from ALA: blog">Using Roleplay to Prepare Design Managers</a></h1>
+
+						<p>When it comes to tough conversations, practice makes perfect. Senongo Akpem uses roleplay to help new managers hone their skills.</p>
+
+							
+
+						</article><article class="item-summary article">
+
+							<h1><a href="http://alistapart.com/blog/post/urls-beyond-the-web" data-trackevent="More from ALA: blog">URLs Beyond the Web</a></h1>
+
+						<p>With universal links coming to Android M and iOS 9, Anthony Colangelo considers our expanding definition of ”the web.”</p>
+
+							
+
+						</article>
+
+
+						
+
+					</aside>
+
+				</div>
+
+			</div>
+
+		
