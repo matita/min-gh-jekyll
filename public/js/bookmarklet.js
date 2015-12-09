@@ -172,5 +172,16 @@ function analyze(doc, href) {
       a.href = src;
       n.src = a.href;
     }
+
+    removeAttributes(node);
+  }
+
+
+  function removeAttributes(node) {
+    var tags = Array.prototype.concat.apply([node], node.querySelectorAll('*'));
+    for (var i = 0; i < tags.length; i++) {
+      var tag = tags[i];
+      tag.removeAttribute('style');
+    }
   }
 }
