@@ -33,7 +33,7 @@ function analyze(doc, href) {
     title: title,
     description: description,
     filename: filename,
-    url: href,
+    url: url,
     frontMatter: frontMatter,
     node: parent,
     content: content
