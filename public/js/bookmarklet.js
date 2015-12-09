@@ -51,7 +51,8 @@ function analyze(doc, href) {
       .split('&')
       .filter(function(exp) { return exp.indexOf('utm_') !== 0; })
       .join('&');
-    return urlParts.join('?');
+
+    return urlParts[1].length ? urlParts.join('?') : urlParts[0];
   }
 
 
