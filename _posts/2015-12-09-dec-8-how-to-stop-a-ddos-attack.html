@@ -1,0 +1,167 @@
+---
+title: "Dec 8: How to stop a DDoS attack"
+description: "This is the eighth post in the FastMail 2015 Advent Calendar. Stay tuned for another post tomorrow."
+link: "https://blog.fastmail.com/2015/12/08/how-to-stop-a-ddos-attack/"
+saved: "2015-12-09 17:29:02"
+---
+
+
+<h1><a href="https://blog.fastmail.com/2015/12/08/how-to-stop-a-ddos-attack/">Dec 8: How to stop a DDoS attack</a></h1>
+<p class="blog-author"><a href="https://twitter.com/robn">Rob Norris</a> –  8 December 2015</p>
+<p>This is the eighth post in the <a href="https://blog.fastmail.com/2015/12/01/fastmail-advent-2015/">FastMail 2015 Advent Calendar</a>. Stay tuned for another post tomorrow.</p>
+
+<hr>
+
+<p>Last month <a href="https://blog.fastmail.com/2015/11/11/ddos-attack-may-lead-to-potential-service-disruption-this-week/">we were hit by a DDoS attack</a>. Over the course of that week we learned a lot about this style of attack and how to protect against it. This post documents some of the things we learned and what you can do when faced with a DDoS against your own service. We're keen to talk about it because it's actually not easy to pull all this information together in a hurry, particularly when you're already under attack. If a few people were better prepared because of something in this post, we'd be pretty happy!</p>
+
+<h2>What is a DDoS?</h2>
+
+<p>The expansion of "DDoS" is "Distributed Denial-of-Service", but even that doesn't mean a whole lot without talking about what a <a href="https://en.wikipedia.org/wiki/Denial-of-service_attack">Denial-of-Service attack</a> is, so lets start there.</p>
+
+<p>Fundamentally, all internet services take requests from the network, perform some work, and send back the result. To do this, the service will commit some amount of resources to fulfilling each request, where resources might include network capacity, CPU cycles, memory, IO, and so on.</p>
+
+<p>The point of a DoS attack is to make it difficult or impossible to actually service the incoming requests. The usual way to do this is to externally find some way to exhaust the available resources so there's nothing left for legitimate requests.</p>
+
+<p>There are plenty of ways that can be done, but one of the easiest for an attacker to perform is to overwhelm the network connection that the service receives its requests from. It's the "distributed" part that makes this easy - compromised computers (via malware and viruses) all over the world can be instructed to make a large number of requests to a network service at the same time, clogging up the network connection and preventing legitimate requests from getting through. The analogy we used to describe it last month was that "it is like being unable to get to your post box because a huge crowd has formed around the front door of the post office."</p>
+
+<h3>A distributed attack</h3>
+
+<p>The idea behind a DDoS is for the attacker to generate more traffic than the receiving site can deal with. A single computer is unlikely to have enough network resources available to overwhelm a server, which is probably on the end of a high-capacity connection to the internet. But if you can get computers all over the world on many different networks to make requests at the same time, you can make it all add up to more than the server can deal with.</p>
+
+<p>The main way to do this is via "<a href="https://en.wikipedia.org/wiki/Botnet">botnets</a>". A botnet consists of many (usually hundreds or thousands) of normal home or work computers that have malicious software installed on them. This software comes from a variety of sources - email (spam/viruses), add-ons in software installers (adware/malware), and so on. Once installed, this software will "phone home" to a control server, and wait for commands. An attacker will issue a command to the compromised machines instructing them to start sending a lot of network requests to the site being attacked.</p>
+
+<p>Another way to perform a DDoS is called an "amplification attack". Some kinds of internet services (notably DNS and NTP) are often misconfigured in such a way that it's possible to, via a small request, trick the service into sending a large response somewhere else. If several botnet machines all make these kind of requests it results in an enormous amount of traffic hitting the target.</p>
+
+<p>Botnets are increasingly easy for people to get access to. There are now websites where you can rent time on a botnet, paying with a credit card or bitcoin and choosing your target via a simple web form.</p>
+
+<h3>Why do attacks happen?</h3>
+
+<p>There are a few reasons, but as far as I can see they fall into three main categories:</p>
+
+<ul>
+<li>Extortion - the attacker threatens an attack (perhaps with a demonstration), and demands money to avoid it. This is the kind we faced last month.</li>
+<li>Retaliation - the attacker is responding to something you did or said, or just doesn't like you.</li>
+<li>Misdirection - the attack is intended to distract you from some other event (attack) elsewhere.</li>
+</ul>
+
+<p>If you're very unlucky, you may never know why. That doesn't materially change your planning and response to a DDoS though.</p>
+
+<h2>Preparing for a DDoS</h2>
+
+<p>Ideally, you'll think about how to defend against DDoS before it starts. It is very harrowing to try and build defenses while under active attack. In our case, we received a letter demanding payment on Sunday, threatening a large-scale attack on the following Wednesday. We were happy that we were given time (assuming the attacker was to be believed) but it was still a very nervous few days, and I don't think many of us slept very well on those days. I do however remember the moment mid-Wednesday where we decided that we'd done as much preparation as we could. At that moment, the worry melted away because it was entirely out of our hands. Preparation up front will help you sleep better when it all goes horribly wrong!</p>
+
+<h3>Responding to extortion attempts</h3>
+
+<p>You should <em>never ever</em> respond to extortion attempts. It's considered a crime in most jurisdictions. Although paying might make the attack go away, it also demonstrates to attackers that you're willing to pay, making you a target for further attacks, and it gives attackers funds with which to pay for more botnet time.</p>
+
+<p>We said it last time, but for any would-be attackers, here it is again: <strong>FastMail does not respond to extortion attempts, and we will not pay criminals under any circumstances.</strong></p>
+
+<h3>Minimum service level</h3>
+
+<p>It's important to understand that a full-scale DDoS attack is incredibly difficult to defend against. Even a "successful" defense is likely to result in some loss of service. You need to know your service and the expectations that your users have and have a good idea of what the minimum acceptable level of service is, and plan your response accordingly.</p>
+
+<p>In our case we determined that DNS and our inter-datacentre VPN links were absolutely critical. DNS is critical because even if we're offline, working DNS lets sending sites queue email until we come back, whereas a loss of DNS can cause bounces to occur. The VPN links between our datacentres, on the other hand, allow our internal infrastructure to keep operating properly even when the external network fails, which means we don't have a whole bunch of internal services (like cross-datacentre replication) failing at a time where we need to concentrate on the attack.</p>
+
+<h3>Network defense</h3>
+
+<p>The best way to protect against a flood of traffic coming into your network is to, quite simply, get it away from your network. A DDoS attack tries to funnel traffic from all over the world down your single network connection. If you can get that traffic to go elsewhere, then your network connection is free to respond to legitimate requests.</p>
+
+<h4>Web and DNS mitigation</h4>
+
+<p>For the typical web application, the easiest way to do this is to put some kind of globally-distributed web/DNS proxy (aka a CDN)  in front of your service. These use <a href="https://blog.cloudflare.com/a-brief-anycast-primer/">Anycast</a> to force traffic destined for your website to first go through a proxy geographically-close to the machine making the request. They also implement various kinds of DDoS protection and filtering so only the legitimate stuff get passed on to you.</p>
+
+<p>Of course, this only stops your actual services being attacked if the attacker doesn't know how to reach you directly. If you've ever published your own network ranges in DNS, then everyone knows where you are, even if you put a proxy service in front. In that case, you need to get some new public IP addresses that you've never published and only give them to your proxy provider, so that it's much harder for an attacker to find your network.</p>
+
+<p>For FastMail, a web proxy isn't enough because we have loads of critical non-web services (IMAP, SMTP, etc). As I said earlier though, DNS is the critical piece for us, so we're now using <a href="https://www.cloudflare.com/virtual-dns/">CloudFlare Virtual DNS</a> to serve our public DNS. Our traditional DNS nameservers <code>ns1.messagingengine.com</code> and <code>ns2.messagingengine.com</code> are now served by CloudFlare's servers all over the world, which connect back to us on new, unpublished IP addresses to actually serve the records. If we go off the air, they'll keep serving the cached answers until we come back.</p>
+
+<p>If you're using a cloud provider for your service, talk to them first to find out what kind of DDoS protection services they have (they all have something). And when an attack happens (or if you're being threatened), contact their security team to let them know. The more information and warning they have, the better the job they can do.</p>
+
+<h4>Working with your datacentre provider</h4>
+
+<p>We don't run our services on cloud infrastructure. Instead, we have our own servers that we install in managed datacentres at various locations. For years our primary location has been at <a href="http://www.nyi.net/">NYI</a> in their New York City facility. They provide our connection to the internet so naturally they're the first people we talked to about getting protection for our network.</p>
+
+<p>If it's like ours, your datacentre provider will have links directly into the "<a href="https://en.wikipedia.org/wiki/Internet_backbone">backbone</a>", which is the high-capacity networks that connect together the different ISPs, network providers and large organisations that form "The Internet". This is the best place to mitigate DDoS attacks just because of the sheer volume of traffic that can be seen and processed here. In our case, NYI arranged with one of their network partners to advertise our network range to the world, directing it to their DDoS mitigation service, which filters out the rubbish and passes on the legitimate packets to our network.</p>
+
+<p>I only loosely understand how this is actually accomplished (using <a href="https://en.wikipedia.org/wiki/Border_Gateway_Protocol">BGP</a> to advertise the network and <a href="https://en.wikipedia.org/wiki/Generic_Routing_Encapsulation">GRE tunnels</a> to pass the filtered traffic back to our network), but that's kind of the point - this is one of the services our datacentre providers offer, and I'm very happy to let them take care of it (and you should talk to NYI if you want amazing service from clueful people).</p>
+
+<p>The other thing NYI helped with was getting us a small range of unpublished IP addresses. As mentioned earlier, we added a DNS server here for CloudFlare to proxy our DNS traffic to, and we routed our inter-datacentre VPN links through this range. In theory, if our primary network is flooded, this secondary network should remain available so DNS and inter-datacentre traffic can continue unhindered.</p>
+
+<p>Obviously, there are attacks that we can't ever protect against, like attacks directly on our datacentre providers, but these are much much harder for an attacker to achieve with "commodity" botnets. Like all things in network security, you have very few defenses against a well-resourced and determined attacker, but you can do a lot against casual attacks. That's what we're aiming for here.</p>
+
+<h4>Know your traffic</h4>
+
+<p>Your application is probably only interested in one or two types of traffic, TLS traffic on port 443, for example. Your own network equipment or host firewalls are likely already dropping the stuff you don't care about. The problem is that this traffic is already on your network, competing with your legitimate traffic for bandwidth.</p>
+
+<p>If you know your traffic, then you can talk to your upstream network provider and instead get them to block the stuff you don't care about. If it never hits your network, you never have to deal with it.</p>
+
+<p>In our case, the first "warning shot" attack consisted of NTP requests and random UDP packets on port 80. Neither of these are interesting to us, and have long been blocked at our host firewalls. During the attack, 90% of the incoming packets were of this kind, while only 10% was legitimate user traffic. We were blocking it out and servicing the remainder as normal, but when only 10% of your packets are getting through then your TCP connections get pretty unhappy. So we asked NYI to block this traffic before it ever got near our network and as we learned more asked them to block other things too.</p>
+
+<p>Doing this means that a would-be attacker has to generate traffic that looks a lot like your legitimate traffic. That's usually not difficult to achieve, but at least it rules out certain common attack styles. Anything you can do to make life slightly more difficult for a would-be attacker will make things easier when it comes time to defend.</p>
+
+<h3>Application defense</h3>
+
+<p>As I said right at the start, a denial-of-service attack is about exhausting the resources needed to service legitimate network requests. In a DDoS the network is the resource being targeted, but it's important to consider other types of attacks. In our case, we didn't know the capabilities or true motivations of our attacker, and we wondered what would happen if they changed to a different kind of attack once their efforts to attack our network had been defeated. So we started looking at ways to add protections at the application level against <a href="https://en.wikipedia.org/wiki/Algorithmic_complexity_attack">complexity attacks</a>.</p>
+
+<p>The main thing about this category of attacks is that they all make it to your servers, so you can use everything your application knows to help defend against it. In our case, we're now building a profile of "good" and "bad" requests over time. When we're under attack, we can run a command which will cause "bad" requests to be dropped at the firewall, before they reach our application code. I place "good" and "bad" in quotes because a "bad" request isn't necessarily one we don't want to service, but rather one that too many of all at once (that is, in an attack situation) would severely impact our ability to service the "good" requests. What constitutes "good" and "bad" is very much dependent on the application, so there's not a lot more general advice I can give here.</p>
+
+<p>I'm deliberately not going into the details of how we profile "good" and "bad" requests, because I don't want to signal to a would-be attacker exactly how to "prime" our system before an attack. It's also something that we'll continue to change over time.</p>
+
+<h3>Talk to your users</h3>
+
+<p>Technical defenses are great, but there's no way you can stop everything, which means your users are going to notice. So, let them know what's happening before it happens.</p>
+
+<p>In our case, we communicated to our users as the early "warning shot" attacks were in progress via our <a href="http://www.fastmailstatus.com/">status page</a> and our <a href="https://twitter.com/fastmailfm">Twitter account</a>. We mentioned "DDoS" explicitly, because many of our users are technically-savvy enough to understand what that means and respond appropriately. We were very careful not to give away too much detail until we had our defenses in order, because we didn't want to signal our intentions to the attacker until we were ready. The worst case would have been for the attacker to find out we weren't going to pay before we were ready and attack early, testing our resolve (not that it would have made a difference). Only once we were ready did we <a href="https://blog.fastmail.com/2015/11/11/ddos-attack-may-lead-to-potential-service-disruption-this-week/">post to this blog</a>.</p>
+
+<p>Giving our users as much warning as possible meant that they had time to make their own preparations. Their response was overwhelmingly positive - we had hundreds of messages wishing us well, and many new signups simply because we were willing to take a stand, including one wonderful person that had no intention of actually using our service, but bought a subscription just because they wanted to give us some tangible support.</p>
+
+<p>As clichéd as it sounds, your customers are your biggest asset. Take care of them and respect their intelligence and they'll support you when things get tough.</p>
+
+<h2>Postmortem</h2>
+
+<p>Congratulations, you've come out the other side!</p>
+
+<p>You'll undoubtedly have some tidying up and repairs to do; there are not many internet services that cope well with losing access to the internet for an extended period. There are a few other things you need to need to think about at this stage.</p>
+
+<h3>Watch for followups</h3>
+
+<p>The world now knows this has happened. Maybe only a small part of the world, depending on the size of your service, but the word is out there because of all the communication you did with your users. So keep a look out for followup attacks. The original attacker might give up, but copycats are pretty common, especially if they suspect that you might have your guard down.</p>
+
+<h3>Gather data about the attackers</h3>
+
+<p>Collect up as much information as you can about the attack. Source IP addresses are the main one, and volume is useful too. If you can match this to other data in your application that's very handy too. If you're using a mitigation service of some sort, ask them for that information as well. You can use this to set up blacklists and add to your preparations for next time, but it's also important so you can...</p>
+
+<h3>Talk to computer security organisations</h3>
+
+<p>Many jurisdictions have some kind of organisation dedicated to computer and internet-based threats and are often interested in these sort of attacks. In Australia that's <a href="https://www.cert.gov.au/">CERT Australia</a>; in the US, <a href="https://www.us-cert.gov/">US-CERT</a>; there are probably something similar in your country too. They can use the source IPs and other information about the attack and correlate it with similar information from other events, which can help to find the responsible parties.</p>
+
+<h3>Review your security measures</h3>
+
+<p>You should be doing this regularly anyway, but now is a good time to do it. If it's known that you have adequate defenses in one area, a determined attacker is going to try something different and you need to be prepared. There might be ways that you can use what you've learned to improve your security in other areas.</p>
+
+<h2>Finishing up</h2>
+
+<p>A DDoS is really scary. I wouldn't want to go through it again, and I hope you never have to either, but at least now we know a bit better what to expect and how to deal with it if it ever comes up again.</p>
+
+
+<div class="blog-footer">
+
+<p class="blog-footerPrev">«︎ <a href="https://blog.fastmail.com/2015/12/07/how-i-came-to-use-fastmail-and-still-love-using-it-today/">Dec 7: How I came to use FastMail and still love using it today (a non-tech user’s point of view)</a></p>
+
+
+<p class="blog-footerNext"><a href="https://blog.fastmail.com/2015/12/09/5-tips-and-tricks/">Dec 9: 5 Tips and Tricks</a> »︎</p>
+
+
+<p class="blog-footerThanks">Thanks for reading the FastMail Blog: news, views and the occasional rant from the FastMail team. Want to keep up to date? Subscribe to our <a href="https://blog.fastmail.com/feed/">RSS feed</a>, or sign up below and weʼll email you every time we post something new.</p>
+
+
+
+</div>
+
+<div id="breadcrumbs">
+<div>
+    <a href="https://blog.fastmail.com/">Latest News</a>
+    &nbsp;&nbsp;
+    <a href="https://blog.fastmail.com/archive/">Archive</a>
+</div>
+</div>
+
