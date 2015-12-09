@@ -6,7 +6,9 @@ function analyze(doc, href) {
     doc.title;
   var description = getMetaValue('description') ||
     getMetaValue('og:description', 'property');
+  console.log('url:', href);
   var url = sanitizeUrl(href);
+  console.log('sanitized url:', url);
   var base = document.createElement('base');
   base.href = url;
   doc.head.appendChild(base);
