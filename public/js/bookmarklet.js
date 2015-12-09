@@ -6,9 +6,9 @@ function analyze(doc, href) {
     doc.title;
   var description = getMetaValue('description') ||
     getMetaValue('og:description', 'property');
-  var url = href;
+  var url = sanitizeUrl(href);
   var base = document.createElement('base');
-  base.href = href;
+  base.href = url;
   doc.head.appendChild(base);
 
 
@@ -41,6 +41,16 @@ function analyze(doc, href) {
 
 
 
+  function sanitizeUrl(url) {
+    var urlParts = url.split('?');
+    if (urlParts.length == 1)
+      return url;
+    urlParts[1] = (urlParts[1] || '')
+      .split('&')
+      .filter(function(exp) { return exp.indexOf('utm_') !== 0; })
+      .join('&');
+    return urlParts.join('?');
+  }
 
 
   function getFileName(title) {
