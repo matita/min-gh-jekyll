@@ -9,11 +9,16 @@ title: Home
 {% for page in site.categories.to_read %}
   <a class="link" href="{{ site.baseurl }}{{ page.url }}">
     <h3 class="link-title">{{ page.title }}</h3>
-    <p class="link-url">{{ page.link }}</p>
+    <p class="link-url">
+      <span class="gh-read-time">{% include reading-time.html %}</span>
+      &middot;
+      <span class="gh-saved-date" title="Saved on {{ page.date }}">{{ page.date | date: "%Y-%m-%d" }}</span>
+      &middot;
+      {{ page.link }}
+    </p>
     {% if page.description %}
     <p class="link-description">{{ page.description }}</p>
     {% endif %}
-    <p class="link-date">Saved on {{ page.date | date: "%Y-%m-%d" }} &middot; {% include reading-time.html %}</p>
   </a>
 {% endfor %}
 </div>
