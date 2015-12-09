@@ -1,0 +1,394 @@
+---
+title: "Jekyll Date Formatting Examples"
+description: "Examples of date formatting in Jekyll using the native Liquid tags"
+link: "http://alanwsmith.com/jekyll-liquid-date-formatting-examples"
+saved: "2015-12-09 09:59:17"
+---
+
+<p><img src="http://alanwsmith.com/image-graphics/jekyll-logo-180x100.png" style="float: right; padding-left:26px;"></p>
+
+<h3 id="summary-tldr">Summary (tl;dr)</h3>
+
+<p>These examples provide tested code snippets for displaying several date formats on a Jekyll site<sup>1</sup>. They should also work on GitHub Pages, Shopify or anything else that uses Liquid. An alternate title for this post should be:</p>
+
+<p><em>Everything you wanted to know about Jekyll date formatting but were afraid to ask.</em><br><br></p>
+
+<hr>
+
+<h3 id="overview">Overview</h3>
+
+<p>Jekyll<sup>2</sup> (the simple, blog aware, static website generator) uses Shopify's Liquid Template Engine<sup>3</sup>. Displaying dates is done using the "<code>{{ page.date  }}</code>" supplied Liquid tag<sup>4</sup>. With no other alteration, the dates produced look something like:</p>
+
+<pre><code>2013-11-29 00:00:00 -0500
+</code></pre>
+
+<p>If there are designs that use that format, they are few and far between. Creating friendlier looking dates is done by applying Liquid's "<code>date:</code>" filter. For example, the tag/filter combination:</p>
+
+<pre><code>{{ page.date | date: '%B %d, %Y' }}
+</code></pre>
+
+<p>produces more reader friendly dates like:</p>
+
+<pre><code>November 29, 2013
+</code></pre>
+
+<p>Much better, but depending on the date, subtle design issues show up. For example, during the first nine days of each month "leading zeros" crop up (e.g. "August 03, 2013" instead of "August 3, 2013"). Other gotchas with the basic Liquid filters include:</p>
+
+<ol>
+  <li>Adding a period behind the abbreviated month names has to be adjusted to handle May. For example, "Aug. 16, 2013" is fine. "May. 16, 2013" is not.</li>
+  <li>September is generally abbreviated "Sept." instead of Liquid's default "Sep."</li>
+  <li>To comply with the AP style guide the months April, May, June and July should not be abbreviated. Similar alterations are necessary to meet with the guidelines from the Chicago Manual of Style.</li>
+</ol>
+
+<p>Most designs go with the available defaults. Either using a format that doesn't have these issues or, more frequently, letting the details slip. The information still gets across and every web site has a punch list of potential modifications that stretches to the horizon. So, I understand putting off finding a solution, but not having proper date formatting has always bugged me. While solving the issue for myself<sup>5</sup>, I decided to put together this post as a public reference as well. I don't yet have the Ruby chops to contribute directly to Jekyll, but I can provide this reference to give back a little at least.</p>
+
+<p>This set of Liquid date filters solves the issues listed above and explores a few other formatting options. Each one provides a solution for a specific display format and is provided with four output examples for the following date: 1) <em>May 3, 2013</em>, 2) <em>July 4, 2013</em>, 3) <em>September 23, 2013</em> and 4) <em>November 26, 2013</em>. These examples demonstrate if/how the various formatting issues are handled. After the examples, a few snippets of code for individual elements are provided. With these samples, just about any date format desired should be within easy reach.</p>
+
+<hr>
+
+<h3 id="built-in-jekyll-date-filters">Built-in Jekyll Date Filters</h3>
+
+<ul>
+  <li>
+    <p>Date to String</p>
+
+    <pre><code>{{ page.date | date_to_string }}
+</code></pre>
+
+    <p>Output Example 1: <strong>03 May 2013</strong><br>
+Output Example 2: <strong>04 Jul 2013</strong><br>
+Output Example 3: <strong>23 Sep 2013</strong><br>
+Output Example 4: <strong>26 Nov 2013</strong></p>
+  </li>
+  <li>
+    <p>Date to Long String</p>
+
+    <pre><code>{{ page.date | date_to_long_string }}
+</code></pre>
+
+    <p>Output Example 1: <strong>03 May 2013</strong><br>
+Output Example 2: <strong>04 July 2013</strong><br>
+Output Example 3: <strong>23 September 2013</strong><br>
+Output Example 4: <strong>26 November 2013</strong></p>
+  </li>
+  <li>
+    <p>Date to XML Schema</p>
+
+    <pre><code>{{ page.date | date_to_xmlschema }}
+</code></pre>
+
+    <p>Output Example 1: <strong>2013-05-03T09:14:00-04:00</strong><br>
+Output Example 2: <strong>2013-07-04T09:14:00-04:00</strong><br>
+Output Example 3: <strong>2013-09-23T09:14:00-04:00</strong><br>
+Output Example 4: <strong>2013-11-26T08:14:00-05:00</strong></p>
+  </li>
+  <li>
+    <p>Date to RFC-822</p>
+
+    <pre><code>{{ page.date | date_to_rfc822 }}
+</code></pre>
+
+    <p>Output Example 1: <strong>Fri, 03 May 2013 09:14:00 -0400</strong><br>
+Output Example 2: <strong>Thu, 04 Jul 2013 09:14:00 -0400</strong><br>
+Output Example 3: <strong>Mon, 23 Sep 2013 09:14:00 -0400</strong><br>
+Output Example 4: <strong>Tue, 26 Nov 2013 08:14:00 -0500</strong></p>
+  </li>
+</ul>
+
+<h3 id="liquid-jekyll-date-formatting-examples">Liquid Jekyll Date Formatting Examples</h3>
+
+<ul>
+  <li>
+    <p><strong>ISO 8601 Date</strong><sup>5</sup></p>
+
+    <pre><code>{{ page.date | date: "%Y-%m-%d" }}
+</code></pre>
+
+    <p>Output Example 1: <strong>2013-05-03</strong><br>
+Output Example 2: <strong>2013-07-04</strong><br>
+Output Example 3: <strong>2013-09-23</strong><br>
+Output Example 4: <strong>2013-11-26</strong></p>
+  </li>
+  <li>
+    <p><strong>U.S. Numeric Style with Four Digit Years</strong> (With leading zeros.)</p>
+
+    <pre><code>{{ page.date | date: "%m/%d/%Y" }}
+</code></pre>
+
+    <p>Output Example 1: <strong>05/03/2013</strong><br>
+Output Example 2: <strong>07/04/2013</strong><br>
+Output Example 3: <strong>09/23/2013</strong><br>
+Output Example 4: <strong>11/26/2013</strong></p>
+  </li>
+  <li>
+    <p><strong>U.S. Numeric Style with Four Digit Years</strong> (Leading zeros removed.)</p>
+
+    <pre><code>{{ page.date | date: "%-m/%-d/%Y" }}
+</code></pre>
+
+    <p>Output Example 1: <strong>5/3/2013</strong>
+<br>Output Example 2: <strong>7/4/2013</strong> 
+<br>Output Example 3: <strong>9/23/2013</strong>
+<br>Output Example 4: <strong>11/26/2013</strong></p>
+  </li>
+  <li>
+    <p><strong>U.S. Numeric Style with Two Digit Year</strong> (Leading zeros removed.)</p>
+
+    <pre><code>{{ page.date | date: "%-m/%-d/%y"}}
+</code></pre>
+
+    <p>Output Example 1: <strong>5/3/13</strong>
+<br>Output Example 2: <strong>7/4/13</strong> 
+<br>Output Example 3: <strong>9/23/13</strong>
+<br>Output Example 4: <strong>11/26/13</strong></p>
+  </li>
+  <li>
+    <p><strong>Outside U.S. Style with Full Month Name</strong> (Leading zeros removed.)</p>
+
+    <pre><code>{{ page.date | date: "%-d %B %Y"}}
+</code></pre>
+
+    <p>Output Example 1: <strong>3 May 2013</strong>
+<br>Output Example 2: <strong>4 July 2013</strong> 
+<br>Output Example 3: <strong>23 September 2013</strong>
+<br>Output Example 4: <strong>26 November 2013</strong></p>
+  </li>
+  <li>
+    <p><strong>Outside U.S. Style with Non-English Full Month Name</strong> (Leading zeros removed.)</p>
+
+    <p>This example uses the German names for months. Any other language can be used by simply substituting the proper names for each month.</p>
+
+    <pre><code>&lt;!-- Whitespace added for readability --&gt;
+{% assign m = page.date | date: "%-m" %}
+{{ page.date | date: "%-d" }}
+{% case m %}
+  {% when '1' %}Januar
+  {% when '2' %}Februar
+  {% when '3' %}M&amp;auml;rz
+  {% when '4' %}April
+  {% when '5' %}Mai
+  {% when '6' %}Juni
+  {% when '7' %}Juli
+  {% when '8' %}August
+  {% when '9' %}September
+  {% when '10' %}Oktober
+  {% when '11' %}November
+  {% when '12' %}Dezember
+{% endcase %}
+{{ page.date | date: "%Y" }}
+</code></pre>
+
+    <p>Output Example 1: <strong>3 Mai 2013</strong>
+<br>Output Example 2: <strong>4 Juli 2013</strong> 
+<br>Output Example 3: <strong>23 September 2013</strong>
+<br>Output Example 4: <strong>26 November 2013</strong></p>
+  </li>
+  <li>
+    <p><strong>U.S. Style with Full Month Name</strong> (Leading zeros removed.)</p>
+
+    <pre><code>{{ page.date | date: "%B %-d, %Y" }}
+</code></pre>
+
+    <p>Output Example 1: <strong>May 3, 2013</strong>
+<br>Output Example 2: <strong>July 4, 2013</strong> 
+<br>Output Example 3: <strong>September 23, 2013</strong>
+<br>Output Example 4: <strong>November 26, 2013</strong></p>
+  </li>
+  <li>
+    <p><strong>U.S. Style with Full Month Names and Ordinalized Days</strong> (Leading zeros removed.)</p>
+
+    <pre><code>&lt;!-- Whitespace added for readability --&gt;
+{% assign d = page.date | date: "%-d"  %}
+{{ page.date | date: "%B" }} 
+{% case d %}
+  {% when '1' or '21' or '31' %}{{ d }}st
+  {% when '2' or '22' %}{{ d }}nd
+  {% when '3' or '23' %}{{ d }}rd
+  {% else %}{{ d }}th
+  {% endcase %}, 
+{{ page.date | date: "%Y" }}
+</code></pre>
+
+    <p>Output Example 1: <strong>May 3rd, 2013</strong>
+<br>Output Example 2: <strong>July 4th, 2013</strong> 
+<br>Output Example 3: <strong>September 23rd, 2013</strong>
+<br>Output Example 4: <strong>November 26th, 2013</strong></p>
+  </li>
+  <li>
+    <p><strong>U.S. Style with AP Month Abbreviations and Ordinalized Days</strong> (Leading zeros removed.)</p>
+
+    <pre><code>&lt;!-- Whitespace added for readability --&gt;
+{% assign d = page.date | date: "%-d" %} 
+{% assign m = page.date | date: "%B" %} 
+
+{% case m %}
+  {% when 'April' or 'May' or 'June' or 'July' %}{{ m }}
+  {% when 'September' %}Sept.
+  {% else %}{{ page.date | date: "%b" }}.
+  {% endcase %}
+{% case d %}
+  {% when '1' or '21' or '31' %}{{ d }}st
+  {% when '2' or '22' %}{{ d }}nd
+  {% when '3' or '23' %}{{ d }}rd
+  {% else %}{{ d }}th
+  {% endcase %}, 
+{{ page.date | date: "%Y" }}
+</code></pre>
+
+    <p>Output Example 1: <strong>May 3rd, 2013</strong>
+<br>Output Example 2: <strong>July 4th, 2013</strong> 
+<br>Output Example 3: <strong>Sept. 23rd, 2013</strong>
+<br>Output Example 4: <strong>Nov. 26th, 2013</strong></p>
+  </li>
+  <li>
+    <p><strong>U.S. Style Full Day and Full Month Names</strong> (Leading zeros removed.)</p>
+
+    <pre><code>{{ page.date | date: "%A, %B %-d, %Y" }}
+</code></pre>
+
+    <p>Output Example 1: <strong>Friday, May 3, 2013</strong>
+<br>Output Example 2: <strong>Thursday, July 4, 2013</strong> 
+<br>Output Example 3: <strong>Monday, September 23, 2013</strong>
+<br>Output Example 4: <strong>Tuesday, November 26, 2013</strong></p>
+  </li>
+  <li>
+    <p><strong>Chicago Manual of Style Day Abbreviations and U.S. Style Date</strong> (With "Thurs." and "Tues.")</p>
+
+    <pre><code>&lt;!-- Whitespace added for readability --&gt;
+{% assign dy = page.date | date: "%a" %}
+{% case dy %}
+  {% when "Tue" %}Tues
+  {% when "Thu" %}Thurs
+  {% else %}{{ dy }}
+  {% endcase %}. 
+~
+{{ page.date | date: "%B" }} 
+{{ page.date | date: "%-d" }}, 
+{{ page.date | date: "%Y" }}
+</code></pre>
+
+    <p>Output Example 1: <strong>Fri. ~ May 3, 2013</strong>
+<br>Output Example 2: <strong>Thurs. ~ July 4, 2013</strong> 
+<br>Output Example 3: <strong>Mon. ~ September 23, 2013</strong>
+<br>Output Example 4: <strong>Tues. ~ November 26, 2013</strong></p>
+  </li>
+</ul>
+
+<h3 id="individual-component-snippets-for-liquid-date-formatting">Individual Component Snippets for Liquid Date Formatting</h3>
+
+<p>These individual snippets are for a few of the tricker formatting filters. Some that weren't used in the examples above. For those interested in the approach, the hack I'm using to remove leading zeros is to add "0" to the string. This turns the string into an integer. When the integer is rendered back as a string the leading zero disappears. Hurray for dynamic typing.</p>
+
+<ul>
+  <li>
+    <p><strong>Numeric Month with Leading Zeros Removed</strong></p>
+
+    <pre><code>{{ page.date | date: "%-m" }}
+</code></pre>
+  </li>
+  <li>
+    <p><strong>Numeric Day with Leading Zeros Removed</strong></p>
+
+    <pre><code>{{ page.date | date: "%-d" }}
+</code></pre>
+  </li>
+  <li>
+    <p><strong>Ordinalized Numeric Day with Leading Zeros Removed</strong></p>
+
+    <pre><code>{% assign d = page.date | date: "%-d" %}
+{% case d %}
+  {% when '1' or '21' or '31' %}{{ d }}st
+  {% when '2' or '22' %}{{ d }}nd
+  {% when '3' or '23' %}{{ d }}rd
+  {% else %}{{ d }}th
+  {% endcase %}
+</code></pre>
+  </li>
+  <li>
+    <p><strong>AP Style Month Abbreviations</strong></p>
+
+    <pre><code>{% assign m = page.date | date: "%B" %}
+{% case m %}
+  {% when 'April' or 'May' or 'June' or 'July' %}{{ m }}
+  {% when 'September' %}Sept.
+  {% else %}{{ page.date | date: "%b" }}.
+  {% endcase %}
+</code></pre>
+
+    <p>(Produces: "Jan.", "Feb.", "Mar.", "April", "May", "June", "July", "Aug.", "Sept.", "Oct.", "Nov.", "Dec.")</p>
+  </li>
+  <li>
+    <p><strong>Chicago Manual of Style Day Abbreviations</strong></p>
+
+    <pre><code>{% assign dy = page.date | date: "%a" %}
+{% case dy %}
+  {% when "Tue" %}Tues
+  {% when "Thu" %}Thurs
+  {% else %}{{ dy }}
+  {% endcase %}.
+</code></pre>
+
+    <p>(Produces: "Sun.", "Mon.", "Tues.", "Wed.", "Thurs.", "Fri.", "Sat.")</p>
+  </li>
+  <li>
+    <p><strong>Chicago Manual of Style Month Abbreviations</strong></p>
+
+    <pre><code>{% assign m = page.date | date: "%B" %}
+{% case m %}
+  {% when 'May' or June' or 'July' %}{{ m }}
+  {% when 'September' %}Sept.
+  {% else %}{{ page.date | date: "%b" }}.
+  {% endcase %}
+</code></pre>
+
+    <p>(Produces: "Jan.", "Feb.", "Mar.", "Apr.", "May", "June", "July", "Aug.", "Sept.", "Oct.", "Nov.", "Dec.")</p>
+  </li>
+  <li>
+    <p><strong>Non-English Month Names</strong></p>
+
+    <pre><code>{% assign m = page.date | date: "%-m" %}
+{% case m %}
+  {% when '1' %}Januar
+  {% when '2' %}Februar
+  {% when '3' %}M&amp;auml;rz
+  {% when '4' %}April
+  {% when '5' %}Mai
+  {% when '6' %}Juni
+  {% when '7' %}Juli
+  {% when '8' %}August
+  {% when '9' %}September
+  {% when '10' %}Oktober
+  {% when '11' %}November
+  {% when '12' %}Dezember
+{% endcase %}
+</code></pre>
+
+    <p>(Produces: "Januar", "Febuar", "März", "April", "Mai", "Juni", "Juli", "August", "September", "Oktober", "November", "Dezember")</p>
+  </li>
+</ul>
+
+<p>With that, you should be in pretty good shape. If you can't directly create what you need from the above samples or snippets you should at least be able to use a similar approach to piece together what you need.</p>
+
+<hr>
+
+<p><em>Notes on the Examples</em></p>
+
+<ol>
+  <li>The hour, minute and second parts of the full date/time stamp aren't being used because Jekyll tends to zero them out.</li>
+  <li>In some of the examples, the code is split to multiple lines to help readability. If it's a natural break point where white space already exists, this won't effect HTML rendering. In some cases, it will introduce unwanted white space. Simply move everything back to one line to create the desired presentation.</li>
+  <li>Since the original version of this post went up, updates have been made to use the cleaner version of <code>{{ page.date | date: "%-m" }}</code> instead of <code>{{ page.date | date: "%m" | plus:'0' }}</code> and <code>{{ page.date | date: "%-d" }}</code> instead of <code>{{ page.date | date: "%d" | plus:'0' }}</code> to remove leading zeros.</li>
+  <li>An additional update was made to add an example for non-English month names.</li>
+</ol>
+
+<p><em>Footnotes</em></p>
+
+<ol>
+  <li>These examples were create on a Mac running OS X 10.8.5 with: Ruby 2.0.0p247 - Jekyll 1.2.1 - liquid 2.5.2. Your mileage may vary.</li>
+  <li>The main <a href="http://jekyllrb.com/">Jekyll website</a> provides a great overview of the software. You can learn even more with a visit to the <a href="https://github.com/mojombo/jekyll">Jekyll's GitHub Repo</a>.</li>
+  <li><a href="http://wiki.shopify.com/Liquid">Shopify's Liquid template engine</a>. "A small and fast template language which is quick to learn but very powerful for full customization."</li>
+  <li>The Liquid Date Filter <a href="http://wiki.shopify.com/Date">offers some basic formatting elements</a> and is the basis of these code snippets. Note that in some cases "post.date" might be required instead of "page.date".</li>
+  <li>Observant readers will notice that as of the time this post went live, my design still uses a date format with leading zeros. I have the solution, it just hasn't been implement yet. It'll go in with the next set of design changes.</li>
+  <li><a href="http://en.wikipedia.org/wiki/ISO_8601">ISO 8601</a> - "Data elements and interchange formats - Information interchange - Representation of dates and times is an international standard covering the exchange of date and time-related data." A perfect example of how Time really is <a href="http://www.youtube.com/watch?v=vY_Ry8J_jdw">wibbly wobbly timey wimey… stuff</a>.</li>
+</ol>
+
+
+	
