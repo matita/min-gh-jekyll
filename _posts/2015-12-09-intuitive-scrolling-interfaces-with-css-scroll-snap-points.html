@@ -1,0 +1,139 @@
+---
+title: "Intuitive Scrolling Interfaces with CSS Scroll Snap Points"
+description: "The CSS Scroll Snap Points spec is gaining more and more browser support and the standard has been refined. Simon breaks down the properties with examples."
+link: "http://www.sitepoint.com/intuitive-scrolling-interfaces-with-css-scroll-snap-points/"
+saved: "2015-12-09 17:17:41"
+---
+
+    <p>Scroll Snap Points are a native CSS-only technique that you can use to create layouts where your content is easily scrolled or panned. With this new feature you can easily control how your content will scroll and how it will ‘snap’ to the correct locations (letting you create features such as pagination with ease).</p>
+<p>Historically developers have used JavaScript (often jQuery) to create perfect smooth-scrolling, snapping interfaces. While these work just fine, having a native CSS approach that does essentially the same thing is always better.</p>
+<p>The <a href="https://drafts.csswg.org/css-snappoints/">specification for Snap Points</a> is still relatively new (and under development); however it’s supported by a few browsers and is stable enough for us to start playing around with.</p>
+<p><img src="http://dab1nmslvvntp.cloudfront.net/wp-content/uploads/2015/12/1449529749snappoints-01.gif" alt="Creating a cool scrolling region with just CSS snap points" width="800" height="432" class="aligncenter size-full wp-image-120699"></p>
+<div class="ArticleBox u-inline"><h3 class="ArticleBox_header t-bg">
+                    <span class="ArticleBox_icon fa fa-pencil"></span> More from this author
+                 </h3><div class="ArticleBox_content"><ul class="ArticleBox_list t-list"><li><a href="http://www.sitepoint.com/using-the-battery-status-api-to-optimize-your-development/?utm_source=sitepoint&amp;utm_medium=relatedinline&amp;utm_term=html-css&amp;utm_campaign=relatedauthor">Using the Battery Status API to Optimize Your Development</a></li><li><a href="http://www.sitepoint.com/interactive-video-showcase-video-api/?utm_source=sitepoint&amp;utm_medium=relatedinline&amp;utm_term=html-css&amp;utm_campaign=relatedauthor">Creating an Interactive Video Showcase with the Video API</a></li></ul></div></div>
+<h2 id="an-overview-of-snap-points">An Overview of Snap Points</h2>
+<p>Snap point scrolling works by defining a <strong>Scroll Container</strong> element and then setting each of its inner elements to be <strong>Snap Points.</strong> Once these elements have been set, normal scrolling will be modified so that as users scroll/pan they will be snapped from one snap point to the next.</p>
+<p>The main element that holds all of your other elements you wish to scroll between is called the <strong>Scroll Container</strong>. This is our main element and the majority of the snap-related properties will be set here. We can define:</p>
+<ul>
+<li>How tall/wide the container will be </li>
+<li>On which axis/axes the container will scroll (i.e. X, Y, or both) </li>
+<li>The strength of the snap elements and how they will react to scrolling</li>
+<li>The positions/offsets from the container to the snap elements as you scroll </li>
+</ul>
+<p>The elements inside the scroll container will become our “Snap Points”. It’s this content that will be scrolled/panned to when we interact with the container. For an individual snap point you will define:</p>
+<ul>
+<li>The offset of the current snap element against the scroll container. </li>
+</ul>
+<p><img src="http://dab1nmslvvntp.cloudfront.net/wp-content/uploads/2015/12/1449529757snappoints-02.gif" alt="Horizontal scrolling made easy, one image at a time" width="273" height="275" class="aligncenter size-full wp-image-120700"></p>
+<p><img src="http://dab1nmslvvntp.cloudfront.net/wp-content/uploads/2015/12/1449529764snappoints-03.gif" alt="Vertical sliders are great for breaking up your content" width="275" height="272" class="aligncenter size-full wp-image-120701"></p>
+<h2 id="the-scroll-snap-points-properties">The Scroll Snap Points Properties</h2>
+<p>Getting Snap Points to work in your projects involves only a few CSS properties. Let’s outline these below and then later when can look at a few examples that showcase how they work.</p>
+<h3 id="scroll-snap-destination"><code class=" language-undefined">scroll-snap-destination</code></h3>
+<p>This property is set on the <strong>scroll container</strong> and it defines the <strong>X position</strong> and <strong>Y position</strong> values (relative to itself) that the elements inside will snap to. You use this property to tell the container exactly where its elements will be snapped to.</p>
+<p>Here are the possible values:</p>
+<ul>
+<li><code class=" language-undefined">unset</code> – Used to declare that this container is not a scroll container (by default no containers are unless you set it)</li>
+<li><code class=" language-undefined">position</code> – You must set both the X and Y position or the browser will ignore your property 
+<ul>
+<li>Value can be in pixels such as <code class=" language-undefined">scroll-snap-destination: 50px 100px;</code> which tells the browser that it will snap elements from 50px to the left and 100px from the top.</li>
+<li>Value can be a set of percentages such as <code class=" language-undefined">scroll-snap-destination: 0% 100%;</code> which tells the browser that it will snap elements from 0% to the left and 100% from the top.</li>
+<li>Value can also be other allowed units such as <code class=" language-undefined">scroll-snap-destination: 0vw 50vw</code> which tells the browser that it will snap elements from 0% of the current viewport height to the left and 50% of the current viewport height to the top. </li>
+</ul>
+</li>
+</ul>
+<p>Let’s look at a few visual aids so you can see how this property works (as it’s one of those properties you will need to adjust until you get the correct effect).</p>
+<p><strong>scroll-snap-destination: 0% 0%</strong> <br>
+Setting the scroll destination to 0% will ensure that all inner elements snap to the leading left edge of the container.</p>
+<p><img src="http://dab1nmslvvntp.cloudfront.net/wp-content/uploads/2015/12/1449529769snappoints-04.jpg" alt="scroll-snap-destination: 0% 0%" width="932" height="514" class="aligncenter size-full wp-image-120702"></p>
+<p><strong>scroll-snap-destination: 50% 0%</strong> <br>
+Here we set the scroll container to snap content at 50% of its width. This means that as we scroll, the active element will snap to the left hand side of the 50% position.</p>
+<p><img src="http://dab1nmslvvntp.cloudfront.net/wp-content/uploads/2015/12/1449529774snappoints-05.jpg" alt="scroll-snap-destination: 50% 0%" width="932" height="514" class="aligncenter size-full wp-image-120703"></p>
+<p><strong>scroll-snap-destination: 100% 0%</strong> <br>
+This time our snap destination is 100%. This means each of the inner elements will snap to the right side of the container as we scroll.</p>
+<p><img src="http://dab1nmslvvntp.cloudfront.net/wp-content/uploads/2015/12/1449529778snappoints-06.jpg" alt="scroll-snap-destination: 100% 0%" width="932" height="514" class="aligncenter size-full wp-image-120704"></p>
+<h3 id="scroll-snap-coordinate"><code class=" language-undefined">scroll-snap-coordinate</code></h3>
+<p>This property is defined on each <strong>snap element</strong> and determines the <strong>X position</strong> and <strong>Y position</strong> values where this element will snap to. This property works together with the <code class=" language-undefined">scroll-snap-destination</code> declared on the container and determines the element’s offset from the snap point.</p>
+<ul>
+<li><code class=" language-undefined">none</code> – There will be no offset for this element. It will snap directly where the scroll container has defined.</li>
+<li><code class=" language-undefined">position</code> – You must set both the <strong>X</strong> and <strong>Y</strong> position for this to work. 
+<ul>
+<li>Value can be in pixels such as <code class=" language-undefined">scroll-snap-coordinate: 100px 0px</code>, which tells the browser the snap element will be offset by 100px from the left edge of the snap point and 0px from the top. </li>
+<li>Value can use percentages such as <code class=" language-undefined">scroll-snap-coordinate: 25% 0%</code>, which tells the browser that the element will be offset by 25% of its width from the left edge of the snap point (and also offset by 0% from the top).</li>
+<li>Value can also be other allowed measurements such as <code class=" language-undefined">scroll-snap-coordinate: 15vw 15vw</code> which will mean the snap element is offset by both 15% of the viewport width from the top and left of the snap container.</li>
+<li><code class=" language-undefined">position (multiple)</code> – You can also set multiple coordinates for the snap element by passing set pairs such as <code class=" language-undefined">scroll-snap-coordinate: 50% 0%, 100% 0%</code> which tells the browser this element will snap to 50% of its width from the leading left edge of the snap point (and 0% from the top) and it will also snap to 100% of its width from the snap point edge (and 0% from the top). This is useful because sometimes at the start or end of a scrolling list an item should snap in multiple places, not just one.</li>
+</ul>
+</li>
+</ul>
+<p>If this property is not set, the element will simply snap as defined by the scroll container. If you do set the <code class=" language-undefined">scroll-snap-coordinate</code> property, the element itself will offset itself depending on what you enter. This is mainly used so you can position your elements just right (or to allow other content to peek through the viewport).</p>
+<p>Let’s look at some examples for <code class=" language-undefined">scroll-snap-coordinate</code> with a description of what each one does:</p>
+<p><strong>scroll-snap-coordinate: 50% 0%</strong> <br>
+This tells the browser that the element should snap towards the set edge of the scroll container, but that its snap should offset itself by 50% of its width to the left. This basically means that it will center align itself to the snap point.</p>
+<p><img src="http://dab1nmslvvntp.cloudfront.net/wp-content/uploads/2015/12/1449529736snappoints-07.jpg" alt="scroll-snap-coordinate: 50% 0%" width="1011" height="558" class="aligncenter size-full wp-image-120697"></p>
+<p><strong>scroll-snap-coordinate: 0% 0% and scroll-snap-coordinate: 0% -50px</strong> <br>
+Here we see a side by side comparison so we can look at what happens when you specify that your elements will have a negative offset.</p>
+<p>For the example on the left, we don’t set the coordinate property (it will just snap to its parent’s container). The example on the right, we explicitly tell the browser to offset the vertical snap position by -50px (which lets another element before it sneak in).</p>
+<p><img src="http://dab1nmslvvntp.cloudfront.net/wp-content/uploads/2015/12/1449529741snappoints-08.jpg" alt="scroll-snap-coordinate: 0% 0% and scroll-snap-coordinate: 0% -50px" width="1131" height="1108" class="aligncenter size-full wp-image-120698"></p>
+<p>You can adjust the coordinate properties until your snaps work for your interface.</p>
+<h3 id="scroll-snap-type"><code class=" language-undefined">scroll-snap-type</code></h3>
+<p>This property determines how strongly the scroll container will snap to its inner elements. Here are the possible values:</p>
+<ul>
+<li><code class=" language-undefined">none</code> – The scroll container ignores all snap points (scrolls normally)</li>
+<li><code class=" language-undefined">mandatory</code> – The scroll container will move to the next snap element during even a small scroll or single click on the scroll bar. The scroll container will immediately move and align itself with the snap point. This is best used you want to be 100% sure that as your user scrolls they will always snap to the next element.</li>
+<li><code class=" language-undefined">proximity</code> – The scroll container will move to the next snap element only if it is somewhat close to a snap point. As the user scrolls or clicks on the scroll bar, the scrolling motion will seem to be normal, however if the user gets close to the edge of a snap element it will then snap into place. This is best used when you want your users to be able to scroll freely, but would like the scroll container to snap to content if it gets close enough (somewhat like a magnet).</li>
+</ul>
+<p>I find using <code class=" language-undefined">mandatory</code> works the best as it’s a hard forced snap, however <code class=" language-undefined">proximity</code> also works well with its softer snap between zones (the downside is there is no way to customize how sensitivity of when it will snap)</p>
+<h3 id="scroll-snap-points-x-and-scroll-snap-points-y"><code class=" language-undefined">scroll-snap-points-x</code> and <code class=" language-undefined">scroll-snap-points-y</code></h3>
+<p>If you view the <a href="http://www.w3.org/TR/css-snappoints-1/">current version of the spec</a> you’ll notice it includes descriptions for the <code class=" language-undefined">scroll-snap-points-x</code> and <code class=" language-undefined">scroll-snap-points-y</code> properties. As pointed out in <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/scroll-snap-points-x">a notice on MDN</a>, these two properties have been deprecated and so they’re not included in the <a href="https://drafts.csswg.org/css-snappoints/">editor’s draft of the spec</a>. So I won’t go into details on those here.</p>
+<h2 id="practical-examples-with-scroll-snap-points">Practical Examples with Scroll Snap Points</h2>
+<p>Now that we’ve covered the basics, lets jump into some examples so you can see how this all works in practice.</p>
+<p>Each of the examples below has its own CodePen with even more notes that discuss exactly how the scrolling works (plus a few little design bugs you might run into). Feel free to fork your own copies and create something fun with them.</p>
+<h3 id="a-full-width-interactive-section-scroller">A full-width interactive section scroller</h3>
+<p>The great thing about CSS Snap Points is how easy they are to implement. All you do is define your container, its elements, and how it will snap. Look at the additional full-width container slider I have built below. Here’s what it contains:</p>
+<ul>
+<li>Full-width outer container (using vw and vh units)</li>
+<li>Each section has its own dynamic height, not a set height with px</li>
+<li>On scroll, each section is snapped to the top of the scroll container </li>
+</ul>
+<p><a href="http://codepen.io/SitePoint/pen/EPapXK/"><strong>See Full Page Demo</strong></a></p>
+<h3 id="dynamic-gallery-slider-with-differently-sized-images">Dynamic gallery slider with differently-sized images</h3>
+<p>This gallery contains images of all different shapes, sizes and aspect ratios. Here’s a description:</p>
+<ul>
+<li>Handles different image sizes and aspect ratios (so a real life example)</li>
+<li>Snaps content to the center of the container</li>
+<li>It’s responsive. Works based on either an auto width / height with additional maximums set by max-width / max-height. Images are adjusted to fit within (and their scroll positions updated).</li>
+<li>Uses a combination of <code class=" language-undefined">scroll-snap-destination</code> and <code class=" language-undefined">scroll-snap-coordinate</code> to handle the snapping</li>
+</ul>
+<div><iframe id="cp_embed_XXJPKg" src="http://codepen.io/SitePoint/embed/XXJPKg?height=630&amp;theme-id=6441&amp;slug-hash=XXJPKg&amp;default-tab=result&amp;user=SitePoint" scrolling="no" frameborder="0" height="630" allowtransparency="true" allowfullscreen="true" name="CodePen Embed" title="CodePen Embed" class="cp_embed_iframe undefined"></iframe></div>
+<p></p>
+<p>And here is the vertical scrolling example:</p>
+<div><iframe id="cp_embed_MKYqJJ" src="http://codepen.io/SitePoint/embed/MKYqJJ?height=884&amp;theme-id=6441&amp;slug-hash=MKYqJJ&amp;default-tab=result&amp;user=SitePoint" scrolling="no" frameborder="0" height="884" allowtransparency="true" allowfullscreen="true" name="CodePen Embed" title="CodePen Embed" class="cp_embed_iframe undefined"></iframe></div>
+<p></p>
+<h3 id="responsive-gallery-slider-with-equal-size-images">Responsive gallery slider with equal-size images</h3>
+<p>For this example, all of our images are the same size. In addition, the images themselves will be responsive, using bottom padding to make them perfectly square. As the viewport resizes, they will resize accordingly (up to a set maximum width).</p>
+<ul>
+<li>Fully responsive, width 100% with padding 0% to create a perfectly responsive square gallery</li>
+<li>Shows one image at a time by using either<code class=" language-undefined">snap-scroll-points-x</code>or <code class=" language-undefined">snap-scroll-points-y</code> to move horizontally or vertically through the gallery.</li>
+</ul>
+<div><iframe id="cp_embed_NxPObv" src="http://codepen.io/SitePoint/embed/NxPObv?height=763&amp;theme-id=6441&amp;slug-hash=NxPObv&amp;default-tab=result&amp;user=SitePoint" scrolling="no" frameborder="0" height="763" allowtransparency="true" allowfullscreen="true" name="CodePen Embed" title="CodePen Embed" class="cp_embed_iframe undefined"></iframe></div>
+<p></p>
+<p>And here is a vertical example:</p>
+<div><iframe id="cp_embed_XXJxMo" src="http://codepen.io/SitePoint/embed/XXJxMo?height=711&amp;theme-id=6441&amp;slug-hash=XXJxMo&amp;default-tab=result&amp;user=SitePoint" scrolling="no" frameborder="0" height="711" allowtransparency="true" allowfullscreen="true" name="CodePen Embed" title="CodePen Embed" class="cp_embed_iframe undefined"></iframe></div>
+<p></p>
+<h2 id="browser-support-for-snap-points">Browser Support for Snap Points</h2>
+<p>Details on browser support for Snap Points <a href="http://caniuse.com/#feat=css-snappoints">can be found on Can I Use</a>, but here’s a quick summary, as of this writing:</p>
+<ul>
+<li>Firefox 39+ – Fully supported for current specification.</li>
+<li>IE10 – Requires a touch device for this to work and requires the <code class=" language-undefined">-ms</code> prefix.</li>
+<li>IE11 – Can use snap points on either a touch screen, mouse, keyboard, or trackpad and requires the <code class=" language-undefined">-ms</code> prefix.</li>
+<li>Edge – Much like IE10 and IE11, supports snap points with the <code class=" language-undefined">-ms</code> prefix</li>
+<li>Safari 9 – Supports snap points but doesn’t support the <code class=" language-undefined">none</code> keyword for the <code class=" language-undefined">scroll-snap-coordinate</code> property. Also, doesn’t support length keywords of <code class=" language-undefined">top</code>, <code class=" language-undefined">right</code>, <code class=" language-undefined">left</code>, or <code class=" language-undefined">bottom</code> for the <code class=" language-undefined">scroll-snap-destination</code> and <code class=" language-undefined">scroll-snap-coordinate</code> properties.</li>
+<li>iOS Safari 9 – Requires <code class=" language-undefined">-webkit</code> prefix (this is the only mobile browser that supports Snap Points)</li>
+</ul>
+<p>Basically we have <strong>great support if you’re on Firefox</strong>, <strong>average support on Internet Explorer / Edge</strong> and <strong>basic support on Safari</strong>. Chrome Canary (Google’s bleeding edge version of Chrome) has support for Snap Points so it should find itself in stable Chrome soon.</p>
+<p>Sadly If you’re hoping to use this on mobile apps, it might take a while before most of the major browsers support it.</p>
+<p>If you’re interested in using Snap Points today, you can try <a href="https://github.com/ckrack/scrollsnap-polyfill">a polyfill</a> by Clemens Krack.</p>
+<h2 id="conclusion">Conclusion</h2>
+<p>I hope you now you have a fairly solid understanding of CSS Snap Points and how they can be leveraged to create interesting and easy to manage user interfaces. Going forward, support will spread fully to Chrome and IE and then we can start pushing for its inclusion in upcoming projects.</p>
+<p>I’d love to hear from you if you end up implementing snap points in one of your projects!</p>
+  
