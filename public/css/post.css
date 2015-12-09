@@ -46,6 +46,12 @@ pre { padding: 1em; background: #eee; font-size: 14px; overflow: auto; }
 blockquote { border-left: 5px solid #ddd; margin-left: 0; padding-left: 1em; }
 #html-content { width: 100%; display: block; height: 300px; }
 
+figcaption {
+  font-size: .8em;
+  text-align: center;
+  color: #999;
+}
+
 .progress-bar {
   position: fixed;
   top: 0;
