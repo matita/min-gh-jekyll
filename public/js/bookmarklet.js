@@ -144,11 +144,11 @@ function analyze(doc, href) {
     }
 
     // remove unrelated divs
-    var uselessRegexp = /\b(ad|comments|meta|social)\b/;
+    var uselessRegexp = /\b(ad|comments|meta|social|shar(e|ing))\b/;
     nodes = node.querySelectorAll('div');
     for (i = 0; i < nodes.length; i++) {
       n = nodes[i];
-      if (uselessRegexp.test(n.className) || )
+      if (uselessRegexp.test(n.className) || uselessRegexp.test(n.id))
         n.parentNode.removeChild(n);
     }
 
