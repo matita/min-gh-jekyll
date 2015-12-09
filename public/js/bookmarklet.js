@@ -9,9 +9,6 @@ function analyze(doc, href) {
   console.log('url:', href);
   var url = sanitizeUrl(href);
   console.log('sanitized url:', url);
-  var base = document.createElement('base');
-  base.href = url;
-  doc.head.appendChild(base);
 
 
   var filename = getFileName(title);

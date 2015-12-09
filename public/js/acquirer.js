@@ -20,6 +20,9 @@ function receiveMessage(e) {
   var data = e.data;
   var doc = document.implementation.createHTMLDocument();
   doc.head.innerHTML = data.head;
+  var base = doc.createElement('base');
+  base.href = origin;
+  doc.head.appendChild(base);
   doc.body.innerHTML = data.body;
 
   post = analyze(doc, origin);
