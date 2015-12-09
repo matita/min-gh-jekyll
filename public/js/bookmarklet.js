@@ -184,6 +184,15 @@ function analyze(doc, href) {
     }
 
     removeAttributes(node);
+
+    // remove unrelated divs
+    var uselessRegexp = /\b(ad|comments|meta)\b/;
+    nodes = node.querySelectorAll('div');
+    for (i = 0; i < nodes.length; i++) {
+      n = nodes[i];
+      if (uselessRegexp.test(n.className))
+        n.parentNode.removeChild(n);
+    }
   }
 
 
