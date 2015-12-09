@@ -20,7 +20,7 @@ body {
   background: #fff;
   border-bottom: 1px solid #eee;
   color: #333;
-  padding: 1em;
+  padding: 2em;
   text-decoration: none;
   margin-top: 0;
   margin-bottom: 0;
@@ -32,7 +32,6 @@ body {
 
 .link-title {
   margin-top: 0;
-  margin-bottom: 0;
   font-size: 1.2em;
   color: #6a9fb5;
 }
