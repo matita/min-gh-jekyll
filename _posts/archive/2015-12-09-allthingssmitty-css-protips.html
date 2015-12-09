@@ -1,0 +1,220 @@
+---
+title: "AllThingsSmitty/css-protips"
+description: "css-protips - A collection of tips to help take your CSS skills pro"
+link: "https://github.com/AllThingsSmitty/css-protips"
+saved: "2015-12-09 11:11:04"
+---
+<h1><a id="user-content-css-protips" class="anchor" href="https://github.com/AllThingsSmitty/css-protips#css-protips" aria-hidden="true"><span class="octicon octicon-link"></span></a>CSS Protips</h1>
+
+<p>A collection of tips to help take your CSS skills pro.</p>
+
+<ol>
+<li><a href="https://github.com/AllThingsSmitty/css-protips#use-not-to-applyunapply-borders-on-navigation">Use <code>:not()</code> to Apply/Unapply Borders on Navigation</a></li>
+<li><a href="https://github.com/AllThingsSmitty/css-protips#add-line-height-to-body">Add Line-Height to <code>body</code></a></li>
+<li><a href="https://github.com/AllThingsSmitty/css-protips#vertically-center-anything">Vertically-Center Anything</a></li>
+<li><a href="https://github.com/AllThingsSmitty/css-protips#comma-separated-lists">Comma-Separated Lists</a></li>
+<li><a href="https://github.com/AllThingsSmitty/css-protips#select-items-using-negative-nth-child">Select Items Using Negative <code>nth-child</code></a></li>
+<li><a href="https://github.com/AllThingsSmitty/css-protips#use-svg-for-icons">Use SVG for Icons</a></li>
+<li><a href="https://github.com/AllThingsSmitty/css-protips#text-display-optimization">Text Display Optimization</a></li>
+<li><a href="https://github.com/AllThingsSmitty/css-protips#use-max-height-for-pure-css-sliders">Use <code>max-height</code> for Pure CSS Sliders</a></li>
+<li><a href="https://github.com/AllThingsSmitty/css-protips#inherit-box-sizing">Inherit <code>box-sizing</code></a></li>
+<li><a href="https://github.com/AllThingsSmitty/css-protips#equal-width-table-cells">Equal Width Table Cells</a></li>
+<li><a href="https://github.com/AllThingsSmitty/css-protips#get-rid-of-margin-hacks-with-flexbox">Get Rid of Margin Hacks With Flexbox</a></li>
+<li><a href="https://github.com/AllThingsSmitty/css-protips#use-attribute-selectors-with-empty-links">Use Attribute Selectors with Empty Links</a></li>
+<li><a href="https://github.com/AllThingsSmitty/css-protips#style-default-links">Style "Default" Links</a></li>
+</ol>
+
+<h3><a id="user-content-use-not-to-applyunapply-borders-on-navigation" class="anchor" href="https://github.com/AllThingsSmitty/css-protips#use-not-to-applyunapply-borders-on-navigation" aria-hidden="true"><span class="octicon octicon-link"></span></a>Use <code>:not()</code> to Apply/Unapply Borders on Navigation</h3>
+
+<p>Instead of putting on the border...</p>
+
+<div class="highlight highlight-source-css"><pre><span class="pl-c">/* add border */</span>
+<span class="pl-e">.nav</span> <span class="pl-ent">li</span> {
+  <span class="pl-c1"><span class="pl-c1">border-right</span></span>: <span class="pl-c1">1<span class="pl-k">px</span></span> <span class="pl-c1">solid</span> <span class="pl-c1">#666</span>;
+}</pre></div>
+
+<p>...and then taking it off the last element...</p>
+
+<div class="highlight highlight-source-css"><pre><span class="pl-c">/* remove border */</span>
+<span class="pl-e">.nav</span> <span class="pl-ent">li</span><span class="pl-e">:last-child</span> {
+  <span class="pl-c1"><span class="pl-c1">border-right</span></span>: <span class="pl-c1">none</span>;
+}</pre></div>
+
+<p>...use the <code>:not()</code> pseudo-class to only apply to the elements you want:</p>
+
+<div class="highlight highlight-source-css"><pre><span class="pl-e">.nav</span> <span class="pl-ent">li</span><span class="pl-e">:not</span>(<span class="pl-e">:last-child</span>) {
+  <span class="pl-c1"><span class="pl-c1">border-right</span></span>: <span class="pl-c1">1<span class="pl-k">px</span></span> <span class="pl-c1">solid</span> <span class="pl-c1">#666</span>;
+}</pre></div>
+
+<p>Sure, you can use <code>.nav li + li</code> or even <code>.nav li:first-child ~ li</code>, but with <code>:not()</code> the intent is very clear and the CSS selector defines the border the way a human would describe it.</p>
+
+<h3><a id="user-content-add-line-height-to-body" class="anchor" href="https://github.com/AllThingsSmitty/css-protips#add-line-height-to-body" aria-hidden="true"><span class="octicon octicon-link"></span></a>Add Line-Height to <code>body</code></h3>
+
+<p>You don't need to add <code>line-height</code> to each <code>&lt;p&gt;</code>, <code>&lt;h*&gt;</code>, <em>et al</em>. separately. Instead, add it to <code>body</code>:</p>
+
+<div class="highlight highlight-source-css"><pre><span class="pl-ent">body</span> {
+  <span class="pl-c1"><span class="pl-c1">line-height</span></span>: <span class="pl-c1">1</span>;
+}</pre></div>
+
+<p>This way textual elements can inherit from <code>body</code> easily.</p>
+
+<h3><a id="user-content-vertically-center-anything" class="anchor" href="https://github.com/AllThingsSmitty/css-protips#vertically-center-anything" aria-hidden="true"><span class="octicon octicon-link"></span></a>Vertically-Center Anything</h3>
+
+<p>No, it's not black magic, you really can center elements vertically:</p>
+
+<div class="highlight highlight-source-css"><pre><span class="pl-ent">html</span>, <span class="pl-ent">body</span> {
+  <span class="pl-c1"><span class="pl-c1">height</span></span>: <span class="pl-c1">100<span class="pl-k">%</span></span>;
+  <span class="pl-c1"><span class="pl-c1">margin</span></span>: <span class="pl-c1">0</span>;
+}
+
+<span class="pl-ent">body</span> {
+  <span class="pl-c1">-webkit-<span class="pl-c1">align</span>-items</span>: <span class="pl-c1">center</span>;  
+  <span class="pl-c1">-ms-<span class="pl-c1">flex</span>-<span class="pl-c1">align</span></span>: <span class="pl-c1">center</span>;  
+  <span class="pl-c1"><span class="pl-c1">align</span>-items</span>: <span class="pl-c1">center</span>;
+  <span class="pl-c1"><span class="pl-c1">display</span></span>: -webkit-flex;
+  <span class="pl-c1"><span class="pl-c1">display</span></span>: flex;
+}</pre></div>
+
+<p>Want to center something else? Vertically, horizontally...anything, anytime, anywhere? CSS-Tricks has <a href="https://css-tricks.com/centering-css-complete-guide/">a nice write-up</a> on doing all of that.</p>
+
+<p><strong>Note:</strong> Watch for some <a href="https://github.com/philipwalton/flexbugs#3-min-height-on-a-flex-container-wont-apply-to-its-flex-items">buggy behavior</a> with flexbox in IE11.</p>
+
+<h3><a id="user-content-comma-separated-lists" class="anchor" href="https://github.com/AllThingsSmitty/css-protips#comma-separated-lists" aria-hidden="true"><span class="octicon octicon-link"></span></a>Comma-Separated Lists</h3>
+
+<p>Make list items look like a real, comma-separated list:</p>
+
+<div class="highlight highlight-source-css"><pre><span class="pl-ent">ul</span> &gt; <span class="pl-ent">li</span><span class="pl-e">:not</span>(<span class="pl-e">:last-child</span>)<span class="pl-e">::after</span> {
+  <span class="pl-c1"><span class="pl-c1">content</span></span>: <span class="pl-s"><span class="pl-pds">"</span>,<span class="pl-pds">"</span></span>;
+}</pre></div>
+
+<p>Use the <code>:not()</code> pseudo-class so no comma is added to the last item.</p>
+
+<h3><a id="user-content-select-items-using-negative-nth-child" class="anchor" href="https://github.com/AllThingsSmitty/css-protips#select-items-using-negative-nth-child" aria-hidden="true"><span class="octicon octicon-link"></span></a>Select Items Using Negative <code>nth-child</code></h3>
+
+<p>Use negative <code>nth-child</code> in CSS to select items 1 through n. </p>
+
+<div class="highlight highlight-source-css"><pre><span class="pl-ent">li</span> {
+  <span class="pl-c1"><span class="pl-c1">display</span></span>: <span class="pl-c1">none</span>;
+}
+
+<span class="pl-c">/* select items 1 through 3 and display them */</span>
+<span class="pl-ent">li</span><span class="pl-e">:nth-child</span>(<span class="pl-c1">-n+3</span>) {
+  <span class="pl-c1"><span class="pl-c1">display</span></span>: <span class="pl-c1">block</span>;
+}</pre></div>
+
+<p>Or, since you've already learned a little about <a href="https://github.com/AllThingsSmitty/css-protips#use-not-to-applyunapply-borders-on-navigation">using <code>:not()</code></a>, try:</p>
+
+<div class="highlight highlight-source-css"><pre><span class="pl-c">/* select items 1 through 3 and display them */</span>
+<span class="pl-ent">li</span><span class="pl-e">:not</span>(<span class="pl-e">:nth-child</span>(<span class="pl-c1">-n+3</span>)) {
+  <span class="pl-c1"><span class="pl-c1">display</span></span>: <span class="pl-c1">none</span>;
+}</pre></div>
+
+<p>Well that was pretty easy.</p>
+
+<h3><a id="user-content-use-svg-for-icons" class="anchor" href="https://github.com/AllThingsSmitty/css-protips#use-svg-for-icons" aria-hidden="true"><span class="octicon octicon-link"></span></a>Use SVG for Icons</h3>
+
+<p>There's no reason not to use SVG for icons:</p>
+
+<div class="highlight highlight-source-css"><pre><span class="pl-e">.logo</span> {
+  <span class="pl-c1"><span class="pl-c1">background</span></span>: <span class="pl-c1">url</span>(<span class="pl-s"><span class="pl-pds">"</span>logo.svg<span class="pl-pds">"</span></span>);
+}</pre></div>
+
+<p>SVG scales well for all resolution types and is supported in all browsers back to IE9. So ditch your .png, .jpg, or .gif-jif-whatev files.</p>
+
+<p><strong>Note:</strong> If you have SVG icon-only buttons for sighted users and the SVG fails to load, this will help maintain accessibility:</p>
+
+<div class="highlight highlight-source-css"><pre><span class="pl-e">.no-svg</span> <span class="pl-e">.icon-only</span><span class="pl-e">:after</span> {
+  <span class="pl-c1"><span class="pl-c1">content</span></span>: <span class="pl-c1">attr</span>(<span class="pl-v">aria-label</span>);
+}</pre></div>
+
+<h3><a id="user-content-text-display-optimization" class="anchor" href="https://github.com/AllThingsSmitty/css-protips#text-display-optimization" aria-hidden="true"><span class="octicon octicon-link"></span></a>Text Display Optimization</h3>
+
+<p>Sometimes fonts don't display optimally on all devices, so let the device browser help:</p>
+
+<div class="highlight highlight-source-css"><pre><span class="pl-ent">html</span> {
+  <span class="pl-c1">-moz-osx-<span class="pl-c1">font</span>-smoothing</span>: grayscale;
+  <span class="pl-c1">-webkit-<span class="pl-c1">font</span>-smoothing</span>: antialiased;
+  <span class="pl-c1"><span class="pl-c1">text</span>-rendering</span>: <span class="pl-c1">optimizeLegibility</span>;
+}</pre></div>
+
+<p><strong>Note:</strong> <a href="https://bocoup.com/weblog/text-rendering/">Please play with <code>optimizeLegibility</code> responsibly</a>. Also, there's no <code>text-rendering</code> support for IE/Edge.</p>
+
+<h3><a id="user-content-use-max-height-for-pure-css-sliders" class="anchor" href="https://github.com/AllThingsSmitty/css-protips#use-max-height-for-pure-css-sliders" aria-hidden="true"><span class="octicon octicon-link"></span></a>Use <code>max-height</code> for Pure CSS Sliders</h3>
+
+<p>Implement CSS-only sliders using <code>max-height</code> with overflow hidden:</p>
+
+<div class="highlight highlight-source-css"><pre><span class="pl-e">.slider</span> <span class="pl-ent">ul</span> {
+  <span class="pl-c1"><span class="pl-c1">max-height</span></span>: <span class="pl-c1">0</span>;
+  <span class="pl-c1">overlow</span>: <span class="pl-c1">hidden</span>;
+}
+
+<span class="pl-e">.slider</span><span class="pl-e">:hover</span> <span class="pl-ent">ul</span> {
+  <span class="pl-c1"><span class="pl-c1">max-height</span></span>: <span class="pl-c1">1000<span class="pl-k">px</span></span>;
+  <span class="pl-c1"><span class="pl-c1">transition</span></span>: <span class="pl-c1">.3<span class="pl-k">s</span></span> ease; <span class="pl-c">/* animate to max-height */</span>
+}</pre></div>
+
+<h3><a id="user-content-inherit-box-sizing" class="anchor" href="https://github.com/AllThingsSmitty/css-protips#inherit-box-sizing" aria-hidden="true"><span class="octicon octicon-link"></span></a>Inherit <code>box-sizing</code></h3>
+
+<p>Let <code>box-sizing</code> be inheritted from <code>html</code>:</p>
+
+<div class="highlight highlight-source-css"><pre><span class="pl-ent">html</span> {
+  <span class="pl-c1"><span class="pl-c1">box-sizing</span></span>: border-box;
+}
+
+<span class="pl-ent">*</span>, <span class="pl-ent">*</span><span class="pl-e">:before</span>, <span class="pl-ent">*</span><span class="pl-e">:after</span> {
+  <span class="pl-c1"><span class="pl-c1">box-sizing</span></span>: <span class="pl-c1">inherit</span>;
+}
+</pre></div>
+
+<p>This makes it easier to change <code>box-sizing</code> in plugins or other components that leverage other behavior.</p>
+
+<h3><a id="user-content-equal-width-table-cells" class="anchor" href="https://github.com/AllThingsSmitty/css-protips#equal-width-table-cells" aria-hidden="true"><span class="octicon octicon-link"></span></a>Equal Width Table Cells</h3>
+
+<p>Tables can be a pain to work with so try using <code>table-layout: fixed</code> to keep cells at equal width:</p>
+
+<div class="highlight highlight-source-css"><pre><span class="pl-e">.calendar</span> {
+  <span class="pl-c1"><span class="pl-c1">table-layout</span></span>: <span class="pl-c1">fixed</span>;
+}</pre></div>
+
+<p>Pain-free table layouts.</p>
+
+<h3><a id="user-content-get-rid-of-margin-hacks-with-flexbox" class="anchor" href="https://github.com/AllThingsSmitty/css-protips#get-rid-of-margin-hacks-with-flexbox" aria-hidden="true"><span class="octicon octicon-link"></span></a>Get Rid of Margin Hacks With Flexbox</h3>
+
+<p>When working with column gutters you can get rid of <code>nth-</code>, <code>first-</code>, and <code>last-child</code> hacks by using flexbox's <code>space-between</code> property:</p>
+
+<div class="highlight highlight-source-css"><pre><span class="pl-e">.list</span> {
+  <span class="pl-c1"><span class="pl-c1">display</span></span>: flex;
+  <span class="pl-c1"><span class="pl-c1">justify</span>-<span class="pl-c1">content</span></span>: space-between;
+}
+
+<span class="pl-e">.list</span> <span class="pl-e">.person</span> {
+  <span class="pl-c1"><span class="pl-c1">flex</span>-basis</span>: <span class="pl-c1">23<span class="pl-k">%</span></span>;
+}</pre></div>
+
+<p>Now column gutters always appear evenly-spaced.</p>
+
+<h3><a id="user-content-use-attribute-selectors-with-empty-links" class="anchor" href="https://github.com/AllThingsSmitty/css-protips#use-attribute-selectors-with-empty-links" aria-hidden="true"><span class="octicon octicon-link"></span></a>Use Attribute Selectors with Empty Links</h3>
+
+<p>Display links when the <code>&lt;a&gt;</code> element has no text value but the <code>href</code> attribute has a link: </p>
+
+<div class="highlight highlight-source-css"><pre><span class="pl-ent">a</span>[href^="http"]<span class="pl-e">:empty</span><span class="pl-e">::before</span> {
+  <span class="pl-c1"><span class="pl-c1">content</span></span>: <span class="pl-c1">attr</span>(<span class="pl-v">href</span>);
+}
+</pre></div>
+
+<p>That's pretty convenient.</p>
+
+<h3><a id="user-content-style-default-links" class="anchor" href="https://github.com/AllThingsSmitty/css-protips#style-default-links" aria-hidden="true"><span class="octicon octicon-link"></span></a>Style "Default" Links</h3>
+
+<p>Add a style for "default" links:</p>
+
+<div class="highlight highlight-source-css"><pre><span class="pl-ent">a</span>[href]<span class="pl-e">:not</span>([class]) {
+  <span class="pl-c1"><span class="pl-c1">color</span></span>: <span class="pl-c1">#008000</span>;
+  <span class="pl-c1"><span class="pl-c1">text-decoration</span></span>: <span class="pl-c1">underline</span>;
+}</pre></div>
+
+<p>Now links that are inserted via a CMS, which don't usually have a <code>class</code> attribute, will have a distinction without generically affecting the cascade.</p>
+
+<h3><a id="user-content-support" class="anchor" href="https://github.com/AllThingsSmitty/css-protips#support" aria-hidden="true"><span class="octicon octicon-link"></span></a>Support</h3>
+
+<p>These protips work in current versions of Chrome, Firefox, Safari, and Edge, and in IE11.</p>
