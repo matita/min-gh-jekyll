@@ -38,22 +38,13 @@ window.opener.postMessage('loaded', origin);
 
 
 window.util.actionBtn('.gh-save', function(callback) {
-  var userName = 'matita';
-  var repoName = 'min-gh-jekyll';
-  var branch = 'gh-pages';
+  var repo = util.getRepo();
+  if (!repo) {
+    callback();
+    return false;
+  }
+
   var commitMessage = 'Saved from ' + post.url;
-  var authToken = localStorage['gh-auth'] || prompt('GitHub auth token');
-  
-  if (!authToken)
-    return;
-  localStorage['gh-auth'] = authToken;
-
-  var github = new Github({
-    token: authToken,
-    auth: 'oauth'
-  });
-
-  var repo = github.getRepo(userName, repoName);
   repo.write(branch, '_posts/' + post.filename, post.frontMatter + '\n' + post.content, commitMessage, function(err) {
     if (err)
       alert('Error while saving: ' + err);

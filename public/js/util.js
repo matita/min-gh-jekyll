@@ -16,10 +16,36 @@ window.util = (function() {
   }
 
 
+  var github;
+
+  function getRepo() {
+    var userName = 'matita';
+    var repoName = 'min-gh-jekyll';
+    var branch = 'gh-pages';
+    
+    if (!github) {
+      var authToken = localStorage['gh-auth'] || prompt('GitHub auth token');
+      
+      if (!authToken)
+        return null;
+      localStorage['gh-auth'] = authToken;
+
+      var github = new Github({
+        token: authToken,
+        auth: 'oauth'
+      });
+    }
+
+    var repo = github.getRepo(userName, repoName);
+    return repo;
+  }
+
+
 
 
   return {
-    actionBtn : actionBtn
+    actionBtn : actionBtn,
+    getRepo   : getRepo
   };
 
 })();
