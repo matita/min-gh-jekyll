@@ -21,7 +21,6 @@ window.util = (function() {
   function getRepo() {
     var userName = 'matita';
     var repoName = 'min-gh-jekyll';
-    var branch = 'gh-pages';
     
     if (!github) {
       var authToken = localStorage['gh-auth'] || prompt('GitHub auth token');

@@ -4,9 +4,9 @@ function Link(link) {
 
   var proto = {
     isArchived: function() { return false; },
-    save: function() {},
-    archive: function() {},
-    delete: function() {}
+    save: function() { return link; },
+    archive: function() { return link; },
+    delete: function() { return link; }
   };
 
   for (var p in proto)

@@ -44,6 +44,7 @@ window.util.actionBtn('.gh-save', function(callback) {
     return false;
   }
 
+  var branch = 'gh-pages';
   var commitMessage = 'Saved from ' + post.url;
   repo.write(branch, '_posts/' + post.filename, post.frontMatter + '\n' + post.content, commitMessage, function(err) {
     if (err)
