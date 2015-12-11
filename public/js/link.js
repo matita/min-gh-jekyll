@@ -12,5 +12,8 @@ function Link(link) {
   for (var p in proto)
     link[p] = proto[p];
 
+  if (link.path)
+    link.filename = link.path.split('/').pop();
+
   return link;
 }
