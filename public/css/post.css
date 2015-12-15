@@ -79,3 +79,7 @@ body:not(.gh-acquirer) .gh-only-acquirer {
 .gh-saving .gh-save {
   display: none;
 }
+
+.gh-archiving .gh-archive {
+  display: none;
+}
