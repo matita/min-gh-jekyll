@@ -27,7 +27,12 @@ function Link(link) {
 
     archive: function() {
       link.emit('beforearchive');
-      repo.move(branch, link.path, link.path.replace('_posts', '_posts/archive'), function(err) {
+      var oldPath = link.path;
+      var newPath = link.path.replace('_posts', '_posts/archive');
+
+      console.log('move', oldPath, 'to', newPath, 'on', branch);
+
+      repo.move(branch, oldPath, newPath, function(err) {
         link.emit('archive');
       });
       return link; 
