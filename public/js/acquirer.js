@@ -38,31 +38,3 @@ function receiveMessage(e) {
 }
 
 window.opener.postMessage('loaded', origin);
-
-
-
-var postActions = document.querySelectorAll('.gh-post-actions');
-for (var i = 0; i < postActions.length; i++) {
-  linkActions(postActions[i], link);
-}
-
-/*window.util.actionBtn('.gh-save', function(callback) {
-  var repo = util.getRepo();
-  if (!repo) {
-    callback();
-    return false;
-  }
-
-  var branch = 'gh-pages';
-  var commitMessage = 'Saved from ' + post.url;
-  repo.write(branch, '_posts/' + post.filename, post.frontMatter + '\n' + post.content, commitMessage, function(err) {
-    if (err)
-      alert('Error while saving: ' + err);
-    else {
-      setTimeout(function() { window.close(); }, 2000);
-    }
-    callback();
-  });
-
-  return false;
-}, 'Saving...');*/
