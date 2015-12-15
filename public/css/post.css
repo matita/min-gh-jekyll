@@ -75,3 +75,7 @@ body:not(.gh-acquirer) .gh-only-acquirer {
 .gh-acquirer .gh-not-acquirer {
   display: none;
 }
+
+.gh-saving .gh-save {
+  display: none;
+}
