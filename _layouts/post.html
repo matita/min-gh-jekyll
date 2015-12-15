@@ -27,10 +27,12 @@
     <script>
       {% include scripts/progress-bar.js %}
     </script>
-    <script src="{{ site.baseurl }}/public/js/github.js"></script>
+    <script src="{{ site.baseurl }}/public/js/lib/github.js"></script>
     <script src="{{ site.baseurl }}/public/js/util.js"></script>
     <script src="{{ site.baseurl }}/public/js/bookmarklet.js"></script>
+    <script src="{{ site.baseurl }}/public/js/lib/emitonoff.min.js"></script>
     <script src="{{ site.baseurl }}/public/js/link.js"></script>
+    <script src="{{ site.baseurl }}/public/js/view/LinkActions.js"></script>
     <script>
       var link = Link({{ page | jsonify }});
     </script>

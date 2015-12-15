@@ -10,6 +10,7 @@ var params = location.search.substr(1)
 
 var origin = params.origin;
 var post;
+var link;
 console.log('origin', origin);
 window.addEventListener('message', receiveMessage, false);
 
@@ -26,6 +27,8 @@ function receiveMessage(e) {
   doc.body.innerHTML = data.body;
 
   post = analyze(doc, origin);
+
+  link = Link(post);
   
   document.title = post.title;
   document.querySelector('article h1').innerText = post.title;
@@ -37,7 +40,13 @@ function receiveMessage(e) {
 window.opener.postMessage('loaded', origin);
 
 
-window.util.actionBtn('.gh-save', function(callback) {
+
+var postActions = document.querySelectorAll('.gh-post-actions');
+for (var i = 0; i < postActions.length; i++) {
+  linkActions(postActions[i], link);
+}
+
+/*window.util.actionBtn('.gh-save', function(callback) {
   var repo = util.getRepo();
   if (!repo) {
     callback();
@@ -56,4 +65,4 @@ window.util.actionBtn('.gh-save', function(callback) {
   });
 
   return false;
-}, 'Saving...');
+}, 'Saving...');*/

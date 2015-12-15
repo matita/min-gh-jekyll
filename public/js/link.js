@@ -2,10 +2,21 @@ function Link(link) {
   if (typeof link == 'string')
     link = { path: link };
 
+  emitonoff(link);
+
   var proto = {
     isArchived: function() { return false; },
-    save: function() { return link; },
+
+    save: function() {
+      link.emit('beforesave', link);
+      setTimeout(function() {
+        link.emit('saved', link);
+      }, 1000);
+      return link; 
+    },
+
     archive: function() { return link; },
+
     delete: function() { return link; }
   };
 
