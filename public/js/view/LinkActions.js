@@ -4,7 +4,7 @@ function linkActions(node, link) {
     node.classList.add('gh-saving');
   });
 
-  link.on('save', function() {
+  link.on('saved', function() {
     node.classList.remove('gh-saving');
   });
 
