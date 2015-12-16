@@ -35,6 +35,11 @@ function receiveMessage(e) {
   Array.prototype.forEach.call(document.querySelectorAll('.reading-time'), function(s) { s.innerHTML = Math.round(post.node.innerText.split(/\W+/).length / 180) + ' min read'; });
   document.querySelector('main').innerHTML = post.content;
   Array.prototype.forEach.call(document.querySelectorAll('.view-original'), function(a) { a.href = post.url; });
+
+  var postActions = document.querySelectorAll('.gh-post-actions');
+  for (var i = 0; i < postActions.length; i++) {
+    linkActions(postActions[i], link);
+  }
 }
 
 window.opener.postMessage('loaded', origin);
