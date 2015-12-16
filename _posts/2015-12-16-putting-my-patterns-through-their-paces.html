@@ -1,0 +1,249 @@
+---
+title: "Putting My Patterns through Their Paces"
+description: "Ethan Marcotte dashes through the wintry landscape, his sled of flexboxed content drawn faithfully by a team of well-ordered hierarchical HTML huskies. For when it comes to structure and presentation, we must take care not to put the sleigh before the hounds."
+link: "https://24ways.org/2015/putting-my-patterns-through-their-paces/"
+saved: "2015-12-16 16:36:25"
+---
+
+            
+
+            
+
+            <div class="article_main e-content">
+                              
+                <p class="lede">Over the last few years, the conversation around <a href="http://alistapart.com/article/responsive-web-design">responsive design</a> has shifted subtly, focusing not on designing <em>pages</em>, but on <em>patterns</em>: understanding the small, reusable elements that comprise a larger design system. And given that many of those patterns are themselves responsive, learning to manage these small layout systems has become a big part of my work.</p>
+<p>The thing is, the more pattern-driven work I do, the more I realize my design process has changed in a number of subtle, important ways. I suppose you might even say that pattern-driven design has, in a few ways, redesigned me.</p>
+<h2>Meet the Teaser</h2>
+<p>Here’s a recent example. A few months ago, some friends and I redesigned <a href="http://the-toast.net/">The Toast</a>. (It was a <a href="https://twitter.com/Nicole_Cliffe/status/658696632175734785">really</a>, <a href="https://twitter.com/Nicole_Cliffe/status/652894406853332992"><em>really</em></a> <a href="https://twitter.com/mallelis/status/658671532659511296">fun</a> project, and we <a href="http://responsivewebdesign.com/toast/">learned a lot</a>.) Each page of the site is, as you might guess, stitched together from a host of tiny, reusable patterns. Some of them, like the search form and footer, are fairly unique, and used once per page; others are used more liberally, and built for reuse. The most prevalent example of these more generic patterns is <em>the teaser</em>, which is classed as, uh, <code>.teaser</code>. (Look, I never said I was especially clever.)</p>
+<p>In its simplest form, a teaser contains a headline, which links to an article:</p>
+<figure><img src="https://media.24ways.org/2015/marcotte/teaser-basic.png" alt="A screenshot with the headline 'How to make sure you get enough to eat at holiday parties'."></figure>
+<p>Fairly straightforward, sure. But it’s just the foundation: from there, teasers can have a byline, a description, a thumbnail, and a comment count. In other words, we have a basic building block (<code>.teaser</code>) that contains a few discrete content types – some required, some not. In fact, very few of those pieces need to be present; to qualify as a teaser, all we really need is a link and a headline. But by adding more elements, we can build slight <em>variations</em> of our teaser, and make it much, much more versatile.</p>
+<figure><img src="https://media.24ways.org/2015/marcotte/teaser-variation.png" alt="A screenshot of a grid-based layout, containing mainy teasers."><figcaption>
+        Nearly every element visible on this page is built out of our generic “teaser” pattern.
+    </figcaption></figure>
+<p>But the teaser variation I’d like to call out is the one that appears on The Toast’s homepage, on <a href="http://the-toast.net/?s=boyfriend" title="Search results on The Toast for “boyfriend”">search results</a> or on <a href="http://the-toast.net/series/ayn-rand-rewrites/">section fronts</a>. In the main content area, each teaser in the list features larger images, as well as an interesting visual treatment: the byline and comment count were the most prominent elements within each teaser, appearing above the headline.</p>
+<figure><img src="https://media.24ways.org/2015/marcotte/teaser-design-approved.png" alt="A screenshot of a teaser pattern, containing dummy content."><figcaption>
+        The approved visual design of our teaser, as it appears on lists on the homepage and the section fronts.
+    </figcaption></figure>
+<p>And this is, as it happens, the teaser variation that gave me pause. Back in the old days – you know, like six months ago – I probably would’ve marked this module up to match the design. In other words, I would’ve looked at the module’s visual hierarchy (metadata up top, headline and content below) and written the following HTML:</p>
+<pre class=" language-markup"><code class=" language-markup"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>teaser<span class="token punctuation">"</span></span><span class="token punctuation">&gt;</span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>p</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>article-byline<span class="token punctuation">"</span></span><span class="token punctuation">&gt;</span></span>By <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>a</span> <span class="token attr-name">href</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>#<span class="token punctuation">"</span></span><span class="token punctuation">&gt;</span></span>Author Name<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>a</span><span class="token punctuation">&gt;</span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>p</span><span class="token punctuation">&gt;</span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>a</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>comment-count<span class="token punctuation">"</span></span> <span class="token attr-name">href</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>#<span class="token punctuation">"</span></span><span class="token punctuation">&gt;</span></span>126 <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>i</span><span class="token punctuation">&gt;</span></span>comments<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>i</span><span class="token punctuation">&gt;</span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>a</span><span class="token punctuation">&gt;</span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>h1</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>article-title<span class="token punctuation">"</span></span><span class="token punctuation">&gt;</span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>a</span> <span class="token attr-name">href</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>#<span class="token punctuation">"</span></span><span class="token punctuation">&gt;</span></span>Article Title<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>a</span><span class="token punctuation">&gt;</span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>h1</span><span class="token punctuation">&gt;</span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>p</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>teaser-excerpt<span class="token punctuation">"</span></span><span class="token punctuation">&gt;</span></span>Lorem ipsum dolor sit amet, consectetur…<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>p</span><span class="token punctuation">&gt;</span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">&gt;</span></span></code></pre>
+<p>But then I caught myself, and realized this wasn’t the best approach.</p>
+<h2>Moving Beyond Layout</h2>
+<p>Since I’ve started working responsively, there’s a question I work into every step of my design process. Whether I’m working in Sketch, CSSing a thing, or researching a project, I try to constantly ask myself:</p>
+<blockquote>
+<p><em>What if someone doesn’t browse the web like I do?</em></p>
+</blockquote>
+<p>…Okay, that doesn’t seem especially fancy. (And maybe you came here for fancy.) But as straightforward as that question might seem, it’s been invaluable to so many aspects of my practice. If I’m working on a widescreen layout, that question helps me remember the constraints of the small screen; if I’m working on an interface that has some enhancements for touch, it helps me consider other input modes as I work. It’s also helpful as a reminder that many <a href="http://www.mollywatt.com/blog/entry/my-apple-watch-after-5-days">might not see the screen the same way I do</a>, and that accessibility (<a href="https://the-pastry-box-project.net/anne-gibson/2014-july-31">in all its forms</a>) should be a throughline for our work on the web.</p>
+<p>And that last point, thankfully, was what caught me here. While having the byline and comment count at the top was a lovely <em>visual</em> treatment, it made for a terrible content hierarchy. For example, it’d be a little weird if the page was being read aloud in a speaking browser: the name of the author and the number of comments would be read aloud <em>before</em> the title of the article with which they’re associated.</p>
+<p>That’s why I find it’s helpful to begin designing a pattern’s hierarchy <em>before</em> its layout: to move past the visual presentation in front of me, and focus on the underlying content I’m trying to support. In other words, if someone’s encountering my design without the CSS I’ve written, what should their experience be?</p>
+<p>So I took a step back, and came up with a different approach:</p>
+<pre class=" language-markup"><code class=" language-markup"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>teaser<span class="token punctuation">"</span></span><span class="token punctuation">&gt;</span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>h1</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>article-title<span class="token punctuation">"</span></span><span class="token punctuation">&gt;</span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>a</span> <span class="token attr-name">href</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>#<span class="token punctuation">"</span></span><span class="token punctuation">&gt;</span></span>Article Title<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>a</span><span class="token punctuation">&gt;</span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>h1</span><span class="token punctuation">&gt;</span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>h2</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>article-byline<span class="token punctuation">"</span></span><span class="token punctuation">&gt;</span></span>By <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>a</span> <span class="token attr-name">href</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>#<span class="token punctuation">"</span></span><span class="token punctuation">&gt;</span></span>Author Name<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>a</span><span class="token punctuation">&gt;</span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>h2</span><span class="token punctuation">&gt;</span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>p</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>teaser-excerpt<span class="token punctuation">"</span></span><span class="token punctuation">&gt;</span></span>
+    Lorem ipsum dolor sit amet, consectetur…
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>a</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>comment-count<span class="token punctuation">"</span></span> <span class="token attr-name">href</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>#<span class="token punctuation">"</span></span><span class="token punctuation">&gt;</span></span>126 <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>i</span><span class="token punctuation">&gt;</span></span>comments<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>i</span><span class="token punctuation">&gt;</span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>a</span><span class="token punctuation">&gt;</span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>p</span><span class="token punctuation">&gt;</span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">&gt;</span></span></code></pre>
+<p>Much, much better. This felt like a better match for the content I was designing: the headline – easily most important element – was at the top, followed by the author’s name and an excerpt. And while the comment count is <em>visually</em> the most prominent element in the teaser, I decided it was <em>hierarchically</em> the least critical: that’s why it’s at the very end of the excerpt, the last element within our teaser. And with some light styling, we’ve got a respectable-looking hierarchy in place:</p>
+<figure><img src="https://media.24ways.org/2015/marcotte/teaser-baseline.png" alt="A screenshot of the teaser with a sensible hierarchy, but not in the order we are aiming for in the design."></figure>
+<p>Yeah, you’re right – it’s not our final design. But from this basic-looking foundation, we can layer on a bit more complexity. First, we’ll bolster the markup with an extra element around our title and byline:</p>
+<pre class=" language-markup"><code class=" language-markup"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>teaser<span class="token punctuation">"</span></span><span class="token punctuation">&gt;</span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>teaser-hed<span class="token punctuation">"</span></span><span class="token punctuation">&gt;</span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>h1</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>article-title<span class="token punctuation">"</span></span><span class="token punctuation">&gt;</span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>a</span> <span class="token attr-name">href</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>#<span class="token punctuation">"</span></span><span class="token punctuation">&gt;</span></span>Article Title<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>a</span><span class="token punctuation">&gt;</span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>h1</span><span class="token punctuation">&gt;</span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>h2</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>article-byline<span class="token punctuation">"</span></span><span class="token punctuation">&gt;</span></span>By <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>a</span> <span class="token attr-name">href</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>#<span class="token punctuation">"</span></span><span class="token punctuation">&gt;</span></span>Author Name<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>a</span><span class="token punctuation">&gt;</span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>h2</span><span class="token punctuation">&gt;</span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">&gt;</span></span>
+  …
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">&gt;</span></span></code></pre>
+<p>With that in place, we can use <a href="https://css-tricks.com/snippets/css/a-guide-to-flexbox/">flexbox</a> to tweak our layout, like so:</p>
+<pre class=" language-css"><code class=" language-css"><span class="token selector"><span class="token class">.teaser-hed</span> </span><span class="token punctuation">{</span>
+  <span class="token property">display</span><span class="token punctuation">:</span> flex<span class="token punctuation">;</span>
+  <span class="token property">flex-direction</span><span class="token punctuation">:</span> column-reverse<span class="token punctuation">;</span>
+<span class="token punctuation">}</span></code></pre>
+<p><code>flex-direction: column-reverse</code> acts a bit like a change in gravity within our <code>teaser-hed</code> element, vertically swapping its two children.</p>
+<figure><img src="https://media.24ways.org/2015/marcotte/teaser-flexbox.png" alt="A screenshot of the teaser displaying the content almost in the hierachy we want."></figure>
+<p>Getting closer! But as great as flexbox is, it doesn’t do anything for elements <em>outside</em> our container, like our little comment count, which is, as you’ve probably noticed, still stranded at the very bottom of our teaser.</p>
+<p>Flexbox is, as you might already know, wonderful! And while it enjoys <a href="http://caniuse.com/#search=flexbox">incredibly broad support</a>, there are enough implementations of old versions of Flexbox (in addition to <a href="http://philipwalton.com/articles/normalizing-cross-browser-flexbox-bugs/">plenty</a> of <a href="http://benfrain.com/flexbox-gotchas-for-android-2-1-4-3-stock-browser/">bugs</a>) that I tend to use a feature test to check if the browser’s using a sufficiently modern version of flexbox. Here’s the one we used:</p>
+<pre class=" language-javascript"><code class=" language-javascript"><span class="token keyword">var</span> doc <span class="token operator">=</span> document<span class="token punctuation">.</span>body <span class="token operator">||</span> document<span class="token punctuation">.</span>documentElement<span class="token punctuation">;</span>
+<span class="token keyword">var</span> style <span class="token operator">=</span> doc<span class="token punctuation">.</span>style<span class="token punctuation">;</span>
+
+<span class="token keyword">if</span> <span class="token punctuation">(</span> style<span class="token punctuation">.</span>webkitFlexWrap <span class="token operator">==</span> <span class="token string">''</span> <span class="token operator">||</span>
+    style<span class="token punctuation">.</span>msFlexWrap <span class="token operator">==</span> <span class="token string">''</span> <span class="token operator">||</span>
+    style<span class="token punctuation">.</span>flexWrap <span class="token operator">==</span> <span class="token string">''</span> <span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  doc<span class="token punctuation">.</span>className <span class="token operator">+</span><span class="token operator">=</span> <span class="token string">" supports-flex"</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span></code></pre>
+<p>Eagle-eyed readers will note we could have used <a href="http://www.w3.org/TR/css3-conditional/#at-supports"><code>@supports</code> feature queries</a> to ask browsers if they support certain CSS properties, removing the JavaScript dependency. But since we wanted to <a href="http://caniuse.com/#feat=css-featurequeries">serve the layout to IE</a> we opted to write a little question in JavaScript, asking the browser if it supports <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/flex-wrap"><code>flex-wrap</code></a>, a property used elsewhere in the design. If the browser passes the test, then a class of <code>supports-flex</code> gets applied to our <code>html</code> element. And with that class in place, we can safely quarantine our flexbox-enabled layout from less-capable browsers, and finish our teaser’s design:</p>
+<pre class=" language-css"><code class=" language-css"><span class="token selector"><span class="token class">.supports-flex</span> <span class="token class">.teaser-hed</span> </span><span class="token punctuation">{</span>
+  <span class="token property">display</span><span class="token punctuation">:</span> flex<span class="token punctuation">;</span>
+  <span class="token property">flex-direction</span><span class="token punctuation">:</span> column-reverse<span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+<span class="token selector"><span class="token class">.supports-flex</span> <span class="token class">.teaser</span> <span class="token class">.comment-count</span> </span><span class="token punctuation">{</span>
+  <span class="token property">position</span><span class="token punctuation">:</span> absolute<span class="token punctuation">;</span>
+  <span class="token property">right</span><span class="token punctuation">:</span> 0<span class="token punctuation">;</span>
+  <span class="token property">top</span><span class="token punctuation">:</span> 1.1em<span class="token punctuation">;</span>
+<span class="token punctuation">}</span></code></pre>
+<p>If the <code>supports-flex</code> class is present, we can apply our flexbox layout to the title area, sure – but we can <em>also</em> safely use absolute positioning to pull our comment count out of its default position, and anchor it to the top right of our teaser. In other words, the browsers that don’t meet our threshold for our advanced styles are left with an attractive design that matches our HTML’s content hierarchy; but the ones that pass our test receive the finished, final design.</p>
+<figure><img src="https://media.24ways.org/2015/marcotte/teaser-comparison.png" alt="A screenshot comparing the teasers for someone with and without flexbox support in their browser."></figure>
+<p>And with that, our teaser’s complete.</p>
+<h2>Diving Into Device-Agnostic Design</h2>
+<p>This is, admittedly, a pretty modest application of flexbox. (For some truly next-level work, I’d recommend <a href="http://www.heydonworks.com/">Heydon Pickering</a>’s “<a href="http://www.heydonworks.com/article/flexbox-grid-finesse">Flexbox Grid Finesse</a>”, or anything <a href="http://zomigi.com/">Zoe Mickley Gillenwater</a> <a href="http://zomigi.com/events/">publishes</a>.) And for such a simple module, you might feel like this is, well, quite a bit of work. And you’d be right! In fact, it’s not one layout, but two: a lightly styled content hierarchy served to everyone, with the finished design served conditionally to the browsers that can successfully implement it. But I’ve found that thinking about my design as existing in broad experience tiers – in layers – is one of the best ways of designing for the modern web. And what’s more, it works not just for simple modules like our teaser, but for <a href="https://vimeo.com/106869929#t=36m02s" title="A video recording of my presentation “Laziness in the Time of Responsive Design”">more complex or interactive patterns</a> as well.</p>
+<figure><video controls="" poster="https://media.24ways.org/2015/marcotte/search-enhanced.jpg"><source src="https://media.24ways.org/2015/marcotte/search-enhanced.mp4" type="video/mp4"><source src="https://media.24ways.org/2015/marcotte/search-enhanced.webm" type="video/webm"><source src="https://media.24ways.org/2015/marcotte/search-enhanced.ogv" type="video/ogg"><a href="https://media.24ways.org/2015/marcotte/search-enhanced.mp4">Open video</a><!-- fallback -->
+    </video><figcaption>
+        Even a simple search form can be conditionally enhanced, given a little layered thinking.
+    </figcaption></figure>
+<p>This more layered approach to interface design isn’t a new one, mind you: it’s been championed by everyone from <a href="https://www.filamentgroup.com/lab/southstreet-event-apart.html">Filament Group</a> to <a href="http://responsivenews.co.uk/post/18948466399/cutting-the-mustard">the BBC</a>. And with all the challenges we keep uncovering, a more device-agnostic approach is one of the best ways I’ve found to practice responsive design. As <a href="http://trentwalton.com/2014/03/10/device-agnostic/">Trent Walton once wrote</a>,</p>
+<blockquote>
+<p>Like cars designed to perform in extreme heat or on icy roads, websites should be built to face the reality of the web’s inherent variability.</p>
+</blockquote>
+<p>We have a weird job, working on the web. We’re designing for the latest mobile devices, sure, but we’re increasingly aware that our definition of “smartphone” is <a href="http://www.niemanlab.org/2015/11/from-the-bbcs-african-hackathon-come-new-projects-designed-for-the-continents-smartphones/">much</a> <a href="https://shkspr.mobi/blog/2015/09/migrants-and-mobiles/">too narrow</a>. Browsers have started appearing on <a href="https://www.youtube.com/watch?v=sGo08-SP_Ww">our wrists</a> and in <a href="https://www.flickr.com/photos/wfryer/8081551908">our cars’ dashboards</a>, but much of the world’s mobile data flows over <a href="https://twitter.com/RWD/status/652133281849196544">sub-3G networks</a>. After all, the web’s evolution has never been charted along a straight line: it’s simultaneously getting slower and faster, with devices new and old coming online every day. With all the challenges in front of us, including many we don’t yet know about, a more device-agnostic, more layered design process can better prepare our patterns – and ourselves – for the future.</p>
+<p>(It won’t help you <a href="http://the-toast.net/2015/11/24/eating-tips-for-holiday-parties/">get enough to eat at holiday parties</a>, though.)</p>
+            </div>
+
+            <section class="section" id="author">
+                
+                <div class="section_main">
+                    
+                        <p>Ethan Marcotte is an independent designer and developer, and the fellow who coined the term “<a href="http://alistapart.com/article/responsive-web-design">responsive web design</a>”. He is the author of two books on the topic, <a href="http://abookapart.com/products/responsive-web-design"><cite>Responsive Web Design</cite></a> and <a href="http://abookapart.com/products/responsive-design-patterns-principles"><cite>Responsive Design: Patterns and Principles</cite></a>, and has been known to give <a href="http://lanyrd.com/profile/beep/">a conference talk or two</a>. Ethan is passionate about digital design, emerging markets, and ensuring global access, and has been known to link to the odd <span class="caps">GIF</span> now and again.</p>
+                        <p><a class="continue" href="https://24ways.org/authors/ethanmarcotte/" title="More information about Ethan Marcotte">More articles by Ethan</a></p>
+                    
+                </div>
+            </section><!--/.section-->
+
+
+
+            
+
+                      
+            <section class="section section-sponsor" id="sponsor">
+                
+                <div class="section_main">
+                    
+                    
+                        <a class="promo" href="https://grabaperch.com/products/runway?ref=24w01">
+    <img class="promo_image" src="https://24ways.org/_assets/images/logo-perchrunway.png" alt="Perch Runway - Powerful, flexible content management " width="152" height="100">
+    <p class="promo_message">Powerful, flexible content management with <strong>backup, cloud storage and client satisfaction</strong> all included.</p>
+    <p class="promo_url">grabaperch.com/runway</p>
+</a><!--/.promo-->
+
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                </div>
+            </section><!--/.section-->
+            
+
+            <section class="section" id="comments">
+                
+                <div class="section_main">
+                    <p><a class="continue continue-ajax" href="https://24ways.org/2015/putting-my-patterns-through-their-paces/comments/" data-replace="" data-interaction="" data-target="#comments">View 7 reader comments</a></p>
+                </div>
+            </section><!--/.section-->
+
+            		
+		<section class="section" id="related">
+		    
+		    <div class="section_main">
+		        <ul class="list list-articles">
+		
+		            <li class="list_item">
+		            	
+			<article class="summary summary-article h-entry day-09">
+				
+				<div class="summary_main">
+					<p><a href="http://adactio.com/">Jeremy Keith</a> leads us gently back to the basics of progressive enhancement with a simple navigation example. Ask yourself: does Christmas need to look exactly the same in every browser? Nope. Well, as long as you’re reading 24 ways…</p>
+					<a class="summary_link" href="https://24ways.org/2014/responsive-enhancement/">
+						Impress your friends with ‘Responsive Enhancement’
+					</a>
+				</div>
+				
+			</article><!--/.summary-article-->
+		            </li>
+				
+		            <li class="list_item">
+		            	
+			<article class="summary summary-article h-entry day-10">
+				
+				<div class="summary_main">
+					<p><a href="http://www.sallyjenkinson.co.uk/">Sally Jenkinson</a> asserts that responsive design isn’t just about displaying content on multiple devices – we can also respond to users’ contextual needs to enhance experiences. When the snow lies deep and crisp and even, you’re gonna need a bigger boot.</p>
+					<a class="summary_link" href="https://24ways.org/2014/making-sites-more-responsive-responsibly/">
+						Impress your friends with ‘Making Sites More Responsive, Responsibly’
+					</a>
+				</div>
+				
+			</article><!--/.summary-article-->
+		            </li>
+				
+		            <li class="list_item">
+		            	
+			<article class="summary summary-article h-entry day-12">
+				
+				<div class="summary_main">
+					<p><a href="http://jennlukas.com/">Jenn Lukas</a> twinkles like a guiding star in the deep Christmas night, casting her light on the interactivity issues raised by combined hover- and touch-enabled devices. With a little thought about designing for our content, we can add some seasonal sparkle.</p>
+					<a class="summary_link" href="https://24ways.org/2013/the-responsive-hover-paradigm/">
+						Impress your friends with ‘The Responsive Hover Paradigm’
+					</a>
+				</div>
+				
+			</article><!--/.summary-article-->
+		            </li>
+				
+		            <li class="list_item">
+		            	
+			<article class="summary summary-article h-entry day-07">
+				
+				<div class="summary_main">
+					<p><a href="http://suda.co.uk/">Brian Suda</a> dashes out a quick technique for animating <span class="caps">SVG</span> line drawings using JavaScript. Way better than falling snowflakes and a Santa hat on your logo.</p>
+					<a class="summary_link" href="https://24ways.org/2013/animating-vectors-with-svg/">
+						Impress your friends with ‘Animating Vectors with SVG’
+					</a>
+				</div>
+				
+			</article><!--/.summary-article-->
+		            </li>
+				
+		            <li class="list_item">
+		            	
+			<article class="summary summary-article h-entry day-13">
+				
+				<div class="summary_main">
+					<p><a href="http://lesjames.com/">Les James</a> proposes an alternative to the fully fluid grid as an approach to responsive layout challenges. Sprinkle on some Sass fairy dust and, providing you’ve been good this year, watch your creation spring to life.</p>
+					<a class="summary_link" href="https://24ways.org/2012/redesigning-the-media-query/">
+						Impress your friends with ‘Redesigning the Media Query’
+					</a>
+				</div>
+				
+			</article><!--/.summary-article-->
+		            </li>
+				
+		            <li class="list_item">
+		            	
+			<article class="summary summary-article h-entry day-12">
+				
+				<div class="summary_main">
+					<p><a href="http://laurakalbag.com/">Laura Kalbag</a> beckons us in from the cold wastelands of transitional, device-rooted layouts to warm our toes at the hearth of a more systematic way of working.</p>
+					<a class="summary_link" href="https://24ways.org/2012/design-systems/">
+						Impress your friends with ‘Design Systems’
+					</a>
+				</div>
+				
+			</article><!--/.summary-article-->
+		            </li>
+		
+		        </ul><!--/.list-articles-->
+		    </div>
+		</section><!--/.section-->
+		
+
+            
+        
