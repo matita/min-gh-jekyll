@@ -1,0 +1,117 @@
+---
+title: "Learning Grunt – grunt-contrib-connect | funkycold on WordPress.com"
+description: "Application code is now up in github - https://github.com/mrfunkycold/learn-grunt This post will about Grunt-contrib-connect. This allows you to create a web-server to view the application.  The web-server is a node based server.  If you would like to read more about npm and node modules, please go here (http://nodejs.org). This project will be based off of the…"
+link: "https://funkycold.wordpress.com/2015/02/28/learning-grunt-grunt-contrib-connect/"
+saved: "2015-12-17 18:30:08"
+---
+
+	<!-- .entry-header -->
+
+	<div class="entry-content">
+		<p>Application code is now up in github –&nbsp;<a title="Learn-Grunt" href="https://github.com/mrfunkycold/learn-grunt" target="_blank">https://github.com/mrfunkycold/learn-grunt</a></p>
+<p>This post will about <a title="grunt-contrib-connect" href="https://www.npmjs.com/package/grunt-contrib-connect" target="_blank">Grunt-contrib-connect</a>. This allows you to create a web-server to view the application. &nbsp;The web-server is a node based server. &nbsp;If you would like to read more about npm and node modules, please go here (<a title="http://nodejs.org/" href="http://nodejs.org/" target="_blank">http://nodejs.org</a>).</p>
+<p>This project will be based off of the previous post code. You can grab it either on this <a href="https://funkycold.wordpress.com/2015/02/22/grunt-intro/">link</a> or the <a title="Learn-Grunt" href="https://github.com/chachinsky/learn-grunt" target="_blank">github page</a> on the master branch.</p>
+<p>We start by installing the grunt package and saving it to the <span class="skimlinks-unlinked">package.json</span> file</p>
+<p><code class="aligncenter">npm&nbsp;install&nbsp;grunt-contrib-connect&nbsp;--save<br>
+</code></p>
+<p>Then we need to load the module as an npm task. Add the following to the <span class="skimlinks-unlinked">gruntfile.js</span></p>
+<p><code class="aligncenter">grunt.loadNpmTasks(<span>'grunt-contrib-connect'</span>);<br>
+</code></p>
+<p>If we go into the terminal and type in <em>grunt connect</em> we will get the following errors..</p>
+<p><code class="aligncenter">$ grunt connect<br>
+<span>&gt;&gt;</span> <span>No "connect" targets found.</span><br>
+<span>Warning: Task "connect" failed. Use --force to continue.</span><br>
+&amp;nsbp;<br>
+<span>Aborted due to warnings.</span></code></p>
+<p>So, we need to create the task within the object that is passed to initConfig. We write the following to the bottom of the object.<br>
+<code class="aligncenter">grunt.initConfig({<br>
+&nbsp;&nbsp;...<br>
+&nbsp;&nbsp;connect: {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;server: {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;}<br>
+});<br>
+</code></p>
+<p>In the terminal window, we can run <em>grunt connect</em> or to directly invoke this task <em>grunt connect:server</em>. We run grunt connect:server and get the following output.</p>
+<p><code class="aligncenter">$ grunt connect:server<br>
+Running "connect:server" (connect) task<br>
+Started connect web server on <a href="http://0.0.0.0:8000/" rel="nofollow">http://0.0.0.0:8000</a><br>
+&nbsp;<br>
+<span>Done, without errors.</span><br>
+</code></p>
+<p>Awesome so we ran it but we didn’t get an output…hmm something is up. We need to add some options to our server.</p>
+<p><strong> Port</strong> – port in which we want our server on.<br>
+<strong>base</strong> – where our application is located. (i.e. if you app is in the app folder then put ‘app’ on this spot.)<br>
+<strong>keepalive</strong> – so that the server doesn’t close right away.</p>
+<p><code class="aligncenter">grunt.initConfig({<br>
+&nbsp;&nbsp;...<br>
+&nbsp;&nbsp;connect: {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;server: {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;options: {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;port: <span>9000</span>,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;base: <span>'app'</span>,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;keepalive: <span>true</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;}<br>
+});<br>
+</code></p>
+<p>If we run <em>grunt connect</em> in our terminal, we can navigate to our favorite browser and go to localhost:9000 and get our page. If you get something like below then success!<br>
+<img src="http://drive.google.com/uc?export=view&amp;id=0B2GJXx8RQWgISTdjMThKcDdYSk0" alt="Page"></p>
+<p>The problem is that we have to actually open the browser to view the site.. we could get grunt to do that for us.  Within the options we can add an open parameter so that it can open right after we type in grunt connect.</p>
+<p><code class="aligncenter">grunt.initConfig({<br>
+&nbsp;&nbsp;...<br>
+&nbsp;&nbsp;connect: {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;server: {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;options: {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;port: <span>9000</span>,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;base: <span>'app'</span>,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;keepalive: <span>true</span>,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;open: {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;target: <span>'http://localhost:9000'</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;}<br>
+});<br>
+</code></p>
+<p>Cool it opens, when we type in <em>grunt connect</em>.  It is getting annoying that we have to type <em>grunt connect</em> every time, let’s add it to the default task.</p>
+<p><code class="aligncenter">grunt.registerTask(<span>'default'</span>, [<span>'jshint'</span>, <span>'connect'</span>]);</code></p>
+<p>Awesome, if we type in <em>grunt</em>, now it runs jshint and connect in one shot. Below is the final output of the gruntfile.</p>
+<p><code class="aligncenter">module.exports = function(grunt){<br>
+&nbsp;&nbsp;grunt.initConfig({<br>
+&nbsp;&nbsp;&nbsp;&nbsp;jshint: {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;all : [<span>'Gruntfile.js'</span>, <span>'app/scripts/**/*js'</span>]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;},<br>
+&nbsp;&nbsp;&nbsp;&nbsp;connect: {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;server: {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;options: {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;port: <span>9000</span>,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;base: <span>'app'</span>,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;keepalive: <span>true</span>,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;open: {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;target: <span>'http://localhost:9000'</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;});<br>
+&nbsp;&nbsp;grunt.loadNpmTasks(<span>'grunt-contrib-jshint'</span>);<br>
+&nbsp;&nbsp;grunt.loadNpmTasks(<span>'grunt-contrib-connect'</span>);<br>&nbsp;<br>
+&nbsp;&nbsp;grunt.registerTask(<span>'default'</span>, [<span>'jshint'</span>, <span>'connect'</span>]);<br>
+};<br>
+</code></p>
+<p>Link to grunt-contrib-connect: <a href="https://www.npmjs.com/package/grunt-contrib-connect">Grunt-Contrib-Connect</a><br>
+Link to the github: <a href="https://github.com/chachinsky/learn-grunt/tree/contrib-connect">git-hub</a></p>
+<p>Happy Coding</p>
+		<div class="wpcnt">
+			<div class="wpa wpmrec">
+				<a class="wpa-about" href="https://wordpress.com/about-these-ads/" rel="nofollow">About these ads</a>
+				<div class="u">
+					
+				</div>
+			</div>
+		</div>			</div><!-- .entry-content -->
+
+	<div class="entry-format">
+		<a href="https://funkycold.wordpress.com/2015/02/28/learning-grunt-grunt-contrib-connect/"><span class="screen-reader-text">Learning Grunt – grunt-contrib-connect</span></a>	</div>
