@@ -1,0 +1,191 @@
+---
+title: "How to Use RethinkDB with Node.js Applications"
+description: "Jay Ray shows how to use RethinkDB, an open source JSON database, with Node.js applications."
+link: "http://www.sitepoint.com/how-to-use-rethinkdb-with-node-js-applications/"
+saved: "2015-12-17 15:18:37"
+---
+
+    <p><em>This article was peer reviewed by <a href="https://github.com/collizo4sky" target="_blank">Agbonghama Collins</a> and <a href="https://github.com/loqtor" target="_blank">Martín Martínez</a>. Thanks to all of SitePoint’s peer reviewers for making SitePoint content the best it can be!</em></p>
+<p>One of the most common task for a web application is to save data. Without the ability to store data, users would not be able to customize their preferences for an application, organize their data, or achieve similar tasks.<br>
+For a long time, the web has relied on relational database to save information. For example, on the web the <em>liason</em> between PHP and MySQL is well known. But not all the database must be relation!<br>
+In this article we’ll focus on using RethinkDB, an open source JSON database, with Node.js applications. We’ll make use of the RethinkDB Node.js driver called <a href="https://github.com/neumino/rethinkdbdash">rethinkdbdash</a> to connect to the database.</p>
+<div class="ArticleBox u-inline"><h3 class="ArticleBox_header t-bg">
+                    <span class="ArticleBox_icon fa fa-pencil"></span> More from this author
+                 </h3><div class="ArticleBox_content"><ul class="ArticleBox_list t-list"><li><a href="http://www.sitepoint.com/synchronizing-offline-app-data-with-pouchdb/?utm_source=sitepoint&amp;utm_medium=relatedinline&amp;utm_term=javascript&amp;utm_campaign=relatedauthor">Synchronizing Offline App Data with PouchDB</a></li><li><a href="http://www.sitepoint.com/3-options-for-creating-mobile-apps-without-coding/?utm_source=sitepoint&amp;utm_medium=relatedinline&amp;utm_term=javascript&amp;utm_campaign=relatedauthor">3 Options for Creating Mobile Apps Without Coding</a></li></ul></div></div>
+<p>But before starting, let’s have a look at what RethinkDB is and where we might want to use it.</p>
+<h2 id="introducing-rethinkdb">Introducing RethinkDB</h2>
+<p><a href="http://www.rethinkdb.com/">RethinkDB</a> is an open source JSON database built for real time Web. </p>
+<p>The official documentation states:</p>
+<blockquote><p>
+  RethinkDB is the first open-source, scalable JSON database built from the ground up for the realtime web. It inverts the traditional database architecture by exposing an exciting new access model – instead of polling for changes, the developer can tell RethinkDB to continuously push updated query results to applications in realtime.
+</p></blockquote>
+<p>It provides the functionality to get real time updates from the database each time a change occurs.</p>
+<p>RethinkDB targets applications which require to send real time updates to the connected clients. For example, let’s consider an application that enables users to collaboratively design a plan. When a particular user makes a design change, it needs to be pushed to the other connected clients in real time to keep the design in sync. RethinkDB can be used in such cases to make real time updates possible.</p>
+<p>Having clarified what RethinkDB could be useful for, let’s seen now how to install it.</p>
+<h2 id="installing-rethinkdb">Installing Rethinkdb</h2>
+<p>To install RethinkDB on Ubuntu, you need to add the repository.</p>
+<pre class=" language-undefined"><code class="language- language-undefined">source /etc/lsb-release &amp;&amp; echo "deb http://download.rethinkdb.com/apt $DISTRIB_CODENAME main" | sudo tee /etc/apt/sources.list.d/rethinkdb.list
+wget -qO- http://download.rethinkdb.com/apt/pubkey.gpg | sudo apt-key add -</code></pre>
+<p>Then, you have to update the package information from the newly added repository and install RethinkDB.</p>
+<pre class=" language-bash"><code class=" language-bash"><span class="token function">sudo</span> <span class="token function">apt-get</span> update
+<span class="token function">sudo</span> <span class="token function">apt-get</span> <span class="token function">install</span> rethinkdb</code></pre>
+<p><a href="https://www.rethinkdb.com/docs/install/">For other OS flavors, you can follow the official installation instructions</a>.</p>
+<p>Once you are done, type on your terminal the following command:</p>
+<pre class=" language-bash"><code class=" language-bash">rethinkdb</code></pre>
+<p>If everything is installed correctly, RethinkDB should start and it should run on the default port 28015. The administration console should be accessible at <a href="http://localhost:8080/">http://localhost:8080</a>.</p>
+<h2 id="installing-the-nodejs-client-rethinkdbdash">Installing the Node.js Client Rethinkdbdash</h2>
+<p>In the introduction of this tutorial, I have mentioned <a href="https://github.com/neumino/rethinkdbdash">rethinkdbdash</a>, the Node.js client we’ll use for interacting with the RethinkDB server. It is <q>an advanced Node.js driver for RethinkDB with a connection pool, support for streams, etc.</q></p>
+<p>To install the <code class=" language-undefined">rethinkdbdash</code> client, you can use npm:</p>
+<pre class=" language-bash"><code class=" language-bash">npm <span class="token function">install</span> rethinkdbdash</code></pre>
+<h2 id="getting-started-with-rethinkdb">Getting Started with RethinkDB</h2>
+<p>We’ll start by creating a database called <code class=" language-undefined">SitePoint</code> for our demo app. As the first step, create a project folder called <code class=" language-undefined">NodeRethinkDB</code>. Then, create a file called <code class=" language-undefined">app.js</code> inside the project directory.</p>
+<p>Once done, import the client module in the <code class=" language-undefined">app.js</code> file as shown below:</p>
+<pre class=" language-javascript"><code class=" language-javascript"><span class="token keyword">var</span> r <span class="token operator">=</span> <span class="token function">require</span><span class="token punctuation">(</span><span class="token string">'rethinkdbdash'</span><span class="token punctuation">)</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span></code></pre>
+<p>The above statement connects to the default port address <code class=" language-undefined">28015</code> and hosts <code class=" language-undefined">localhost</code>. In case you need a different configuration, you can set it as follows:</p>
+<pre class=" language-javascript"><code class=" language-javascript"><span class="token keyword">var</span> r <span class="token operator">=</span> <span class="token function">require</span><span class="token punctuation">(</span><span class="token string">'rethinkdbdash'</span><span class="token punctuation">)</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+	port<span class="token punctuation">:</span> <span class="token number">28015</span><span class="token punctuation">,</span>
+	host<span class="token punctuation">:</span> <span class="token string">'localhost'</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span></code></pre>
+<h2 id="creating-a-database">Creating a Database</h2>
+<p>With the previous statement in place, we can create a database.  This is done by using the <code class=" language-undefined">dbCreate</code> method.</p>
+<pre class=" language-javascript"><code class=" language-javascript">r<span class="token punctuation">.</span><span class="token function">dbCreate</span><span class="token punctuation">(</span><span class="token string">'SitePoint'</span><span class="token punctuation">)</span>
+<span class="token punctuation">.</span><span class="token function">run</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span class="token punctuation">.</span><span class="token function">then</span><span class="token punctuation">(</span><span class="token keyword">function</span><span class="token punctuation">(</span>response<span class="token punctuation">)</span><span class="token punctuation">{</span>
+	console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>response<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span>
+<span class="token punctuation">.</span><span class="token function">error</span><span class="token punctuation">(</span><span class="token keyword">function</span><span class="token punctuation">(</span>err<span class="token punctuation">)</span><span class="token punctuation">{</span>
+	console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token string">'error occured '</span><span class="token punctuation">,</span> err<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span></code></pre>
+<p>If everything went fine, you should get a successful response as the one below.</p>
+<pre class=" language-undefined"><code class="language- language-undefined">{
+  config_changes: [ { new_val: [Object], old_val: null } ],
+  dbs_created: 1
+}</code></pre>
+<p>If you take a look at the RethinkDB administration console running at port 8080, you should be able to see the newly created <code class=" language-undefined">SitePoint</code> database.</p>
+<p><img src="http://dab1nmslvvntp.cloudfront.net/wp-content/uploads/2015/12/1450280757rethink_site.png" alt="rethink_site" width="1300" height="768" class="aligncenter size-full wp-image-121294"></p>
+<h2 id="creating-a-table">Creating a Table</h2>
+<p>Now we’ll see how to create a table in a RethinkDB database, using the <code class=" language-undefined">rethinkdbdash</code> client. <br>
+First, set up a connection to the database using the client.</p>
+<pre class=" language-javascript"><code class=" language-javascript"><span class="token keyword">var</span> r <span class="token operator">=</span> <span class="token function">require</span><span class="token punctuation">(</span><span class="token string">'rethinkdbdash'</span><span class="token punctuation">)</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+	port<span class="token punctuation">:</span> <span class="token number">28015</span><span class="token punctuation">,</span>
+	host<span class="token punctuation">:</span> <span class="token string">'localhost'</span><span class="token punctuation">,</span>
+	db<span class="token punctuation">:</span> <span class="token string">'SitePoint'</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span></code></pre>
+<p>Now, we’ll make use of the <code class=" language-undefined">tableCreate</code> method to create a table <code class=" language-undefined">Employee</code> in the database.</p>
+<pre class=" language-javascript"><code class=" language-javascript">r<span class="token punctuation">.</span><span class="token function">tableCreate</span><span class="token punctuation">(</span><span class="token string">'Employee'</span><span class="token punctuation">)</span>
+<span class="token punctuation">.</span><span class="token function">run</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span class="token punctuation">.</span><span class="token function">then</span><span class="token punctuation">(</span><span class="token keyword">function</span><span class="token punctuation">(</span>response<span class="token punctuation">)</span><span class="token punctuation">{</span>
+	console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>response<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span>
+<span class="token punctuation">.</span><span class="token function">error</span><span class="token punctuation">(</span><span class="token keyword">function</span><span class="token punctuation">(</span>err<span class="token punctuation">)</span><span class="token punctuation">{</span>
+	console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token string">'error while creating table '</span><span class="token punctuation">,</span> err<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span></code></pre>
+<p>By default, the primary key is <code class=" language-undefined">id</code>. If you want, you can specify it while creating the table.</p>
+<pre class=" language-javascript"><code class=" language-javascript">r<span class="token punctuation">.</span><span class="token function">tableCreate</span><span class="token punctuation">(</span><span class="token string">'Employee'</span><span class="token punctuation">,</span><span class="token punctuation">{</span> primaryKey<span class="token punctuation">:</span> <span class="token string">'name'</span> <span class="token punctuation">}</span><span class="token punctuation">)</span>
+<span class="token punctuation">.</span><span class="token function">run</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span class="token punctuation">.</span><span class="token function">then</span><span class="token punctuation">(</span><span class="token keyword">function</span><span class="token punctuation">(</span>response<span class="token punctuation">)</span><span class="token punctuation">{</span>
+	console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>response<span class="token punctuation">)</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span>
+<span class="token punctuation">.</span><span class="token function">error</span><span class="token punctuation">(</span><span class="token keyword">function</span><span class="token punctuation">(</span>err<span class="token punctuation">)</span><span class="token punctuation">{</span>
+	console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token string">'error while creating table '</span><span class="token punctuation">,</span>err<span class="token punctuation">)</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span></code></pre>
+<p>The above query returns the following response:</p>
+<pre class=" language-undefined"><code class="language- language-undefined">Creating a pool connected to localhost:28015
+
+{
+  config_changes: [ { new_val: [Object], old_val: null } ],
+  tables_created: 1
+}</code></pre>
+<h2 id="inserting-data">Inserting Data</h2>
+<p>To insert data into the <code class=" language-undefined">Employee</code> table, we’ll make use of the <code class=" language-undefined">insert</code> method.</p>
+<pre class=" language-javascript"><code class=" language-javascript">r<span class="token punctuation">.</span><span class="token function">table</span><span class="token punctuation">(</span><span class="token string">"Employee"</span><span class="token punctuation">)</span>
+<span class="token punctuation">.</span><span class="token function">insert</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+    name<span class="token punctuation">:</span> <span class="token string">"Jay"</span><span class="token punctuation">,</span>
+    company<span class="token punctuation">:</span> <span class="token string">"SitePoint"</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span>
+<span class="token punctuation">.</span><span class="token function">run</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span class="token punctuation">.</span><span class="token function">then</span><span class="token punctuation">(</span><span class="token keyword">function</span><span class="token punctuation">(</span>response<span class="token punctuation">)</span><span class="token punctuation">{</span>
+	console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token string">'Success '</span><span class="token punctuation">,</span>response<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span>
+<span class="token punctuation">.</span><span class="token function">error</span><span class="token punctuation">(</span><span class="token keyword">function</span><span class="token punctuation">(</span>err<span class="token punctuation">)</span><span class="token punctuation">{</span>
+	console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token string">'error occurred '</span><span class="token punctuation">,</span>err<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span></code></pre>
+<p>The code above insert the data into the <code class=" language-undefined">Employee</code> table and return the successful message. Here is the response from the query above:</p>
+<pre class=" language-undefined"><code class="language- language-undefined">Creating a pool connected to localhost:28015
+
+Success
+
+{
+  deleted: 0,
+  errors: 0,
+  generated_keys: [ 'f64a2bdb-1659-47a9-9bc1-89e8f1ebb2ac' ],
+  inserted: 1,
+  replaced: 0,
+  skipped: 0,
+  unchanged: 0
+}</code></pre>
+<p>One thing worth noting in the insert query is that we haven’t specified the <code class=" language-undefined">id</code> field. If we prefer, we can do it. Otherwise, it will have an autogenerated unique identifier value.</p>
+<h2 id="selecting-data-from-table">Selecting Data from Table</h2>
+<p>Selecting data from the table is quite straightforward. We need to specify the name of the table and the data gets selected.</p>
+<pre class=" language-javascript"><code class=" language-javascript">r<span class="token punctuation">.</span><span class="token function">table</span><span class="token punctuation">(</span><span class="token string">'Employee'</span><span class="token punctuation">)</span>
+<span class="token punctuation">.</span><span class="token function">run</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span class="token punctuation">.</span><span class="token function">then</span><span class="token punctuation">(</span><span class="token keyword">function</span><span class="token punctuation">(</span>response<span class="token punctuation">)</span><span class="token punctuation">{</span>
+	console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>response<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span>
+<span class="token punctuation">.</span><span class="token function">error</span><span class="token punctuation">(</span><span class="token keyword">function</span><span class="token punctuation">(</span>err<span class="token punctuation">)</span><span class="token punctuation">{</span>
+	console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>err<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span></code></pre>
+<p>The snippet above gives the following output:</p>
+<pre class=" language-undefined"><code class="language- language-undefined">[{
+    EmpId: 'bc95940f-084c-48c5-b9fe-dc0a82f380b6',
+    name: 'Jay',
+    company: 'SitePoint'
+}]</code></pre>
+<h3 id="selecting-specific-records-from-table">Selecting Specific Records from Table</h3>
+<p>We employ the <code class=" language-undefined">get</code> method to get records with a particular primary key. For example, if we want to select an <code class=" language-undefined">Employee</code> with an <code class=" language-undefined">EmpId</code> of <code class=" language-undefined">bc95940f-084c-48c5-b9fe-dc0a82f380b6</code>, this is the query we must run:</p>
+<pre class=" language-javascript"><code class=" language-javascript">r<span class="token punctuation">.</span><span class="token function">table</span><span class="token punctuation">(</span><span class="token string">'Employee'</span><span class="token punctuation">)</span>
+<span class="token punctuation">.</span><span class="token keyword">get</span><span class="token punctuation">(</span><span class="token string">'bc95940f-084c-48c5-b9fe-dc0a82f380b6'</span><span class="token punctuation">)</span>
+<span class="token punctuation">.</span><span class="token function">run</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span class="token punctuation">.</span><span class="token function">then</span><span class="token punctuation">(</span><span class="token keyword">function</span><span class="token punctuation">(</span>response<span class="token punctuation">)</span><span class="token punctuation">{</span>
+	console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>response<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span>
+<span class="token punctuation">.</span><span class="token function">error</span><span class="token punctuation">(</span><span class="token keyword">function</span><span class="token punctuation">(</span>err<span class="token punctuation">)</span><span class="token punctuation">{</span>
+	console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>err<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span></code></pre>
+<p>The above query would return the details of the <code class=" language-undefined">Employee</code> with ID <code class=" language-undefined">bc95940f-084c-48c5-b9fe-dc0a82f380b6</code> as reported below:</p>
+<pre class=" language-undefined"><code class="language- language-undefined">[{
+    EmpId: 'bc95940f-084c-48c5-b9fe-dc0a82f380b6',
+    name: 'Jay',
+    company: 'SitePoint'
+}]</code></pre>
+<h2 id="pushing-update-in-real-time">Pushing Update in Real Time</h2>
+<p>One of the most important features of the RethinkDB is its ability to push changes in real time, which reduces the polling overhead. From the official docs you can read:</p>
+<blockquote><p>
+  Instead of polling for changes, the developer can tell RethinkDB to continuously push updated query results in realtime.
+</p></blockquote>
+<p>Pushing updates can be achieved by subscribing to the realtime feeds. For example, we can subscribe for any changes in the <code class=" language-undefined">Employee</code> table as shown below:</p>
+<pre class=" language-javascript"><code class=" language-javascript">r<span class="token punctuation">.</span><span class="token function">table</span><span class="token punctuation">(</span><span class="token string">'Employee'</span><span class="token punctuation">)</span>
+<span class="token punctuation">.</span><span class="token function">changes</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span class="token punctuation">.</span><span class="token function">run</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span class="token punctuation">.</span><span class="token function">then</span><span class="token punctuation">(</span><span class="token keyword">function</span><span class="token punctuation">(</span>cursor<span class="token punctuation">)</span><span class="token punctuation">{</span>
+	cursor<span class="token punctuation">.</span><span class="token function">each</span><span class="token punctuation">(</span>console<span class="token punctuation">.</span>log<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span>
+<span class="token punctuation">.</span><span class="token function">error</span><span class="token punctuation">(</span><span class="token keyword">function</span><span class="token punctuation">(</span>err<span class="token punctuation">)</span><span class="token punctuation">{</span>
+	console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>err<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span></code></pre>
+<p>Now, when inserting a record into <code class=" language-undefined">Employee</code>, in the terminal we’ll see a log as the following:</p>
+<pre class=" language-undefined"><code class="language- language-undefined">{
+  new_val: {
+     EmpId: '57937293-850b-45af-aeb3-e30d2dfd83a2',
+     company: 'SitePoint',
+     name: 'Raj'
+  },
+  old_val: null
+}</code></pre>
+<p>The above log is for an insert statement, hence the <code class=" language-undefined">old_val</code> is null and <code class=" language-undefined">new_val</code> has value. In case an existing record gets updated, we will have both the <code class=" language-undefined">old_val</code> and the <code class=" language-undefined">new_val</code>.</p>
+<h2 id="conclusions">Conclusions</h2>
+<p>In this tutorial, we’ve seen how to use RethinkDB with Node.js applications thanks to the RethinkDB Node.js driver called <a href="https://github.com/neumino/rethinkdbdash">rethinkdbdash</a>.  <br>
+If you want to deepen the topic, <a href="https://github.com/neumino/rethinkdbdash">I suggest you to take a look at the official documentation</a> and at the <a href="http://www.rethinkdb.com/api/javascript/">Rethink Db JavaScript command reference</a>.<br>
+Have you ever used any other client for connecting to RethinkDB from Node.js?<br>
+Share your thoughts and suggestions in the comments below!</p>
+  
