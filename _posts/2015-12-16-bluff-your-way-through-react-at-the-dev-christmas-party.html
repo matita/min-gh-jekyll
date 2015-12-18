@@ -1,0 +1,134 @@
+---
+title: "Bluff Your Way through React at the Dev Christmas Party"
+description: "Are you thinking of trying React but aren't sure where to start? Then Craig Bilner's yuletide round up of React and the surrounding technologies is for you."
+link: "http://www.sitepoint.com/bluff-your-way-through-react/"
+saved: "2015-12-16 15:26:57"
+---
+
+    
+<p>If you’re thinking of using React but are overwhelmed by the number of resources, have given up resisting the noise, or just want to keep abreast of the state of things, read on. If you already use React, hate React, still want to resist React…read on anyway for cliff notes on this weekend’s gathering.</p>
+<h2 id="a-bit-of-an-over-react-ion">A bit of an over-react-ion</h2>
+
+<p>There is probably nothing that can be written on the subject that hasn’t already been covered. Reading every resource in the <a href="https://github.com/enaqx/awesome-react">awesome react repo</a> is equivalent to completing the whole Encyclopaedia Britannica cannon. Time-consuming, impressive and enlightening. However, we only have until Saturday to avoid embarrassment and a coded tutorial isn’t going to cover all the buzzwords likely to crop up.</p>
+<h2 id="just-tell-me-what-react-is-please">Just tell me what React is, please</h2>
+<div class="tip">
+<p>Ben Backbone says, “It’s just the V in MVC so it’s only 1/3 as good”.</p>
+<p>You say, “I find comparisons to MVC unhelpful nor intuitive, I play with Lego and focus on making beautiful blocks that can fit anywhere”.</p>
+</div>
+<p>This is a building block:</p>
+<pre class=" language-javascript"><code class=" language-javascript"><span class="token punctuation">(</span><span class="token punctuation">{</span> someText <span class="token punctuation">}</span><span class="token punctuation">)</span> <span class="token operator">=</span><span class="token operator">&gt;</span> <span class="token operator">&lt;</span>div<span class="token operator">&gt;</span><span class="token punctuation">{</span> someText <span class="token punctuation">}</span><span class="token operator">&lt;</span><span class="token operator">/</span>div<span class="token operator">&gt;</span>
+</code></pre>
+<p>React is not a framework, it’s a library which allows you to compose these building blocks to build maintainable interactive interfaces.</p>
+<p>Now you’re probably wondering why React is so daunting and why the scroll bar is far higher than you were hoping…well, like camping, you can’t just go into the woods with your bivvy, you need this…and this…and this…</p>
+<h2 id="all-i-want-for-jsxmas-is-you">All I want for JSXmas is <a href="https://facebook.github.io/jsx">you</a></h2>
+<div class="tip">
+<p>Alan Angular says, “You’re putting HTML in your JS and are mixing concerns”.</p>
+<p>You say, “You’re drunk Alan, go home…but also, it’s a delightful way to express markup that can be transpiled to many things, looks like HTML so there’s no new DSL I have to learn, and really my only concern is presenting a view of my data”.</p>
+</div>
+<p>Yes <a href="http://www.sitepoint.com/getting-started-react-jsx/">JSX</a> has probably taken the brunt of hatred, but it’s what really set React apart and has now been adopted by other libraries. No more low level fiddling with the DOM, checking for attributes or worrying about cross browser quirks. I can write something that eerily looks like HTML but I can also use good old JS to <a href="http://www.sitepoint.com/video-using-map-to-create-lists-in-react/">manipulate it</a>.</p>
+<h2 id="virtual-dom-dom-dom-dom-dom">Virtual DOM, DOM, DOM, DOM, DOM</h2>
+<div class="tip">
+<p>Edward Ember says, “The Glimmer engine repaints are far faster than the Virtual DOM”.</p>
+<p>You say, “While performance is a concern for me I very rarely/never build apps that need to render 10k ever changing list items. If the tech ticks the community, stability, maintainability, testability boxes, it’s probably not dog slow.”.</p>
+</div>
+<p>Interacting with the DOM is comparably slow, in that it usually takes up the most amount of time in a given operation compared to JS in memory. The React team developed the Virtual DOM (VDOM) to allow them to make a fast comparison of state changes in order to minimize the amount of slow work that needs to be done.</p>
+<h2 id="i-dont-know-art-but-i-know-what-i-like">I don’t know art, but I know what I like</h2>
+<div class="tip">
+<p>Charlotte CSS says, “Inline styles are everything that’s wrong with the internet. No :before/:after, patchy @media print support, un-DRY code, mixing concerns [Alan +1], extra overhead for :hover etc. need I go on?”.</p>
+<p>You think, “This all pales in comparison to the fact they don’t even work with a strict content security policy *, glad she didn’t mention that”.</p>
+<p>You say, “That’s quite a lot of hyperbole before desert. Pseudo selectors are a hack anyway, I prefer not to use them, I like trees, DRY is what I don’t like about your blanket CSS and once again, I’m just concerned with using my presentation layer for it’s intended purpose”.</p>
+</div>
+<p>Ok, so you don’t have to use inline styles with React, you can be <strong>less bold</strong> and try <a href="https://github.com/css-modules/css-modules">CSS Modules</a> (if you enjoy long class names in your HTML), one of the many CSS inlining tools or <em>just</em> use <a href="http://getbem.com/">BEM</a>.</p>
+<p>I strongly suggest you give it a go though, it means your component’s content and style is tightly coupled (which is what you want) and can be dropped in anywhere with confidence. Developers don’t accidentally tread on each other’s feet and there’s no ungainly naming convention that must be taught and has to be policed. JS is also great at doing the heavy lifting for <a href="https://aerotwist.com/blog/flip-your-animations/">animations</a>.</p>
+<p>* to avoid this ever so slight wrinkle you <em>can</em> use the Shadow DOM, take a look at <a href="https://github.com/Wildhoney/ReactShadow">react-shadow</a> or <a href="https://github.com/Wildhoney/Maple.js">maple</a> for ideas.</p>
+<h2 id="you-n-i-flow-in-the-same-direction">You ‘n’ I <a href="http://www.sitepoint.com/video-introducing-one-way-data-flow/">flow</a> in the same direction</h2>
+<div class="tip">
+<p>Kevin Knockout says, “With two way data binding you get highly interactive interfaces with little boilerplate code”.</p>
+<p>You say, “A unidirectional data flow is half the headache, debugging and testing in one direction is much more pleasurable, especially with pure functions that have no side effects”.</p>
+</div>
+<p>So we have our building blocks written in what looks like HTML, with their own protected styles, and they will only update the DOM when they have to…but how do you make them show stuff? By using idempotent render functions with referential transparency that are as pure as un-driven snow of course ;-)</p>
+<p>If you only remember one thing for the party, it’s this core concept, <strong>React components are just functions</strong>. If you give them the same input, they should return the same output, you pass this data via <a href="http://www.sitepoint.com/video-using-props-to-pass-data-in-react/">props</a>. <em>However, components can also maintain their own <a href="http://www.sitepoint.com/video-an-introduction-to-component-state/">state</a>, which should be treated with kid gloves</em>.</p>
+<p>In a React application you ideally want one source of truth, <a href="https://medium.com/@dan_abramov/smart-and-dumb-components-7ca2f9a7c7d0#.dizvyhnix">smart components</a> (which know about data and how to pass it on) and dumb components (which know nothing and do as they’re told). The majority of your application should be made of dumb components, the worker bees, with higher order components orchestrating data to pass to them.</p>
+<h2 id="flummoxed-by-redux">Flummoxed by Redux</h2>
+<div class="tip">
+<p>Jeremy jQuery says, “The problem with React is, it takes you three days to try out <a href="https://github.com/voronianski/flux-comparison">fifteen Flux implementations</a> to come to the conclusion that you don’t really know which one is best. You go with one and it takes another day to write what I did in 10 mins”.</p>
+<p>You say, “Yeah, it was a bit of a gem from Facebook (FB), leaving it to the community to thrash out a vague philosophy, I completely agree. Although, now I have my Flux implementation, my code is easy to reason about, testable and can scale”.</p>
+</div>
+<p>The beauty of the open source community (OSC) is that an optimal solution will eventually rise up, so suggesting philosophies to the OSC is no bad thing. FB themselves do Flux in many different ways, so what is it?</p>
+<p>In essence it’s the mechanics of the unidirectional flow of data we covered. A <em>view</em> performs an <em>action</em>, which by way of a <em>dispatcher</em> updates a <em>store</em> that updates your higher order components and subsequent children. <strong>Always one way, always predictable</strong>.</p>
+<p>Earlier this year, a cheeky chappy called <a href="https://github.com/gaearon">Dan</a> put something together for a talk. People liked it, it got more stars on GitHub than the Milky Way and so he worked on it full time. It’s called <a href="http://rackt.org/redux/index.html">Redux</a> and it’s the implementation I recommend. It’s not completely Flux but the <a href="https://youtu.be/xsSnOQynTHs?t=6m23s">dev tooling</a> is exceptional with time travel and undo/redo etc. out of the box thanks to store updates only through pure <a href="http://rackt.org/redux/docs/basics/Reducers.html">reducers</a>.</p>
+<h2 id="i-will-never-change-for-you">I will never change for you</h2>
+<p>People are too busy with the port and cheese at this juncture but if they were to ask about <a href="http://www.sitepoint.com/immutability-react/">immutability</a> here’s a high level view.</p>
+<p>When state changes in our React application <em>everything</em> is checked for prop differences before another check is made for DOM differences. Making deep equality checks is expensive and so is diffing the VDOM. Fortunately we can lend React a helping hand by using immutable data. If a component’s props have not changed and they are an immutable object, the current prop value and the next prop value will have the same reference that means we can perform a quick shallow equality check in <a href="https://facebook.github.io/react/docs/component-specs.html#updating-shouldcomponentupdate">shouldComponentUpdate</a>. This member of the React <a href="https://facebook.github.io/react/docs/component-specs.html">life cycle</a> will cut out the VDOM diffing saving work and therefore time.</p>
+<p>With Redux’s reducers you get this concept out of the box, you take in a previous state and you create a brand new state based on an action’s payload. This is the second benefit of immutability and a recurring theme; it makes your application predictable. No bugs because something accidentally changed something else it wasn’t meant to, or had business with.</p>
+<h2 id="tell-me-which-way-to-go">Tell me which way to go</h2>
+<div class="tip">
+<p>Edward Ember says, “I can scaffold out my project in a couple of minutes and have absolutely everything I need, I find React too lightweight”.</p>
+<p>You say, “For me using lots of libraries/building blocks that each do one thing well (UI microservices) is highly maintainable and easy to future proof”.</p>
+</div>
+<p>So React doesn’t come with a router, but <a href="https://github.com/rackt/react-router">Michael Jackson</a> does. This is the de facto way of routing in React and a virtual requirement for any single page application (SPA). We now have Promises, the fetch API, service workers, web workers, local storage, <a href="http://jwt.io/">JWT</a>, <a href="https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/Intl">intl</a> etc. etc. You can <a href="http://www.sitepoint.com/frameworkless-javascript/">build an SPA natively</a> with very little need for large frameworks* beyond a few polyfills.</p>
+<p>* not that frameworks are bad per se</p>
+<h2 id="get-that-baton-round">Get that baton round</h2>
+<div class="tip">
+<p>You say, “I’ve got all I need for this SPA, my mug is empty, this article is too long with no discernible tl;dr, I’m going to sort out my dry cleaning before Saturday”.</p>
+<p>I say, “I tell you what to say, not the other way round but…there’s one last optional piece and then we need to talk about how you’re going to put all this together”.</p>
+</div>
+<p>Redux goes to great lengths to explain how to perform asynchronous actions and seed your app with data through various means including <a href="http://rackt.org/redux/docs/api/applyMiddleware.html">middleware</a>. Neal Netflix pops up and says, <em>“Let’s chill and have a look at <a href="https://github.com/Netflix/falcor">Falcor</a>“</em>, you say, <em>“Actually that sounds rather good but I’m going to give <a href="https://facebook.github.io/relay/">Relay</a> and <a href="http://graphql.org/">GraphQL</a> a little go first”</em>.</p>
+<p>FB had a problem when they were building mobile native apps, mobile web apps and their other suite of web products. How can you co-ordinate incredibly complex data syncing across these platforms and use the same language when REST isn’t cutting it? Thus we have GraphQL (nothing to do with Graph databases), which much like Flux is just a concept with quite a few implementations (<a href="https://github.com/graphql/graphql-js">including JS</a>).</p>
+<p>GraphQL is a language that allows the front-end developer to control their data requirements. No customized REST end points, no bothering the various back end teams for an extra field to be sent, just ask for a fragment of data with optional parameters and it will be returned to you.</p>
+<p>Relay then <a href="http://www.sitepoint.com/react-data-fetching-with-relay/">hooks up</a> your React components by way of containers and routes to your GraphQL end point. This rather complex marriage results in optimistic updates, query batching and data sync happiness out of the box…as long as you have a GraphQL server…and schema…and the ability to get your head around Relay mutations and the funky query language…</p>
+<h2 id="last-night-shallow-rendering-changed-my-life">Last night shallow rendering changed my life</h2>
+<div class="tip">
+<p>Roberto Reacto says, “Facebook use <a href="https://facebook.github.io/jest/">Jest</a> to test their components and so that’s what I use”.</p>
+<p>You say, “It’s super slow, it’s overly complicated. It really loves to mock everything. Shallow render and test all the things”.</p>
+</div>
+<p>If FB really does use Jest, I can only commend their patience but you’ll rarely see it mentioned on the conference circuit. When I read <a href="http://simonsmith.io/unit-testing-react-components-without-a-dom/">this</a>, I had an epiphany and the rest is history.</p>
+<p>This is <em>the</em> best way to test the front-end. No DOM, very few dependencies, just crack out <a href="https://mochajs.org/">Mocha</a> and <a href="https://nodejs.org/api/assert.html">Assert</a> and you’ll have <strong>rock solid</strong>, <strong>super fast</strong> unit tests that you can rely on. You’ll get a long way by testing the various moving parts, which just leaves some lightweight functional <a href="https://en.wikipedia.org/wiki/Smoke_testing_(software)">smoke testing</a> to confirm interaction, nice.</p>
+<h2 id="build-it-and-they-will-come">Build it and they will come</h2>
+<div class="tip">
+<p>Graham Grunt gulps after grazing on a cold piece of broccoli and says, “How do you build your app without build tools?”.</p>
+<p>You say, “With node, npm scripts and a module loader, my workflow is greatly reduced yet incredibly powerful”.</p>
+</div>
+<p>Another pivotal read for me was <a href="http://blog.keithcirkel.co.uk/how-to-use-npm-as-a-build-tool/">this</a>, I then use <a href="http://www.sitepoint.com/watch-using-webpack-to-transform-jsx/">webpack</a> as my weapon of choice but <a href="http://jspm.io/">jspm</a> and <a href="http://browserify.org/">Browserify</a> are perfect alternatives, or anything that gives you:</p>
+<ul>
+<li>Hot reloading: because we’re super lazy devs and time is money</li>
+<li>Babel integration: for reasons that we’ll get onto</li>
+<li>Minification, asset/vendor management, resource hashing: because you want one tiny lump of cache busted JS to run your beautiful app</li>
+</ul>
+<h2 id="i-want-to-b-abel-to-use-es2015">I want to <em><a href="https://babeljs.io/">B-abel</a></em> to use <a href="http://es6-features.org/#Constants">ES2015</a></h2>
+<div class="tip">
+<p>Oscar Old-School says, “I’ve been using ES5 since 2009, legacy browsers don’t support ES2015, classes in JS!? The spec changes yearly, staged propositions like Object.observe get dropped while you’re using them, Babel drops support for well-used features and <a href="https://youtu.be/gdnuOa7tDco?t=30s">what’s with the three dots</a>…?”.</p>
+<p>You say, “For someone so old school you’re remarkably familiar with all these things and you make some good points. As you mentioned Babel, you know that we can transpile down to ES5 which runs in all modern browsers. You don’t have to use every feature in ES2015 and if you use proposed features you’re asking for trouble. The <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Spread_operator">three dots</a> are also awesome, spread the love”.</p>
+</div>
+<p>So, formerly of 6to5 fame, when it was written by a <a href="https://github.com/sebmck">kid</a> in his history class (until he found out Dolly was working three fewer hours), Babel is the go to JS transpiler, unless you prefer more <a href="https://github.com/google/traceur-compiler">Gallic tools</a>.</p>
+<p>It’s not a requirement (like TypeScript isn’t for Angular 2 ;-)), but writing all your code in ES2015 (stage proposals for side projects) will just make your day that much better. Once you start destructuring you’ll never want to stop.</p>
+<p>And yes, classes in principle are best avoided, composition over inheritance is preferred, but…if you only extend once and it makes your React components more readable using idiomatic native code…perhaps we just go with it…</p>
+<h2 id="isomorphic-server-side-rendered-universal-javascript">Isomorphic server side rendered universal JavaScript</h2>
+<div class="tip">
+<p>Ally Anderson says, “JavaScript is everything that’s wrong with the internet. These dynamic sites are not SEO optimized and how many nested elements do you want!?”.</p>
+<p>You say, “True, JS shouldn’t be used for everything, but the things I build require interaction and great UX, I still care about graceful degradation and progressive enhancement. This is why I render as much content as I can server side with semantic elements and form posts which gives me SEO for free”.</p>
+</div>
+<p>Usually when people use <em>isomorphic</em> and <em>universal</em> they mean server side rendering, which React is aimed at, splitting out its main engine from react-dom and react-dom/server.</p>
+<p>As a small caveat, do not blindly render server side because the time to glass is faster. Depending on the situation this might not be the case when it comes to round trips, latency, the browser and hardware etc. etc.</p>
+<h2 id="gah-ive-got-lint-in-my-codeooh-and-some-chewing-gum">Gah, I’ve got lint in my code…ooh and some chewing gum</h2>
+<p>No need for debate around this one, there’s general consensus around the table and much nodding (even from Alan), linting is imperative to collaboration on a shared code base. Time shouldn’t be wasted during code reviews on semi-colons and indentations; they should be about intent and architecture.</p>
+<p>Now, there is a difference between code quality and code style, quality focusing on code best practice and style focusing on…styling the code, with semi-colons and the like. You can split these jobs out with <a href="http://jscs.info/">JSCS</a> and <a href="http://jshint.com/">JSHint</a> for example but the current darling of the linting world is <a href="http://eslint.org/">ESLint</a>.</p>
+<p>For React I use <a href="https://github.com/airbnb/javascript/tree/master/packages/eslint-config-airbnb">Airbnb’s config</a> which uses <a href="https://github.com/yannickcr/eslint-plugin-react">this</a> for their Reacty bits. Stick this in your <strong>posttest</strong> script and merge PRs like they’re going out of fashion.</p>
+<h2 id="a-used-case">A used case</h2>
+<div class="tip">
+<p>Sally Static says, “I wouldn’t use React for a static site, there’s no real interaction and I get everything I need from <a href="https://jekyllrb.com/">Jekyll</a>“.</p>
+<p>You say, “Have you tried <a href="https://github.com/gatsbyjs/gatsby">Gatsby</a>? Are you sure you don’t want live reloading in your life?”.</p>
+</div>
+<p>It’s possible to argue that using React for everything is overkill, if you don’t need interaction and the VDOM via 42kb of JS, you shouldn’t use it. However…React is not solely about the VDOM, it’s about testable styled Lego bricks. If you’re doing anything that’s slightly more than trivial and you don’t mind writing a bit of JS, I would advocate using React*.</p>
+<p>* or any other library with a component philosophy but this article is about the merits of React ;-)</p>
+<h2 id="end-of-the-beginning">End of the beginning</h2>
+<p>React comes with a massive community and ecosystem to complement the single responsibility library, which means you can just drop a component into your existing site, something not possible with a behemoth framework, or write a whole app from the ground up.</p>
+<p>React has taken over the world<sup>1</sup>, WordPress is going all React<sup>2</sup>, you must use React<sup>3</sup>. If you’re looking for a dependable unopinionated component library that does one thing well, then hopefully this article has provided you with enough links and words to google/sitepoint for the next month.</p>
+<p>It’s like coding in the 90s with whole page refreshes (albeit optimized client side ones), inline styles (albeit not a requirement) and inline events (albeit one <a href="http://www.sitepoint.com/video-understanding-react-events/">root event</a>)…and “HTML in your JS”, but there’s nothing wrong with that<sup>4</sup>.</p>
+<ol>
+<li>it hasn’t</li>
+<li>it’s not…yet</li>
+<li>you don’t, but it’s a good idea to ;-)</li>
+<li>there’s a lot wrong with the 90s, this conclusion uses a liberal creative licence</li>
+</ol>
+  
