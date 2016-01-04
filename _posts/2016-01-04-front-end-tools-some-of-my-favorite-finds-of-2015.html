@@ -1,0 +1,242 @@
+---
+title: "Front-end Tools: Some of My Favorite Finds of 2015"
+description: "Louis Lazaris has discovered a slew of new tools for front-end developers. In this end-of-year post, he lists some of his favorite finds of 2015."
+link: "http://www.sitepoint.com/front-end-tools-favorite-finds-2015/"
+saved: "2016-01-04 15:45:39"
+---
+
+    <p>We’re just about at the end of 2015 and I’m sure you’d all agree it’s been another year jam-packed with new tools for web design and development. While doing <a href="http://webtoolsweekly.com/">my newsletter</a> I’ve come across lots of interesting things, so I thought it would be cool to summarize some of my favorite finds in a year-end post.</p>
+<p>Before I begin, I should mention:</p>
+<ul>
+<li>I can’t necessarily vouch for the quality or security of any of these tools.</li>
+<li>Just because I discovered them in 2015, doesn’t mean they were built in 2015 (some of them are much older than that).</li>
+<li>They aren’t in any particular order.</li>
+<li>Not all of these are necessarily “front-end” tools but I’m discussing them in that context.</li>
+</ul>
+<p>So let’s get to it!</p>
+<div class="ArticleBox u-inline"><h3 class="ArticleBox_header t-bg">
+                    <span class="ArticleBox_icon fa fa-pencil"></span> More from this author
+                 </h3><div class="ArticleBox_content"><ul class="ArticleBox_list t-list"><li><a href="http://www.sitepoint.com/dom-tips-techniques-parent-child-siblings/?utm_source=sitepoint&amp;utm_medium=relatedinline&amp;utm_term=html-css&amp;utm_campaign=relatedauthor">DOM Tips and Techniques: Parent, Child, and Siblings</a></li><li><a href="http://www.sitepoint.com/20-docs-guides-front-end-developers-6/?utm_source=sitepoint&amp;utm_medium=relatedinline&amp;utm_term=html-css&amp;utm_campaign=relatedauthor">20+ Docs and Guides for Front-end Developers (No. 6)</a></li></ul></div></div>
+<h2 id="ai2html"><a href="http://ai2html.org/">ai2html</a></h2>
+<p>Let’s start off with one that surely blew many people’s minds when it first came out. This comes from the <a href="https://github.com/newsdev">New York Times Newsroom Developers</a>, and it’s described as:</p>
+<blockquote>
+<p>[A]n open-source script for Adobe Illustrator that converts your Illustrator documents into html and css.</p>
+</blockquote>
+<p><img src="http://dab1nmslvvntp.cloudfront.net/wp-content/uploads/2015/12/1450893548ai2html.png" alt="ai2html" width="878" height="805" class="aligncenter size-full wp-image-121663"></p>
+<p>It’s written in JavaScript and it’s added to Illustrator by dropping the .js file into the “Scripts” folder of your Illustrator installation. Once that’s done, you follow these steps:</p>
+<ol>
+<li>Create your Illustrator artwork. 
+<ul>
+<li>Size the artboard to the dimensions that you want the div to appear on the web page.</li>
+<li>Make sure your <code class=" language-undefined">Document Color Mode</code> is set to <code class=" language-undefined">RGB</code>.</li>
+</ul>
+</li>
+<li>Run the script by choosing: File &gt; Scripts &gt; ai2html.</li>
+<li>Go to the folder containing your Illustrator file and find the HTML file(s) located inside the <code class=" language-undefined">ai2html-output</code> folder.</li>
+</ol>
+<p>You can customize the export of image formats, PNG and JPEG quality, page responsiveness, number of HTML files, and <a href="http://ai2html.org/#settings">lots more</a>. The NYTimes even maintains a collection of examples of how it’s been used <a href="https://delicious.com/archietse/ai2html,nyt">from their team</a> as well as <a href="https://delicious.com/archietse/ai2html,others">others</a>.</p>
+<h2 id="sloc"><a href="https://github.com/flosse/sloc">sloc</a></h2>
+<p>This is pretty neat. It’s a command-line tool to help you build stats on your source code. The output by default is just a simple result list but you can switch it to CSV, JSON, or CLI-table format. After installing via npm, you’ll run a command like this:</p>
+<pre class=" language-bash"><code class=" language-bash">sloc index<span class="token punctuation">.</span>html</code></pre>
+<p>I ran the above command on <a href="http://cssvalues.com/">one of my projects</a> that has a very big HTML file and here’s the result:</p>
+<pre class=" language-bash"><code class=" language-bash"><span class="token operator">--</span><span class="token operator">--</span><span class="token operator">--</span><span class="token operator">--</span><span class="token operator">--</span> Result <span class="token operator">--</span><span class="token operator">--</span><span class="token operator">--</span><span class="token operator">--</span><span class="token operator">--</span><span class="token operator">--</span>
+
+            Physical <span class="token punctuation">:</span>  <span class="token number">9788</span>
+              Source <span class="token punctuation">:</span>  <span class="token number">6340</span>
+             Comment <span class="token punctuation">:</span>  <span class="token number">645</span>
+ Single<span class="token operator">-</span>line comment <span class="token punctuation">:</span>  <span class="token number">0</span>
+       Block comment <span class="token punctuation">:</span>  <span class="token number">645</span>
+               Mixed <span class="token punctuation">:</span>  <span class="token number">642</span>
+               Empty <span class="token punctuation">:</span>  <span class="token number">3445</span>
+
+Number of files <span class="token function">read</span> <span class="token punctuation">:</span>  <span class="token number">1</span>
+
+<span class="token operator">--</span><span class="token operator">--</span><span class="token operator">--</span><span class="token operator">--</span><span class="token operator">--</span><span class="token operator">--</span><span class="token operator">--</span><span class="token operator">--</span><span class="token operator">--</span><span class="token operator">--</span><span class="token operator">--</span><span class="token operator">--</span><span class="token operator">--</span><span class="token operator">--</span><span class="token operator">--</span></code></pre>
+<p>Notice the breakdown in comment types</p>
+<p>And with the following command, which outputs in JSON format:</p>
+<pre class=" language-bash"><code class=" language-bash">sloc <span class="token operator">--</span><span class="token function">format</span> json index<span class="token punctuation">.</span>html</code></pre>
+<p>We get the following result:</p>
+<pre class=" language-javascript"><code class=" language-javascript"><span class="token punctuation">{</span>
+  <span class="token string">"files"</span><span class="token punctuation">:</span> <span class="token punctuation">[</span>
+    <span class="token punctuation">{</span>
+      <span class="token string">"path"</span><span class="token punctuation">:</span> <span class="token string">"index.html"</span><span class="token punctuation">,</span>
+      <span class="token string">"stats"</span><span class="token punctuation">:</span> <span class="token punctuation">{</span>
+        <span class="token string">"total"</span><span class="token punctuation">:</span> <span class="token number">9788</span><span class="token punctuation">,</span>
+        <span class="token string">"source"</span><span class="token punctuation">:</span> <span class="token number">6340</span><span class="token punctuation">,</span>
+        <span class="token string">"comment"</span><span class="token punctuation">:</span> <span class="token number">645</span><span class="token punctuation">,</span>
+        <span class="token string">"single"</span><span class="token punctuation">:</span> <span class="token number">0</span><span class="token punctuation">,</span>
+        <span class="token string">"block"</span><span class="token punctuation">:</span> <span class="token number">645</span><span class="token punctuation">,</span>
+        <span class="token string">"mixed"</span><span class="token punctuation">:</span> <span class="token number">642</span><span class="token punctuation">,</span>
+        <span class="token string">"empty"</span><span class="token punctuation">:</span> <span class="token number">3445</span>
+      <span class="token punctuation">}</span><span class="token punctuation">,</span>
+      <span class="token string">"badFile"</span><span class="token punctuation">:</span> <span class="token keyword">false</span>
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">]</span><span class="token punctuation">,</span>
+  <span class="token string">"summary"</span><span class="token punctuation">:</span> <span class="token punctuation">{</span>
+    <span class="token string">"total"</span><span class="token punctuation">:</span> <span class="token number">9788</span><span class="token punctuation">,</span>
+    <span class="token string">"source"</span><span class="token punctuation">:</span> <span class="token number">6340</span><span class="token punctuation">,</span>
+    <span class="token string">"comment"</span><span class="token punctuation">:</span> <span class="token number">645</span><span class="token punctuation">,</span>
+    <span class="token string">"single"</span><span class="token punctuation">:</span> <span class="token number">0</span><span class="token punctuation">,</span>
+    <span class="token string">"block"</span><span class="token punctuation">:</span> <span class="token number">645</span><span class="token punctuation">,</span>
+    <span class="token string">"mixed"</span><span class="token punctuation">:</span> <span class="token number">642</span><span class="token punctuation">,</span>
+    <span class="token string">"empty"</span><span class="token punctuation">:</span> <span class="token number">3445</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span></code></pre>
+<p>You can also use this in a node module, via JavaScript in the browser, or as <a href="https://github.com/rhiokim/grunt-sloc">a Grunt plugin</a>.</p>
+<h2 id="walkway"><a href="https://github.com/ConnorAtherton/walkway">Walkway</a></h2>
+<p>With the explosion of SVG tools and resources of late, it’s only fitting to include some SVG stuff in this post. This one is an “easy way to animate SVG elements”. And I can vouch for its ease of use.</p>
+<p><img src="http://dab1nmslvvntp.cloudfront.net/wp-content/uploads/2015/12/1450893552walkway.png" alt="Walkway" width="948" height="805" class="aligncenter size-full wp-image-121664"></p>
+<p><a href="http://connoratherton.com/walkway">The project’s home page</a> has an example of what you can do with this library.</p>
+<p>It supports animation of <code class=" language-undefined">path</code>, <code class=" language-undefined">line</code>, and <code class=" language-undefined">polyline</code> elements and lets you define a duration value and an easing function. I was able to put together the demo below in a few minutes using <a href="http://publicdomainvectors.org/en/free-clipart/Apple-vector-art/1640.html">some public domain SVG art</a>.</p>
+<div><iframe id="cp_embed_YwGPqy" src="http://codepen.io/SitePoint/embed/YwGPqy?height=563&amp;theme-id=6441&amp;slug-hash=YwGPqy&amp;default-tab=result&amp;user=SitePoint" scrolling="no" frameborder="0" height="563" allowtransparency="true" allowfullscreen="true" name="CodePen Embed" title="CodePen Embed" class="cp_embed_iframe undefined"></iframe></div>
+<p></p>
+<p>While it’s true there are more complex SVG animation libraries, I’m a sucker for simplicity. Walkway does one thing really well and it’s easy to implement it.</p>
+<h2 id="vissensejs"><a href="https://github.com/vissense/vissense">VisSense.js</a></h2>
+<p>There are probably lots of different use cases for this library. It’s described as:</p>
+<blockquote>
+<p>A utility library for observing visibility changes of DOM elements. Immediately know when an element becomes hidden, partly visible or fully visible.</p>
+</blockquote>
+<p><img src="http://dab1nmslvvntp.cloudfront.net/wp-content/uploads/2015/12/1450894504vissense.png" alt="VisSense.js" width="888" height="805" class="aligncenter size-full wp-image-121673"></p>
+<p>The cool thing is, this not applies to doing stuff like <code class=" language-undefined">display: none</code> and <code class=" language-undefined">visibility: hidden</code> in your CSS but it also triggers when an element is scrolled off screen. This could come in handy in games or unique scrolling interfaces.</p>
+<p><a href="https://vissense.github.io/vissense-demo/#/demos/overview">The demo pages</a> have numerous really nice examples. Here’s an example code snippet so you can get an idea of how it’s used:</p>
+<pre class=" language-javascript"><code class=" language-javascript"><span class="token keyword">var</span> video <span class="token operator">=</span> <span class="token function">$</span><span class="token punctuation">(</span><span class="token string">'#video'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token keyword">var</span> visibility <span class="token operator">=</span> <span class="token function">VisSense</span><span class="token punctuation">(</span>video<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">,</span> <span class="token punctuation">{</span> fullyvisible<span class="token punctuation">:</span> <span class="token number">0.75</span> <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token keyword">var</span> visibility_monitor <span class="token operator">=</span> visibility<span class="token punctuation">.</span><span class="token function">monitor</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+  fullyvisible<span class="token punctuation">:</span> <span class="token keyword">function</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    video<span class="token punctuation">.</span><span class="token function">play</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  hidden<span class="token punctuation">:</span> <span class="token keyword">function</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    video<span class="token punctuation">.</span><span class="token function">stop</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">start</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span></code></pre>
+<p>In this case, we’re telling the browser to play a video only if at least 75 percent of the video is visible on the screen and to stop the video otherwise. The library has a number of methods including <code class=" language-undefined">hidden()</code>, <code class=" language-undefined">visible()</code>, <code class=" language-undefined">fullyVisible()</code>, <code class=" language-undefined">visibilitychange()</code>, and <code class=" language-undefined">percentagechange()</code>. You can <a href="https://vissense.github.io/vissense/">check out the documentation</a> for details on those and other features.</p>
+<h2 id="isjs"><a href="http://arasatasaygin.github.io/is.js/">is.js</a></h2>
+<p>This is described as a “micro check library” and it has a nice API that allows you to do various data checks.</p>
+<p><img src="http://dab1nmslvvntp.cloudfront.net/wp-content/uploads/2015/12/1450893557isjs.png" alt="is.js" width="1128" height="805" class="aligncenter size-full wp-image-121665"></p>
+<p>Here are some examples:</p>
+<pre class=" language-javascript"><code class=" language-javascript">is<span class="token punctuation">.</span><span class="token function">decimal</span><span class="token punctuation">(</span><span class="token number">41.5</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment" spellcheck="true">// true</span>
+is<span class="token punctuation">.</span><span class="token function">number</span><span class="token punctuation">(</span><span class="token string">'hello'</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment" spellcheck="true">// false</span>
+is<span class="token punctuation">.</span><span class="token function">regexp</span><span class="token punctuation">(</span><span class="token regex">/test/</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment" spellcheck="true">// true</span>
+is<span class="token punctuation">.</span><span class="token function">usZipCode</span><span class="token punctuation">(</span><span class="token string">'90201'</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment" spellcheck="true">// true</span>
+is<span class="token punctuation">.</span><span class="token function">socialSecurityNumber</span><span class="token punctuation">(</span><span class="token string">'017-90-7890'</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment" spellcheck="true">// true</span>
+is<span class="token punctuation">.</span><span class="token function">hexColor</span><span class="token punctuation">(</span><span class="token string">'#333'</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment" spellcheck="true">// true</span>
+is<span class="token punctuation">.</span><span class="token function">odd</span><span class="token punctuation">(</span><span class="token number">42</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment" spellcheck="true">// false</span>
+is<span class="token punctuation">.</span><span class="token function">domNode</span><span class="token punctuation">(</span>el<span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment" spellcheck="true">// depends on the value of el</span>
+is<span class="token punctuation">.</span><span class="token function">iphone</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment" spellcheck="true">// depends on device</span>
+is<span class="token punctuation">.</span><span class="token function">ipad</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment" spellcheck="true">// depends on device</span>
+is<span class="token punctuation">.</span><span class="token function">inNextWeek</span><span class="token punctuation">(</span>myDate<span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment" spellcheck="true">// depends on date value</span></code></pre>
+<p>That’s just a small sampling of <a href="http://arasatasaygin.github.io/is.js/#method-list">what’s available</a>. It should be noted that the documentation lists a slew of “environment” checks (including browser tests, device tests, OSes, and so on), all of which seem to be done via user agent string checking. So I would be cautious of that. But other than that, this is a neat little library that might come in handy as one of your go-to utilities on numerous projects.</p>
+<h2 id="grunt-sassyclean"><a href="https://github.com/ryanburgess/grunt-sassyclean">Grunt SassyClean</a></h2>
+<p>As pointed out <a href="http://sass-lang.com/guide">on the official Sass website</a>, a lot of Sass developers use “partials” in Sass to modularize their Sass code base. For example, a project might include files like <code class=" language-undefined">_reset.scss</code>, <code class=" language-undefined">_typography.scss</code>, <code class=" language-undefined">_mixins.scss</code>, and so on. These are then dropped into your project via the <code class=" language-undefined">@import</code> directive.</p>
+<p><img src="http://dab1nmslvvntp.cloudfront.net/wp-content/uploads/2015/12/1450893563gruntsassyclean.png" alt="Grunt SassyClean" width="1084" height="805" class="aligncenter size-full wp-image-121666"></p>
+<p>Grunt SassyClean is a Grunt task that allows you to remove any unused partials. That is, you may have them in your folder structure but, for whatever reason, you didn’t actually use them in your project.</p>
+<p>In your Gruntfile, you’ll include something like this inside <code class=" language-undefined">grunt.initConfig()</code>:</p>
+<pre class=" language-javascript"><code class=" language-javascript">sassyclean<span class="token punctuation">:</span> <span class="token punctuation">{</span>
+  options<span class="token punctuation">:</span> <span class="token punctuation">{</span>
+    modules<span class="token punctuation">:</span> <span class="token punctuation">[</span>'sass<span class="token operator">/</span>modules<span class="token comment" spellcheck="true">/**/</span><span class="token operator">*</span><span class="token punctuation">.</span>scss'<span class="token punctuation">,</span>
+              'sass<span class="token operator">/</span>themes<span class="token comment" spellcheck="true">/**/</span><span class="token operator">*</span><span class="token punctuation">.</span>scss'<span class="token punctuation">,</span>
+              'sass<span class="token operator">/</span>layout<span class="token comment" spellcheck="true">/**/</span><span class="token operator">*</span><span class="token punctuation">.</span>scss'<span class="token punctuation">,</span>
+              'sass<span class="token operator">/</span>base<span class="token comment" spellcheck="true">/**/</span><span class="token operator">*</span><span class="token punctuation">.</span>scss'<span class="token punctuation">]</span><span class="token punctuation">,</span>
+    buildfiles<span class="token punctuation">:</span> <span class="token punctuation">[</span>'sass<span class="token comment" spellcheck="true">/**/</span><span class="token operator">*</span><span class="token punctuation">.</span>scss'<span class="token punctuation">]</span><span class="token punctuation">,</span>
+    remove<span class="token punctuation">:</span> <span class="token keyword">false</span><span class="token punctuation">,</span>
+    days<span class="token punctuation">:</span> <span class="token keyword">null</span>
+  <span class="token punctuation">}</span><span class="token punctuation">,</span>
+<span class="token punctuation">}</span></code></pre>
+<p>The <code class=" language-undefined">buildfiles</code> option lets you select the directory that’s checked where your partials are being imported (or not imported, as the case may be). The default location is <code class=" language-undefined">sass/</code> but (as shown above) this can be changed. The <code class=" language-undefined">modules</code> option lets you define an array of directories where the partials exist. The <code class=" language-undefined">remove</code> option tells Grunt whether to immediately delete the files or not. If <code class=" language-undefined">false</code> is chosen, the files will not be deleted and the file name will be logged to the console instead. Finally, the <code class=" language-undefined">days</code> option lets you remove a partial only if it hasn’t been modified in the number of days specified.</p>
+<h2 id="sass-director"><a href="http://sassdirector.com/">Sass Director</a></h2>
+<p>Here’s another neat but simple little Sass tool from Una Kravets that might be useful to you when starting new Sass projects. As mentioned previously, Sass projects will often import many partials. These can be organized into what’s referred to as a manifest file, or <a href="http://sass-guidelin.es/#main-file">main file</a>. Using the contents of your manifest file, Sass Director produces a terminal command that, when executed, will create your project’s directory structure and files automatically.</p>
+<p><img src="http://dab1nmslvvntp.cloudfront.net/wp-content/uploads/2015/12/1450893569sassdirector.png" alt="Sass Director" width="927" height="805" class="aligncenter size-full wp-image-121667"></p>
+<p>So if your main.scss file looks like this:</p>
+<pre class=" language-sass"><code class=" language-sass"><span class="token atrule-line"><span class="token atrule">@import</span> "vendors/bootstrap";</span>
+<span class="token atrule-line"><span class="token atrule">@import</span> "vendors/jquery-ui";</span>
+
+<span class="token atrule-line"><span class="token atrule">@import</span> "utils/variables";</span>
+<span class="token atrule-line"><span class="token atrule">@import</span> "utils/functions";</span>
+<span class="token atrule-line"><span class="token atrule">@import</span> "utils/mixins";</span>
+<span class="token atrule-line"><span class="token atrule">@import</span> "utils/placeholders";</span>
+
+<span class="token atrule-line"><span class="token atrule">@import</span> "base/reset";</span>
+<span class="token atrule-line"><span class="token atrule">@import</span> "base/typography";</span>
+
+<span class="token atrule-line"><span class="token atrule">@import</span> "layout/navigation";</span>
+<span class="token atrule-line"><span class="token atrule">@import</span> "layout/grid";</span>
+<span class="token atrule-line"><span class="token atrule">@import</span> "layout/header";</span>
+<span class="token atrule-line"><span class="token atrule">@import</span> "layout/footer";</span>
+<span class="token atrule-line"><span class="token atrule">@import</span> "layout/sidebar";</span>
+<span class="token atrule-line"><span class="token atrule">@import</span> "layout/forms";</span>
+
+<span class="token atrule-line"><span class="token atrule">@import</span> "components/buttons";</span>
+<span class="token atrule-line"><span class="token atrule">@import</span> "components/carousel";</span>
+<span class="token atrule-line"><span class="token atrule">@import</span> "components/cover";</span>
+<span class="token atrule-line"><span class="token atrule">@import</span> "components/dropdown";</span>
+
+<span class="token atrule-line"><span class="token atrule">@import</span> "pages/home";</span>
+<span class="token atrule-line"><span class="token atrule">@import</span> "pages/contact";</span>
+
+<span class="token atrule-line"><span class="token atrule">@import</span> "themes/theme";</span>
+<span class="token atrule-line"><span class="token atrule">@import</span> "themes/admin";</span></code></pre>
+<p>The generated terminal command will look like this:</p>
+<pre class=" language-bash"><code class=" language-bash"><span class="token function">mkdir</span> vendors<span class="token punctuation">;</span><span class="token function">cd</span> vendors<span class="token punctuation">;</span>
+<span class="token function">touch</span> _bootstrap<span class="token punctuation">.</span>scss<span class="token punctuation">;</span><span class="token function">touch</span> _jquery<span class="token operator">-</span>ui<span class="token punctuation">.</span>scss<span class="token punctuation">;</span>
+<span class="token function">cd</span> <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token operator">/</span><span class="token punctuation">;</span><span class="token function">mkdir</span> utils<span class="token punctuation">;</span><span class="token function">cd</span> utils<span class="token punctuation">;</span>
+<span class="token function">touch</span> _variables<span class="token punctuation">.</span>scss<span class="token punctuation">;</span><span class="token function">touch</span> _functions<span class="token punctuation">.</span>scss<span class="token punctuation">;</span>
+<span class="token function">touch</span> _mixins<span class="token punctuation">.</span>scss<span class="token punctuation">;</span><span class="token function">touch</span> _placeholders<span class="token punctuation">.</span>scss<span class="token punctuation">;</span>
+<span class="token function">cd</span> <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token operator">/</span><span class="token punctuation">;</span><span class="token function">mkdir</span> base<span class="token punctuation">;</span><span class="token function">cd</span> base<span class="token punctuation">;</span><span class="token function">touch</span> _reset<span class="token punctuation">.</span>scss<span class="token punctuation">;</span><span class="token function">touch</span> _typography<span class="token punctuation">.</span>scss<span class="token punctuation">;</span>
+<span class="token function">cd</span> <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token operator">/</span><span class="token punctuation">;</span><span class="token function">mkdir</span> layout<span class="token punctuation">;</span><span class="token function">cd</span> layout<span class="token punctuation">;</span><span class="token function">touch</span> _navigation<span class="token punctuation">.</span>scss<span class="token punctuation">;</span>
+<span class="token function">touch</span> _grid<span class="token punctuation">.</span>scss<span class="token punctuation">;</span><span class="token function">touch</span> _header<span class="token punctuation">.</span>scss<span class="token punctuation">;</span><span class="token function">touch</span> _footer<span class="token punctuation">.</span>scss<span class="token punctuation">;</span>
+ouch _sidebar<span class="token punctuation">.</span>scss<span class="token punctuation">;</span><span class="token function">touch</span> _forms<span class="token punctuation">.</span>scss<span class="token punctuation">;</span>
+<span class="token function">cd</span> <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token operator">/</span><span class="token punctuation">;</span><span class="token function">mkdir</span> components<span class="token punctuation">;</span><span class="token function">cd</span> components<span class="token punctuation">;</span><span class="token function">touch</span> _buttons<span class="token punctuation">.</span>scss<span class="token punctuation">;</span>
+<span class="token function">touch</span> _carousel<span class="token punctuation">.</span>scss<span class="token punctuation">;</span><span class="token function">touch</span> _cover<span class="token punctuation">.</span>scss<span class="token punctuation">;</span><span class="token function">touch</span> _dropdown<span class="token punctuation">.</span>scss<span class="token punctuation">;</span>
+<span class="token function">cd</span> <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token operator">/</span><span class="token punctuation">;</span><span class="token function">mkdir</span> pages<span class="token punctuation">;</span><span class="token function">cd</span> pages<span class="token punctuation">;</span><span class="token function">touch</span> _home<span class="token punctuation">.</span>scss<span class="token punctuation">;</span><span class="token function">touch</span> _contact<span class="token punctuation">.</span>scss<span class="token punctuation">;</span>
+<span class="token function">cd</span> <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token operator">/</span><span class="token punctuation">;</span><span class="token function">mkdir</span> themes<span class="token punctuation">;</span><span class="token function">cd</span> themes<span class="token punctuation">;</span><span class="token function">touch</span> _theme<span class="token punctuation">.</span>scss<span class="token punctuation">;</span><span class="token function">touch</span> _admin<span class="token punctuation">.</span>scss<span class="token punctuation">;</span>
+<span class="token function">cd</span> <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token operator">/</span><span class="token punctuation">;</span><span class="token function">cd</span> <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token operator">/</span><span class="token punctuation">;</span></code></pre>
+<p>You can try it out online or even <a href="https://packagecontrol.io/packages/Sass-Director">install it as a Sublime plugin</a>.</p>
+<h2 id="awesomplete"><a href="http://leaverou.github.io/awesomplete/">Awesomplete</a></h2>
+<p>This is Lea Verou’s easy-to-use, dependency-free autocomplete script, which works as a replacement for <a href="http://caniuse.com/#feat=datalist">the very problematic datalist element</a>.</p>
+<p><img src="http://dab1nmslvvntp.cloudfront.net/wp-content/uploads/2015/12/1450893574awesomplete.png" alt="Awesomplete" width="1089" height="805" class="aligncenter size-full wp-image-121668"></p>
+<p>This tool does exactly what all tools should do: Provide an easy way to use it without any extra JavaScript, and offer advanced customization for expert users. For example, after dropping in the script and CSS file, you can do this in your HTML:</p>
+<pre class=" language-markup"><code class=" language-markup"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>input</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>awesomplete<span class="token punctuation">"</span></span>
+       <span class="token attr-name">data-list</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>Cobol, Java, JavaScript, PHP, Python, Ruby<span class="token punctuation">"</span></span> <span class="token punctuation">/&gt;</span></span></code></pre>
+<p>Which will produced the following:</p>
+<div><iframe id="cp_embed_bEwbKP" src="http://codepen.io/SitePoint/embed/bEwbKP?height=266&amp;theme-id=6441&amp;slug-hash=bEwbKP&amp;default-tab=result&amp;user=SitePoint" scrolling="no" frameborder="0" height="266" allowtransparency="true" allowfullscreen="true" name="CodePen Embed" title="CodePen Embed" class="cp_embed_iframe undefined"></iframe></div>
+<p></p>
+<p>In addition to that simple use, you can <a href="http://leaverou.github.io/awesomplete/#customization">customize it</a> by (for example) changing the minimum character count that needs to be typed before the drop-down appears (default is 2), adjusting the maximum number of items to display (default is 10), and whether or not to auto-select the first option that’s displayed.</p>
+<p>You can also <a href="http://leaverou.github.io/awesomplete/#extensibility">extend it</a> it by manipulating how items are filtered, sorted, and so on, or use the <a href="http://leaverou.github.io/awesomplete/#events">built-in events</a> or <a href="http://leaverou.github.io/awesomplete/#api">methods</a> to add your own customizations.</p>
+<h2 id="what-does-my-site-cost"><a href="https://whatdoesmysitecost.com/">What Does My Site Cost?</a></h2>
+<p>This project by Tim Kadlec addresses the topic of performance in a practical way. Performance matters most on mobile and on suboptimal networks so this online tool will let you:</p>
+<blockquote>
+<p>Find out how much it costs for someone to use your site on mobile networks around the world.</p>
+</blockquote>
+<p><img src="http://dab1nmslvvntp.cloudfront.net/wp-content/uploads/2015/12/1450893581sitecost.png" alt="What Does My Site Cost?" width="1025" height="805" class="aligncenter size-full wp-image-121669"></p>
+<p>The project is powered by <a href="http://webpagetest.org/">WebPagetest</a> and you get results by running a new test or by punching in a WebPagetest ID to get the results of an existing test.</p>
+<h2 id="jscs"><a href="http://jscs.info/">JSCS</a></h2>
+<p>JSCS stands for “JavaScript Code Style”. This is not a new project but it’s something I came across in the past year and I think every JavaScript developer should know it exists.</p>
+<p><img src="http://dab1nmslvvntp.cloudfront.net/wp-content/uploads/2015/12/1450893587jscs.png" alt="JSCS" width="882" height="805" class="aligncenter size-full wp-image-121670"></p>
+<p>It’s described as:</p>
+<blockquote>
+<p>a code style linter/formatter for programmatically enforcing your style guide. You can configure JSCS for your project/company using over 150 validation rules, including presets from popular style guides like jQuery, Airbnb, Google, and more.</p>
+</blockquote>
+<p>You can use it with <a href="http://jscs.info/overview#friendly-packages">one of the packages/plugins</a> available (including Grunt, Sublime, Atom, Brackets, and more) or you can install it via npm and run it manually with a command like this:</p>
+<pre class=" language-bash"><code class=" language-bash">jscs <span class="token function">file</span><span class="token punctuation">.</span>js <span class="token operator">--</span>preset<span class="token operator">=</span>jquery</code></pre>
+<p>This will test your code against <a href="https://contribute.jquery.org/style-guide/js/">jQuery’s JavaScript style guide</a> and make recommendations accordingly. You can also choose <a href="http://jscs.info/overview#presets">from a number of other presets</a> as well as <a href="http://jscs.info/overview#options">a slew of other options</a>.</p>
+<p>Here’s an example terminal output when I ran JSCS on one of my JavaScript files:</p>
+<p><img src="http://dab1nmslvvntp.cloudfront.net/wp-content/uploads/2015/12/1450895740jscs-terminal.png" alt="JSCS Terminal Output" width="649" height="653" class="aligncenter size-full wp-image-121678"></p>
+<p>As you can see, this is a pretty powerful tool that you might want to introduce into your own team’s workflow.</p>
+<h2 id="the-best-of-the-rest">The Best of the Rest</h2>
+<p>Finally, here are some “honorable mentions” that might also be worth checking out:</p>
+<ul>
+<li><a href="http://csswizardry.com/csswizardry-grids/">csswizardry-grids</a> – By Harry Roberts, so it <em>must</em> be good.</li>
+<li><a href="https://github.com/radiosilence/xr">xr</a> – Like I said, I love simple things that do one thing well, so this “wrapper around XMLHttpRequest” makes the list.</li>
+<li><a href="http://www.bootply.com/">Bootply</a> – Bootstrap is always a popular subject so this Bootstrap editor and playground is worth checking out.</li>
+<li><a href="https://featuretests.io/">ES Feature Tests</a> – “Feature test ES6+ JavaScript syntax and APIs. Use these in-browser test results to deliver the best code to each browser. Load your native ES6+ code in ES6+ compliant browsers and your transpiled code in older browsers.”</li>
+<li><a href="http://youmightnotneedjqueryplugins.com/">You Might Not Need jQuery Plugins</a> – A directory of jQuery-free plugins and scripts that can be filtered according to IE support.</li>
+<li><a href="http://khan.github.io/tota11y/">tota11y</a> – “Helps visualize how your site performs with assistive technologies.”</li>
+<li><a href="https://chrome.google.com/webstore/detail/where-is-it/cdgnplmebagbialenimejpokfcodlkdm">Where is it?</a> – A Chrome extension that “makes code navigation on GitHub easier. Look up and jump around class/method definitions with a single click.”</li>
+<li><a href="http://simplaio.github.io/rucksack/">rucksack</a> – “Makes CSS development fun again, with features the language should have come with out of the box. It’s built on PostCSS, it’s modular, it doesn’t add any bloat, and it’s lightning fast.”</li>
+<li><a href="https://github.com/zzarcon/microm">Microm</a> – Lets you convert an audio stream to the user’s microphone into a downloadable audio file (MP3, WAV, base64).</li>
+<li><a href="http://anthonydugois.com/svg-path-builder/">SVG Path Builder</a> – You’ll have to play with this one to get used to it, but it looks like a really nice way to create custom SVG graphics</li>
+</ul>
+<p>I hope you enjoyed this list of tools that I’ve discovered. Let me know if you’ve tried any of them.</p>
+<p>So what’s your favorite find of the year in web development tools? Share yours in the comments.</p>
+  
