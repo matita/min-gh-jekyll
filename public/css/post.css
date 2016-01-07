@@ -6,6 +6,11 @@ body {
   padding: 2em 10px;
 }
 
+body > article {
+  max-width: 700px;
+  margin: 0 auto;
+}
+
 @media screen and (max-width: 800px) {
   body {
     font-size: 16px;
@@ -14,11 +19,6 @@ body {
   body > article {
     max-width: 500px;
   }
-}
-
-body > article {
-  max-width: 700px;
-  margin: 0 auto;
 }
 
 body > article > header {
