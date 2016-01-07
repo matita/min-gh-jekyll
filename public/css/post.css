@@ -10,6 +10,10 @@ body {
   body {
     font-size: 16px;
   }
+
+  body > article {
+    max-width: 500px;
+  }
 }
 
 body > article {
