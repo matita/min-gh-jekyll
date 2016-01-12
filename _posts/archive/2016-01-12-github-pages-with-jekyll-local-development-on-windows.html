@@ -1,0 +1,33 @@
+---
+title: "Github Pages with Jekyll - Local Development on Windows"
+description: "null"
+link: "https://ntotten.com/2012/03/02/github-pages-with-jekyll-local-development-on-windows/"
+saved: "2016-01-12 14:10:16"
+---
+
+
+<p>I love <a href="http://pages.github.com/">Github pages</a>. They make writing simple sites, blogs, or even <a href="http://csharpsdk.org/">complex documentation</a> super enjoyable. Github pages uses&nbsp;<a href="https://github.com/mojombo/jekyll">Jekyll</a> to build your markdown or other site content into static HTML pages. While it is easy to push new content to Github and preview changes in your live site, sometimes you want to develop and test your site locally. In order to do this you will need to install Ruby and Jekyll on your local machine. Since I do much of my development on Windows 7 or Windows 8 I wanted to have Jekyll setup on these machines as well. Below you see how to install and use Jekyll on your Windows box.</p>
+<p>First, you need to install Ruby. You download the Ruby installer for Windows <a href="http://rubyinstaller.org/downloads/">here</a>. Download the most recent version of Ruby and run the installer. When you install Ruby you will want to select a few options to make ruby easier to use.</p>
+<p><img src="https://ntotten.com/images/2012/03/rubyinstall21.png" alt=""></p>
+<p>After you have Ruby installed you will need to install the Ruby Development Kit. You can find this on the <a href="http://rubyinstaller.org/downloads/">Ruby downloads</a> page as well. Download and extract the development kit nto a directory of your choice. I recommend C:\DevKit, but anything will work. After the developer kit&nbsp;has been extracted you need run the installation. You can do that by executing the following commands.</p>
+<pre><code class="prettyprint prettyprinted"><span class="pln">cd C</span><span class="pun">:</span><span class="pln">\DevKit
+ruby dk</span><span class="pun">.</span><span class="pln">rb init
+ruby dk</span><span class="pun">.</span><span class="pln">rb install</span></code></pre>
+<p><img src="https://ntotten.com/images/2012/03/devkitinstall1.png" alt=""></p>
+<p>Now you are ready to install Jekyll. You can do that by running the following command.</p>
+<pre><code class="prettyprint prettyprinted"><span class="pln">gem install jekyll</span></code></pre>
+<p><img src="https://ntotten.com/images/2012/03/geminstalljekyll.png" alt=""></p>
+<p>Finally, if you are using the <a href="https://github.com/rtomayko/rdiscount">RDiscount</a> markdown engine, which is the one I prefer, you will need to install that as well.</p>
+<pre><code class="prettyprint prettyprinted"><span class="pln">gem install rdiscount</span></code></pre>
+<p><img src="https://ntotten.com/images/2012/03/rdiscountinstall.png" alt=""></p>
+<p>Now, you are ready to build your site using Jekyll. In order to do this simply navigate to your site's directory and run the following command.</p>
+<pre><code class="prettyprint prettyprinted"><span class="pln">jekyll </span><span class="pun">--</span><span class="pln">server</span></code></pre>
+<p><img src="https://ntotten.com/images/2012/03/jekyllserver.png" alt=""></p>
+<p>As you can see, I ran Jekyll on the <a href="https://github.com/facebook-csharp-sdk/facebook-csharp-sdk.github.com">Facebook C# SDK documentation</a>&nbsp;and the output is placed in the&nbsp;_site directory.</p>
+<p><img src="https://ntotten.com/images/2012/03/sitedir.png" alt=""></p>
+<p>Since we used the -server option when running Jekyll a simple web server was started and is running at <a href="http://localhost:4000/">http://localhost:4000</a>. You can now view your site in the browser. Generally, I like to just use Jekyll to build the site and then use IIS on my local machine to host the site. You can do this by simply creating a new site in IIS and pointing it to the _site folder. Either way you now have your Jekyll site up and running for local development. This should make it a little easier to build your site, then when you are ready you can do a push to Github to deploy your site&nbsp;publicly.</p>
+<p>Let me know if you have any questions or feedback.</p>
+<hr>
+<p class="article-info">The article was written by Nathan Totten on Friday, March 02, 2012.</p>
+<div class="fb-like fb_iframe_widget" data-href="http://ntotten.com/2012/03/02/github-pages-with-jekyll-local-development-on-windows/" data-send="false" data-layout="button_count" data-width="450" data-show-faces="false" fb-xfbml-state="rendered" fb-iframe-plugin-query="app_id=355508947902562&amp;container_width=618&amp;href=http%3A%2F%2Fntotten.com%2F2012%2F03%2F02%2Fgithub-pages-with-jekyll-local-development-on-windows%2F&amp;layout=button_count&amp;locale=en_US&amp;sdk=joey&amp;send=false&amp;show_faces=false&amp;width=450"><span><iframe name="f856928ac" width="450px" height="1000px" frameborder="0" allowtransparency="true" allowfullscreen="true" scrolling="no" title="fb:like Facebook Social Plugin" src="https://www.facebook.com/plugins/like.php?app_id=355508947902562&amp;channel=https%3A%2F%2Fstaticxx.facebook.com%2Fconnect%2Fxd_arbiter.php%3Fversion%3D42%23cb%3Df3897a016c%26domain%3Dntotten.com%26origin%3Dhttps%253A%252F%252Fntotten.com%252Ff246b9a2bc%26relation%3Dparent.parent&amp;container_width=618&amp;href=http%3A%2F%2Fntotten.com%2F2012%2F03%2F02%2Fgithub-pages-with-jekyll-local-development-on-windows%2F&amp;layout=button_count&amp;locale=en_US&amp;sdk=joey&amp;send=false&amp;show_faces=false&amp;width=450" class=""></iframe></span></div>
+
