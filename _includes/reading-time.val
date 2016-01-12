@@ -1,0 +1,1 @@
+{{ page.content | strip_html | number_of_words | times: 10 | plus: 5 | divided_by: 180 | divided_by: 10 }}

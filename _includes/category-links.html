@@ -1,0 +1,44 @@
+{% assign category_name = 'to_read' %}
+{% if include.category_name %}
+  {% assign category_name = include.category_name %}
+{% endif %}
+
+
+{% assign display_name = include.display_name %}
+
+
+{% assign time_to_read = 0 %}
+{% for page in site.categories[category_name] %}
+  {% capture current_time %}{% include reading-time.val %}{% endcapture %}
+  {% capture current_time %}{{ current_time | plus: time_to_read }}{% endcapture %}
+  {% assign time_to_read = current_time %}
+{% endfor %}
+
+
+
+<section class="category-links {{ category_name }}" id="{{ category_name }}">
+
+  <h1>{{ display_name }} &middot; {{ site.categories[category_name] | size }} links &middot; {{ time_to_read }} min</h1>
+
+  <div class="links">
+  {% assign lastdate = '' %}
+  {% for page in site.categories[category_name] %}
+    {% capture pagedate %}{{ page.date | date: "%Y %B %d" }}{% endcapture %}
+    {% if pagedate != lastdate %}
+
+      <h2>{{ pagedate }}</h2>
+      {% assign lastdate = pagedate %}
+
+    {% endif %}
+    <a class="link" href="{{ site.baseurl }}{{ page.url }}">
+      <h3 class="link-title">{{ page.title }}</h3>
+      <p class="link-url">
+        <span class="gh-read-time">{% include reading-time.html %}</span>
+        &middot;
+        {{ page.link }}
+      </p>
+    </a>
+  {% endfor %}
+  </div>
+
+</section>

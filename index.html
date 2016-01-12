@@ -3,37 +3,15 @@ layout: default
 title: Home
 ---
 
-<h1>Links</h1>
 
-<div class="links">
-{% for page in site.categories.to_read %}
-  <a class="link" href="{{ site.baseurl }}{{ page.url }}">
-    <h3 class="link-title">{{ page.title }}</h3>
-    <p class="link-url">
-      <span class="gh-read-time">{% include reading-time.html %}</span>
-      &middot;
-      <span class="gh-saved-date" title="Saved on {{ page.date }}">{{ page.date | date: "%Y-%m-%d" }}</span>
-      &middot;
-      {{ page.link }}
-    </p>
-    {% if page.description %}
-    <p class="link-description">{{ page.description }}</p>
-    {% endif %}
-  </a>
+{% for cat in site.categories reversed %}
+  {% assign category_name = cat[0] %}
+  {% assign category_links = cat[1] %}
+
+  <a href="#{{ category_name }}">{{ category_name }} ({{ category_links | size }})</a>
+  {% unless forloop.last %}&middot;{% endunless %}
 {% endfor %}
-</div>
 
-<h1>Archive</h1>
+{% include category-links.html category_name='to_read' display_name='Links' %}
 
-<div class="links">
-{% for page in site.categories.archive %}
-  <a class="link" href="{{ site.baseurl }}{{ page.url }}">
-    <h3 class="link-title">{{ page.title }}</h3>
-    <p class="link-url">{{ page.link }}</p>
-    {% if page.description %}
-    <p class="link-description">{{ page.description }}</p>
-    {% endif %}
-    <p class="link-date">Saved on {{ page.date | date: "%Y-%m-%d" }} &middot; {% include reading-time.html %}</p>
-  </a>
-{% endfor %}
-</div>
+{% include category-links.html category_name='archive' display_name='Archive' %}
