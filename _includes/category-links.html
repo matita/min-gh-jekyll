@@ -18,7 +18,14 @@
 
 <section class="category-links {{ category_name }}" id="{{ category_name }}">
 
-  <h1>{{ display_name }} &middot; {{ site.categories[category_name] | size }} links &middot; {{ time_to_read }} min</h1>
+  <h1>
+    {{ display_name }}
+    <span class="category-meta">
+      {{ site.categories[category_name] | size }} links 
+      &middot; 
+      {{ time_to_read }} min
+    </span>
+  </h1>
 
   <div class="links">
   {% assign lastdate = '' %}

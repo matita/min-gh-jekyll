@@ -63,3 +63,16 @@ h1, h2, h3, h4, h5, h6 {
   color: #999;
   font-weight: normal;
 }
+
+.category-meta {
+  font-size: .6em;
+}
+
+a[href] { 
+  color: #6a9fb5; 
+  text-decoration: none; 
+}
+
+nav {
+  text-align: center;
+}

@@ -4,6 +4,7 @@ title: Home
 ---
 
 
+<nav>
 {% for cat in site.categories reversed %}
   {% assign category_name = cat[0] %}
   {% assign category_links = cat[1] %}
@@ -11,6 +12,7 @@ title: Home
   <a href="#{{ category_name }}">{{ category_name }} ({{ category_links | size }})</a>
   {% unless forloop.last %}&middot;{% endunless %}
 {% endfor %}
+</nav>
 
 {% include category-links.html category_name='to_read' display_name='Links' %}
 
