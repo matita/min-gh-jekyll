@@ -28,15 +28,35 @@
   </h1>
 
   <div class="links">
-  {% assign lastdate = '' %}
+  
   {% for page in site.categories[category_name] %}
+    {% capture pageyear %}{{ page.date | date: "%Y" }}{% endcapture %}
+    {% if pageyear != lastyear %}
+
+      <h2 class="group-year">{{ pageyear }}</h2>
+      {% assign lastyear = pageyear %}
+
+    {% endif %}
+
+    
+    {% capture pagemonth %}{{ page.date | date: "%Y %B" }}{% endcapture %}
+    {% if pagemonth != lastmonth %}
+
+      <h2 class="group-month">{{ pagemonth }}</h2>
+      {% assign lastmonth = pagemonth %}
+
+    {% endif %}
+
+
     {% capture pagedate %}{{ page.date | date: "%Y %B %d" }}{% endcapture %}
     {% if pagedate != lastdate %}
 
-      <h2>{{ pagedate }}</h2>
+      <h2 class="group-date">{{ pagedate }}</h2>
       {% assign lastdate = pagedate %}
 
     {% endif %}
+
+
     <a class="link" href="{{ site.baseurl }}{{ page.url }}">
       <h3 class="link-title">{{ page.title }}</h3>
       <p class="link-url">

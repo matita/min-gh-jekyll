@@ -14,6 +14,16 @@ title: Home
 {% endfor %}
 </nav>
 
+
+<input class="group-by-radio" type="radio" name="group-by" id="group-by-year">
+<label class="group-by-label" for="group-by-year">Year</label>
+
+<input class="group-by-radio" type="radio" name="group-by" id="group-by-month">
+<label class="group-by-label" for="group-by-month">Month</label>
+
+<input class="group-by-radio" type="radio" name="group-by" id="group-by-date" checked>
+<label class="group-by-label" for="group-by-date">Date</label>
+
 {% include category-links.html category_name='to_read' display_name='Links' %}
 
 {% include category-links.html category_name='archive' display_name='Archive' %}

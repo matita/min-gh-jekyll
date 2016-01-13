@@ -66,6 +66,7 @@ h1, h2, h3, h4, h5, h6 {
 
 .category-meta {
   font-size: .6em;
+  color: #ccc;
 }
 
 a[href] { 
@@ -75,4 +76,38 @@ a[href] {
 
 nav {
   text-align: center;
+}
+
+
+.group-by-radio {
+  display: none;
+}
+
+.group-year,
+.group-month,
+.group-date {
+  display: none;
+}
+
+.group-by-label {
+  border-bottom: 0 solid #555;
+  cursor: pointer;
+  padding: .3em .5em;
+  display: inline-block;
+}
+
+.group-by-radio:checked + .group-by-label {
+  border-bottom-width: 3px;
+}
+
+#group-by-year:checked ~ section .group-year {
+  display: block;
+}
+
+#group-by-month:checked ~ section .group-month {
+  display: block;
+}
+
+#group-by-date:checked ~ section .group-date {
+  display: block;
 }
