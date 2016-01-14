@@ -5,6 +5,7 @@
 
 
 {% assign display_name = include.display_name %}
+{% assign display_name = category_name | replace: '_',' ' | capitalize %}
 
 
 {% assign time_to_read = 0 %}
