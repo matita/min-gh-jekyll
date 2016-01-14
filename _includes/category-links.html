@@ -4,10 +4,6 @@
 {% endif %}
 
 
-{% assign display_name = include.display_name %}
-{% assign display_name = category_name | replace: '_',' ' | capitalize %}
-
-
 {% assign time_to_read = 0 %}
 {% for page in site.categories[category_name] %}
   {% capture current_time %}{% include reading-time.val %}{% endcapture %}
@@ -18,9 +14,9 @@
 
 
 <section class="category-links {{ category_name }}" id="{{ category_name }}">
-
+  
   <h1>
-    {{ display_name }}
+    {% include title-case.html title=category_name %}
     <span class="category-meta">
       {{ site.categories[category_name] | size }} links 
       &middot; 
@@ -33,28 +29,22 @@
   {% for page in site.categories[category_name] %}
     {% capture pageyear %}{{ page.date | date: "%Y" }}{% endcapture %}
     {% if pageyear != lastyear %}
-
       <h2 class="group-year">{{ pageyear }}</h2>
       {% assign lastyear = pageyear %}
-
     {% endif %}
 
     
     {% capture pagemonth %}{{ page.date | date: "%Y %B" }}{% endcapture %}
     {% if pagemonth != lastmonth %}
-
       <h2 class="group-month">{{ pagemonth }}</h2>
       {% assign lastmonth = pagemonth %}
-
     {% endif %}
 
 
     {% capture pagedate %}{{ page.date | date: "%Y %B %d" }}{% endcapture %}
     {% if pagedate != lastdate %}
-
       <h2 class="group-date">{{ pagedate }}</h2>
       {% assign lastdate = pagedate %}
-
     {% endif %}
 
 
@@ -66,6 +56,7 @@
         {{ page.link }}
       </p>
     </a>
+
   {% endfor %}
   </div>
 
