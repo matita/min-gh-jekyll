@@ -9,7 +9,7 @@ title: Home
   {% assign category_name = cat[0] %}
   {% assign category_links = cat[1] %}
 
-  <a href="#{{ category_name }}">{% include title-case.html title=category_name %} ({{ category_links | size }})</a>
+  <a href="#{{ category_name }}">{% include functions/title-case.html text=category_name %} ({{ category_links | size }})</a>
   {% unless forloop.last %}&middot;{% endunless %}
 {% endfor %}
 </nav>

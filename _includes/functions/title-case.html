@@ -1,2 +1,2 @@
-{% assign words = include.title | replace: '_',' ' | split: ' ' %}
+{% assign words = include.text | replace: '_',' ' | split: ' ' %}
 {% for word in words %}{{ word | capitalize }}{% unless forloop.last %} {% endunless %}{% endfor %}

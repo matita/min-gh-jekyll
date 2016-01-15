@@ -6,7 +6,7 @@
 
 {% assign time_to_read = 0 %}
 {% for page in site.categories[category_name] %}
-  {% capture current_time %}{% include reading-time.val %}{% endcapture %}
+  {% capture current_time %}{% include functions/reading-time.val %}{% endcapture %}
   {% capture current_time %}{{ current_time | plus: time_to_read }}{% endcapture %}
   {% assign time_to_read = current_time %}
 {% endfor %}
@@ -16,7 +16,7 @@
 <section class="category-links {{ category_name }}" id="{{ category_name }}">
   
   <h1>
-    {% include title-case.html title=category_name %}
+    {% include functions/title-case.html text=category_name %}
     <span class="category-meta">
       {{ site.categories[category_name] | size }} links 
       &middot; 
