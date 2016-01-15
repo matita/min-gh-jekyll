@@ -22,7 +22,7 @@ function analyze(doc, href) {
 
   
   var content;
-  //*
+  /*
   content = readabilityHtml(doc);
   /*/
   content = matitaHtml(doc);
