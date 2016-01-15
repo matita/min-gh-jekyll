@@ -43,3 +43,4 @@ function receiveMessage(e) {
 }
 
 window.opener.postMessage('loaded', origin);
+window.opener.close();

@@ -5,7 +5,7 @@
 
 
 {% assign time_to_read = 0 %}
-{% for page in site.categories[category_name] %}
+{% for post in site.categories[category_name] %}
   {% capture current_time %}{% include functions/reading-time.val %}{% endcapture %}
   {% capture current_time %}{{ current_time | plus: time_to_read }}{% endcapture %}
   {% assign time_to_read = current_time %}
@@ -26,34 +26,34 @@
 
   <div class="links">
   
-  {% for page in site.categories[category_name] %}
-    {% capture pageyear %}{{ page.date | date: "%Y" }}{% endcapture %}
-    {% if pageyear != lastyear %}
-      <h2 class="group-year">{{ pageyear }}</h2>
-      {% assign lastyear = pageyear %}
+  {% for post in site.categories[category_name] %}
+    {% capture postyear %}{{ post.date | date: "%Y" }}{% endcapture %}
+    {% if postyear != lastyear %}
+      <h2 class="group-year">{{ postyear }}</h2>
+      {% assign lastyear = postyear %}
     {% endif %}
 
     
-    {% capture pagemonth %}{{ page.date | date: "%Y %B" }}{% endcapture %}
-    {% if pagemonth != lastmonth %}
-      <h2 class="group-month">{{ pagemonth }}</h2>
-      {% assign lastmonth = pagemonth %}
+    {% capture postmonth %}{{ post.date | date: "%Y %B" }}{% endcapture %}
+    {% if postmonth != lastmonth %}
+      <h2 class="group-month">{{ postmonth }}</h2>
+      {% assign lastmonth = postmonth %}
     {% endif %}
 
 
-    {% capture pagedate %}{{ page.date | date: "%Y %B %d" }}{% endcapture %}
-    {% if pagedate != lastdate %}
-      <h2 class="group-date">{{ pagedate }}</h2>
-      {% assign lastdate = pagedate %}
+    {% capture postdate %}{{ post.date | date: "%Y %B %d" }}{% endcapture %}
+    {% if postdate != lastdate %}
+      <h2 class="group-date">{{ postdate }}</h2>
+      {% assign lastdate = postdate %}
     {% endif %}
 
 
-    <a class="link" href="{{ site.baseurl }}{{ page.url }}">
-      <h3 class="link-title">{{ page.title }}</h3>
+    <a class="link" href="{{ site.baseurl }}{{ post.url }}">
+      <h3 class="link-title">{{ post.title }}</h3>
       <p class="link-url">
         <span class="gh-read-time">{% include reading-time.html %}</span>
         &middot;
-        {{ page.link }}
+        {{ post.link }}
       </p>
     </a>
 

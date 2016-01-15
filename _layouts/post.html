@@ -8,7 +8,7 @@
   <body>
     <article>
       <header>
-        <a href="{{ site.baseurl }}">&#8592; back to articles</a>
+        <a href="{{ site.baseurl }}/">&#8592; back to articles</a>
         <h1>{{ page.title }}</h1>
         {% include post-actions.html %}
       </header>
@@ -19,7 +19,14 @@
 
       <footer>
         {% include post-actions.html %}
-        <p><a href="{{ site.baseurl }}">&#8592; back to articles</a></p>
+
+        {% assign all_posts = site.categories[page.category] %}
+        {% include functions/next-post posts=all_posts post=page %}
+        {% if next_post %}
+        <p>Read next: <a href="{{ site.baseurl }}{{ next_post.url }}">{{ next_post.title }}</a></p>
+        {% endif %}
+
+        <p><a href="{{ site.baseurl }}/">&#8592; back to articles</a></p>
       </footer>
     </article>
 

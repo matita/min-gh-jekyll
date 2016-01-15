@@ -1,0 +1,8 @@
+{% if include.post %}{% assign post = include.post %}{% endif %}
+{% assign posts = include.posts %}
+{% for i in posts %}
+  {% if i.path == post.path %}
+    {% assign next_index = forloop.index %}
+    {% assign next_post = posts[next_index] %}
+  {% endif %}
+{% endfor %}

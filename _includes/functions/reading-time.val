@@ -1,3 +1,3 @@
 {% assign wpm = 180 %}{% if include.wpm %}{% assign wpm = include.wpm %}{% endif %}
-{% assign text = page.content %}{% if include.text %}{% assign text = include.text %}{% endif %}
+{% assign text = post.content %}{% if include.text %}{% assign text = include.text %}{% endif %}
 {{ text | strip_html | number_of_words | divided_by: wpm }}
