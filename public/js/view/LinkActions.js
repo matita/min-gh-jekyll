@@ -25,7 +25,7 @@ function linkActions(node, link) {
   link.on('archive', function(err) {
     node.classList.remove('gh-archiving');
     if (err)
-      alert(err);
+      alert(err.message || err);
   });
 
   node.querySelector('.gh-archive').addEventListener('click', function(e) {

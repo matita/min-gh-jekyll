@@ -23,7 +23,7 @@ window.util = (function() {
     var repoName = 'min-gh-jekyll';
     
     if (!github) {
-      var authToken = localStorage['gh-auth'] || prompt('GitHub auth token');
+      var authToken = localStorage['gh-auth']/* || prompt('GitHub auth token')*/;
       
       if (!authToken)
         return null;

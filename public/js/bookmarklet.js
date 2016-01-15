@@ -20,12 +20,13 @@ function analyze(doc, href) {
     '\r\n---';
 
 
-  var parent = getBestParent();
-  var content = '';
-  if (parent) {
-    sanitizeNode(parent);
-    content = parent.innerHTML;
-  }
+  
+  var content;
+  //*
+  content = readabilityHtml(doc);
+  /*/
+  content = matitaHtml(doc);
+  //*/
 
 
   return {
@@ -34,9 +35,32 @@ function analyze(doc, href) {
     filename: filename,
     url: url,
     frontMatter: frontMatter,
-    node: parent,
     content: content
   };
+
+
+
+  function readabilityHtml(doc) {
+    Array.prototype.forEach.call(doc.querySelectorAll('a[href]'), function(a) { a.href = resolveUrl(origin, a.getAttribute('href')); });
+    Array.prototype.forEach.call(doc.querySelectorAll('img'), function(i) { i.src = resolveUrl(origin, i.getAttribute('src')); });
+
+    var readable = new Readability();
+    readable.setSkipLevel(3);
+    saxParser(doc.body/*doc.childNodes[document.childNodes.length-1]*/, readable);
+    var article = readable.getArticle();
+    return article.html;
+  }
+
+
+  function matitaHtml(doc) {
+    var parent = getBestParent(doc);
+    var content = '';
+    if (parent) {
+      sanitizeNode(parent);
+      content = parent.innerHTML;
+    }
+    return content;
+  }
 
 
 
@@ -83,7 +107,7 @@ function analyze(doc, href) {
   }
 
 
-  function getBestParent() {
+  function getBestParent(doc) {
     var parent = doc.querySelector('article main');
 
     if (parent)

@@ -44,6 +44,9 @@
       var link = Link({{ page | jsonify }});
     </script>
   {% if page.title == 'Acquire' %}
+    <script src="{{ site.baseurl }}/public/js/lib/DOMasSAX.js"></script>
+    <script src="{{ site.baseurl }}/public/js/lib/readabilitySAX.js"></script>
+    <script src="{{ site.baseurl }}/public/js/lib/resolve-url.js"></script>
     <script src="{{ site.baseurl }}/public/js/acquirer.js"></script>
   {% else %}
     <script>

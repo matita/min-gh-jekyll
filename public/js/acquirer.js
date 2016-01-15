@@ -20,10 +20,10 @@ function receiveMessage(e) {
   
   var data = e.data;
   var doc = document.implementation.createHTMLDocument();
-  doc.head.innerHTML = data.head;
   var base = doc.createElement('base');
   base.href = origin;
   doc.head.appendChild(base);
+  doc.head.innerHTML += data.head;
   doc.body.innerHTML = data.body;
 
   post = analyze(doc, origin);
@@ -32,8 +32,9 @@ function receiveMessage(e) {
   
   document.title = post.title;
   document.querySelector('article h1').innerText = post.title;
-  Array.prototype.forEach.call(document.querySelectorAll('.reading-time'), function(s) { s.innerHTML = Math.round(post.node.innerText.split(/\W+/).length / 180) + ' min read'; });
-  document.querySelector('main').innerHTML = post.content;
+  var main = document.querySelector('main');
+  main.innerHTML = post.content;
+  Array.prototype.forEach.call(document.querySelectorAll('.reading-time'), function(s) { s.innerHTML = Math.round(main.innerText.split(/\W+/).length / 180) + ' min read'; });
   Array.prototype.forEach.call(document.querySelectorAll('.view-original'), function(a) { a.href = post.url; });
 
   var postActions = document.querySelectorAll('.gh-post-actions');
