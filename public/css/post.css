@@ -88,3 +88,51 @@ body:not(.gh-acquirer) .gh-only-acquirer {
 .gh-archiving .gh-archive {
   display: none;
 }
+
+
+.modal-wrap {
+  position: fixed;
+  top: -100%;
+  left: 0;
+  right: 0;
+  bottom: 100%;
+  background: none;
+  padding-top: 2em;
+  padding-left: 10px;
+  padding-right: 10px;
+  transition: .3s top, .3s background;
+}
+
+.modal-wrap.open {
+  top: 0;
+  bottom: 0;
+  background: rgba(0,0,0,.3);
+}
+
+.modal {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 1em;
+  background: white;
+  border-radius: 10px;
+  border: 1px solid #ccc;
+}
+
+.modal input {
+  box-sizing: border-box;
+  width: 100%;
+  border-radius: 10px;
+  padding: .3em;
+}
+
+.gh-logout {
+  display: none;
+}
+
+.logged-in .gh-login {
+  display: none;
+}
+
+.logged-in .gh-logout {
+  display: inline;
+}

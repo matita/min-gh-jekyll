@@ -31,6 +31,21 @@
     </article>
 
 
+    <div class="modal-wrap login-form">
+      <div class="modal">
+        <h2>Log in with GitHub account</h2>
+        <p>Create a token at your <a href="https://github.com/settings/tokens/new?scopes=public_repo%2Crepo&description=Gitlinks%20access%20token" target="_blank">GitHub settings page</a> and paste it in the text field below</p>
+        <p>
+          <input class="gh-token" placeholder="Personal access token">
+        </p>
+        <p>
+          <button class="modal-ok login">Log in</button>
+          <button class="modal-cancel">Cancel</button>
+        </p>
+      </div>
+    </div>
+
+
     <script>
       {% include scripts/progress-bar.js %}
     </script>
@@ -40,6 +55,12 @@
     <script src="{{ site.baseurl }}/public/js/lib/emitonoff.min.js"></script>
     <script src="{{ site.baseurl }}/public/js/link.js"></script>
     <script src="{{ site.baseurl }}/public/js/view/LinkActions.js"></script>
+    <script src="{{ site.baseurl }}/public/js/view/modal.js"></script>
+    <script src="{{ site.baseurl }}/public/js/view/login.js"></script>
+    <script src="{{ site.baseurl }}/public/js/repo.js"></script>
+    <script src="{{ site.baseurl }}/public/js/view/buttons/button-delete.js"></script>
+    <script src="{{ site.baseurl }}/public/js/view/buttons/button-move.js"></script>
+    <script src="{{ site.baseurl }}/public/js/view/buttons/button-login.js"></script>
     <script>
       var link = Link({{ page | jsonify }});
     </script>

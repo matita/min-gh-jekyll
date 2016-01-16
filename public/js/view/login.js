@@ -1,0 +1,1 @@
+var loginForm = modal('.login-form');

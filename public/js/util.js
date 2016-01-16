@@ -16,27 +16,29 @@ window.util = (function() {
   }
 
 
-  var github;
 
-  function getRepo() {
-    var userName = 'matita';
-    var repoName = 'min-gh-jekyll';
-    
-    if (!github) {
-      var authToken = localStorage['gh-auth']/* || prompt('GitHub auth token')*/;
-      
-      if (!authToken)
-        return null;
-      localStorage['gh-auth'] = authToken;
+  function listen(node) {
+    var me = {
+      on: function(event, selector, cb) {
 
-      var github = new Github({
-        token: authToken,
-        auth: 'oauth'
-      });
-    }
+        node.addEventListener(event, function(e) {
+          var target = e.target;
+          if (!target.matches(selector) && !(target = closest(target, selector)))
+            return;
+          cb.apply(target, arguments);
+        }, false);
 
-    var repo = github.getRepo(userName, repoName);
-    return repo;
+        return me;
+      }
+    };
+
+    return me;
+  }
+
+  function closest(node, selector) {
+    while (node && (!node.matches || !node.matches(selector)))
+      node = node.parentNode;
+    return node;
   }
 
 
@@ -44,7 +46,9 @@ window.util = (function() {
 
   return {
     actionBtn : actionBtn,
-    getRepo   : getRepo
+    getRepo: function() {},
+    listen    : listen,
+    closest   : closest
   };
 
 })();

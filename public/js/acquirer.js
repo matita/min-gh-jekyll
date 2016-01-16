@@ -37,6 +37,8 @@ function receiveMessage(e) {
   Array.prototype.forEach.call(document.querySelectorAll('.reading-time'), function(s) { s.innerHTML = Math.round(main.innerText.split(/\W+/).length / 180) + ' min read'; });
   Array.prototype.forEach.call(document.querySelectorAll('.view-original'), function(a) { a.href = post.url; });
 
+  link.save();
+
   var postActions = document.querySelectorAll('.gh-post-actions');
   for (var i = 0; i < postActions.length; i++) {
     linkActions(postActions[i], link);
