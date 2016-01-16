@@ -1,0 +1,390 @@
+---
+title: "How to Become a Better Node.js Developer in 2016"
+description: "Tips and best practices for development, how to operate Node.js infrastructures, how to do your day-to-day development and other useful advice."
+link: "https://blog.risingstack.com/how-to-become-a-better-node-js-developer-in-2016/"
+saved: "2016-01-08 16:39:07"
+---
+
+
+<section class="post-content">
+<p>These tips and best practices are not just for development - but how to operate Node.js infrastructures, how you should do your day-to-day development and other useful pieces of advice.</p>
+<h3 id="usees2015">Use ES2015</h3>
+<p>During the summer of 2015 the <a href="http://www.ecma-international.org/ecma-262/6.0/index.html">final draft of ES2015</a> <em>(formerly ES6)</em> was published. With this a number of new language features were added to the JavaScript language, including:</p>
+<ul>
+<li>arrow functions,</li>
+<li>template strings,</li>
+<li>rest operator, argument spreading,</li>
+<li>generators,</li>
+<li>promises,</li>
+<li>maps, sets,</li>
+<li>symbols,</li>
+</ul>
+<p>and a lot more. For a comprehensive list of new features check out <a href="https://github.com/getify/You-Dont-Know-JS/tree/master/es6%20%26%20beyond">ES6 and Beyond</a> by <a href="https://twitter.com/getify">Kyle Simpson</a>. <strong>Most of them are added to Node.js v4.</strong></p>
+<p>On the client side, you can already use all of them with the help of <a href="https://babeljs.io/">Babel</a>, a JavaScript compiler. Still, <strong>on the server side we prefer to use only the features that are added to the latest stable version</strong>, without compiling the source to save us from all the potential headaches.</p>
+<p>For more information on ES6 in Node.js, visit the official site: <a href="https://nodejs.org/en/docs/es6/">https://nodejs.org/en/docs/es6/</a>.</p>
+<h3 id="callbackconventionwithpromisesupport">Callback convention - with Promise support</h3>
+<p>For the last years, we encouraged you to expose an error-first callback interface for your modules. With the <strong>generators functions</strong> already being available and with the upcoming <strong>async functions</strong> your modules <em>(the ones published to NPM)</em> should expose an <strong>error-first callback interface with Promise support</strong>.</p>
+<p><em>Why? To provide backward compatibility a callback interface has to be provided, and for future compatibility you will need the Promise support as well.</em></p>
+<p>For a demonstration of how to do it, take a look at the script below. In this example the <code>readPackage</code> function reads the <code>package.json</code> file and returns its' content by providing both a Promise and a callback interface.</p>
+<link rel="stylesheet" href="https://assets-cdn.github.com/assets/gist/embed-2cd369fa1c0830bd3aa06c21d4f14a13e060d2d31bbaae740f4af4602b825bd9.css"><div id="gist29465405" class="gist">
+    <div class="gist-file">
+      <div class="gist-data">
+        <div class="js-gist-file-update-container js-task-list-container file-box">
+  <div id="file-index-js" class="file">
+    
+
+  <div class="blob-wrapper data type-javascript">
+      <table class="highlight tab-size js-file-line-container" data-tab-size="8">
+      <tbody><tr>
+        <td id="file-index-js-L1" class="blob-num js-line-number" data-line-number="1"></td>
+        <td id="file-index-js-LC1" class="blob-code blob-code-inner js-file-line"><span class="pl-k">const</span> <span class="pl-c1">fs</span> <span class="pl-k">=</span> <span class="pl-c1">require</span>(<span class="pl-s"><span class="pl-pds">'</span>fs<span class="pl-pds">'</span></span>)</td>
+      </tr>
+      <tr>
+        <td id="file-index-js-L2" class="blob-num js-line-number" data-line-number="2"></td>
+        <td id="file-index-js-LC2" class="blob-code blob-code-inner js-file-line">
+</td>
+      </tr>
+      <tr>
+        <td id="file-index-js-L3" class="blob-num js-line-number" data-line-number="3"></td>
+        <td id="file-index-js-LC3" class="blob-code blob-code-inner js-file-line"><span class="pl-k">function</span> <span class="pl-en">readPackage</span> (<span class="pl-smi">callback</span>) {</td>
+      </tr>
+      <tr>
+        <td id="file-index-js-L4" class="blob-num js-line-number" data-line-number="4"></td>
+        <td id="file-index-js-LC4" class="blob-code blob-code-inner js-file-line">  <span class="pl-c">//as of now we do not have default values in Node.js</span></td>
+      </tr>
+      <tr>
+        <td id="file-index-js-L5" class="blob-num js-line-number" data-line-number="5"></td>
+        <td id="file-index-js-LC5" class="blob-code blob-code-inner js-file-line">  callback <span class="pl-k">=</span> callback <span class="pl-k">||</span> <span class="pl-k">function</span> () {}</td>
+      </tr>
+      <tr>
+        <td id="file-index-js-L6" class="blob-num js-line-number" data-line-number="6"></td>
+        <td id="file-index-js-LC6" class="blob-code blob-code-inner js-file-line">  <span class="pl-k">return</span> <span class="pl-k">new</span> <span class="pl-en">Promise</span>((<span class="pl-smi">resolve</span>, <span class="pl-smi">reject</span>) <span class="pl-k">=&gt;</span> {</td>
+      </tr>
+      <tr>
+        <td id="file-index-js-L7" class="blob-num js-line-number" data-line-number="7"></td>
+        <td id="file-index-js-LC7" class="blob-code blob-code-inner js-file-line">    <span class="pl-smi">fs</span>.<span class="pl-en">readFile</span>(<span class="pl-s"><span class="pl-pds">'</span>./package.json<span class="pl-pds">'</span></span>, (<span class="pl-smi">err</span>, <span class="pl-smi">data</span>) <span class="pl-k">=&gt;</span> {</td>
+      </tr>
+      <tr>
+        <td id="file-index-js-L8" class="blob-num js-line-number" data-line-number="8"></td>
+        <td id="file-index-js-LC8" class="blob-code blob-code-inner js-file-line">      <span class="pl-k">if</span> (err) {</td>
+      </tr>
+      <tr>
+        <td id="file-index-js-L9" class="blob-num js-line-number" data-line-number="9"></td>
+        <td id="file-index-js-LC9" class="blob-code blob-code-inner js-file-line">        <span class="pl-en">reject</span>(err)</td>
+      </tr>
+      <tr>
+        <td id="file-index-js-L10" class="blob-num js-line-number" data-line-number="10"></td>
+        <td id="file-index-js-LC10" class="blob-code blob-code-inner js-file-line">        <span class="pl-k">return</span> <span class="pl-en">callback</span>(err)</td>
+      </tr>
+      <tr>
+        <td id="file-index-js-L11" class="blob-num js-line-number" data-line-number="11"></td>
+        <td id="file-index-js-LC11" class="blob-code blob-code-inner js-file-line">      }</td>
+      </tr>
+      <tr>
+        <td id="file-index-js-L12" class="blob-num js-line-number" data-line-number="12"></td>
+        <td id="file-index-js-LC12" class="blob-code blob-code-inner js-file-line">      <span class="pl-en">resolve</span>(data)</td>
+      </tr>
+      <tr>
+        <td id="file-index-js-L13" class="blob-num js-line-number" data-line-number="13"></td>
+        <td id="file-index-js-LC13" class="blob-code blob-code-inner js-file-line">      <span class="pl-k">return</span> <span class="pl-en">callback</span>(<span class="pl-c1">null</span>, data)</td>
+      </tr>
+      <tr>
+        <td id="file-index-js-L14" class="blob-num js-line-number" data-line-number="14"></td>
+        <td id="file-index-js-LC14" class="blob-code blob-code-inner js-file-line">    })</td>
+      </tr>
+      <tr>
+        <td id="file-index-js-L15" class="blob-num js-line-number" data-line-number="15"></td>
+        <td id="file-index-js-LC15" class="blob-code blob-code-inner js-file-line">  })</td>
+      </tr>
+      <tr>
+        <td id="file-index-js-L16" class="blob-num js-line-number" data-line-number="16"></td>
+        <td id="file-index-js-LC16" class="blob-code blob-code-inner js-file-line">}</td>
+      </tr>
+      <tr>
+        <td id="file-index-js-L17" class="blob-num js-line-number" data-line-number="17"></td>
+        <td id="file-index-js-LC17" class="blob-code blob-code-inner js-file-line">
+</td>
+      </tr>
+      <tr>
+        <td id="file-index-js-L18" class="blob-num js-line-number" data-line-number="18"></td>
+        <td id="file-index-js-LC18" class="blob-code blob-code-inner js-file-line"><span class="pl-smi">module</span>.<span class="pl-smi">exports</span>.<span class="pl-smi">readPackage</span> <span class="pl-k">=</span> readPackage</td>
+      </tr>
+</tbody></table>
+
+  </div>
+
+  </div>
+  
+</div>
+
+      </div>
+      
+    </div>
+</div>
+
+<h3 id="asyncpatterns">Async patterns</h3>
+<p>For a long time in Node.js, you had two choices to manage asynchronous flows: callbacks and streams. For callbacks you could use libraries like <a href="https://www.npmjs.com/package/async">async</a> and for streams <a href="https://www.npmjs.com/package/through">through</a>, <a href="https://www.npmjs.com/package/bl">bl</a> or <a href="http://highlandjs.org/">highland</a>.</p>
+<p>With the introduction of <em>Promises</em>, <em>generators</em> and the <em>async functions</em> it is changing.</p>
+<blockquote>
+<p><em>For a more detailed history of asynchronous JavaScript check out <a href="https://blog.risingstack.com/asynchronous-javascript/">The Evolution of Asynchronous JavaScript</a></em></p>
+</blockquote>
+<h3 id="errorhandling">Error handling</h3>
+<p>Error handling is a crucial part of the application to get right: knowing when to crash, or simply just log the error and continue/retry can be hard.</p>
+<p>To make it easier, we have to distinguish between <strong>programmer errors</strong> and <strong>operational errors</strong>. </p>
+<p>Programmer errors are basically bugs so you should crash the process immediately as you won't know in what state your application is. </p>
+<p>On the other hand, operational errors are problems with the system itself or a remote service, like request timeout or running out of memory. Based on the nature of the error you can try to solve with retrying, or if a file is missing you may have to create it first.</p>
+<h4 id="errorhandlingincallbacks">Error handling in callbacks</h4>
+<p>If an error occurs during an async operation, the error object will be passed as the first argument of the async function. <strong>You always have to check it and handle it.</strong></p>
+<p>The code snippet in the <em>Callback convention</em> section above contains an example.</p>
+<h4 id="errorhandlinginpromises">Error handling in Promises</h4>
+<p>What's going to happen in the following snippet?</p>
+<link rel="stylesheet" href="https://assets-cdn.github.com/assets/gist/embed-2cd369fa1c0830bd3aa06c21d4f14a13e060d2d31bbaae740f4af4602b825bd9.css"><div id="gist29465978" class="gist">
+    <div class="gist-file">
+      <div class="gist-data">
+        <div class="js-gist-file-update-container js-task-list-container file-box">
+  <div id="file-index-js" class="file">
+    
+
+  <div class="blob-wrapper data type-javascript">
+      <table class="highlight tab-size js-file-line-container" data-tab-size="8">
+      <tbody><tr>
+        <td id="file-index-js-L1" class="blob-num js-line-number" data-line-number="1"></td>
+        <td id="file-index-js-LC1" class="blob-code blob-code-inner js-file-line"><span class="pl-smi">Promise</span>.<span class="pl-en">resolve</span>(() <span class="pl-k">=&gt;</span> <span class="pl-s"><span class="pl-pds">'</span>John<span class="pl-pds">'</span></span>)</td>
+      </tr>
+      <tr>
+        <td id="file-index-js-L2" class="blob-num js-line-number" data-line-number="2"></td>
+        <td id="file-index-js-LC2" class="blob-code blob-code-inner js-file-line">  .<span class="pl-en">then</span>(() <span class="pl-k">=&gt;</span> {</td>
+      </tr>
+      <tr>
+        <td id="file-index-js-L3" class="blob-num js-line-number" data-line-number="3"></td>
+        <td id="file-index-js-LC3" class="blob-code blob-code-inner js-file-line">    <span class="pl-k">throw</span> <span class="pl-k">new</span> <span class="pl-en">Error</span>(<span class="pl-s"><span class="pl-pds">'</span>ops<span class="pl-pds">'</span></span>)</td>
+      </tr>
+      <tr>
+        <td id="file-index-js-L4" class="blob-num js-line-number" data-line-number="4"></td>
+        <td id="file-index-js-LC4" class="blob-code blob-code-inner js-file-line">  })</td>
+      </tr>
+      <tr>
+        <td id="file-index-js-L5" class="blob-num js-line-number" data-line-number="5"></td>
+        <td id="file-index-js-LC5" class="blob-code blob-code-inner js-file-line">  .<span class="pl-en">catch</span>((<span class="pl-smi">ex</span>) <span class="pl-k">=&gt;</span> {</td>
+      </tr>
+      <tr>
+        <td id="file-index-js-L6" class="blob-num js-line-number" data-line-number="6"></td>
+        <td id="file-index-js-LC6" class="blob-code blob-code-inner js-file-line">    <span class="pl-en">console</span>.<span class="pl-c1">log</span>(ex)</td>
+      </tr>
+      <tr>
+        <td id="file-index-js-L7" class="blob-num js-line-number" data-line-number="7"></td>
+        <td id="file-index-js-LC7" class="blob-code blob-code-inner js-file-line">  })</td>
+      </tr>
+      <tr>
+        <td id="file-index-js-L8" class="blob-num js-line-number" data-line-number="8"></td>
+        <td id="file-index-js-LC8" class="blob-code blob-code-inner js-file-line">  .<span class="pl-en">then</span>(() <span class="pl-k">=&gt;</span> {</td>
+      </tr>
+      <tr>
+        <td id="file-index-js-L9" class="blob-num js-line-number" data-line-number="9"></td>
+        <td id="file-index-js-LC9" class="blob-code blob-code-inner js-file-line">    <span class="pl-k">throw</span> <span class="pl-k">new</span> <span class="pl-en">Error</span>(<span class="pl-s"><span class="pl-pds">'</span>ups<span class="pl-pds">'</span></span>)</td>
+      </tr>
+      <tr>
+        <td id="file-index-js-L10" class="blob-num js-line-number" data-line-number="10"></td>
+        <td id="file-index-js-LC10" class="blob-code blob-code-inner js-file-line">    <span class="pl-en">console</span>.<span class="pl-c1">log</span>(<span class="pl-s"><span class="pl-pds">'</span>Doe<span class="pl-pds">'</span></span>)</td>
+      </tr>
+      <tr>
+        <td id="file-index-js-L11" class="blob-num js-line-number" data-line-number="11"></td>
+        <td id="file-index-js-LC11" class="blob-code blob-code-inner js-file-line">  })</td>
+      </tr>
+</tbody></table>
+
+  </div>
+
+  </div>
+  
+</div>
+
+      </div>
+      
+    </div>
+</div>
+
+<ol>
+<li>It will throw an exception in line 3 </li>
+<li>The catch will handle it, and print it out to the stdout: <code>[Error: ops]</code> </li>
+<li>The execution continues and in line 9 a new error will be thrown </li>
+<li>Nothing else</li>
+</ol>
+<p>And really nothing else - the last error thrown will be a silent one. <strong>Pay extra attention to always add a catch as the last member of the promise chain.</strong> It will save you a lot of headaches. So it should look like this:</p>
+<link rel="stylesheet" href="https://assets-cdn.github.com/assets/gist/embed-2cd369fa1c0830bd3aa06c21d4f14a13e060d2d31bbaae740f4af4602b825bd9.css"><div id="gist29466138" class="gist">
+    <div class="gist-file">
+      <div class="gist-data">
+        <div class="js-gist-file-update-container js-task-list-container file-box">
+  <div id="file-index-js" class="file">
+    
+
+  <div class="blob-wrapper data type-javascript">
+      <table class="highlight tab-size js-file-line-container" data-tab-size="8">
+      <tbody><tr>
+        <td id="file-index-js-L1" class="blob-num js-line-number" data-line-number="1"></td>
+        <td id="file-index-js-LC1" class="blob-code blob-code-inner js-file-line"><span class="pl-smi">Promise</span>.<span class="pl-en">resolve</span>(() <span class="pl-k">=&gt;</span> <span class="pl-s"><span class="pl-pds">'</span>John<span class="pl-pds">'</span></span>)</td>
+      </tr>
+      <tr>
+        <td id="file-index-js-L2" class="blob-num js-line-number" data-line-number="2"></td>
+        <td id="file-index-js-LC2" class="blob-code blob-code-inner js-file-line">  .<span class="pl-en">then</span>(() <span class="pl-k">=&gt;</span> {</td>
+      </tr>
+      <tr>
+        <td id="file-index-js-L3" class="blob-num js-line-number" data-line-number="3"></td>
+        <td id="file-index-js-LC3" class="blob-code blob-code-inner js-file-line">    <span class="pl-k">throw</span> <span class="pl-k">new</span> <span class="pl-en">Error</span>(<span class="pl-s"><span class="pl-pds">'</span>ops<span class="pl-pds">'</span></span>)</td>
+      </tr>
+      <tr>
+        <td id="file-index-js-L4" class="blob-num js-line-number" data-line-number="4"></td>
+        <td id="file-index-js-LC4" class="blob-code blob-code-inner js-file-line">  })</td>
+      </tr>
+      <tr>
+        <td id="file-index-js-L5" class="blob-num js-line-number" data-line-number="5"></td>
+        <td id="file-index-js-LC5" class="blob-code blob-code-inner js-file-line">  .<span class="pl-en">catch</span>((<span class="pl-smi">ex</span>) <span class="pl-k">=&gt;</span> {</td>
+      </tr>
+      <tr>
+        <td id="file-index-js-L6" class="blob-num js-line-number" data-line-number="6"></td>
+        <td id="file-index-js-LC6" class="blob-code blob-code-inner js-file-line">    <span class="pl-en">console</span>.<span class="pl-c1">log</span>(ex)</td>
+      </tr>
+      <tr>
+        <td id="file-index-js-L7" class="blob-num js-line-number" data-line-number="7"></td>
+        <td id="file-index-js-LC7" class="blob-code blob-code-inner js-file-line">  })</td>
+      </tr>
+      <tr>
+        <td id="file-index-js-L8" class="blob-num js-line-number" data-line-number="8"></td>
+        <td id="file-index-js-LC8" class="blob-code blob-code-inner js-file-line">  .<span class="pl-en">then</span>(() <span class="pl-k">=&gt;</span> {</td>
+      </tr>
+      <tr>
+        <td id="file-index-js-L9" class="blob-num js-line-number" data-line-number="9"></td>
+        <td id="file-index-js-LC9" class="blob-code blob-code-inner js-file-line">    <span class="pl-k">throw</span> <span class="pl-k">new</span> <span class="pl-en">Error</span>(<span class="pl-s"><span class="pl-pds">'</span>ups<span class="pl-pds">'</span></span>)</td>
+      </tr>
+      <tr>
+        <td id="file-index-js-L10" class="blob-num js-line-number" data-line-number="10"></td>
+        <td id="file-index-js-LC10" class="blob-code blob-code-inner js-file-line">    <span class="pl-en">console</span>.<span class="pl-c1">log</span>(<span class="pl-s"><span class="pl-pds">'</span>Doe<span class="pl-pds">'</span></span>)</td>
+      </tr>
+      <tr>
+        <td id="file-index-js-L11" class="blob-num js-line-number" data-line-number="11"></td>
+        <td id="file-index-js-LC11" class="blob-code blob-code-inner js-file-line">  })</td>
+      </tr>
+      <tr>
+        <td id="file-index-js-L12" class="blob-num js-line-number" data-line-number="12"></td>
+        <td id="file-index-js-LC12" class="blob-code blob-code-inner js-file-line">  .<span class="pl-en">catch</span>((<span class="pl-smi">ex</span>) <span class="pl-k">=&gt;</span> {</td>
+      </tr>
+      <tr>
+        <td id="file-index-js-L13" class="blob-num js-line-number" data-line-number="13"></td>
+        <td id="file-index-js-LC13" class="blob-code blob-code-inner js-file-line">    <span class="pl-en">console</span>.<span class="pl-c1">log</span>(ex)</td>
+      </tr>
+      <tr>
+        <td id="file-index-js-L14" class="blob-num js-line-number" data-line-number="14"></td>
+        <td id="file-index-js-LC14" class="blob-code blob-code-inner js-file-line">  })</td>
+      </tr>
+</tbody></table>
+
+  </div>
+
+  </div>
+  
+</div>
+
+      </div>
+      
+    </div>
+</div>
+
+<p>And now the output will be:</p>
+<pre><code>[Error: ops]
+[Error: ups]
+</code></pre>
+<h3 id="usejavascriptstandardstyle">Use JavaScript Standard Style</h3>
+<p>In the past years, we had JSLint then JSHint, JSCS, ESLint - all excellent tools trying to automate as much code checking as possible.</p>
+<p>Recently, when it comes to code style we use the <a href="https://github.com/feross/standard">JavaScript Standard Style</a> by <a href="https://github.com/feross">feross</a>.</p>
+<p><a href="https://github.com/feross/standard"><img src="https://cdn.rawgit.com/feross/standard/master/badge.svg" alt="js-standard-style" title=""></a></p>
+<p>The reason is simple: no configuration needed, just drop it in the project. Some rules that are incorporated <em>(taken from the readme)</em>:</p>
+<ul>
+<li><strong>2 spaces</strong> – for indentation</li>
+<li><strong>Single quotes for strings</strong> – except to avoid escaping</li>
+<li><strong>No unused variables</strong></li>
+<li><strong>No semicolons</strong></li>
+<li><strong>Never start a line with <code>(</code> or <code>[</code></strong>
+<ul><li>This is the <strong>only</strong> gotcha with omitting semicolons</li></ul></li>
+<li><strong>Space after keywords</strong> <code>if (condition) { ... }</code></li>
+<li><strong>Space after function name</strong> <code>function name (arg) { ... }</code></li>
+<li>Always use <code>===</code> instead of <code>==</code> – but <code>obj == null</code> is allowed to check <code>null || undefined</code>.</li>
+<li>Always handle the node.js <code>err</code> function parameter</li>
+<li>Always prefix browser globals with <code>window</code> – except <code>document</code> and <code>navigator</code> are okay
+<ul><li>Prevents accidental use of poorly-named browser globals like <code>open</code>, <code>length</code>,
+<code>event</code>, and <code>name</code>.</li></ul></li>
+</ul>
+<p>Also, if your editor of choice supports ESLint only, there is an ESLint ruleset as well for the Standard Style, the <a href="https://github.com/xjamundx/eslint-plugin-standard">eslint-plugin-standard</a>. With this plugin installed your <code>.eslintrc</code> will something like this:</p>
+<pre class=" language-javascript"><code class=" language-javascript"><span class="token punctuation">{</span>
+  <span class="token string">"plugins"</span><span class="token punctuation">:</span> <span class="token punctuation">[</span>
+    <span class="token string">"standard"</span>
+  <span class="token punctuation">]</span><span class="token punctuation">,</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<h3 id="thetwelvefactorapplication">The Twelve-Factor Application</h3>
+<p>The Twelve-Factor application manifesto describes best practices on how web applications should be written.</p>
+<ol>
+<li><a target="_blank" href="http://12factor.net/codebase">One codebase tracked in revision control, many deploys</a> </li>
+<li><a target="_blank" href="http://12factor.net/dependencies">Explicitly declare and isolate dependencies</a> </li>
+<li><a target="_blank" href="http://12factor.net/config">Store config in the environment</a> </li>
+<li><a target="_blank" href="http://12factor.net/backing-services">Treat backing services as attached resources</a> </li>
+<li><a target="_blank" href="http://12factor.net/build-release-run">Strictly separate build and run stages</a> </li>
+<li><a target="_blank" href="http://12factor.net/processes">Execute the app as one or more stateless processes</a> </li>
+<li><a target="_blank" href="http://12factor.net/port-binding">Export services via port binding</a> </li>
+<li><a target="_blank" href="http://12factor.net/concurrency">Scale out via the process model</a> </li>
+<li><a target="_blank" href="http://12factor.net/disposability">Maximize robustness with fast startup and graceful shutdown</a> </li>
+<li><a target="_blank" href="http://12factor.net/dev-prod-parity">Keep development, staging, and production as similar as possible</a> </li>
+<li><a target="_blank" href="http://12factor.net/logs">Treat logs as event streams</a> </li>
+<li><a target="_blank" href="http://12factor.net/admin-processes">Run admin/management tasks as one-off processes</a></li>
+</ol>
+<h3 id="startingnewprojects">Starting new projects</h3>
+<p>Always start a new project with <code>npm init</code>. This will generate a basic <code>package.json</code> for your project.</p>
+<p>If you want to skip the initial questions and go with the defaults, just run <code>npm init --yes</code>.</p>
+<h3 id="monitoringyourapplications">Monitoring your applications</h3>
+<p>Getting notified as soon as something wrong happened or is going to happen in your system can save your business.</p>
+<p>To monitor your applications, you can use open-source software as well as SaaS products.</p>
+<p>For open-source, you can take a look at <a href="http://www.zabbix.com/">Zabbix</a>, <a href="https://collectd.org/">Collectd</a>, <a href="https://www.elastic.co/products/elasticsearch">ElasticSearch</a> or <a href="https://www.elastic.co/products/logstash">Logstash</a>. </p>
+<p>If you do not want to host them, you can try <a href="http://trace.risingstack.com/?utm_source=how-to-become-a-better-node-js-developer-in-2016&amp;utm_medium=rsblog&amp;utm_campaign=tracebeta">Trace</a>, our Node.js and microservice monitoring solution.</p>
+<p><a href="http://trace.risingstack.com/?utm_source=how-to-become-a-better-node-js-developer-in-2016&amp;utm_medium=rsblog&amp;utm_campaign=tracebeta" target="_blank"> <br>
+<img src="https://risingstack-blog.s3.amazonaws.com/2015/Dec/trace_transaction-1451512486757.png" alt="Trace - Node.js and microservice monitoring" class="full-img">
+</a></p>
+<h3 id="useabuildsystem">Use a build system</h3>
+<p><strong>Automate everything you can.</strong> There is nothing more annoying and wasteful activity for a developer than to do grunt work.</p>
+<p>Nowadays the tooling around JavaScript evolved a lot - Grunt, Gulp, and Webpack, just to name a few.</p>
+<p>At RisingStack, most of the new projects use Webpack to aid in front-end development and gulp for other kinds of automated tasks. At first, Webpack can take more time to understand - for newcomers I highly recommend to check out the <a href="http://christianalfoni.github.io/react-webpack-cookbook/">Webpack Cookbooks</a>.</p>
+<h3 id="usethelatestltsnodejsversion">Use the latest LTS Node.js version</h3>
+<p>To get both stability and new features we recommend to use the latest <strong>LTS</strong> <em>(long-term support)</em> version of Node.js - they are the ones with even release numbers. Of course, feel free to experiment with newer versions, called the <strong>Stable</strong> release line with the odd release numbers.</p>
+<p>If you are working on different projects with different Node.js version requirements then start using the Node Version Manager - <a href="https://github.com/creationix/nvm">nvm</a> today.</p>
+<p>For more information on Node.js releases check out the official website: <a href="https://nodejs.org/en/blog/community/node-v5/">https://nodejs.org/en/blog/community/node-v5/</a>.</p>
+<h3 id="updatedependenciesonaweeklybasis">Update dependencies on a weekly basis</h3>
+<p>Make it a habit to update dependencies on a weekly basis. For this, you can use <code>npm outdated</code> or the <a href="https://www.npmjs.com/package/npm-check-updates">ncu</a> package.</p>
+<h3 id="picktherightdatabase">Pick the right database</h3>
+<p>When talking about Node.js and databases the first technology that usually comes up is MongoDB. While there is nothing wrong with it, don't just jump into using it. Ask yourself and your team questions before doing so. To give some idea:</p>
+<ul>
+<li>Do you have structured data?</li>
+<li>Do you have to handle transactions?</li>
+<li>How long should you store the data?</li>
+</ul>
+<p>You may only need Redis, or if you have structured data then you could go for PostgreSQL. If you start developing with SQL in Node.js, check out <a href="http://knexjs.org/">knex</a>.</p>
+<h3 id="usesemanticversioning">Use Semantic Versioning</h3>
+<blockquote>
+<p>Semantic Versioning is a formal convention for specifying compatibility using a three-part version number: major version; minor version; and patch. </p>
+</blockquote>
+<p>Major versions are bumped if an API change is not backward-compatible. Minor versions are bumped when new features are added, but the API change is backward compatible. Patch versions are bumped when only bug fixes happened.</p>
+<p>Luckily, you can automate the release of your JavaScript modules with <a href="https://github.com/semantic-release/semantic-release">semantic-release</a>.</p>
+<h3 id="keepup">Keep up</h3>
+<p>It can be challenging to keep up with the latest news and developments in the JavaScript and Node.js world. To make it easier make sure to subscribe to the following media:</p>
+<ul>
+<li><a href="http://nodeweekly.com/">Node.js Weekly Newsletter</a></li>
+<li><a href="https://microserviceweekly.com/">Microservice Weekly Newsletter</a></li>
+<li><a href="https://changelog.com/">Changelog Weekly</a> - for Open-Source news</li>
+</ul>
+<h3 id="learnmore">Learn more</h3>
+<blockquote>
+<p>Want to learn more about how you could implement Node.js at your company? Drop us a message at <a href="http://risingstack.com/">RisingStack.com</a>!</p>
+</blockquote>
+</section>
+
+<div id="mc_embed_signup">
+
+</div>
+
