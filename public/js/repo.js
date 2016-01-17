@@ -107,7 +107,7 @@ var MyLinks = (function() {
           return linkcb(err);
         console.log('remove', oldPath);
         repo.remove(branch, oldPath, function(err) {
-          cb(err);
+          cb(err, newPath);
         });
       });
     });

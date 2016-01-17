@@ -1,0 +1,9 @@
+---
+layout: none
+---
+{% for category in site.categories %}
+  {% assign category_name = category[0] %}
+  .category-{{ category_name }} .move-to-{{ category_name }} {
+    display: none;
+  }
+{% endfor %}

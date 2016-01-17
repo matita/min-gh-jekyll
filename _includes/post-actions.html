@@ -7,8 +7,11 @@
           <span class="gh-not-acquirer">
             &middot;
             {% include buttons/delete.html %}
+          {% for category in site.categories %}
+            {% assign category_name = category[0] %}
             &middot;
-            {% include buttons/move.html category='archive' %}
+            {% include buttons/move.html category=category_name %}
+          {% endfor %}
             &middot;
             <a class="gh-login" href="javascript:void(0)">Log in</a>
             <a class="gh-logout" href="javascript:void(0)">Log out</a>
