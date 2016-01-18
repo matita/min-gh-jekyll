@@ -7,8 +7,10 @@ function linkActions(node, link) {
 
   link.on('save', function(err) {
     node.classList.remove('gh-saving');
-    if (err)
-      alert(err);
+    if (err) {
+      alert(err.error || err);
+      console.log('error', err);
+    }
   });
 
   node.querySelector('.gh-save').addEventListener('click', function(e) {
