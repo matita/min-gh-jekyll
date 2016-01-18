@@ -3,6 +3,7 @@ var MyLinks = (function() {
   var userName = 'matita';
   var repoName = 'min-gh-jekyll';
   var branch = 'gh-pages';
+  var defaultCategory = 'to_read';
   var repo;
 
   init();
@@ -64,6 +65,23 @@ var MyLinks = (function() {
   }
 
 
+  function save(url, filename, content, cb) {
+    if (!isLogged()) {
+      return logIn(function(err, token) {
+        if (err)
+          return cb(err);
+        save(url, filename, content, cb);
+      });
+    }
+
+    var path = defaultCategory + '/_posts/' + filename;
+    var commitMessage = 'Saved from ' + url;
+    repo.write(branch, path, content, commitMessage, function(err) {
+      cb(err, path);
+    });
+  }
+
+
   function remove(path, cb) {
     if (!isLogged()) {
       return logIn(function(err, token) {
@@ -117,6 +135,7 @@ var MyLinks = (function() {
 
 
   return {
+    save     : save,
     remove   : remove,
     move     : move,
     logOut   : logOut,

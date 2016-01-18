@@ -13,14 +13,9 @@ function Link(link) {
     save: function() {
       link.emit('beforesave');
 
-      if (!repo)
-        setTimeout(function() { link.emit('save', 'GitHub user not authenticated'); }, 0)
-      else {
-        var commitMessage = 'Saved from ' + link.url;
-        repo.write(branch, '_posts/' + link.filename, link.frontMatter + '\n' + link.content, commitMessage, function(err) {
-          link.emit('save', err);
-        });
-      }
+      MyLinks.save(link.url, link.filename, link.frontMatter + '\n' + link.content, function(err) {
+        link.emit('save', err);
+      });
 
       return link; 
     },
