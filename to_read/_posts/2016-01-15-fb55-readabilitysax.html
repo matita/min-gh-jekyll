@@ -1,0 +1,118 @@
+---
+title: "fb55/readabilitySAX"
+description: "readabilitySAX - a fast and platform independent readability port (JS)"
+link: "https://github.com/fb55/readabilitysax"
+saved: "2016-01-15 18:02:17"
+---
+<h1><a id="user-content-readabilitysax" class="anchor" href="https://github.com/fb55/readabilitysax#readabilitysax" aria-hidden="true"><span class="octicon octicon-link"></span></a>readabilitySAX</h1>
+
+<p>a fast and platform independent readability port</p>
+
+<h2><a id="user-content-about" class="anchor" href="https://github.com/fb55/readabilitysax#about" aria-hidden="true"><span class="octicon octicon-link"></span></a>About</h2>
+
+<p>This is a port of the algorithm used by the <a href="http://code.google.com/p/arc90labs-readability/">Readability</a> bookmarklet to extract relevant pieces of information out of websites to a SAX parser.</p>
+
+<p>The advantage over other ports, e.g. <a href="https://github.com/arrix/node-readability">arrix/node-readability</a>, is a smaller memory footprint and a much faster execution. In my tests, most pages, even large ones, were finished within 15ms (on node, see below for more information). It works with Rhino, so it runs on <a href="http://developer.yahoo.com/yql" title="Yahoo! Query Language">YQL</a>, which may have interesting uses. And it works within a browser.</p>
+
+<p>The Readability extraction algorithm was completely ported, but some adjustments were made:</p>
+
+<ul>
+<li><p><code>&lt;article&gt;</code> and <code>&lt;section&gt;</code> tags are recognized and gain a higher value</p></li>
+<li><p>If a heading is part of the pages <code>&lt;title&gt;</code>, it is removed (Readability removed any single <code>&lt;h2&gt;</code>, and ignored other tags)</p></li>
+<li><p><code>henry</code> and <code>instapaper-body</code> are classes to show an algorithm like this where the content is. readabilitySAX recognizes them and adds additional points</p></li>
+<li><p>Every bit of code that was taken from the original algorithm was optimized, eg. RegExps should now perform faster (they were optimized &amp; use <code>RegExp#test</code> instead of <code>String#match</code>, which doesn't force the interpreter to build an array)</p></li>
+<li><p>Some improvements made by <a href="https://github.com/curthard89/COCOA-Stuff/tree/master/GGReadability">GGReadability</a> (an Obj-C port of Readability) were adopted</p>
+
+<ul>
+<li>Images get additional scores when their <code>height</code> or <code>width</code> attributes are high - icon sized images (&lt;= 32px) get skipped</li>
+<li>Additional classes &amp; ids are checked</li>
+</ul></li>
+</ul>
+
+<h2><a id="user-content-howto" class="anchor" href="https://github.com/fb55/readabilitysax#howto" aria-hidden="true"><span class="octicon octicon-link"></span></a>HowTo</h2>
+
+<h3><a id="user-content-installing-readabilitysax-node" class="anchor" href="https://github.com/fb55/readabilitysax#installing-readabilitysax-node" aria-hidden="true"><span class="octicon octicon-link"></span></a>Installing readabilitySAX (node)</h3>
+
+<p>This module is available on <code>npm</code> as <code>readabilitySAX</code>. Just run </p>
+
+<pre><code>npm install readabilitySAX
+</code></pre>
+
+<h5><a id="user-content-cli" class="anchor" href="https://github.com/fb55/readabilitysax#cli" aria-hidden="true"><span class="octicon octicon-link"></span></a>CLI</h5>
+
+<p>A command line interface (CLI) may be installed via</p>
+
+<pre><code>npm install -g readabilitySAX
+</code></pre>
+
+<p>It's then available via</p>
+
+<pre><code>readability &lt;domain&gt; [&lt;format&gt;]
+</code></pre>
+
+<p>To get this readme, just run</p>
+
+<pre><code>readability https://github.com/FB55/readabilitySAX
+</code></pre>
+
+<p>The format is optional (it's either <code>text</code> or <code>html</code>, the default value is <code>text</code>).</p>
+
+<h3><a id="user-content-usage" class="anchor" href="https://github.com/fb55/readabilitysax#usage" aria-hidden="true"><span class="octicon octicon-link"></span></a>Usage</h3>
+
+<h5><a id="user-content-node" class="anchor" href="https://github.com/fb55/readabilitysax#node" aria-hidden="true"><span class="octicon octicon-link"></span></a>Node</h5>
+
+<p>Just run <code>require("readabilitySAX")</code>. You'll get an object containing three methods:</p>
+
+<ul>
+<li><p><code>Readability(settings)</code>: The readability constructor. It works as a handler for <code>htmlparser2</code>. Read more about it <a href="https://github.com/FB55/readabilitySAX/wiki/The-Readability-constructor">in the wiki</a>!</p></li>
+<li><p><code>WritableStream(settings, cb)</code>: A constructor that unites <code>htmlparser2</code> and the <code>Readability</code> constructor. It's a writable stream, so simply <code>.write</code> all your data to it. Your callback will be called once <code>.end</code> was called. Bonus: You can also <code>.pipe</code> data into it!</p></li>
+<li><p><code>createWritableStream(settings, cb)</code>: Returns a new instance of the <code>WritableStream</code>. (It's a simple factory method.)</p></li>
+</ul>
+
+<p>There are two methods available that are deprecated and <strong>will be removed</strong> in a future version:</p>
+
+<ul>
+<li><p><code>get(link, [settings], callback)</code>: Gets a webpage and process it.</p></li>
+<li><p><code>process(data)</code>: Takes a string, runs readabilitySAX and returns the page.</p></li>
+</ul>
+
+<p><strong>Please don't use those two methods anymore</strong>. Streams are the way you should build interfaces in node, and that's what I want encourage people to use.</p>
+
+<h5><a id="user-content-browsers" class="anchor" href="https://github.com/fb55/readabilitysax#browsers" aria-hidden="true"><span class="octicon octicon-link"></span></a>Browsers</h5>
+
+<p>I started to implement simplified SAX-"parsers" for Rhino/YQL (using E4X) and the browser (using the DOM) to increase the overall performance on those platforms. The DOM version is inside the <code>/browsers</code> dir.</p>
+
+<p>A demo of how to use readabilitySAX inside a browser may be found at <a href="http://jsfiddle.net/pXqYR/embedded/">jsFiddle</a>. Some basic example files are inside the <code>/browsers</code> directory.</p>
+
+<h5><a id="user-content-yql" class="anchor" href="https://github.com/fb55/readabilitysax#yql" aria-hidden="true"><span class="octicon octicon-link"></span></a>YQL</h5>
+
+<p>A table using E4X-based events is available as the community table <code>redabilitySAX</code>, as well as <a href="https://github.com/FB55/yql-tables/tree/master/readabilitySAX">here</a>.</p>
+
+<h2><a id="user-content-parsers-on-node" class="anchor" href="https://github.com/fb55/readabilitysax#parsers-on-node" aria-hidden="true"><span class="octicon octicon-link"></span></a>Parsers (on node)</h2>
+
+<p>Most SAX parsers (as sax.js) fail when a document is malformed XML, even if it's correct HTML. readabilitySAX should be used with <a href="http://npm.im/htmlparser2">htmlparser2</a>, my fork of the <code>htmlparser</code>-module (used by eg. <code>jsdom</code>), which corrects most faults. It's listed as a dependency, so npm should install it with readabilitySAX.</p>
+
+<h2><a id="user-content-performance" class="anchor" href="https://github.com/fb55/readabilitysax#performance" aria-hidden="true"><span class="octicon octicon-link"></span></a>Performance</h2>
+
+<h5><a id="user-content-speed" class="anchor" href="https://github.com/fb55/readabilitysax#speed" aria-hidden="true"><span class="octicon octicon-link"></span></a>Speed</h5>
+
+<p>Using a package of 724 pages from <a href="http://cleaneval.sigwac.org.uk/">CleanEval</a> (their website seems to be down, try to google it), readabilitySAX processed all of them in 5768 ms, that's an average of 7.97 ms per page.</p>
+
+<p>The benchmark was done using <code>tests/benchmark.js</code> on a MacBook (late 2010) and is probably far from perfect.</p>
+
+<p>Performance is the main goal of this project. The current speed should be good enough to run readabilitySAX on a singe-threaded web server with an average number of requests. That's an accomplishment!</p>
+
+<h5><a id="user-content-accuracy" class="anchor" href="https://github.com/fb55/readabilitysax#accuracy" aria-hidden="true"><span class="octicon octicon-link"></span></a>Accuracy</h5>
+
+<p>The main goal of CleanEval is to evaluate the accuracy of an algorithm.</p>
+
+<p><strong><em>// TODO</em></strong></p>
+
+<h2><a id="user-content-todo" class="anchor" href="https://github.com/fb55/readabilitysax#todo" aria-hidden="true"><span class="octicon octicon-link"></span></a>Todo</h2>
+
+<ul>
+<li>Add documentation &amp; examples</li>
+<li>Add support for URLs containing hash-bangs (<code>#!</code>)</li>
+<li>Allow fetching articles with more than one page</li>
+<li>Don't remove all images inside <code>&lt;a&gt;</code> tags</li>
+</ul>
