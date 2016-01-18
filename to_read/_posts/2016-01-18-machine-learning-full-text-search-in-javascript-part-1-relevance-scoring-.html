@@ -1,0 +1,273 @@
+---
+title: "Machine Learning: Full-Text Search in Javascript (Part 1: Relevance Scoring)"
+description: "Full-text search is a powerful machine learning algorithm, especially relevant for web developers. This article teaches you the basics, from scratch."
+link: "https://www.burakkanber.com/blog/machine-learning-full-text-search-in-javascript-relevance-scoring/"
+saved: "2016-01-18 12:39:23"
+---
+
+
+        
+
+        <section class="post-content">
+            <p>Full-text search, unlike most of the topics in this machine learning series, is a problem that most web developers have encountered at some point in their daily work. A client asks you to put a search field somewhere, and you write some SQL along the lines of <code>WHERE title LIKE %:query%</code>. It's convincing at first, but then a few days later the client calls you and claims that "search is broken!"</p>
+
+<!-- more -->
+
+<p>Of course, your search isn't <em>broken</em>, it's just not doing what the client wants. Regular web users don't really understand the concept of exact matches, so your search quality ends up being poor. You decide you need to use full-text search. With some MySQL fidgeting you're able to set up a FULLTEXT index and use a more evolved syntax, the "MATCH() ... AGAINST()" query.</p>
+
+<p>Great! Problem solved. For smallish databases.</p>
+
+<p>As you hit the hundreds of thousands of records, you notice that your database is sluggish. MySQL just isn't <em>great</em> at full-text search. So you grab ElasticSearch, refactor your code a bit, and deploy a Lucene-driven full-text search cluster that works wonders. It's fast and the quality of results is great.</p>
+
+<p>Which leads you to ask: what the heck is Lucene doing <em>so right</em>?</p>
+
+<p>This article (on TF-IDF, Okapi BM-25, and relevance scoring in general) and the next one (on inverted indices) describe the basic concepts behind full-text search.  </p>
+
+<h2>Relevance</h2>  
+
+<p>It would be convenient to be able to define a "relevance score" that relates a document to a search query. And then, when users search for things, we can sort by the relevance score instead of sorting chronologically. That way the most relevant documents come up on top, regardless (or maybe not) of how old they are.</p>
+
+<p>There are many, many ways to relate one text to another, but let's start simple and use a statistics-based approach that doesn't need to understand language itself, but rather looks at the statistics of word usage and matches and weighs documents based on the prevalence of their unique words.</p>
+
+<p>This algorithm doesn't care about verbs or nouns or even meaning. All it cares about is the simple fact that there are common words and there are rare words, and if your search phrase includes both common and rare words, you'd be better off to rank the documents that have that rare word in it higher, and put less weight on matched common words.</p>
+
+<p>The algorithm we'll use is called <a title="Okapi BM25" href="http://en.wikipedia.org/wiki/Okapi_BM25" target="_blank">Okapi BM25</a>, but it builds on two basic concepts: <em>term frequency ("TF") </em>and <em>inverse document frequency ("IDF"). </em>Together, these concepts form "TF-IDF", which is a statistical measure that represents how important a term is to a document.</p>
+
+<h2>TF-IDF</h2>
+
+<p><em>Term Frequency, </em>abbreviated "TF", is a simple metric: it's the number of times a certain word appears in a document. You can also represent it as the fraction of the number of times a word appears over the total number of tokens (ie, total words) in a document. Term frequency says "I'm 100 words long and 'the' shows up 8 times, so the term frequency of 'the' is 8 or 8/100 or 8%" (depending on the representation you want).</p>
+
+<p><em>Inverse Document Frequency, </em>abbreviated "IDF", is more evolved: the <em>rarer</em> a word is, the <em>higher</em> this value. It's the log ratio of the number of total documents over the number of documents a term appears in. Rarer words, therefore, yield bigger "IDF"s.</p>
+
+<p>If you multiply these two numbers together, (TF*IDF), you'll get the importance of a word to a document. "Importance" being defined as "how rare is this word and how often does it appear in this document?"</p>
+
+<p>You can then use this concept to relate a document to a search query. For each term in a search query, calculate its TF-IDF score, add them all up, and whichever document has the highest score is your winner.</p>
+
+<p>Cool? Cool.</p>
+
+<h2>Okapi BM25</h2>
+
+<p>The algorithm described above is <em>okay </em>but not wonderful. It does provide us with statistically-derived relevance scores, but it could be improved.</p>
+
+<p>Okapi BM25 is considered a state-of-the-art ranking algorithm (<a href="http://www.elastic.co/guide/en/elasticsearch/guide/current/pluggable-similarites.html" target="_blank">so says ElasticSearch</a>). The major improvements that Okapi BM25 bring over TF-IDF are two tunable parameters, called k1 and b, that modulate "term frequency saturation" and "field-length normalization". What?</p>
+
+<p>To intuit term frequency saturation, imagine two documents of roughly the same length that both talk about baseball. Imagine that the overall corpus doesn't have much to do with baseball, so the term "baseball"s IDF is pretty high -- it's a rare and important-ish word. These two documents both talk about baseball, and talk about it a lot, but one of them uses the term "baseball" way more. Should that document <em>really</em> show up that much higher in the rankings? Both the documents talk about baseball a hefty amount, and at a certain point it shouldn't really matter if you use the word "baseball" 40 times or 80 times. Anything above 30 is enough!</p>
+
+<p>This is "term frequency saturation." The naive TF-IDF algorithm doesn't saturate, so the document that uses "baseball" 80 times will have twice the score as the one that uses it 40 times. Sometimes that's desired, sometimes it's not.</p>
+
+<p>Okapi BM25, on the other hand, has a parameter called "k1" that actually lets you tune how quickly term frequency will saturate. The parameter k1 is usually taken between 1.2 and 2.0. Lower values result in quicker saturation (meaning that those two documents above will have similar scores, because they both have a significant number of "baseball"s).</p>
+
+<p>Field-length normalization considers the length of the document and normalizes against the average length of all documents. It's useful in single-field collections (like ours) to put documents of differing lengths on the same playing field. It's doubly useful in multiple-field collections (like "title" and "body") in putting the title and body fields on the same playing field as well. The term "b" is ranged from 0 to 1, with 1 giving full normalization and 0 giving no normalization.</p>
+
+<h2>The Algorithm</h2>
+
+<p>You can see the formula for the Okapi BM25 algorithm on the <a href="http://en.wikipedia.org/wiki/Okapi_BM25" target="_blank">Okapi BM25 Wikipedia page</a>. Now that you know what each of the terms are, it should be pretty straight-forward to understand, so we won't dive into the equation here. Let's dive into code:</p>
+
+<pre class=" language-javascript"><code class=" language-javascript">BM25<span class="token punctuation">.</span>Tokenize <span class="token operator">=</span> <span class="token keyword">function</span><span class="token punctuation">(</span>text<span class="token punctuation">)</span> <span class="token punctuation">{</span>  
+    text <span class="token operator">=</span> text
+        <span class="token punctuation">.</span><span class="token function">toLowerCase<span class="token punctuation">(</span></span><span class="token punctuation">)</span>
+        <span class="token punctuation">.</span><span class="token function">replace<span class="token punctuation">(</span></span><span class="token regex">/\W/g</span><span class="token punctuation">,</span> <span class="token string">' '</span><span class="token punctuation">)</span>
+        <span class="token punctuation">.</span><span class="token function">replace<span class="token punctuation">(</span></span><span class="token regex">/\s+/g</span><span class="token punctuation">,</span> <span class="token string">' '</span><span class="token punctuation">)</span>
+        <span class="token punctuation">.</span><span class="token function">trim<span class="token punctuation">(</span></span><span class="token punctuation">)</span>
+        <span class="token punctuation">.</span><span class="token function">split<span class="token punctuation">(</span></span><span class="token string">' '</span><span class="token punctuation">)</span>
+        <span class="token punctuation">.</span><span class="token function">map<span class="token punctuation">(</span></span><span class="token keyword">function</span><span class="token punctuation">(</span>a<span class="token punctuation">)</span> <span class="token punctuation">{</span> <span class="token keyword">return</span> <span class="token function">stemmer<span class="token punctuation">(</span></span>a<span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+   <span class="token comment" spellcheck="true"> // Filter out stopStems
+</span>    <span class="token keyword">var</span> out <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+    <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">var</span> i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">,</span> len <span class="token operator">=</span> text<span class="token punctuation">.</span>length<span class="token punctuation">;</span> i <span class="token operator">&amp;</span>lt<span class="token punctuation">;</span> len<span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>stopStems<span class="token punctuation">.</span><span class="token function">indexOf<span class="token punctuation">(</span></span>text<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">)</span> <span class="token operator">===</span> <span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            out<span class="token punctuation">.</span><span class="token function">push<span class="token punctuation">(</span></span>text<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token keyword">return</span> out<span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span class="token punctuation">;</span>
+</code></pre>
+
+<p>We define a simple <code class="code">Tokenize()</code> static method whose purpose is to parse a string into an array of tokens. Along the way, we lower-case all the tokens (to reduce entropy), we run the Porter Stemmer Algorithm to reduce the entropy of the corpus and also to improve matching (so that "walking" and "walk" match the same), and we also filter out stop-words (very common words) to further reduce entropy. I've written about all these concepts in-depth previously, so please excuse me if I'm glossing over this section. :)</p>
+
+<pre class=" language-javascript"><code class=" language-javascript">BM25<span class="token punctuation">.</span>prototype<span class="token punctuation">.</span>addDocument <span class="token operator">=</span> <span class="token keyword">function</span><span class="token punctuation">(</span>doc<span class="token punctuation">)</span> <span class="token punctuation">{</span>  
+    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token keyword">typeof</span> doc<span class="token punctuation">.</span>id <span class="token operator">===</span> <span class="token string">'undefined'</span><span class="token punctuation">)</span> <span class="token punctuation">{</span> <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">Error</span><span class="token punctuation">(</span><span class="token number">1000</span><span class="token punctuation">,</span> <span class="token string">'ID is a required property of documents.'</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token punctuation">}</span><span class="token punctuation">;</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token keyword">typeof</span> doc<span class="token punctuation">.</span>body <span class="token operator">===</span> <span class="token string">'undefined'</span><span class="token punctuation">)</span> <span class="token punctuation">{</span> <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">Error</span><span class="token punctuation">(</span><span class="token number">1001</span><span class="token punctuation">,</span> <span class="token string">'Body is a required property of documents.'</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token punctuation">}</span><span class="token punctuation">;</span>
+
+   <span class="token comment" spellcheck="true"> // Raw tokenized list of words
+</span>    <span class="token keyword">var</span> tokens <span class="token operator">=</span> BM25<span class="token punctuation">.</span><span class="token function">Tokenize<span class="token punctuation">(</span></span>doc<span class="token punctuation">.</span>body<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+   <span class="token comment" spellcheck="true"> // Will hold unique terms and their counts and frequencies
+</span>    <span class="token keyword">var</span> _terms <span class="token operator">=</span> <span class="token punctuation">{</span><span class="token punctuation">}</span><span class="token punctuation">;</span>
+
+   <span class="token comment" spellcheck="true"> // docObj will eventually be added to the documents database
+</span>    <span class="token keyword">var</span> docObj <span class="token operator">=</span> <span class="token punctuation">{</span>id<span class="token punctuation">:</span> doc<span class="token punctuation">.</span>id<span class="token punctuation">,</span> tokens<span class="token punctuation">:</span> tokens<span class="token punctuation">,</span> body<span class="token punctuation">:</span> doc<span class="token punctuation">.</span>body<span class="token punctuation">}</span><span class="token punctuation">;</span>
+
+   <span class="token comment" spellcheck="true"> // Count number of terms
+</span>    docObj<span class="token punctuation">.</span>termCount <span class="token operator">=</span> tokens<span class="token punctuation">.</span>length<span class="token punctuation">;</span>
+
+   <span class="token comment" spellcheck="true"> // Increment totalDocuments
+</span>    <span class="token keyword">this</span><span class="token punctuation">.</span>totalDocuments<span class="token operator">++</span><span class="token punctuation">;</span>
+
+   <span class="token comment" spellcheck="true"> // Readjust averageDocumentLength
+</span>    <span class="token keyword">this</span><span class="token punctuation">.</span>totalDocumentTermLength <span class="token operator">+</span><span class="token operator">=</span> docObj<span class="token punctuation">.</span>termCount<span class="token punctuation">;</span>
+    <span class="token keyword">this</span><span class="token punctuation">.</span>averageDocumentLength <span class="token operator">=</span> <span class="token keyword">this</span><span class="token punctuation">.</span>totalDocumentTermLength <span class="token operator">/</span> <span class="token keyword">this</span><span class="token punctuation">.</span>totalDocuments<span class="token punctuation">;</span>
+
+   <span class="token comment" spellcheck="true"> // Calculate term frequency
+</span>   <span class="token comment" spellcheck="true"> // First get terms count
+</span>    <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">var</span> i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">,</span> len <span class="token operator">=</span> tokens<span class="token punctuation">.</span>length<span class="token punctuation">;</span> i <span class="token operator">&amp;</span>lt<span class="token punctuation">;</span> len<span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">var</span> term <span class="token operator">=</span> tokens<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">;</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>_terms<span class="token punctuation">[</span>term<span class="token punctuation">]</span><span class="token punctuation">)</span> <span class="token punctuation">{</span> 
+            _terms<span class="token punctuation">[</span>term<span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token punctuation">{</span>
+                count<span class="token punctuation">:</span> <span class="token number">0</span><span class="token punctuation">,</span>
+                freq<span class="token punctuation">:</span> <span class="token number">0</span>
+            <span class="token punctuation">}</span><span class="token punctuation">;</span> 
+        <span class="token punctuation">}</span><span class="token punctuation">;</span>
+        _terms<span class="token punctuation">[</span>term<span class="token punctuation">]</span><span class="token punctuation">.</span>count<span class="token operator">++</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+   <span class="token comment" spellcheck="true"> // Then re-loop to calculate term frequency.
+</span>   <span class="token comment" spellcheck="true"> // We'll also update inverse document frequencies here.
+</span>    <span class="token keyword">var</span> keys <span class="token operator">=</span> Object<span class="token punctuation">.</span><span class="token function">keys<span class="token punctuation">(</span></span>_terms<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">var</span> i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">,</span> len <span class="token operator">=</span> keys<span class="token punctuation">.</span>length<span class="token punctuation">;</span> i <span class="token operator">&amp;</span>lt<span class="token punctuation">;</span> len<span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">var</span> term <span class="token operator">=</span> keys<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">;</span>
+       <span class="token comment" spellcheck="true"> // Term Frequency for this document.
+</span>        _terms<span class="token punctuation">[</span>term<span class="token punctuation">]</span><span class="token punctuation">.</span>freq <span class="token operator">=</span> _terms<span class="token punctuation">[</span>term<span class="token punctuation">]</span><span class="token punctuation">.</span>count <span class="token operator">/</span> docObj<span class="token punctuation">.</span>termCount<span class="token punctuation">;</span>
+
+       <span class="token comment" spellcheck="true"> // Inverse Document Frequency initialization
+</span>        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span><span class="token keyword">this</span><span class="token punctuation">.</span>terms<span class="token punctuation">[</span>term<span class="token punctuation">]</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token keyword">this</span><span class="token punctuation">.</span>terms<span class="token punctuation">[</span>term<span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token punctuation">{</span>
+                n<span class="token punctuation">:</span> <span class="token number">0</span><span class="token punctuation">,</span><span class="token comment" spellcheck="true"> // Number of docs this term appears in, uniquely
+</span>                idf<span class="token punctuation">:</span> <span class="token number">0</span>
+            <span class="token punctuation">}</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+
+        <span class="token keyword">this</span><span class="token punctuation">.</span>terms<span class="token punctuation">[</span>term<span class="token punctuation">]</span><span class="token punctuation">.</span>n<span class="token operator">++</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span><span class="token punctuation">;</span>
+
+   <span class="token comment" spellcheck="true"> // Calculate inverse document frequencies
+</span>   <span class="token comment" spellcheck="true"> // This is SLOWish so if you want to index a big batch of documents,
+</span>   <span class="token comment" spellcheck="true"> // comment this out and run it once at the end of your addDocuments run
+</span>   <span class="token comment" spellcheck="true"> // If you're only indexing a document or two at a time you can leave this in.
+</span>   <span class="token comment" spellcheck="true"> // this.updateIdf();
+</span>
+   <span class="token comment" spellcheck="true"> // Add docObj to docs db
+</span>    docObj<span class="token punctuation">.</span>terms <span class="token operator">=</span> _terms<span class="token punctuation">;</span>
+    <span class="token keyword">this</span><span class="token punctuation">.</span>documents<span class="token punctuation">[</span>docObj<span class="token punctuation">.</span>id<span class="token punctuation">]</span> <span class="token operator">=</span> docObj<span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span class="token punctuation">;</span>
+</code></pre>
+
+<p>This <code class="code">addDocument()</code> method is where most of the magic happens. We're essentially building and maintaining two similar data structures: <code class="code">this.documents</code>, and <code class="code">this.terms</code>.</p>
+
+<p><code class="code">this.documents</code> is our database of individual documents, but along with storing the full, original text of the document, we also store the document length and a list of all the tokens in the document along with their count and frequency. Using this data structure we can easily and quickly (with a super-fast, O(1) hash table lookup) answer the question "in document #3, how many times did the word 'walk' occur?"</p>
+
+<p>We also build a second data structure called <code class="code">this.terms</code>. This represents all terms in the entire corpus. Through this O(1) data structure we can quickly answer the questions "how many documents does 'walk' appear in? And what's its idf score?".</p>
+
+<p>Finally, we record the document length for each individual document, and also maintain an average document length for the whole corpus.</p>
+
+<p>Of course, you see above that idf is initialized to zero, and I've even commented out the <code class="code">updateIdf()</code> call above. That's because it's quite slow, and only needs to be run once at the end of the indexing operation. No need to run this 50,000 times when once will suffice. Leaving this commented out and running it only once at the end of a bulk index operation really speeds things up. Here's the method:</p>
+
+<pre class=" language-javascript"><code class=" language-javascript">BM25<span class="token punctuation">.</span>prototype<span class="token punctuation">.</span>updateIdf <span class="token operator">=</span> <span class="token keyword">function</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>  
+    <span class="token keyword">var</span> keys <span class="token operator">=</span> Object<span class="token punctuation">.</span><span class="token function">keys<span class="token punctuation">(</span></span><span class="token keyword">this</span><span class="token punctuation">.</span>terms<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">var</span> i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">,</span> len <span class="token operator">=</span> keys<span class="token punctuation">.</span>length<span class="token punctuation">;</span> i <span class="token operator">&amp;</span>lt<span class="token punctuation">;</span> len<span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">var</span> term <span class="token operator">=</span> keys<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">;</span>
+        <span class="token keyword">var</span> num <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span>totalDocuments <span class="token operator">-</span> <span class="token keyword">this</span><span class="token punctuation">.</span>terms<span class="token punctuation">[</span>term<span class="token punctuation">]</span><span class="token punctuation">.</span>n <span class="token operator">+</span> <span class="token number">0.5</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">var</span> denom <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span>terms<span class="token punctuation">[</span>term<span class="token punctuation">]</span><span class="token punctuation">.</span>n <span class="token operator">+</span> <span class="token number">0.5</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span>terms<span class="token punctuation">[</span>term<span class="token punctuation">]</span><span class="token punctuation">.</span>idf <span class="token operator">=</span> Math<span class="token punctuation">.</span><span class="token function">max<span class="token punctuation">(</span></span>Math<span class="token punctuation">.</span><span class="token function">log10<span class="token punctuation">(</span></span>num <span class="token operator">/</span> denom<span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token number">0.01</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span class="token punctuation">;</span>
+</code></pre>
+
+<p>It's a simple function, but since it loops over the entire corpus terms list, updating each one, it's a somewhat expensive operation. The implementation is the standard formula for inverse document frequency (which you can easily find <a href="http://en.wikipedia.org/wiki/Tf%E2%80%93idf" target="_blank">on Wikipedia</a>) -- it's the log ratio of total documents to the number of documents a term appears in. I've also modified it to always be above zero.</p>
+
+<pre class=" language-javascript"><code class=" language-javascript">BM25<span class="token punctuation">.</span>prototype<span class="token punctuation">.</span>search <span class="token operator">=</span> <span class="token keyword">function</span><span class="token punctuation">(</span>query<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+
+    <span class="token keyword">var</span> queryTerms <span class="token operator">=</span> BM25<span class="token punctuation">.</span><span class="token function">Tokenize<span class="token punctuation">(</span></span>query<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">var</span> results <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+
+   <span class="token comment" spellcheck="true"> // Look at each document in turn. There are better ways to do this with inverted indices.
+</span>    <span class="token keyword">var</span> keys <span class="token operator">=</span> Object<span class="token punctuation">.</span><span class="token function">keys<span class="token punctuation">(</span></span><span class="token keyword">this</span><span class="token punctuation">.</span>documents<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">var</span> j <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">,</span> nDocs <span class="token operator">=</span> keys<span class="token punctuation">.</span>length<span class="token punctuation">;</span> j <span class="token operator">&lt;</span> nDocs<span class="token punctuation">;</span> j<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">var</span> id <span class="token operator">=</span> keys<span class="token punctuation">[</span>j<span class="token punctuation">]</span><span class="token punctuation">;</span>
+       <span class="token comment" spellcheck="true"> // The relevance score for a document is the sum of a tf-idf-like
+</span>       <span class="token comment" spellcheck="true"> // calculation for each query term.
+</span>        <span class="token keyword">this</span><span class="token punctuation">.</span>documents<span class="token punctuation">[</span>id<span class="token punctuation">]</span><span class="token punctuation">.</span>_score <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
+
+       <span class="token comment" spellcheck="true"> // Calculate the score for each query term
+</span>        <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">var</span> i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">,</span> len <span class="token operator">=</span> queryTerms<span class="token punctuation">.</span>length<span class="token punctuation">;</span> i <span class="token operator">&lt;</span> len<span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token keyword">var</span> queryTerm <span class="token operator">=</span> queryTerms<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">;</span>
+
+           <span class="token comment" spellcheck="true"> // We've never seen this term before so IDF will be 0.
+</span>           <span class="token comment" spellcheck="true"> // Means we can skip the whole term, it adds nothing to the score
+</span>           <span class="token comment" spellcheck="true"> // and isn't in any document.
+</span>            <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token keyword">typeof</span> <span class="token keyword">this</span><span class="token punctuation">.</span>terms<span class="token punctuation">[</span>queryTerm<span class="token punctuation">]</span> <span class="token operator">===</span> <span class="token string">'undefined'</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                <span class="token keyword">continue</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+
+           <span class="token comment" spellcheck="true"> // This term isn't in the document, so the TF portion is 0 and this
+</span>           <span class="token comment" spellcheck="true"> // term contributes nothing to the search score.
+</span>            <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token keyword">typeof</span> <span class="token keyword">this</span><span class="token punctuation">.</span>documents<span class="token punctuation">[</span>id<span class="token punctuation">]</span><span class="token punctuation">.</span>terms<span class="token punctuation">[</span>queryTerm<span class="token punctuation">]</span> <span class="token operator">===</span> <span class="token string">'undefined'</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                <span class="token keyword">continue</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+
+           <span class="token comment" spellcheck="true"> // The term is in the document, let's go.
+</span>           <span class="token comment" spellcheck="true"> // The whole term is :
+</span>           <span class="token comment" spellcheck="true"> // IDF * (TF * (k1 + 1)) / (TF + k1 * (1 - b + b * docLength / avgDocLength))
+</span>
+           <span class="token comment" spellcheck="true"> // IDF is pre-calculated for the whole docset.
+</span>            <span class="token keyword">var</span> idf <span class="token operator">=</span> <span class="token keyword">this</span><span class="token punctuation">.</span>terms<span class="token punctuation">[</span>queryTerm<span class="token punctuation">]</span><span class="token punctuation">.</span>idf<span class="token punctuation">;</span>
+           <span class="token comment" spellcheck="true"> // Numerator of the TF portion.
+</span>            <span class="token keyword">var</span> num <span class="token operator">=</span> <span class="token keyword">this</span><span class="token punctuation">.</span>documents<span class="token punctuation">[</span>id<span class="token punctuation">]</span><span class="token punctuation">.</span>terms<span class="token punctuation">[</span>queryTerm<span class="token punctuation">]</span><span class="token punctuation">.</span>count <span class="token operator">*</span> <span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span>k1 <span class="token operator">+</span> <span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+           <span class="token comment" spellcheck="true"> // Denomerator of the TF portion.
+</span>            <span class="token keyword">var</span> denom <span class="token operator">=</span> <span class="token keyword">this</span><span class="token punctuation">.</span>documents<span class="token punctuation">[</span>id<span class="token punctuation">]</span><span class="token punctuation">.</span>terms<span class="token punctuation">[</span>queryTerm<span class="token punctuation">]</span><span class="token punctuation">.</span>count 
+                <span class="token operator">+</span> <span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span>k1 <span class="token operator">*</span> <span class="token punctuation">(</span><span class="token number">1</span> <span class="token operator">-</span> <span class="token keyword">this</span><span class="token punctuation">.</span>b <span class="token operator">+</span> <span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span>b <span class="token operator">*</span> <span class="token keyword">this</span><span class="token punctuation">.</span>documents<span class="token punctuation">[</span>id<span class="token punctuation">]</span><span class="token punctuation">.</span>termCount <span class="token operator">/</span> <span class="token keyword">this</span><span class="token punctuation">.</span>averageDocumentLength<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+           <span class="token comment" spellcheck="true"> // Add this query term to the score
+</span>            <span class="token keyword">this</span><span class="token punctuation">.</span>documents<span class="token punctuation">[</span>id<span class="token punctuation">]</span><span class="token punctuation">.</span>_score <span class="token operator">+</span><span class="token operator">=</span> idf <span class="token operator">*</span> num <span class="token operator">/</span> denom<span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+
+        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span><span class="token function">isNaN<span class="token punctuation">(</span></span><span class="token keyword">this</span><span class="token punctuation">.</span>documents<span class="token punctuation">[</span>id<span class="token punctuation">]</span><span class="token punctuation">.</span>_score<span class="token punctuation">)</span> <span class="token operator">&amp;&amp;</span> <span class="token keyword">this</span><span class="token punctuation">.</span>documents<span class="token punctuation">[</span>id<span class="token punctuation">]</span><span class="token punctuation">.</span>_score <span class="token operator">&gt;</span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            results<span class="token punctuation">.</span><span class="token function">push<span class="token punctuation">(</span></span><span class="token keyword">this</span><span class="token punctuation">.</span>documents<span class="token punctuation">[</span>id<span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+
+    results<span class="token punctuation">.</span><span class="token function">sort<span class="token punctuation">(</span></span><span class="token keyword">function</span><span class="token punctuation">(</span>a<span class="token punctuation">,</span> b<span class="token punctuation">)</span> <span class="token punctuation">{</span> <span class="token keyword">return</span> b<span class="token punctuation">.</span>_score <span class="token operator">-</span> a<span class="token punctuation">.</span>_score<span class="token punctuation">;</span> <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">return</span> results<span class="token punctuation">.</span><span class="token function">slice<span class="token punctuation">(</span></span><span class="token number">0</span><span class="token punctuation">,</span> <span class="token number">10</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span class="token punctuation">;</span>
+</code></pre>
+
+<p>Finally, the <code class="code">search()</code> method loops through all documents and assigns a BM25 relevance score to each, sorting the highest scores at the end. Of course, it's silly to loop through every document in the corpus when searching, but that's the subject of Part Two (inverted indices and performance).</p>
+
+<p>The code above is documented inline, but the gist is as follows: for each document and for each query term, calculate the BM25 score. The idf score for each query term is globally pre-calculated and just a simple look-up, the term frequency is document-specific but was also pre-calculated, and the rest of the work is simply multiplication and division! We add a temporary variable called <code class="code">_score</code> to each document, and then sort the results by the score (descending) and return the top 10.  </p>
+
+<h2>Demo, Source Code, Notes, and Next Steps</h2>  
+
+<p>There are lots of ways the above can be improved, and we'll explore those in Part Two of "Full-Text Search"! Stay tuned. I hope to publish it in a few weeks. Some things we'll accomplish next time are:  </p>
+
+<ul>  
+    <li>Inverted index for faster searches</li>
+    <li>Faster indexing</li>
+    <li>Even better search results</li>
+</ul>  
+
+<p>For this demo, I built a little Wikipedia crawler that grabs the first paragraph of a decent number (85,000) of Wikipedia articles. Since indexing all 85k documents takes about 90 seconds on my computer I've cut the corpus in half for this demo. Don't want you guys to waste your laptop battery juice on indexing Wikipedia articles for a simple full-text demo.</p>
+
+<p>Because the indexing is a CPU-heavy, blocking operation, I implemented it as a Web Worker. The indexing runs in a background thread -- you can find the <a href="http://burakkanber.com/~/mlinjs/bm25.js" target="_blank">full source code here</a>. You'll also find references to the stemmer algorithm and my stop-word list in the source code. The code license, as always, is free to use for educational purposes but not for any commercial purpose.</p>
+
+<p>Finally, here's the demo. Once the indexing is complete, try searching for random things and phrases that Wikipedia might know about. Note that there's only 40,000 paragraphs indexed here, so you might have to try a few topics before you find one that the system knows about.</p>
+
+<iframe src="https://www.burakkanber.com/~/mlinjs/bm25.html" border="0"></iframe>
+
+<!-- Begin MailChimp Signup Form -->  
+
+<p><link href="http://cdn-images.mailchimp.com/embedcode/classic-081711.css" rel="stylesheet" type="text/css">  </p>
+
+<div id="mc_embed_signup">  
+  
+</div>
+
+<!--End mc_embed_signup-->
+        </section>
+
+        
+
+        
+
+
+    

@@ -2,7 +2,7 @@
 title: "On the dangers of a blockchain monoculture • Tony Arcieri"
 description: "At first there was Bitcoin†: the world’s most successful cryptocurrency to-date. But lately there has been more and more talk about “the Bitcoin blockchain”, “the blockchain”, “blockchain”, or “blockchain technology”. Bloomberg reports that Nasdaq... | Tony Arcieri | Hi there. I work on the Platform Security Team at Square. These days I dabble in cryptography, but in the past made the Celluloid actor framework for Ruby and the Reia programming language"
 link: "https://tonyarcieri.com/on-the-dangers-of-a-blockchain-monoculture"
-saved: "2016-01-08 16:41:55"
+saved: "2016-01-18 12:46:57"
 ---
 
 	<time datetime="2016-01-05" class="article_time">January  5, 2016</time>
@@ -41,9 +41,8 @@ saved: "2016-01-08 16:41:55"
 <p>I would argue the etymology of “blockchain” can be traced to a sort of mutated, colloquial term for Satoshi’s original “proof-of-work chain” concept, and that as soon as you move beyond consensus-by-proof-of-work you are no longer using a “blockchain”. That is to say: I think systems which are not transaction ledgers and do not use Bitcoin’s consensus-by-lottery using a proof-of-work function approach are not “blockchains”. I’ll again call out <a href="https://www.certificate-transparency.org/log-proofs-work" rel="nofollow">Certificate Transparency</a> again as a system which has many of the same properties as the Bitcoin blockchain, but which I would not define as a “blockchain” and whose creators would probably not describe it as a “blockchain” either.</p>
 
 <p><sup>†<sub>Note to “that guy” on Hacker News: yes, there were cryptocurrencies before Bitcoin. I’m aware. You don’t need to educate me on them. But they don’t count, sorry.</sub></sup></p>
-
-<h1>The Bitcoin blockchain: the world’s worst database</h1>
-
+<h1>
+<a class="head_anchor" name="the-bitcoin-blockchain-the-world39s-worst-dat" href="https://tonyarcieri.com/on-the-dangers-of-a-blockchain-monoculture#the-bitcoin-blockchain-the-world39s-worst-dat" rel="nofollow">&nbsp;</a>The Bitcoin blockchain: the world’s worst database</h1>
 <p>Would you use a database with these features?</p>
 
 <ul>
@@ -63,21 +62,19 @@ saved: "2016-01-08 16:41:55"
 <p><a href="http://img.svbtle.com/elbzco3u2clz1w.png" rel="nofollow"><img src="https://d23f6h5jpj26xu.cloudfront.net/elbzco3u2clz1w_small.png" alt="ct_hash_2.png" class="no-resize"></a></p>
 
 <div><sup><sub>The “blockchain”-esque structure of Certificate Transparency’s Merkle log proofs, without any pesky proof-of-work function</sub></sup></div>
-
-<h1>Next-generation protocols</h1>
-
+<h1>
+<a class="head_anchor" name="nextgeneration-protocols" href="https://tonyarcieri.com/on-the-dangers-of-a-blockchain-monoculture#nextgeneration-protocols" rel="nofollow">&nbsp;</a>Next-generation protocols</h1>
 <p>Before Bitcoin, the state-of-the-art in decentralized reconciliation over the Internet generally involved SCPing around GPG encrypted batch settlement files and processing them with zSeries mainframes. This is slow moving, not easily auditable, and clearly leaves a lot of room for improvement.</p>
 
 <p>Bitcoin was a great demonstration of what is possible. But as the entire Bitcoin ecosystem approaches a gross payment volume size nearing that of single top 10 US retailer (and about 1/10,000th the transaction volume of VISA), the “publish all transactions to everybody” approach Bitcoin uses is starting to show its limits. Bitcoin’s scalability is ultimately limited by the number of transactions that can fit in a block and the rate at which blocks are published to the network, and the <a href="https://github.com/bitcoin-dot-org/bitcoin.org/pull/1178" rel="nofollow">fight over a switch to a larger block size has grown increasingly dramatic</a>. But even if Bitcoin adopts a larger block size, the fact it’s already hitting scalability limits despite its comparatively small transaction volume does not bode well for the “blockchain” approach, especially as “blockchain technology” is being touted as a potential solution for systems which operate at multiple orders of magnitude higher transaction volume than Bitcoin.</p>
 
-<p>The “central” problem (pun intended, sorry) is that despite claims of being “decentralized”, the blockchain represents a single ledger which is global to the entire Bitcoin ecosystem. <a href="http://www.metzdowd.com/pipermail/cryptography/2008-November/014815.html" rel="nofollow">It seems Satoshi’s back-of-the-napkin math doesn’t really work out</a>, and publishing all transactions to everyone is expensive in terms of bandwidth and storage. There are attempts within the Bitcoin ecosystem to address this deficiency, for example blocks could be made larger as proposed in <a href="https://bitcoinxt.software/" rel="nofollow">Bitcoin-XT</a>, or some transactions could be moved to “sidechains” as proposed in systems like the <a href="https://lightning.network/" rel="nofollow">Bitcoin Lightning Network</a>. But the Lightning Network is useful only for a ledger that is denominated in Bitcoin, and we still have to deal with the “central” Bitcoin blockchain, whose size is likely to continue to increase despite the addition of various “sidechain” mechanisms.</p>
+<p>The “central” problem (pun intended, sorry) is that despite claims of being “decentralized”, the blockchain represents a single ledger which is global to the entire Bitcoin ecosystem. <a href="http://www.metzdowd.com/pipermail/cryptography/2008-November/014815.html" rel="nofollow">It seems Satoshi’s back-of-the-napkin math doesn’t really work out</a>, and publishing all transactions to everyone is expensive in terms of bandwidth and storage. There are attempts within the Bitcoin ecosystem to address this deficiency, for example blocks could be made larger as proposed in <a href="https://bitcoinxt.software/" rel="nofollow">Bitcoin-XT</a>, or some transactions could be moved to “sidechains” as proposed in systems like the <a href="https://lightning.network/" rel="nofollow">Bitcoin Lightning Network</a>. But the Lightning Network is useful only for a ledger that is denominated in Bitcoin, and we still have to deal with the “central” Bitcoin blockchain, whose size is likely to continue to increase despite the addition of various “sidechain” mechanisms. (Edit: Several people have pointed out the Lightning Network allows for offline transactions and its not a “sidechain”, and also that the Lightning Network can support non-Bitcoin denominated transactions)</p>
 
 <p>For solving the general problem of over-the-Internet decentralized reconciliation though, we’ll need “blockchains” denominated in currencies other that Bitcoin too. But now we have a new problem: how do we exchange different currencies or other financial instruments between blockchains denominated in different currencies? While this problem may appear to have a straightforward answer, it becomes a bit more difficult when you take into account that moving money between ledgers actually involves integrating with those ugly legacy systems I was talking about earlier which can already move money denominated in “legacy” fiat currencies. Turning your Bitcoins into cold hard cash denominated in the currency of your choice is perhaps the cryptocurrency’s biggest problem beyond scalability (see Mt. Gox and the many thefts related to shady Bitcoin exchanges on <a href="https://www.reddit.com/r/SorryForYourLoss" rel="nofollow">/r/sorryforyourloss</a>).</p>
 
 <p>The solution to all of these problems requires taking a step back from Bitcoin and re-evaluating the actual problem we wish to solve. The “proof-of-work chain” approach used by Bitcoin is ultimately trying to solve a distributed consensus problem, where we have many parties who want to reconcile a transaction ledger over the Internet. Bitcoin uses digital signatures to ensure the integrity of each transaction, and via proof-of-work manually selects an authority to decide which transactions are included in a particular block. However, there are far more efficient distributed consensus algorithms than this which don’t involve a proof of work. So perhaps we should consider those.</p>
-
-<h2>Decentralized ledger protocols</h2>
-
+<h2>
+<a class="head_anchor" name="decentralized-ledger-protocols" href="https://tonyarcieri.com/on-the-dangers-of-a-blockchain-monoculture#decentralized-ledger-protocols" rel="nofollow">&nbsp;</a>Decentralized ledger protocols</h2>
 <p><a href="https://tonyarcieri.com/the-death-of-bitcoin" rel="nofollow">Next generation decentralized transaction ledgers</a> are a topic I’ve blogged about before, but as this is a quickly evolving field some of my “picks” have changed. I would like to call out the following projects as ones that are interesting to me today:</p>
 
 <ul>
@@ -90,17 +87,15 @@ global coordinating system or blockchain.”</em>
 </ul>
 
 <p><a href="https://tonyarcieri.com/the-death-of-bitcoin" rel="nofollow">In my previous blog post “The Death of Bitcoin”</a> I had also mentioned <a href="http://hyperledger.com/" rel="nofollow">Hyperledger</a>, <a href="http://tendermint.com/" rel="nofollow">Tendermint</a>, and several others. I’ll get to those in a bit.</p>
-
-<h2>Bitcoin-NG</h2>
-
+<h2>
+<a class="head_anchor" name="bitcoinng" href="https://tonyarcieri.com/on-the-dangers-of-a-blockchain-monoculture#bitcoinng" rel="nofollow">&nbsp;</a>Bitcoin-NG</h2>
 <p class="bleed_image"><a href="http://img.svbtle.com/g2iuwdqlch6smw.png" rel="nofollow"><img src="https://d23f6h5jpj26xu.cloudfront.net/g2iuwdqlch6smw_small.png" alt="bitcoin-ng.png" class="bleed"></a></p>
 
 <div><sup><sub>Image from <a href="https://twitter.com/Daeinar" rel="nofollow">Philipp Jovanovic</a>’s 32C3 talk <a href="https://zerobyte.io/files/talks/2015-12-27-collective-authorities-32c3.pdf" rel="nofollow">Collective Authorities: Securely Decentralising Trust at Scale</a></sub></sup></div>
 
 <p>My <a href="https://tonyarcieri.com/the-death-of-bitcoin" rel="nofollow">Death of Bitcoin blog post</a> also touched on the idea that the blockchain could be subject to incremental refinement in the same way the Watt steam engine massively improved on the previous Newcomen steam engine. A few months later we saw exactly that with <a href="http://hackingdistributed.com/2015/10/14/bitcoin-ng/" rel="nofollow">Bitcoin-NG</a> (<a href="http://arxiv.org/pdf/1510.02037v2.pdf" rel="nofollow">paper</a>), a protocol that inverts the ordering of Bitcoin consensus: a miner is first elected leader by winning the proof-of-work “lottery” by mining a “key block”, and then once elected leader becomes a transaction broker who can mint “micro-blocks” via digital signature until the next leader is elected. Decoupling leader election from the publishing of transactions allows the overall system to have a much higher throughput as the rate new transactions are published is no-longer coupled to the rate at which the proof-of-work problem is solved.</p>
-
-<h2>Cothority</h2>
-
+<h2>
+<a class="head_anchor" name="cothority" href="https://tonyarcieri.com/on-the-dangers-of-a-blockchain-monoculture#cothority" rel="nofollow">&nbsp;</a>Cothority</h2>
 <p class="bleed_image"><a href="http://img.svbtle.com/rp7rjjpfby9fiq.png" rel="nofollow"><img src="https://d23f6h5jpj26xu.cloudfront.net/rp7rjjpfby9fiq_small.png" alt="bitcosi.png" class="bleed"></a></p>
 
 <div><sup><sub>Image also from above referenced 32C3 Cothority talk</sub></sup></div>
@@ -114,9 +109,8 @@ global coordinating system or blockchain.”</em>
 <p>These two images are taken from Philipp Jovanovic’s 32C3 talk on Cothority, where they were juxtaposed as two potential solutions to the same problem. While I think Bitcoin-NG is a brilliant optimization on the original Bitcoin design (and one I’d strongly suggest Bitcoin adopt some variant thereof), Cothority provides many of the same properties without a proof of work function.</p>
 
 <p><sup>†<sub>The correct Blockchainiac response to a mention of Ripple Laps is to ignore the TLA+ descriptions of the Interledger protocol in the back of their paper and immediately write an essay on Hacker News about how Ripple is a scam and therefore by an ad hominem fallacy they can’t produce anything of merit. But surely Bitcoin isn’t a ponzi scheme, it’s the real deal!</sub></sup></p>
-
-<h1>Blockchain! Blockchain! Blockchain!</h1>
-
+<h1>
+<a class="head_anchor" name="blockchain-blockchain-blockchain" href="https://tonyarcieri.com/on-the-dangers-of-a-blockchain-monoculture#blockchain-blockchain-blockchain" rel="nofollow">&nbsp;</a>Blockchain! Blockchain! Blockchain!</h1>
 <p class="bleed_image"><a href="http://img.svbtle.com/jrvuzkkpboaxnq.png" rel="nofollow"><img src="https://d23f6h5jpj26xu.cloudfront.net/jrvuzkkpboaxnq_small.png" alt="Blockchainbert.png" class="bleed"></a></p>
 
 <p>Lately I’ve seen a lot of systems of the sort I previously wouldn’t have classified as “blockchains” (because they do not use a proof-of-work chain) who previously seemed to be distancing themselves from Bitcoin and the proof-of-work approach go <strong>FULL BLOCKCHAIN</strong>:</p>
@@ -134,9 +128,8 @@ global coordinating system or blockchain.”</em>
 <p>With this much ambiguity as to the actual definition coupled with hyperrepetition, “blockchain” is fast on its way to becoming the new “cloud”: one of those words whose actual meaning is nebulous and unspecific, but whatever it is it must be so important people can’t shut up about it!</p>
 
 <p>Now don’t get me wrong: I like Hyperledger and Tendermint, or at least, I thought I did. Per my personal rubric above though, neither of these systems are “blockchains” because they do not use a proof-of-work-based consensus protocol.</p>
-
-<h1>The great decentralized database in the sky</h1>
-
+<h1>
+<a class="head_anchor" name="the-great-decentralized-database-in-the-sky" href="https://tonyarcieri.com/on-the-dangers-of-a-blockchain-monoculture#the-great-decentralized-database-in-the-sky" rel="nofollow">&nbsp;</a>The great decentralized database in the sky</h1>
 <p>The great thing about a nebulous term is that it knows no limits. What can’t you put in the blockchain? Perhaps we could encode Wikipedia into the blockchain, or store the entire archive of Netflix videos in the blockchain. All of archive.org could go in the blockchain. We could move the entire World Wide Web into the blockchain so all web pages are permanent and live forever.</p>
 
 <p>The only real question is: what can’t you put in the blockchain?</p>
@@ -151,9 +144,8 @@ global coordinating system or blockchain.”</em>
 <p>So far the leading technology for the decentralized database seems to be BitTorrent, which dominates Internet traffic. But it doesn’t make for much of a database, only a blob store. Perhaps you’re now thinking: TorrentChain! Yeah, that’s been tried. But I don’t think the great database in the sky is going to be unlocked by cobbling together disparate parts into a Rube Goldberg apparatus.</p>
 
 <p>Believe me that I would like to see the craziest fantasies of what people hope to accomplish with decentralized systems realized. But the blockchain is probably not the technology that is going to do it.</p>
-
-<h1>Conclusion</h1>
-
+<h1>
+<a class="head_anchor" name="conclusion" href="https://tonyarcieri.com/on-the-dangers-of-a-blockchain-monoculture#conclusion" rel="nofollow">&nbsp;</a>Conclusion</h1>
 <p>I feel “blockchain technology” has not delivered a lot of practical value: compared to most payment systems the value Bitcoin moves and the transaction rate are both rather insignificant (and Bitcoin is all that matters: <a href="https://coinmarketcap.com/" rel="nofollow">all other blockchain-based systems move practically nothing by comparison</a>). Bitcoin is hitting scalability limits under a relatively modest payment volume.</p>
 
 <p>The only thing I think “blockchain technology” has actually delivered on is hype: a press release with “blockchain” in the title garners media attention (I direct you back to the opening paragraph of this post if you doubt that). Old financial institutions recruiting for “blockchain” positions are a lot more likely to find talented engineers than if they have job reqs to maintain decades-old legacy systems. I won’t dispute that “blockchain” is pretty much guaranteed to engender a lot more excitement in your average engineer than “ledger”, “reconciliation”, “settlement”, or “notarization”.</p>
@@ -187,16 +179,16 @@ global coordinating system or blockchain.”</em>
 <p>“Cyber” is starting to grow on me, so why not “blockchain” too? Who needs a metaverse; I’ll see you on the blockchain.</p>
 
   <figure class="postend kudo able clearfix" id="kudo_cwaM8zPVM8oQQfdBa5">
-    <a href="https://tonyarcieri.com/on-the-dangers-of-a-blockchain-monoculture?utm_source=SitePoint&amp;utm_medium=email&amp;utm_campaign=Versioning#kudo">
+    <a href="https://tonyarcieri.com/on-the-dangers-of-a-blockchain-monoculture#kudo">
       <div class="filling">&nbsp;</div>
     </a>
-    <div class="num">343</div>
+    <div class="num">461</div>
     <div class="txt">Kudos</div>
   </figure>
   <figure class="side kudo able clearfix" id="kudo_side_cwaM8zPVM8oQQfdBa5">
-    <a href="https://tonyarcieri.com/on-the-dangers-of-a-blockchain-monoculture?utm_source=SitePoint&amp;utm_medium=email&amp;utm_campaign=Versioning#kudo">
+    <a href="https://tonyarcieri.com/on-the-dangers-of-a-blockchain-monoculture#kudo">
       <div class="filling">&nbsp;</div>
     </a>
-    <div class="num">343</div>
+    <div class="num">461</div>
     <div class="txt">Kudos</div>
   </figure>
