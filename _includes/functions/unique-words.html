@@ -1,4 +1,4 @@
-{% assign words = page.content | strip_html | strip_newlines | downcase | slugify | split:'-' %}
+{% assign words = page.content | append: ' ' | append: page.title | append: ' ' | append: page.description | strip_html | strip_newlines | downcase | slugify | split:'-' %}
 {{ words | join: ' ' }}{% comment %}
 {% assign total = ' ' %}
 {% for word in words %}

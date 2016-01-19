@@ -1,0 +1,41 @@
+---
+title: Search
+layout: default
+---
+<input type="search" id="search" placeholder="Search">
+<div class="results"></div>
+
+<script src="{{ site.baseurl }}/public/js/lib/github.js"></script>
+<script src="{{ site.baseurl }}/public/js/repo.js"></script>
+<script>
+  var params = location.search.substr(1).split('&').reduce(function(p, e) {
+    e = e.split('=');
+    p[decodeURIComponent(e[0])] = decodeURIComponent(e[1]);
+    return p;
+  }, {});
+
+  var search = document.getElementById('search');
+  search.focus();
+  search.addEventListener('keypress', function(e) {
+    if (e.keyCode == 13) {
+      doSearch();
+    }
+  }, true);
+
+  if (params.q) {
+    search.value = params.q;
+    doSearch();
+  }
+
+
+  function doSearch() {
+    var searchText = search.value;
+    MyLinks.search(searchText, function(err, posts) {
+      document.querySelector('.results').innerHTML = posts.map(function(post) {
+        return '<a class="link" href="' + post.url + '">' +
+            '<h3 class="link-title">' + post.title + '</h3>' +
+          '</a>';
+      }).join('');
+    });
+  }
+</script>

@@ -132,6 +132,41 @@ var MyLinks = (function() {
   }
 
 
+  var indexedPosts;
+  function loadIndexedPosts(cb) {
+    if (indexedPosts)
+      return setTimeout(function() { cb(null, indexedPosts); });
+
+    var xhr = new XMLHttpRequest();
+    xhr.open('GET', '/min-gh-jekyll/indexed-posts.json', true);
+    xhr.onreadystatechange = function() {
+      if (xhr.readyState == 4) {
+        if (xhr.status == 200) {
+          indexedPosts = JSON.parse(xhr.responseText);
+          cb(null, indexedPosts);
+        } else
+          cb(xhr.status);
+      } 
+    };
+    xhr.send();
+  }
+
+  function search(text, cb) {
+    loadIndexedPosts(function(err, posts) {
+      if (err)
+        return cb(err);
+
+      var words = text.toLowerCase().split(/\W+/);
+      var result = posts.filter(function(post) {
+        return words.every(function(word) {
+          return post.words.indexOf(word) != -1;
+        });
+      });
+      cb(null, result);
+    });
+  }
+
+
 
 
   return {
@@ -139,6 +174,7 @@ var MyLinks = (function() {
     remove   : remove,
     move     : move,
     logOut   : logOut,
-    logIn    : logIn
+    logIn    : logIn,
+    search   : search
   }
 })();
