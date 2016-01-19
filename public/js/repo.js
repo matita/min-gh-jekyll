@@ -159,7 +159,8 @@ var MyLinks = (function() {
       var words = text.toLowerCase().split(/\W+/);
       var result = posts.filter(function(post) {
         return words.every(function(word) {
-          return post.words.indexOf(word) != -1;
+          var re = new RegExp('\\b' + word + '\\b');
+          return re.test(post.words);
         });
       });
       cb(null, result);

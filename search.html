@@ -30,6 +30,10 @@ layout: default
 
   function doSearch() {
     var searchText = search.value;
+    
+    if (history.replaceState)
+      history.replaceState({}, 'Search ' + searchText, '?q=' + encodeURIComponent(searchText));
+
     MyLinks.search(searchText, function(err, posts) {
       document.querySelector('.results').innerHTML = posts.map(function(post) {
         return '<a class="link" href="' + post.url + '">' +
