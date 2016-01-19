@@ -113,7 +113,10 @@ function analyze(doc, href) {
     if (parent)
       return parent;
 
-    parent = doc.querySelector('article');
+    var parents = doc.querySelectorAll('article');
+    parents = Array.prototype.slice.call(parents);
+    parents = parents.sort(function(a, b) { return b.innerText.length - a.innerText.length; });
+    parent = parents[0];
     if (parent)
       return parent;
 
