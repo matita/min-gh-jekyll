@@ -1,0 +1,14 @@
+---
+layout: none
+---
+[
+{% for page in site.posts %}
+  {% capture words %}{% include functions/unique-words.html %}{% endcapture %}
+  {
+    "url" : "{{ site.baseurl }}{{ page.url }}",
+    "title": "{{ page.title }}",
+    "category": "{{ page.category }}",
+    "words": "{{ words }}"
+  }{% unless forloop.last %},{% endunless %}
+{% endfor %}
+]
