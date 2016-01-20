@@ -1,0 +1,494 @@
+---
+title: "Everything I know about responsive web typography with CSS — Zell Liew"
+description: "null"
+link: "http://www.zell-weekeat.com/responsive-typography/"
+saved: "2016-01-20 22:20:53"
+---
+<div class="entry-content" itemprop="text"><p>Responsive typography is a tough nut to crack. This was the best method I could come up with when I first started creating responsive websites:</p>
+<pre><code class="css"><span class="tag">p</span> <span class="rules">{
+  <span class="rule"><span class="attribute">font-size</span>:<span class="value"> <span class="number">16</span>px</span></span>;
+<span class="rule">}</span></span>
+
+<span class="at_rule">@<span class="keyword">media</span> (min-width: <span class="number">800</span>px) </span>{
+  <span class="tag">p</span> <span class="rules">{
+    <span class="rule"><span class="attribute">font-size</span>:<span class="value"> <span class="number">18</span>px</span></span>;
+  <span class="rule">}</span></span>
+}
+
+<span class="comment">/* Repeat for h1 - h6 and other type groups */</span>
+</code></pre>
+<p>I’ve learned a lot more about typography since then and picked up best practices like using relative units, vertical rhythms and meaningful typography scales.</p>
+<p>These new practices were wonderful. They made my websites look more pleasing to the eye. Implementing them, however, was a horrible experience.</p>
+<p>I had to write complex code and I found myself struggling to create responsive websites under tremendous time pressure.</p>
+<p>Now, after months of hacking, I’ve finally created a solution that I’m happy to share with you. It’s called Typi.</p>
+<p>Typi is great because it allows me to use the practices I’ve learned, and at the same time solves most of the problems I’ve encountered in 3 simple steps. Let me explain these three steps by walking you through the practices I use when working with responsive typography.</p>
+<p><span id="more-928"></span></p>
+<h2 id="Practice-1:-Increase-font-size-and-line-height-of-your-body-copy-as-screen-sizes-increase.">Practice 1: Increase font-size and line-height of your body copy as screen sizes increase.</h2>
+<p>Reading on the mobile vs the desktop are two completely different experiences. You undoubtedly hold your device closer to you when you read on the mobile since the screen is smaller.</p>
+<p>Your desktop screen will be further away from you compared to the mobile. Hence, the same font-size on the desktop looks slightly smaller due to the further distance.</p>
+<p>To increase readability and compensate for the loss in size due to distance, we increase the font size.</p>
+<p>I first got to know of this practice through the <a href="https://ia.net/know-how/responsive-typography-the-basics">responsive typography basics</a> post on <a href="http://ia.net/">ia.net</a>. I highly suggest checking the post out if you’re unfamiliar with what I’m talking about.</p>
+<p>An implementation of this practice in Sass can be this:</p>
+<pre><code class="scss"><span class="tag">html</span> {
+  <span class="attribute">font-size</span><span class="value">: <span class="number">16</span>px;</span>
+
+  <span class="at_rule">@<span class="keyword">media</span> (min-width:<span class="preprocessor"> 800px</span>) {</span>
+    <span class="attribute">font-size</span><span class="value">: <span class="number">18</span>px;</span>
+  }
+
+  <span class="at_rule">@<span class="keyword">media</span> (min-width:<span class="preprocessor"> 1200px</span>) {</span>
+    <span class="attribute">font-size</span><span class="value">: <span class="number">20</span>px;</span>
+  }
+}
+</code></pre>
+<p>Note: as we increase font sizes, we might also need to increase the line height to allow more breathing room between lines of text. With Sass, this can look like:</p>
+<pre><code class="scss"><span class="tag">html</span> {
+  <span class="attribute">font-size</span><span class="value">: <span class="number">16</span>px;</span>
+  <span class="attribute">line-height</span><span class="value">: <span class="number">1.3</span>;</span>
+
+  <span class="at_rule">@<span class="keyword">media</span> (min-width:<span class="preprocessor"> 800px</span>) {</span>
+    <span class="attribute">font-size</span><span class="value">: <span class="number">18</span>px;</span>
+  }
+
+  <span class="at_rule">@<span class="keyword">media</span> (min-width:<span class="preprocessor"> 1200px</span>) {</span>
+    <span class="attribute">font-size</span><span class="value">: <span class="number">20</span>px;</span>
+    <span class="attribute">line-height</span><span class="value">: <span class="number">1.4</span>;</span>
+  }
+}
+</code></pre>
+<h2 id="Practice-2:-Use-a-modular-scale-for-your-typography">Practice 2: Use a modular scale for your typography</h2>
+<p>It’s difficult to pick the font-size of your typographic elements (<code>&lt;h1&gt;</code> to <code>&lt;h6&gt;</code>), especially if you’re trying to pull them out of thin air. A modular scale, also called typography scale, is a tool you can use to help you pick good typography sizes that flow well with the rest of your page.</p>
+<p>It is a sequence of numbers related to each other through a ratio (a number). It can be created by multiplying (or dividing) the font-size of your body copy with the ratio. The resultant number is then multiplied (or divided) again with the ratio.</p>
+<img src="http://www.zell-weekeat.com/wp-content/uploads/2016/01/modular-scale.png?cb2692" alt="">
+<p>An implementation of modular scale at work with the above scale can be this:</p>
+<pre><code class="scss"><span class="tag">html</span> { <span class="attribute">font-size</span><span class="value">: <span class="number">16</span>px }
+h1 { font-size: <span class="number">50</span>px }
+h2 { font-size: <span class="number">37</span>px }
+h3 { font-size: <span class="number">28</span>px }
+// ...
+</span></code></pre>
+<p>Of course, it’s not going to be so simple. If you remember the first practice we discussed earlier in this article, you’ll notice that the body font-size should change as your screen width changes.</p>
+<p>This becomes a problem when you have to change the typography sizes of <em>all your elements</em> at <em>every breakpoint</em> to ensure the scale stays consistent.</p>
+<pre><code class="scss"><span class="tag">html</span> {
+  <span class="attribute">font-size</span><span class="value">: <span class="number">16</span>px;</span>
+  <span class="attribute">line-height</span><span class="value">: <span class="number">1.3</span>;</span>
+  <span class="at_rule">@<span class="keyword">media</span> (min-width:<span class="preprocessor"> 800px</span>) {</span>
+    <span class="attribute">font-size</span><span class="value">: <span class="number">18</span>px;</span>
+  }
+
+  <span class="at_rule">@<span class="keyword">media</span> (min-width:<span class="preprocessor"> 1200px</span>) {</span>
+    <span class="attribute">font-size</span><span class="value">: <span class="number">20</span>px;</span>
+    <span class="attribute">line-height</span><span class="value">: <span class="number">1.4</span>;</span>
+  }
+}
+
+<span class="tag">h1</span> {
+  <span class="attribute">font-size</span><span class="value">: <span class="number">50</span>px;</span>
+  <span class="at_rule">@<span class="keyword">media</span> (min-width:<span class="preprocessor"> 800px</span>) {</span>
+    <span class="attribute">font-size</span><span class="value">: <span class="number">56</span>px;</span>
+  }
+  <span class="at_rule">@<span class="keyword">media</span> (min-width:<span class="preprocessor"> 1200px</span>) {</span>
+    <span class="attribute">font-size</span><span class="value">: <span class="number">63</span>px;</span>
+  }
+}
+
+<span class="tag">h2</span> {
+  <span class="attribute">font-size</span><span class="value">: <span class="number">37</span>px;</span>
+  <span class="at_rule">@<span class="keyword">media</span> (min-width:<span class="preprocessor"> 800px</span>) {</span>
+    <span class="attribute">font-size</span><span class="value">: <span class="number">42</span>px;</span>
+  }
+  <span class="at_rule">@<span class="keyword">media</span> (min-width:<span class="preprocessor"> 1200px</span>) {</span>
+    <span class="attribute">font-size</span><span class="value">: <span class="number">47</span>px;</span>
+  }
+}
+
+<span class="tag">h2</span> {
+  <span class="attribute">font-size</span><span class="value">: <span class="number">28</span>px;</span>
+  <span class="at_rule">@<span class="keyword">media</span> (min-width:<span class="preprocessor"> 800px</span>) {</span>
+    <span class="attribute">font-size</span><span class="value">: <span class="number">32</span>px;</span>
+  }
+  <span class="at_rule">@<span class="keyword">media</span> (min-width:<span class="preprocessor"> 1200px</span>) {</span>
+    <span class="attribute">font-size</span><span class="value">: <span class="number">35</span>px;</span>
+  }
+}
+<span class="comment">// ...</span>
+</code></pre>
+<p>Ugh.</p>
+<p>The solution? Check out the next practice.</p>
+<p>Note: If you need help with choosing your starting font-size and ratio for your modular scale, I suggest reading this <a href="http://alistapart.com/article/more-meaningful-typography">article on meaningful typography</a> by Tim Brown.</p>
+<h2 id="Practice-3:-Use-relative-typography-units">Practice 3: Use relative typography units</h2>
+<p>Relative units in CSS are percentages (<code>%</code>), viewport units (<code>vh</code>, <code>vw</code>, <code>vmin</code>, <code>vmax</code>) , the em unit (<code>em</code>) and the rem unit (<code>rem</code>). The ones commonly used to size typography are <strong>em</strong> and <strong>rem</strong>.</p>
+<p>You can use both <strong>em</strong> and <strong>rem</strong> in the same manner to solve the problem we encountered in practice 2. To convert pixels into em, we take the target <code>font-size</code> and divide it against the base-font size.</p>
+<p>Here’s how it would look:</p>
+<pre><code class="scss"><span class="tag">html</span> {
+  <span class="attribute">font-size</span><span class="value">: <span class="number">16</span>px;</span>
+  <span class="at_rule">@<span class="keyword">media</span> (min-width:<span class="preprocessor"> 800px</span>) {</span>
+    <span class="attribute">font-size</span><span class="value">: <span class="number">18</span>px;</span>
+  }
+  <span class="at_rule">@<span class="keyword">media</span> (min-width:<span class="preprocessor"> 1200px</span>) {</span>
+    <span class="attribute">font-size</span><span class="value">: <span class="number">20</span>px;</span>
+  }
+}
+
+<span class="tag">h1</span> { <span class="attribute">font-size</span><span class="value">: <span class="number">3.125</span>em;</span> } <span class="comment">// 50 ÷ 16 = 3.125</span>
+<span class="tag">h2</span> { <span class="attribute">font-size</span><span class="value">: <span class="number">2.3125</span>em;</span>} <span class="comment">// 37 ÷ 16 = 2.3125</span>
+<span class="tag">h3</span> { <span class="attribute">font-size</span><span class="value">: <span class="number">1.75</span>em;</span> } <span class="comment">// 28 ÷ 16 = 1.75</span>
+<span class="comment">// ...</span>
+
+<span class="comment">// Note: These are approximate values.</span>
+<span class="comment">// The actual values derived from modularscale.com are 3.129em, 2.3353em and 1.769em respectively.</span>
+</code></pre>
+<p>Much better now!</p>
+<div><iframe id="cp_embed_OMmEqg" src="http://codepen.io/zellwk/embed/OMmEqg?height=266&amp;theme-id=7929&amp;slug-hash=OMmEqg&amp;default-tab=result&amp;user=zellwk" scrolling="no" frameborder="0" height="266" allowtransparency="true" allowfullscreen="true" name="CodePen Embed" title="CodePen Embed" class="cp_embed_iframe undefined"></iframe></div>
+
+<p>There are a few more problems. Notice how <code>&lt;h1&gt;</code> becomes approximately <code>63px</code> as the screen width increases to <code>1200px</code>.</p>
+<p><code>63px</code> is pretty large. Reading the <code>&lt;h1&gt;</code> text starts to get uncomfortable already. A better decision might be to tone it down to 47px instead (size of <code>&lt;h2&gt;</code>).</p>
+<p>When this happens, you might want to decrease the size of the <code>&lt;h2&gt;</code> element since it’s a good practice to emphasize the <code>&lt;h1&gt;</code> element. Sometimes, you might also need to change the <code>line-height</code> as well.</p>
+<p>The code then becomes…</p>
+<pre><code class="scss"><span class="tag">html</span> {
+  <span class="attribute">font-size</span><span class="value">: <span class="number">16</span>px;</span>
+  <span class="at_rule">@<span class="keyword">media</span> (min-width:<span class="preprocessor"> 800px</span>) {</span>
+    <span class="attribute">font-size</span><span class="value">: <span class="number">18</span>px;</span>
+  }
+  <span class="at_rule">@<span class="keyword">media</span> (min-width:<span class="preprocessor"> 1200px</span>) {</span>
+    <span class="attribute">font-size</span><span class="value">: <span class="number">20</span>px;</span>
+  }
+}
+
+<span class="tag">h1</span> {
+  <span class="attribute">font-size</span><span class="value">: <span class="number">3.129</span>em;</span>
+  <span class="attribute">line-height</span><span class="value">: <span class="number">1.2</span>;</span>
+
+  <span class="at_rule">@<span class="keyword">media</span> (min-width:<span class="preprocessor"> 1200px</span>) {</span>
+    <span class="attribute">font-size</span><span class="value">: <span class="number">2.3353</span>em;</span>   
+    <span class="attribute">line-height</span><span class="value">: <span class="number">1.3</span>;</span>
+  }
+}
+
+<span class="tag">h2</span> {
+  <span class="attribute">font-size</span><span class="value">: <span class="number">2.3353</span>em;</span>
+  <span class="at_rule">@<span class="keyword">media</span> (min-width:<span class="preprocessor"> 1200px</span>) {</span>
+    <span class="attribute">font-size</span><span class="value">: <span class="number">1.769</span>em;</span>   
+  }
+}
+
+<span class="tag">h3</span> {
+  <span class="attribute">font-size</span><span class="value">: <span class="number">1.769</span>em;</span>
+  <span class="at_rule">@<span class="keyword">media</span> (min-width:<span class="preprocessor"> 1200px</span>) {</span>
+    <span class="attribute">font-size</span><span class="value">: <span class="number">1.33</span>em;</span>
+  }
+}
+
+<span class="comment">// ...</span>
+</code></pre>
+<p>Ugh. Back to square one <img src="http://www.zell-weekeat.com/wp-includes/images/smilies/frownie.png?cb2692" alt=":(" class="wp-smiley"></p>
+<p>This is where <a href="https://github.com/zellwk/typi">Typi</a> comes in. Let’s take a break from the practices and see how Typi can help you.</p>
+<h2 id="Using-Typi">Using Typi</h2>
+<p>Typi is a Sass library that allows you to set up <code>font-size</code> and <code>line-height</code> properties of all your typographic elements in separate Sass maps. These maps can then be used to output code we see in the above situation. Here’s how it works.</p>
+<p>First, you need to setup a <code>$typi</code> map. It looks like this:</p>
+<pre><code class="scss">$typi<span class="value">: (
+  null: <span class="number">16</span>px,
+  small: <span class="number">18</span>px,
+  large: <span class="number">20</span>px
+);</span>
+</code></pre>
+<p><code>null</code>, <code>small</code> and <code>large</code> are breakpoints.</p>
+<p>Typi automatically looks for a <code>$breakpoints</code> map to create your media queries (which means it can integrate perfectly with <a href="https://github.com/zellwk/mappy-breakpoints">mappy-breakpoints</a>, a library I created to help with media queries).</p>
+<pre><code class="scss">$breakpoints<span class="value">: (
+  small: <span class="number">800</span>px,
+  large: <span class="number">1200</span>px
+);</span>
+</code></pre>
+<p>Once the <code>$typi</code> map is set up, we call the <code>typi-base()</code> mixin within the <code>html</code> selector.</p>
+<pre><code class="scss"><span class="tag">html</span> {
+  <span class="at_rule">@<span class="keyword">include</span><span class="preprocessor"> typi-base</span>();</span>  
+}
+</code></pre>
+<p>This <code>typi-base()</code> mixin creates the same styles we wrote for the <code>&lt;html&gt;</code> tag in Practice 2. The only difference is that the font-sizes are stated in percentages.</p>
+<pre><code class="css"><span class="tag">html</span> <span class="rules">{
+  <span class="rule"><span class="attribute">font-size</span>:<span class="value"> <span class="number">100</span>%</span></span>; <span class="comment">/* This means 16px */</span>
+<span class="rule">}</span></span>
+
+<span class="at_rule">@<span class="keyword">media</span> all and (min-width: <span class="number">800</span>px) </span>{
+  <span class="tag">html</span> <span class="rules">{
+    <span class="rule"><span class="attribute">font-size</span>:<span class="value"> <span class="number">112.5</span>%</span></span>; <span class="comment">/* This means 18px */</span>
+  <span class="rule">}</span></span>
+}
+
+<span class="at_rule">@<span class="keyword">media</span> all and (min-width: <span class="number">1200</span>px) </span>{
+  <span class="tag">html</span> <span class="rules">{
+    <span class="rule"><span class="attribute">font-size</span>:<span class="value"> <span class="number">125</span>%</span></span>; <span class="comment">/* This means 20px */</span>
+  <span class="rule">}</span></span>
+}
+</code></pre>
+<p>We also mentioned that there might be a need to change <code>line-height</code> values as the <code>font-size</code> changes. You can change <code>line-height</code> values easily in Typi by providing a second <code>line-height</code> value to each breakpoint that requires it:</p>
+<pre><code class="scss">$typi<span class="value">: (
+  null: (<span class="number">16</span>px, <span class="number">1.3</span>), // Sets line-height to <span class="number">1.3</span>
+  small: <span class="number">18</span>px,
+  large: (<span class="number">20</span>px, <span class="number">1.4</span>) // Sets line-height to <span class="number">1.4</span>
+);</span>
+</code></pre>
+<p>The resultant CSS from our updated <code>$typi</code> map is:</p>
+<pre><code class="css"><span class="tag">html</span> <span class="rules">{
+  <span class="rule"><span class="attribute">font-size</span>:<span class="value"> <span class="number">100</span>%</span></span>; <span class="comment">/* This means 16px */</span>
+  <span class="rule"><span class="attribute">line-height</span>:<span class="value"> <span class="number">1.3</span></span></span>;
+<span class="rule">}</span></span>
+
+<span class="at_rule">@<span class="keyword">media</span> all and (min-width: <span class="number">800</span>px) </span>{
+  <span class="tag">html</span> <span class="rules">{
+    <span class="rule"><span class="attribute">font-size</span>:<span class="value"> <span class="number">112.5</span>%</span></span>; <span class="comment">/* This means 18px */</span>
+  <span class="rule">}</span></span>
+}
+
+<span class="at_rule">@<span class="keyword">media</span> all and (min-width: <span class="number">1200</span>px) </span>{
+  <span class="tag">html</span> <span class="rules">{
+    <span class="rule"><span class="attribute">font-size</span>:<span class="value"> <span class="number">125</span>%</span></span>; <span class="comment">/* This means 20px */</span>
+    <span class="rule"><span class="attribute">line-height</span>:<span class="value"> <span class="number">1.4</span></span></span>;
+  <span class="rule">}</span></span>
+}
+</code></pre>
+<p>After creating the <code>$typi</code> map, we can create other font-maps using the same format. Here’s an example:</p>
+<pre><code class="scss">$<span class="tag">h1</span>-<span class="tag">map</span><span class="value">: (
+  null: (<span class="number">3.129</span>em, <span class="number">1.2</span>),
+  large: (<span class="number">2.3353</span>em, <span class="number">1.3</span>)
+  );</span>
+
+$<span class="tag">h2</span>-<span class="tag">map</span><span class="value">: (
+  null: <span class="number">2.3353</span>em,
+  large: <span class="number">1.769</span>em
+  );</span>
+
+$<span class="tag">h3</span>-<span class="tag">map</span><span class="value">: (
+  null: <span class="number">1.769</span>em,
+  large: <span class="number">1.333</span>em
+  );</span>
+<span class="comment">// ...</span>
+</code></pre>
+<p>Then, we call each of these font-maps using the <code>typi</code> mixin:</p>
+<pre><code class="scss"><span class="tag">h1</span> { <span class="at_rule">@<span class="keyword">include</span><span class="preprocessor"> typi</span>($h1-map) }<span class="preprocessor">
+h2</span> {</span> <span class="at_rule">@<span class="keyword">include</span><span class="preprocessor"> typi</span>($h2-map) }<span class="preprocessor">
+h3</span> {</span> <span class="at_rule">@<span class="keyword">include</span><span class="preprocessor"> typi</span>($h3-map) }
+//<span class="preprocessor"> ...</span>
+</span></code></pre>
+<p>The resultant CSS would be:</p>
+<pre><code class="css"><span class="tag">h1</span> <span class="rules">{
+  <span class="rule"><span class="attribute">font-size</span>:<span class="value"> <span class="number">3.129</span>em</span></span>;
+  <span class="rule"><span class="attribute">line-height</span>:<span class="value"> <span class="number">1.2</span></span></span>;
+<span class="rule">}</span></span>
+
+<span class="at_rule">@<span class="keyword">media</span> (min-width: <span class="number">1200</span>px) </span>{
+  <span class="tag">h1</span> <span class="rules">{
+    <span class="rule"><span class="attribute">font-size</span>:<span class="value"> <span class="number">2.3353</span>em</span></span>;
+    <span class="rule"><span class="attribute">line-height</span>:<span class="value"> <span class="number">1.3</span></span></span>;
+  <span class="rule">}</span></span>
+}
+
+<span class="tag">h2</span> <span class="rules">{
+  <span class="rule"><span class="attribute">font-size</span>:<span class="value"> <span class="number">2.3353</span>em</span></span>;
+<span class="rule">}</span></span>
+
+<span class="at_rule">@<span class="keyword">media</span> (min-width: <span class="number">1200</span>px) </span>{
+  <span class="tag">h2</span> <span class="rules">{
+    <span class="rule"><span class="attribute">font-size</span>:<span class="value"> <span class="number">1.769</span>em</span></span>;
+  <span class="rule">}</span></span>
+}
+
+<span class="tag">h3</span> <span class="rules">{
+  <span class="rule"><span class="attribute">font-size</span>:<span class="value"> <span class="number">1.769</span>em</span></span>;
+<span class="rule">}</span></span>
+
+<span class="at_rule">@<span class="keyword">media</span> (min-width: <span class="number">1200</span>px) </span>{
+  <span class="tag">h3</span> <span class="rules">{
+    <span class="rule"><span class="attribute">font-size</span>:<span class="value"> <span class="number">1.333</span>em</span></span>;
+  <span class="rule">}</span></span>
+}
+</code></pre>
+<p>Pretty neat huh? You’ll have to <a href="https://github.com/zellwk/typi">download Typi</a> to play with it. (It’s not available on Sassmeister or Codepen yet)</p>
+<p><strong>PROTIP</strong>: You can use the modular scale Sass mixin if you don’t want to write exact em values (like <code>1.769em</code>) across different font maps.</p>
+<p>To do so, you have to <a href="https://github.com/modularscale/modularscale-sass">download the library</a> and import it into your Sass file. Then, change the font maps such that it uses the <code>ms()</code> function.</p>
+<pre><code class="scss">$<span class="tag">h1</span>-<span class="tag">map</span><span class="value">: (
+  null: (ms(<span class="number">4</span>) <span class="number">1.2</span>),
+  large: (ms(<span class="number">3</span>), <span class="number">1.3</span>)
+  );</span>
+
+$<span class="tag">h2</span>-<span class="tag">map</span><span class="value">: (
+  null: ms(<span class="number">3</span>),
+  large: ms(<span class="number">2</span>)
+  );</span>
+
+$<span class="tag">h3</span>-<span class="tag">map</span><span class="value">: (
+  null: ms(<span class="number">2</span>),
+  large: ms(<span class="number">1</span>)
+  );</span>
+<span class="comment">// ...</span>
+</code></pre>
+<p>So, in a nutshell, <strong><a href="https://github.com/zellwk/typi">Typi</a></strong> makes responsive typography easier by helping you <strong>write <code>font-size</code> and <code>line-height</code> properties at different breakpoints`</strong>.</p>
+<p>Now that I’m done introducing you to Typi, let’s move on and talk about the final two practices (and some problems that I have yet to find a solution for).</p>
+<h2 id="Practice-4:-Apply-vertical-rhythms">Practice 4: Apply vertical rhythms</h2>
+<p>Vertical Rhythms is a concept from print design (I think), where we keep vertical spaces between elements on a page consistent (and relative) to each other. The idea is similar to using a typography scale – to allow elements on your page to flow well.</p>
+<p>In practice, we often use the <code>line-height</code> property of the body copy as the base for a consistent vertical rhythm. Let’s say the body copy of your website has <strong><code>line-height</code> of 25px</strong>. You’ll do two things:</p>
+<ol>
+<li>Set the <strong>vertical white space between elements</strong> to a <strong>multiple of 25px</strong></li>
+<li>Set the <strong>line-height of all text elements</strong> to a <strong>multiple of 25px</strong></li>
+</ol>
+<p>This is how it might look like in CSS (Note: This hasn’t taken the three practices I mentioned above into account yet)</p>
+<pre><code class="scss"><span class="tag">html</span> {
+  <span class="attribute">font-size</span><span class="value">: <span class="number">18</span>px;</span>
+  <span class="attribute">line-height</span><span class="value">: <span class="number">25</span>px;</span>
+}
+
+<span class="comment">// Resets margins</span>
+<span class="tag">body</span>, <span class="tag">h1</span>, <span class="tag">p</span> {
+  <span class="attribute">margin</span><span class="value">: <span class="number">0</span>;</span>
+}
+
+<span class="tag">h1</span> {
+  <span class="attribute">font-size</span><span class="value">: <span class="number">63</span>px;</span>
+  <span class="attribute">line-height</span><span class="value">: <span class="number">75</span>px;</span>
+  <span class="attribute">margin</span><span class="value">: <span class="number">25</span>px <span class="number">0</span>;</span>
+}
+
+<span class="tag">p</span> + <span class="tag">p</span> {
+  <span class="attribute">margin-top</span><span class="value">: <span class="number">25</span>px;</span>
+}
+</code></pre>
+<div><iframe id="cp_embed_WrjOoa" src="http://codepen.io/zellwk/embed/WrjOoa?height=266&amp;theme-id=7929&amp;slug-hash=WrjOoa&amp;default-tab=result&amp;user=zellwk" scrolling="no" frameborder="0" height="266" allowtransparency="true" allowfullscreen="true" name="CodePen Embed" title="CodePen Embed" class="cp_embed_iframe undefined"></iframe></div>
+<p>Looks pretty good! Let’s take it a step further by changing the code above into relative units. While doing so, you’ll encounter the great em vs rem debate.</p>
+<h2 id="Em-vs-Rem">Em vs Rem</h2>
+<p>Let’s try converting the code first into <strong>ems</strong>, then <strong>rems</strong>. By the way, the <a href="https://css-tricks.com/almanac/properties/l/line-height/">best practices states that line-height values should be unitless</a>.</p>
+<pre><code class="scss"><span class="tag">html</span> {
+  <span class="attribute">font-size</span><span class="value">: <span class="number">1.125</span>em;</span>
+  <span class="attribute">line-height</span><span class="value">: <span class="number">1.4</span>;</span> <span class="comment">// This is 25.2px to be accurate</span>
+}
+
+<span class="comment">// Resets margins</span>
+<span class="tag">body</span>, <span class="tag">h1</span>, <span class="tag">p</span> {
+  <span class="attribute">margin</span><span class="value">: <span class="number">0</span>;</span>
+}
+
+<span class="tag">h1</span> {
+  <span class="comment">// font size is 63.147px to be more precise</span>
+  <span class="attribute">font-size</span><span class="value">: <span class="number">3.5082</span>em;</span> <span class="comment">// 63.147 ÷ 18 = 3.5082em</span>
+  <span class="attribute">line-height</span><span class="value">: <span class="number">1.1972</span>;</span> <span class="comment">// 75.6 ÷ 63.147 =  1.1972</span>
+  <span class="attribute">margin</span><span class="value">: <span class="number">0.3991</span>em <span class="number">0</span>;</span> <span class="comment">// 25.2 ÷ 63.147 = 0.3991</span>
+}
+
+<span class="tag">p</span> + <span class="tag">p</span> {
+  <span class="attribute">margin-top</span><span class="value">: <span class="number">1.4</span>em;</span>
+}
+</code></pre>
+<p>Pay special attention to how we converted the <code>margin</code> property on the <code>&lt;h1&gt;</code> element into ems.</p>
+<p>Notice how we used <code>63.147px</code> as the base for the division? This must be done because sizes <strong>calculated with ems are relative to it’s current font-size</strong>. It often causes confusion and involves a lot of complex math.</p>
+<p>Now, here’s the kicker. Even though we tried to be as accurate as we can be, browsers don’t seem to cooperate with us. You’ll notice that our vertical rhythms start getting screwy.</p>
+<div><iframe id="cp_embed_jWmKKZ" src="http://codepen.io/zellwk/embed/jWmKKZ?height=266&amp;theme-id=7929&amp;slug-hash=jWmKKZ&amp;default-tab=result&amp;user=zellwk" scrolling="no" frameborder="0" height="266" allowtransparency="true" allowfullscreen="true" name="CodePen Embed" title="CodePen Embed" class="cp_embed_iframe undefined"></iframe></div>
+<p>Two problems contributed to this screwy behavior.</p>
+<p>First, we’re not 100% precise and accurate with our math. We could get more precise (like 10 decimal places), but that would make our code ugly as hell…</p>
+<p>Second, different browsers handle subpixel rounding issues differently. This means we’ll never be able to get pixel-perfect rhythms no matter how hard we try.</p>
+<p>Well, I don’t want to harp on subpixel rounding because there’s nothing much we can do.
+Let’s take a look at how the <code>rem</code> unit handles this complex math instead, shall we?</p>
+<pre><code class="scss"><span class="tag">html</span> {
+  <span class="attribute">font-size</span><span class="value">: <span class="number">1.125</span>rem;</span>
+  <span class="attribute">line-height</span><span class="value">: <span class="number">1.4</span>;</span> <span class="comment">// This is 25.2px to be accurate</span>
+}
+
+<span class="comment">// Resets margins</span>
+<span class="tag">body</span>, <span class="tag">h1</span>, <span class="tag">p</span> {
+  <span class="attribute">margin</span><span class="value">: <span class="number">0</span>;</span>
+}
+
+<span class="tag">h1</span> {
+  <span class="attribute">font-size</span><span class="value">: <span class="number">3.5082</span>rem;</span> <span class="comment">// 63.147 ÷ 18 = 3.5082</span>
+  <span class="attribute">line-height</span><span class="value">: <span class="number">1.1972</span>;</span> <span class="comment">// 75.6 ÷ 63.147 = 1.1972</span>
+  <span class="attribute">margin</span><span class="value">: <span class="number">1.4</span>rem <span class="number">0</span>;</span> <span class="comment">// 25.2 ÷ 18 = 1.4</span>
+}
+
+<span class="tag">p</span> + <span class="tag">p</span> {
+  <span class="attribute">margin-top</span><span class="value">: <span class="number">1.4</span>rem;</span>
+}
+</code></pre>
+<p>Notice how we used <code>1.4rem</code> on the <code>margin</code> property instead of <code>0.3991em</code>? The <strong>rem unit makes calculations</strong> with vertical rhythms <strong>much simpler</strong>.</p>
+<p><strong>This doesn’t mean you should switch blindly to the <code>rem</code> unit</strong> though. Rems and em units are both useful, and they should be used for different purposes. I’ll write about this topic another day. For now, let’s come back to vertical rhythms.</p>
+<p>Now that we’ve converted our vertical rhythms into relative units, let’s take a look at how it fares when we combine it with practice one (<code>font-sizes</code> and <code>line-heights</code> should change when screen sizes change).</p>
+<p>We’re going to keep this example as simple as possible by using only one media-query. We’re also going to use the <code>rem</code> unit.</p>
+<pre><code class="scss"><span class="tag">html</span> {
+  <span class="attribute">font-size</span><span class="value">: <span class="number">1.125</span>em;</span>
+  <span class="attribute">line-height</span><span class="value">: <span class="number">1.4</span>;</span>
+
+  <span class="at_rule">@<span class="keyword">media</span> (min-width:<span class="preprocessor"> 1200px</span>) {</span>
+    <span class="attribute">font-size</span><span class="value">: <span class="number">1.25</span>em;</span> <span class="comment">// this is 20px</span>
+    <span class="comment">// Slight change in line heights at 1200px</span>
+    <span class="attribute">line-height</span><span class="value">: <span class="number">1.45</span> // this is <span class="number">29</span>px
+  }
+}
+
+// Resets margins
+body, h1, p {
+  margin: <span class="number">0</span>;</span>
+}
+
+<span class="tag">h1</span> {
+  <span class="attribute">font-size</span><span class="value">: <span class="number">3.5082</span>em;</span>
+  <span class="attribute">line-height</span><span class="value">: <span class="number">1.1972</span>;</span>
+  <span class="attribute">margin</span><span class="value">: <span class="number">1.45</span>rem <span class="number">0</span>;</span>
+
+  <span class="at_rule">@<span class="keyword">media</span> (min-width:<span class="preprocessor"> 1200px</span>) {</span>
+    <span class="comment">// font-size is now 70.164px</span>
+    <span class="attribute">line-height</span><span class="value">: <span class="number">1.24</span>;</span> <span class="comment">// 29px * 3 ÷ 70.164 = 1.24</span>
+    <span class="attribute">margin</span><span class="value">: <span class="number">1.45</span>rem <span class="number">0</span>;</span>
+  }
+}
+
+<span class="tag">p</span> + <span class="tag">p</span> {
+  <span class="attribute">margin-top</span><span class="value">: <span class="number">1.4</span>em;</span>
+  <span class="at_rule">@<span class="keyword">media</span> (min-width:<span class="preprocessor"> 1200px</span>) {</span>
+    <span class="attribute">margin-top</span><span class="value">: <span class="number">1.45</span>em
+  }
+}
+</span></code></pre>
+<p>Ugh. We might have to add 20,000 media queries to change <code>margin</code> and <code>line-height</code> of all our elements with just this one change in the <code>line-height</code> property on <code>&lt;html&gt;</code>. We haven’t even talked about <code>padding</code> or <code>border</code> properties yet!</p>
+<p>(╯°□°）╯︵ ┻━┻</p>
+<p>So, here’s what I realized. <strong>It’s impossible to apply perfect responsive vertical rhythms across different browsers</strong>. At least not with the current technology.</p>
+<p>What we can do instead is:</p>
+<ol>
+<li>We can make do with <code>line-height</code> properties of major typographic elements by eyeballing and using Typi.</li>
+<li>Try not to change the <code>line-height</code> property of your body copy if you can. Things will become easier when [CSS variables]((http://caniuse.com/#search=css%20var) are finally supported in all major browsers.</li>
+</ol>
+<h2 id="Practice-5:-Keep-text-measures-between-45-–-75-characters">Practice 5: Keep text measures between 45 – 75 characters</h2>
+<p>Oh, this one is easy. Just remember this: one character is approximately 0.5em. A text measure between 45 – 75 characters means the width of your text element must be between 22.5em and 37.5em.</p>
+<p>From experience, I’m mostly concerned about text overflowing 75 characters. If your text goes below 45 characters, maybe it’s time to have a change of font sizes.</p>
+<pre><code class="css"><span class="tag">article</span> <span class="rules">{
+  <span class="rule"><span class="attribute">max-width</span>:<span class="value"> <span class="number">30</span>em</span></span>;
+  <span class="comment">/* Anywhere between 22.5em to 37.5em. Use your discretion */</span>
+<span class="rule">}</span></span>
+</code></pre>
+<h2 id="Wrapping-Up">Wrapping Up</h2>
+<p>Responsive typography is hard. There are still no perfect answers we can rely on, but let’s try to make do for now.</p>
+<p>By the way, here’s the link to <a href="https://github.com/zellwk/typi">Typi</a> again if you want to play with it.</p>
+ 
+</div> 
+
+<div class="ck_form ck_vertical_subscription_form ck_horizontal">
+  <div class="ck_form_content">
+      <h3 class="ck_form_title"></h3>
+      <div class="ck_description">
+        <span class="ck_image">
+          
+        </span>
+          <p>Get my&nbsp;best content on frontend development and design delivered to you each week for free</p>
+      </div>
+  </div>
+
+  <div class="ck_form_fields">
+
+    <div id="ck_success_msg">
+      <p>I'm so thrilled to see that you wanna hear more from me! Go check your email now :) </p>
+    </div>
+
+    <!--  Form starts here  -->
+    
+  </div>
+
+ </div>
+
+
+
