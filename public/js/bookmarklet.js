@@ -171,7 +171,7 @@ function analyze(doc, href) {
     }
 
     // remove unrelated divs
-    var uselessRegexp = /\b(ad|comments|meta|social|shar(er?|ing)|related|sidebar)\b/;
+    var uselessRegexp = /\b(ad|comments|meta|social|shar(er?|ing)|related|sidebar|recommended)\b/;
     nodes = node.querySelectorAll('*');
     for (i = 0; i < nodes.length; i++) {
       n = nodes[i];
