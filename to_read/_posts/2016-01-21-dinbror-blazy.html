@@ -1,0 +1,198 @@
+---
+title: "dinbror/blazy"
+description: "blazy - Hey, be lazy! bLazy.JS is a lightweight pure JavaScript script for lazy loading and multi-serving images. It's working in all modern browsers including IE7+."
+link: "https://github.com/dinbror/blazy"
+saved: "2016-01-21 12:45:44"
+---
+<h1><a id="user-content-hey-be-lazy" class="anchor" href="https://github.com/dinbror/blazy#hey-be-lazy" aria-hidden="true"><span class="octicon octicon-link"></span></a>hey, be lazy</h1>
+
+<p>bLazy is a lightweight script for lazy loading and multi-serving images (less than 1.2KB minified and gzipped). It’s written in pure JavaScript why it doesn’t depend on 3rd-party libraries such as jQuery. It lets you lazy load and multi-serve your images so you can save bandwidth and server requests. The user will have faster load times and save data usage if he/she doesn't browse the whole page.</p>
+
+<p><strong>Table of Contents</strong><br>
+1. <a href="https://github.com/dinbror/blazy#demo">Demo</a><br>
+2. <a href="https://github.com/dinbror/blazy#how-to--api">Usage &amp; API</a><br>
+3. <a href="https://github.com/dinbror/blazy#why-be-lazy">Why be lazy?</a><br>
+4. <a href="https://github.com/dinbror/blazy#changelog">Changelog</a><br>
+5. <a href="https://github.com/dinbror/blazy#license">License</a><br></p>
+
+<h2><a id="user-content-demo" class="anchor" href="https://github.com/dinbror/blazy#demo" aria-hidden="true"><span class="octicon octicon-link"></span></a>DEMO</h2>
+
+<p><a href="http://dinbror.dk/blazy">http://dinbror.dk/blazy</a></p>
+
+<p>More examples will come. In the meantime you can play with a basic example at codepen:
+<a href="http://codepen.io/dinbror/pen/HzCAJ">http://codepen.io/dinbror/pen/HzCAJ</a></p>
+
+<h2><a id="user-content-usage--api" class="anchor" href="https://github.com/dinbror/blazy#usage--api" aria-hidden="true"><span class="octicon octicon-link"></span></a>USAGE &amp; API</h2>
+
+<p><a href="http://dinbror.dk/blog/blazy">http://dinbror.dk/blog/blazy</a></p>
+
+<h3><a id="user-content-install" class="anchor" href="https://github.com/dinbror/blazy#install" aria-hidden="true"><span class="octicon octicon-link"></span></a>INSTALL</h3>
+
+<p>You can install blazy.js with npm:</p>
+
+<pre lang="npm"><code>npm install blazy --save
+</code></pre>
+
+<p>or bower:</p>
+
+<pre lang="bower"><code>bower install blazy --save
+</code></pre>
+
+<h3><a id="user-content-cdn" class="anchor" href="https://github.com/dinbror/blazy#cdn" aria-hidden="true"><span class="octicon octicon-link"></span></a>CDN</h3>
+
+<p>If you don't want to host the script yourself you can link to the latest minified file:<br>
+<code>//cdn.jsdelivr.net/blazy/latest/blazy.min.js</code> on <a href="http://www.jsdelivr.com/#!blazy">jsDelivr</a>.
+Exchange <code>latest</code> with the specific version number if you want to lock it in.</p>
+
+<h2><a id="user-content-why-be-lazy" class="anchor" href="https://github.com/dinbror/blazy#why-be-lazy" aria-hidden="true"><span class="octicon octicon-link"></span></a>WHY BE LAZY?</h2>
+
+<ul>
+<li>bLazy is used on big sites with millions of monthly visitors so it has been tested out in the real world.</li>
+<li>bLazy is written in pure JavaScript why it doesn’t depend on 3rd-party libraries such as jQuery.</li>
+<li>bLazy can lazy load all types of images including background images.</li>
+<li>bLazy can lazy load images depending on screensize (multi-serve images).</li>
+<li>bLazy can serve retina images on retina devices.</li>
+<li>bLazy can lazy load everything with a src like iframes, unity games etc. </li>
+<li>bLazy is lightweight, less than 1.2KB and less than 1.05KB if you don't need IE7- support.</li>
+<li>bLazy is AMD, CommonJS and Browser globals compatible.</li>
+</ul>
+
+<h2><a id="user-content-changelog" class="anchor" href="https://github.com/dinbror/blazy#changelog" aria-hidden="true"><span class="octicon octicon-link"></span></a>CHANGELOG</h2>
+
+<h3><a id="user-content-v-152-20151201" class="anchor" href="https://github.com/dinbror/blazy#v-152-20151201" aria-hidden="true"><span class="octicon octicon-link"></span></a>v 1.5.2 (2015/12/01)</h3>
+
+<ul>
+<li>Fixed minor bug where the error class was added when calling <code>revalidate()</code>.</li>
+<li>Minor refactoring</li>
+</ul>
+
+<h3><a id="user-content-v-151-20151114" class="anchor" href="https://github.com/dinbror/blazy#v-151-20151114" aria-hidden="true"><span class="octicon octicon-link"></span></a>v 1.5.1 (2015/11/14)</h3>
+
+<ul>
+<li>Fixed toArray function so it now works in IE7 + 8 again. Bug introduced in 1.4.0. Thanks for reporting <a href="https://github.com/imcotton">@imcotton</a>.</li>
+<li>Fixed <a href="https://github.com/dinbror/blazy/pull/41">#41</a>. Added options for validate and saveViewportOffset delay.</li>
+</ul>
+
+<h3><a id="user-content-v-150-20151030" class="anchor" href="https://github.com/dinbror/blazy#v-150-20151030" aria-hidden="true"><span class="octicon octicon-link"></span></a>v 1.5.0 (2015/10/30)</h3>
+
+<ul>
+<li>Added new feature. Now you can lazy load everything with a src attribute like iframes, unity games etc.</li>
+<li>Fixed <a href="https://github.com/dinbror/blazy/issues/45">#45</a>. Now you can pass an option if you always want to load invisible images/elements.</li>
+<li>Fixed <a href="https://github.com/dinbror/blazy/issues/49">#49</a>. Expanded the <code>load</code> function so it's now possible to pass a list of elements instead of only one element. Tested with getElementById, getElementsByClassName, querySelectorAll, querySelector and jQuery selector.</li>
+<li>Fixed <a href="https://github.com/dinbror/blazy/issues/63">#63</a>. </li>
+</ul>
+
+<h3><a id="user-content-v-141-20151012" class="anchor" href="https://github.com/dinbror/blazy#v-141-20151012" aria-hidden="true"><span class="octicon octicon-link"></span></a>v 1.4.1 (2015/10/12)</h3>
+
+<ul>
+<li>Fixed <a href="https://github.com/dinbror/blazy/issues/60">#60</a>. An "Uncaught TypeError" when options is null introduced in the refactoring in version 1.4.0.</li>
+</ul>
+
+<h3><a id="user-content-v-140-20150928" class="anchor" href="https://github.com/dinbror/blazy#v-140-20150928" aria-hidden="true"><span class="octicon octicon-link"></span></a>v 1.4.0 (2015/09/28)</h3>
+
+<ul>
+<li>Fixed <a href="https://github.com/dinbror/blazy/issues/56">#56</a>. Now it's possible to create multiple versions of blazy without overriding options.</li>
+</ul>
+
+<h3><a id="user-content-v-131-20150201" class="anchor" href="https://github.com/dinbror/blazy#v-131-20150201" aria-hidden="true"><span class="octicon octicon-link"></span></a>v 1.3.1 (2015/02/01)</h3>
+
+<ul>
+<li>Added support for CommonJS-like environments that support module.exports like <a href="http://nodejs.org/">node</a>.</li>
+</ul>
+
+<h3><a id="user-content-v-130-20150123" class="anchor" href="https://github.com/dinbror/blazy#v-130-20150123" aria-hidden="true"><span class="octicon octicon-link"></span></a>v 1.3.0 (2015/01/23)</h3>
+
+<ul>
+<li>Fixed <a href="https://github.com/dinbror/blazy/issues/34">#34</a>. Expanded public <code>load</code> function with force attribute, so you can force hidden images to be loaded.</li>
+<li>Fixed <a href="https://github.com/dinbror/blazy/issues/24">#24</a>, <a href="https://github.com/dinbror/blazy/issues/32">#32</a> and <a href="https://github.com/dinbror/blazy/issues/35">#35</a>. Updated "elementInView" function with intersection check. Thanks @teohhanhui.<br></li>
+</ul>
+
+<h3><a id="user-content-v-122-20140504" class="anchor" href="https://github.com/dinbror/blazy#v-122-20140504" aria-hidden="true"><span class="octicon octicon-link"></span></a>v 1.2.2 (2014/05/04)</h3>
+
+<ul>
+<li>Fixed <a href="https://github.com/dinbror/blazy/issues/15">#15</a>, when you resize the browser window in another tab bLazy didn't trigger new images in view. Thanks joshribakoff.</li>
+</ul>
+
+<h3><a id="user-content-v-121-20140323" class="anchor" href="https://github.com/dinbror/blazy#v-121-20140323" aria-hidden="true"><span class="octicon octicon-link"></span></a>v 1.2.1 (2014/03/23)</h3>
+
+<ul>
+<li>When lazy loading background images it now only updates the background-image css attribute. Thanks Saku.</li>
+</ul>
+
+<h3><a id="user-content-v-120-20140215" class="anchor" href="https://github.com/dinbror/blazy#v-120-20140215" aria-hidden="true"><span class="octicon octicon-link"></span></a>v 1.2.0 (2014/02/15)</h3>
+
+<ul>
+<li>Important note: renamed option multi to <code>breakpoints</code> because it's much more descriptive.</li>
+<li>Added <a href="https://github.com/amdjs/amdjs-api/wiki/AMD">AMD</a> support.</li>
+<li>Minor refactoring.</li>
+</ul>
+
+<h3><a id="user-content-v-113-20140121" class="anchor" href="https://github.com/dinbror/blazy#v-113-20140121" aria-hidden="true"><span class="octicon octicon-link"></span></a>v 1.1.3 (2014/01/21)</h3>
+
+<ul>
+<li>Fixed hardcoded retina check (isRetina = true).</li>
+<li>Fixed "Uncaught TypeError" when data-src is null. Instead it'll trigger the <code>error</code> callback.</li>
+</ul>
+
+<h3><a id="user-content-v-112-20140103" class="anchor" href="https://github.com/dinbror/blazy#v-112-20140103" aria-hidden="true"><span class="octicon octicon-link"></span></a>v 1.1.2 (2014/01/03)</h3>
+
+<ul>
+<li>New feature: After many requests I added the possibility to handle retina images (if you’re not doing retina-first).</li>
+<li>New feature: Now you can also lazy load background images.</li>
+<li>Added new option, <code>separator</code>. Used if you want to pass retina images, default separator is ‘|’. (data-src=“image.jpg|image@2x.jpg”).</li>
+</ul>
+
+<h3><a id="user-content-v-111-20131227" class="anchor" href="https://github.com/dinbror/blazy#v-111-20131227" aria-hidden="true"><span class="octicon octicon-link"></span></a>v 1.1.1 (2013/12/27)</h3>
+
+<ul>
+<li>Fixed #1, resize/scroll events may be detached when adding elements by ajax.</li>
+<li>Added new option, <code>errorClass</code>. Classname an image will get if something goes wrong, default is ‘b-error’.</li>
+<li>Renamed option loadedClass to <code>successClass</code> so naming is aligned. Default is still ‘b-loaded’.</li>
+</ul>
+
+<h3><a id="user-content-v-110-20131122" class="anchor" href="https://github.com/dinbror/blazy#v-110-20131122" aria-hidden="true"><span class="octicon octicon-link"></span></a>v 1.1.0 (2013/11/22)</h3>
+
+<ul>
+<li>Renamed success callback from onLoaded to <code>success</code>.</li>
+<li>Added onerror callback; <code>error</code>.</li>
+<li>Added the possibility to pass multiple containers instead of one.</li>
+</ul>
+
+<h3><a id="user-content-v-105-2013107" class="anchor" href="https://github.com/dinbror/blazy#v-105-2013107" aria-hidden="true"><span class="octicon octicon-link"></span></a>v 1.0.5 (2013/10/7)</h3>
+
+<ul>
+<li>Fixed "Uncaught TypeError" when container isn't default (window).</li>
+</ul>
+
+<h3><a id="user-content-v-104-2013829" class="anchor" href="https://github.com/dinbror/blazy#v-104-2013829" aria-hidden="true"><span class="octicon octicon-link"></span></a>v 1.0.4 (2013/8/29)</h3>
+
+<ul>
+<li>Added null check so we won't try to load an image if it's missing a data source.</li>
+</ul>
+
+<h3><a id="user-content-v-103-2013827" class="anchor" href="https://github.com/dinbror/blazy#v-103-2013827" aria-hidden="true"><span class="octicon octicon-link"></span></a>v 1.0.3 (2013/8/27)</h3>
+
+<ul>
+<li>Added new option, <code>loadedClass</code>. Classname an image will get when loaded.</li>
+<li>Added support for horizontal lazy loading.</li>
+<li>Reduced throttle time for validate.</li>
+</ul>
+
+<h3><a id="user-content-v-102-201387" class="anchor" href="https://github.com/dinbror/blazy#v-102-201387" aria-hidden="true"><span class="octicon octicon-link"></span></a>v 1.0.2 (2013/8/7)</h3>
+
+<ul>
+<li>Fixed typo in unbindEvent function.</li>
+<li>Added support for IE7 as promised (fallback for querySelectorAll).</li>
+</ul>
+
+<h3><a id="user-content-v-101-201386" class="anchor" href="https://github.com/dinbror/blazy#v-101-201386" aria-hidden="true"><span class="octicon octicon-link"></span></a>v 1.0.1 (2013/8/6)</h3>
+
+<ul>
+<li>Performance improvements.</li>
+<li>Added throttle function to ensure that we don't call resize/scroll functions too often.</li>
+<li>Cleaning image markup when image has loaded.</li>
+</ul>
+
+<h2><a id="user-content-license" class="anchor" href="https://github.com/dinbror/blazy#license" aria-hidden="true"><span class="octicon octicon-link"></span></a>LICENSE:</h2>
+
+<p>Copyright (c) 2013-15 Bjørn Klinggaard. Licensed under the <a href="http://opensource.org/licenses/MIT">The MIT License (MIT)</a>.</p>
