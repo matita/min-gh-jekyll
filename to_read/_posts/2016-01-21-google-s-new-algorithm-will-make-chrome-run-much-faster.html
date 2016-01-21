@@ -1,0 +1,283 @@
+---
+title: "Google's new algorithm will make Chrome run much faster"
+description: "Chrome is about to load web pages a lot faster than you've experienced up until now. Thanks to a new compression algorithm called Brotli, which Google introduced last September, Chrome will be able..."
+link: "http://www.theverge.com/2016/1/20/10797268/googles-new-algorithm-chrome-run-faster"
+saved: "2016-01-21 14:16:36"
+---
+
+
+    
+
+    
+
+
+    <div class="m-entry__body">
+
+      <div class="m-entry__content" data-word-count="389">
+        <div class="m-article__entry-section">
+      <div class="p-dynamic-image">
+        <picture>
+  <source srcset="https://cdn1.vox-cdn.com/thumbor/rATLLb-Q-CZMB3ilwdqGdcVMAZg=/0x0:634x423/2050x1367/filters:format(webp)/cdn0.vox-cdn.com/uploads/chorus_image/image/48600073/verge-101.0.jpg 2050w, https://cdn2.vox-cdn.com/thumbor/TfQh6LNC45swdDULCSJJir8CuDU=/0x0:634x423/1280x854/filters:format(webp)/cdn0.vox-cdn.com/uploads/chorus_image/image/48600073/verge-101.0.jpg 1280w, https://cdn2.vox-cdn.com/thumbor/jjWVydUmdUZm_efumnIV9ZvqStM=/0x0:634x423/1080x720/filters:format(webp)/cdn0.vox-cdn.com/uploads/chorus_image/image/48600073/verge-101.0.jpg 1080w, https://cdn0.vox-cdn.com/thumbor/mYahs-PCzrA8kpB9TTrmwjfI9tQ=/0x0:634x423/1025x683/filters:format(webp)/cdn0.vox-cdn.com/uploads/chorus_image/image/48600073/verge-101.0.jpg 1025w, https://cdn0.vox-cdn.com/thumbor/JGB5e7hr-7VRsElSGccdJTAR9ds=/0x0:634x423/800x536/filters:format(webp)/cdn0.vox-cdn.com/uploads/chorus_image/image/48600073/verge-101.0.jpg 800w, https://cdn2.vox-cdn.com/thumbor/qlz0K4Js0E853SZi3i4cGVBlSsA=/0x0:634x423/640x427/filters:format(webp)/cdn0.vox-cdn.com/uploads/chorus_image/image/48600073/verge-101.0.jpg 640w, https://cdn0.vox-cdn.com/thumbor/tcdJoubvd3oC_qU8Lvhe-4679-o=/0x0:634x423/600x400/filters:format(webp)/cdn0.vox-cdn.com/uploads/chorus_image/image/48600073/verge-101.0.jpg 600w, https://cdn2.vox-cdn.com/thumbor/8aO3t1CUXPv6BXN3ODWvHPqrdpo=/0x0:634x423/540x360/filters:format(webp)/cdn0.vox-cdn.com/uploads/chorus_image/image/48600073/verge-101.0.jpg 540w, https://cdn1.vox-cdn.com/thumbor/hmJDZY84OwH9pnxuDZIs67ZYRlA=/0x0:634x423/400x268/filters:format(webp)/cdn0.vox-cdn.com/uploads/chorus_image/image/48600073/verge-101.0.jpg 400w, https://cdn0.vox-cdn.com/thumbor/JjywLXM_L1M0thbrBO1L-LlmmoM=/0x0:634x423/300x200/filters:format(webp)/cdn0.vox-cdn.com/uploads/chorus_image/image/48600073/verge-101.0.jpg 300w, https://cdn3.vox-cdn.com/thumbor/0q2z6sCQn64NLutzYH1OHZj3DQ8=/0x0:634x423/200x134/filters:format(webp)/cdn0.vox-cdn.com/uploads/chorus_image/image/48600073/verge-101.0.jpg 200w, https://cdn3.vox-cdn.com/thumbor/UQJKzFfb1rAaPug56M1dgA-uIXw=/0x0:634x423/180x120/filters:format(webp)/cdn0.vox-cdn.com/uploads/chorus_image/image/48600073/verge-101.0.jpg 180w, https://cdn2.vox-cdn.com/thumbor/Tk9hT53RFYRlGxI51c_q5zBWgwU=/0x0:634x423/90x60/filters:format(webp)/cdn0.vox-cdn.com/uploads/chorus_image/image/48600073/verge-101.0.jpg 90w" sizes="(min-width: 1025px) 658px, (min-width: 800px) calc(100vw - 3rem - 320px), (min-width: 700px) calc(100vw - 3rem), calc(100vw - 2rem)" type="image/webp">
+  <img srcset="https://cdn0.vox-cdn.com/thumbor/TIxsyrMdloH5tc3BmUaJUWOEc2g=/0x0:634x423/2050x1367/cdn0.vox-cdn.com/uploads/chorus_image/image/48600073/verge-101.0.jpg 2050w, https://cdn3.vox-cdn.com/thumbor/x93zrkuGk3uz0vGx7rErlkyLcs8=/0x0:634x423/1280x854/cdn0.vox-cdn.com/uploads/chorus_image/image/48600073/verge-101.0.jpg 1280w, https://cdn3.vox-cdn.com/thumbor/AkxQE1oSjCBGkD70Ds1ocZ-Eedw=/0x0:634x423/1080x720/cdn0.vox-cdn.com/uploads/chorus_image/image/48600073/verge-101.0.jpg 1080w, https://cdn0.vox-cdn.com/thumbor/ADToJebAcRa4FS2Gh5iGItN5l5I=/0x0:634x423/1025x683/cdn0.vox-cdn.com/uploads/chorus_image/image/48600073/verge-101.0.jpg 1025w, https://cdn3.vox-cdn.com/thumbor/_wm5YkXbJM5_f3X7TbWqArvGLuM=/0x0:634x423/800x536/cdn0.vox-cdn.com/uploads/chorus_image/image/48600073/verge-101.0.jpg 800w, https://cdn0.vox-cdn.com/thumbor/Be7Zval-PoGiLK7WRHfmdE603NQ=/0x0:634x423/640x427/cdn0.vox-cdn.com/uploads/chorus_image/image/48600073/verge-101.0.jpg 640w, https://cdn3.vox-cdn.com/thumbor/OwnYeMVX8ybFNEwazg0BYFktKZ0=/0x0:634x423/600x400/cdn0.vox-cdn.com/uploads/chorus_image/image/48600073/verge-101.0.jpg 600w, https://cdn1.vox-cdn.com/thumbor/MrZtL0LSCC8dcjhxq-8zcB7aiyA=/0x0:634x423/540x360/cdn0.vox-cdn.com/uploads/chorus_image/image/48600073/verge-101.0.jpg 540w, https://cdn2.vox-cdn.com/thumbor/9T2t_7O_Y4XEMn1y0FmXnh1eOOo=/0x0:634x423/400x268/cdn0.vox-cdn.com/uploads/chorus_image/image/48600073/verge-101.0.jpg 400w, https://cdn2.vox-cdn.com/thumbor/PzDaFA9OLMRMDq7-1t4UiChfyuM=/0x0:634x423/300x200/cdn0.vox-cdn.com/uploads/chorus_image/image/48600073/verge-101.0.jpg 300w, https://cdn2.vox-cdn.com/thumbor/1lEwLOTUR-SDs4jXZylYuo1wKL4=/0x0:634x423/200x134/cdn0.vox-cdn.com/uploads/chorus_image/image/48600073/verge-101.0.jpg 200w, https://cdn2.vox-cdn.com/thumbor/aynti0qB4oSKACXY5m6fUXUSgSs=/0x0:634x423/180x120/cdn0.vox-cdn.com/uploads/chorus_image/image/48600073/verge-101.0.jpg 180w, https://cdn0.vox-cdn.com/thumbor/9hOgCe3AgvqnD3LmeRTeMbCVA1I=/0x0:634x423/90x60/cdn0.vox-cdn.com/uploads/chorus_image/image/48600073/verge-101.0.jpg 90w" sizes="(min-width: 1025px) 658px, (min-width: 800px) calc(100vw - 3rem - 320px), (min-width: 700px) calc(100vw - 3rem), calc(100vw - 2rem)" src="https://cdn3.vox-cdn.com/thumbor/x93zrkuGk3uz0vGx7rErlkyLcs8=/0x0:634x423/1280x854/cdn0.vox-cdn.com/uploads/chorus_image/image/48600073/verge-101.0.jpg">
+</picture>
+        
+
+      </div>
+      
+  <div class="m-article__entry-container">
+    
+
+
+    <div class="m-article__share-buttons">
+  
+
+  
+
+  
+
+  
+
+  
+
+</div>
+
+    <div class="m-article__entry">
+      <p>Chrome is about to load web pages a lot faster than you've experienced up until now. Thanks to a new compression algorithm called Brotli, which Google&nbsp;<a href="http://google-opensource.blogspot.fr/2015/09/introducing-brotli-new-compression.html">introduced</a> last September, Chrome will be able to compress data up to 26 percent more than its existing compression engine, Zopfli, which is an impressive jump.</p>
+<p><a href="https://plus.google.com/u/0/+IlyaGrigorik/posts/X9ogn4fLtHL">According</a> to Google's web performance engineer Ilya Grigorik, Brotli is ready to roll out, so Chrome users should expect to see a bump in load times once the next version of Chrome is released. Google also says Brotli will help mobile Chrome users experience "lower data transfer fees and reduced battery use." The company is hailing Brotli as "a new data format" that Google hopes will be adopted by other web browsers in the near future, with&nbsp;<a href="http://bitsup.blogspot.com/2015/09/brotli-content-encoding-for-firefox-44.html">Firefox</a> seemingly next in line to adopt it. But for now, expect to notice your web pages loading a bit faster in the coming weeks.</p>
+
+
+<p><i><b>Update:</b> </i><b>January 20th 10:30AM:</b> <i>Updated to note that Firefox will also adopt Brotli in a future update. </i></p>
+<hr>
+<p><strong>What's Tech? with Chris Plante</strong></p>
+<iframe width="100%" height="166" scrolling="no" frameborder="no" src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/236639613&amp;color=ff5500&amp;auto_play=false&amp;hide_related=false&amp;show_comments=true&amp;show_user=true&amp;show_reposts=false"></iframe>
+<h5><i>Subscribe to <a href="http://www.itunes.com/whatstech" target="_blank">What's Tech? on iTunes</a>, listen <a href="https://soundcloud.com/whatstech" target="_blank">on SoundCloud</a>, or <a target="_blank" href="http://feeds.podtrac.com/SCOrL45pOotI">subscribe via RSS</a>. And be sure to <a target="_blank" href="https://twitter.com/whatstech">follow us on Twitter</a>. You can also find <a href="http://www.theverge.com/whatstech" target="_blank">the entire collection of What's Tech? stories right here on the The Verge Dot Com</a>.</i></h5>
+      <ul class="m-article__sources">
+
+    <li class="via"><strong>Via</strong><a href="http://gizmodo.com/chrome-is-about-to-load-web-pages-way-faster-1753979034?utm_campaign=socialflow_gizmodo_twitter&amp;utm_source=gizmodo_twitter&amp;utm_medium=socialflow">Gizmodo</a></li>
+
+    <li class="source"><strong>Source</strong><a href="https://plus.google.com/u/0/+IlyaGrigorik/posts/X9ogn4fLtHL">Ilya Grigorik</a></li>
+
+
+    <li class="tags"><strong>Related Items</strong>
+      <a href="http://www.theverge.com/tag/google">google</a>
+    
+      <a href="http://www.theverge.com/tag/chrome">chrome</a>
+    
+      <a href="http://www.theverge.com/tag/algorithm">algorithm</a>
+    
+      <a href="http://www.theverge.com/tag/compression">compression</a>
+    
+      <a href="http://www.theverge.com/tag/brotli">brotli</a>
+    
+      <a href="http://www.theverge.com/tag/zopfli">zopfli</a>
+    </li>
+
+</ul>
+
+    </div>
+  </div>
+</div>
+
+
+        <div class="m-linkset m-linkset-list ">
+  <h2>More from <a href="http://www.theverge.com/">The Verge</a></h2>
+  <ul class="m-linkset__entries-list">
+      <li class="m-linkset__entries-item">
+        <a href="http://www.theverge.com/2016/1/20/10798478/t-pain-garageband-ipad-update-demo-video" class="chorus-optimize" data-analytics-viewport="nextclicks" data-analytics-class="nextclicks" data-chorus-optimize-id="10562519_*" data-chorus-optimize-content-uid="10562519" data-chorus-optimize-module="*">Exclusive: T-Pain mixes a beat with the new GarageBand</a>
+      </li>
+      <li class="m-linkset__entries-item">
+        <a href="http://www.theverge.com/2016/1/20/10798042/ancient-violence-warfare-nature-study-kenya-nataruk" class="chorus-optimize" data-analytics-viewport="nextclicks" data-analytics-class="nextclicks" data-chorus-optimize-id="10562083_*" data-chorus-optimize-content-uid="10562083" data-chorus-optimize-module="*">Our hunter-gatherer ancestors may not have been as peaceful as we thought</a>
+      </li>
+      <li class="m-linkset__entries-item">
+        <a href="http://www.theverge.com/2016/1/20/10797070/cloudmagic-mac-email-app-review" class="chorus-optimize" data-analytics-viewport="nextclicks" data-analytics-class="nextclicks" data-chorus-optimize-id="10561111_*" data-chorus-optimize-content-uid="10561111" data-chorus-optimize-module="*">
+          CloudMagic is the Mac email app I've been waiting&nbsp;for
+        </a>
+      </li>
+      <li class="m-linkset__entries-item">
+        <a href="http://www.theverge.com/2016/1/20/10795086/walt-mossberg-apple-watch-problems-smartwatch-future" class="chorus-optimize" data-analytics-viewport="nextclicks" data-analytics-class="nextclicks" data-chorus-optimize-id="10559127_*" data-chorus-optimize-content-uid="10559127" data-chorus-optimize-module="*">Smartwatches need to get smarter</a>
+      </li>
+      <li class="m-linkset__entries-item">
+        <a href="http://www.theverge.com/2016/1/20/10797070/cloudmagic-mac-email-app-review" class="chorus-optimize" data-analytics-viewport="nextclicks" data-analytics-class="nextclicks" data-chorus-optimize-id="10561111_*" data-chorus-optimize-content-uid="10561111" data-chorus-optimize-module="*">
+          CloudMagic is the Mac email app I've been waiting&nbsp;for
+        </a>
+      </li>
+      <li class="m-linkset__entries-item">
+        <a href="http://www.theverge.com/2016/1/19/10794960/suicide-squad-trailer-dc-comics-jared-leto" class="chorus-optimize" data-analytics-viewport="nextclicks" data-analytics-class="nextclicks" data-chorus-optimize-id="10559001_*" data-chorus-optimize-content-uid="10559001" data-chorus-optimize-module="*">
+          Watch the new trailer for Suicide&nbsp;Squad
+        </a>
+      </li>
+      <li class="m-linkset__entries-item">
+        <a href="http://www.theverge.com/2016/1/20/10796750/sony-life-space-ux-price-release-date-japan-us" class="chorus-optimize" data-analytics-viewport="nextclicks" data-analytics-class="nextclicks" data-chorus-optimize-id="10560791_*" data-chorus-optimize-content-uid="10560791" data-chorus-optimize-module="*">
+          Sony’s Portable Ultra Short Throw Projector will turn any surface into a&nbsp;TV
+        </a>
+      </li>
+    
+        
+
+  </ul>
+</div>
+
+        <!-- BEGIN SNIPPET -->
+<div class="YAD-2ee776b0-e870-3477-bc1c-3cdf1f2a0f9f yahoo-recommends"><iframe frameborder="0" width="100%" height="352px" src="https://s.yimg.com/uq/syndication/yad-iframe.b5896bc.html" allowtransparency="true"></iframe></div>
+
+<!-- END SNIPPET -->
+
+      </div>
+
+      <div class="m-entry__sidebar">
+        
+
+
+        
+        <div class="p-rock">
+
+  <div class="p-tabs -has-starburst">
+    <div class="p-starburst">
+      <span>The<br>Latest</span>
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 43.978 46" class="the-starburst" data-svg-fallback="/v/verge/scripts/../images/ui/starburst.png" data-svg-fallback-override=""><path fill="#F04E2F" d="M21.217 1.049l-1.833 3.459-2.727-2.809-1.072 3.764-3.253-2.181-.266 3.903-3.636-1.457.554 3.873-3.861-.671 1.348 3.673-3.915.146 2.084 3.313-3.8.955 2.728 2.808-3.519 1.723 3.254 2.18-3.082 2.416 3.636 1.457-2.512 3.003 3.86.67-1.832 3.459 3.916-.145-1.072 3.763 3.801-.954-.265 3.902 3.517-1.722.554 3.873 3.083-2.416 1.348 3.674 2.513-3.003 2.084 3.313 1.832-3.458 2.728 2.809 1.072-3.764 3.253 2.181.265-3.903 3.637 1.457-.555-3.873 3.861.671-1.348-3.673 3.915-.145-2.083-3.313 3.8-.956-2.728-2.808 3.517-1.722-3.252-2.181 3.082-2.415-3.637-1.458 2.512-3.003-3.86-.67 1.832-3.46-3.915.146 1.07-3.763-3.799.955.265-3.904-3.519 1.724-.554-3.873-3.082 2.415-1.348-3.674-2.512 3.003z" class="path1"></path></svg>
+
+    </div>
+    <ul>
+      <li class="-is-active"><span>Headlines</span></li>
+    </ul>
+  </div>
+
+  <ul class="p-rock__basic-article-list">
+      <li>
+        <a href="http://www.theverge.com/2016/1/21/10805648/facebook-sheryl-sandberg-terrorist-comments">
+          
+          <h3 class="chorus-optimize" data-chorus-optimize-id="10569689_*" data-chorus-optimize-content-uid="10569689" data-chorus-optimize-module="*">Facebook’s Sheryl Sandberg believes likes and positivity can beat terrorists online</h3>
+        </a>
+      </li>
+      <li>
+        <a href="http://www.theverge.com/2016/1/21/10803796/arx-pax-hendo-hoverboard-hyperloop-pod-spacex">
+          <div class="p-dynamic-image vox-lazy-load lazy-loaded" data-original="https://cdn1.vox-cdn.com/thumbor/h8zRKF2NuxqkVlTyYc61WrdcbV8=/153x0:1895x1742/250x250/filters:format(webp)/cdn0.vox-cdn.com/uploads/chorus_image/image/48607227/arx_pax.0.0.jpg" data-imgkey="48607227:*:4" data-dim="87x70"></div>
+          <h3 class="chorus-optimize" data-chorus-optimize-id="10567837_*" data-chorus-optimize-content-uid="10567837" data-chorus-optimize-module="*">A maker of actual hoverboards is supplying Hyperloop engines</h3>
+        </a>
+      </li>
+      <li>
+        <a href="http://www.theverge.com/2016/1/21/10805490/android-iphone-app-downloads-revenue-competition">
+          
+          <h3 class="chorus-optimize" data-chorus-optimize-id="10569531_*" data-chorus-optimize-content-uid="10569531" data-chorus-optimize-module="*">Android apps win the downloads, iOS apps win the money</h3>
+        </a>
+      </li>
+      <li>
+        <a href="http://www.theverge.com/2016/1/21/10805476/megakopter-drone-lifting-capacity-record">
+          <div class="p-dynamic-image vox-lazy-load lazy-loaded" data-original="https://cdn2.vox-cdn.com/thumbor/TgL7f0SiOa8L6xSAeTRqYnDngmY=/130x0:467x337/250x250/cdn0.vox-cdn.com/uploads/chorus_image/image/48608999/drone_heavy_lifter.0.0.gif" data-imgkey="48608999:*:8" data-dim="87x70"></div>
+          <h3 class="chorus-optimize" data-chorus-optimize-id="10569517_*" data-chorus-optimize-content-uid="10569517" data-chorus-optimize-module="*">Norwegian Megacopter sets new record for drone lifting power</h3>
+        </a>
+      </li>
+      <li>
+        <a href="http://www.theverge.com/2016/1/21/10805420/fender-headphones-in-ear-aurisonics">
+          
+          <h3 class="chorus-optimize" data-chorus-optimize-id="10569461_*" data-chorus-optimize-content-uid="10569461" data-chorus-optimize-module="*">Fender now makes in-ear headphones as well as guitars</h3>
+        </a>
+      </li>
+      <li>
+        <a href="http://www.theverge.com/2016/1/21/10805398/friends-neural-network-scripts">
+          <div class="p-dynamic-image vox-lazy-load lazy-loaded" data-original="https://cdn0.vox-cdn.com/thumbor/5uG-Cx0AoJgBWhgO3oOz6UaB-p8=/585x0:2422x1837/250x250/filters:format(webp)/cdn0.vox-cdn.com/uploads/chorus_image/image/48608917/50811739.0.jpg" data-imgkey="48608917:*:8" data-dim="87x70"></div>
+          <h3 class="chorus-optimize" data-chorus-optimize-id="10569439_*" data-chorus-optimize-content-uid="10569439" data-chorus-optimize-module="*">The one where a computer writes new Friends episodes</h3>
+        </a>
+      </li>
+  </ul>
+
+  
+
+
+</div>
+
+      </div>
+
+    </div>
+
+    <div class="m-linkset">
+  <div class="m-video-hero__title-bar">
+  <h2>The best of <a href="http://www.theverge.com/">Verge Video</a></h2>
+</div>
+
+  <div class="m-video-hero js-video-linkset" id="video-hero">
+
+  <div class="m-video-hero__player" id="video-hero-player">
+      <div id="link-set-85557" class="m-video-hero__main-entry">
+        <a href="http://www.theverge.com/2016/1/20/10801580/war-early-humans-murder" class="m-video-hero__main-link" data-chorus-video-id="85557" data-video-title="Hunter-gatherers weren’t as peaceful as we thought" data-placement="entry:linkset:playlist1:main">
+          
+          <h4>Hunter-gatherers weren’t as peaceful as we thought</h4>
+        </a>
+      </div>
+      
+      
+      
+      
+  </div>
+
+  <div class="m-video-hero__playlist">
+    <ul>
+        <li class="m-video-hero__playlist-entry is-not-playing">
+            <a href="http://www.theverge.com/2016/1/20/10801580/war-early-humans-murder" data-chorus-video-id="85557" data-video-title="Hunter-gatherers weren’t as peaceful as we thought" class="js-playlist" data-placement="entry:linkset:playlist1:list1">
+              <div class="p-dynamic-image vox-lazy-load lazy-loading" data-original="https://cdn0.vox-cdn.com/thumbor/gIARk3a31_UXcB2frs9K2PxEIrg=/148x0:1768x1080/180x120/filters:format(webp)/cdn0.vox-cdn.com/uploads/chorus_image/image/48604161/HISTORY_OF_VIOLENCE_KM.00_01_18_13.Still001.0.0.jpg" data-imgkey="48604161:*:8" data-dim="125x83">
+                
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 95.8 66.8" class="m-video-hero__now-playing" data-svg-fallback="/v/verge/scripts/../images/ui/now_playing.png" data-svg-fallback-override=""><path fill="#fff" d="M49.7 29.6c.2 0 .4-.2.4-.4l4.7-27.1c0-.2 0-.4-.3-.4h-.5c-.2 0-.4.2-.4.4l-4.1 24.1h-.1l-4-24.1c0-.2-.2-.4-.4-.4h-.5c-.2 0-.4.2-.4.4l-4.1 24.1h-.1l-4.1-24.1c0-.2-.2-.4-.4-.4h-.5c-.2 0-.3.2-.3.4l4.7 27.1c0 .2.2.4.4.4h.5c.2 0 .4-.2.4-.4l4.1-24.1h.1l4.1 24.1c0 .2.2.4.4.4h.4zm-24.7-.8c-2 0-3.4-.9-4.1-2.9-.3-1-.5-2.1-.5-10.3 0-8.2.2-9.2.5-10.3.7-2 2.1-2.9 4.1-2.9 2 0 3.4.9 4.1 2.9.3 1 .5 2.1.5 10.3 0 8.2-.2 9.2-.5 10.3-.7 2-2.1 2.9-4.1 2.9m0 1.1c2.6 0 4.4-1.2 5.2-3.6.4-1.2.5-2.3.5-10.7 0-8.4-.1-9.5-.5-10.7-.8-2.4-2.6-3.6-5.2-3.6s-4.4 1.2-5.2 3.6c-.4 1.2-.5 2.3-.5 10.7 0 8.4.1 9.5.5 10.7.7 2.4 2.5 3.6 5.2 3.6m-23.1-.7c0 .2.2.4.4.4h.4c.2 0 .4-.2.4-.4v-24.6h.1l8.8 24.6c.1.3.3.4.7.4h.5c.2 0 .4-.2.4-.4v-27.1c0-.2-.2-.4-.4-.4h-.4c-.2 0-.4.2-.4.4v24.5h-.1l-8.8-24.5c-.1-.4-.3-.4-.7-.4h-.5c-.3 0-.4.1-.4.4v27.1z" class="path1"></path><path fill="#fff" d="M83.6 62.3c.8 2.4 2.6 3.6 5.2 3.6s4.4-1.2 5.2-3.6c.4-1.2.5-2.3.5-9.3v-1c0-.2-.2-.4-.4-.4h-4.8c-.2 0-.4.2-.4.4v.3c0 .2.2.4.4.4h3.8c.2 0 .2.1.2.2 0 6.9-.2 8-.5 9-.7 2-2.1 2.9-4.1 2.9-2 0-3.4-.9-4.1-2.9-.3-1-.5-2.1-.5-10.3 0-8.2.2-9.2.5-10.3.7-2 2.1-2.9 4.1-2.9 2.8 0 4.1 1.8 4.5 4.3 0 .2.2.4.5.3l.3-.1c.2-.1.3-.2.2-.5-.5-2.9-2.1-5.1-5.6-5.1-2.6 0-4.4 1.2-5.2 3.6-.4 1.2-.5 2.3-.5 10.7.2 8.4.3 9.5.7 10.7m-17.9 2.9c0 .2.2.4.4.4h.4c.2 0 .4-.2.4-.4v-24.6h.1l8.8 24.6c.1.3.3.4.7.4h.5c.2 0 .4-.2.4-.4v-27.1c0-.2-.2-.4-.4-.4h-.4c-.2 0-.4.2-.4.4v24.5h-.1l-8.8-24.5c-.1-.3-.3-.4-.7-.4h-.5c-.2 0-.4.2-.4.4v27.1zm-7.3 0c0 .2.2.4.4.4h.4c.2 0 .4-.2.4-.4v-27.1c0-.2-.2-.4-.4-.4h-.4c-.2 0-.4.2-.4.4v27.1zm-9.9.4c.2 0 .4-.2.4-.4v-11.3l5.3-15.8c.1-.2 0-.4-.2-.4h-.5c-.2 0-.4.2-.5.4l-4.6 13.7h-.1l-4.7-13.7c-.1-.2-.2-.4-.5-.4h-.5c-.2 0-.3.2-.2.4l5.3 15.8v11.3c0 .2.2.4.4.4h.4zm-16.5-8.7l3.4-16h.1l3.4 16h-6.9zm-3 8.3c0 .2.2.4.4.4h.4c.2 0 .4-.2.4-.4l1.5-7.2h7.4l1.5 7.2c0 .2.2.4.4.4h.4c.2 0 .5-.2.4-.4l-5.7-27.1c0-.2-.2-.4-.5-.4h-.5c-.2 0-.4.2-.5.4l-5.6 27.1zm-11.9 0c0 .2.2.4.4.4h8.7c.2 0 .4-.2.4-.4v-.3c0-.2-.2-.4-.4-.4h-7.7c-.2 0-.2-.1-.2-.2v-26.2c0-.2-.2-.4-.4-.4h-.4c-.2 0-.4.2-.4.4v27.1zm-11.5-12.9h-2.3c-.2 0-.2-.1-.2-.2v-13.1c0-.2.1-.2.2-.2h2.3c4.1 0 5.6 1.9 5.6 6.8.1 4.8-1.4 6.7-5.6 6.7m-3 13.3c.2 0 .4-.2.4-.4v-11.5c0-.2.1-.2.2-.2h2.3c4.8 0 6.8-2.3 6.8-7.9 0-5.6-2-7.9-6.8-7.9h-3.2c-.2 0-.4.2-.4.4v27.1c0 .2.2.4.4.4h.3z" class="path2"></path></svg>
+
+</div>              
+            </a>
+        </li>
+        <li class="m-video-hero__playlist-entry is-not-playing">
+            <a href="http://www.theverge.com/video/2016/1/20/10799304/apple-new-garageband-hands-on-demo" data-chorus-video-id="85529" data-video-title="T-Pain mixes a beat with the new GarageBand" class="js-playlist" data-placement="entry:linkset:playlist1:list2">
+              <div class="p-dynamic-image vox-lazy-load lazy-loading" data-original="https://cdn2.vox-cdn.com/thumbor/6Dc0XtvYRt-aaShfQGvorRsKZes=/148x0:1768x1080/180x120/filters:format(webp)/cdn0.vox-cdn.com/uploads/chorus_image/image/48602081/thumb_2.0.0.jpg" data-imgkey="48602081:*:8" data-dim="125x82">
+                
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 95.8 66.8" class="m-video-hero__now-playing" data-svg-fallback="/v/verge/scripts/../images/ui/now_playing.png" data-svg-fallback-override=""><path fill="#fff" d="M49.7 29.6c.2 0 .4-.2.4-.4l4.7-27.1c0-.2 0-.4-.3-.4h-.5c-.2 0-.4.2-.4.4l-4.1 24.1h-.1l-4-24.1c0-.2-.2-.4-.4-.4h-.5c-.2 0-.4.2-.4.4l-4.1 24.1h-.1l-4.1-24.1c0-.2-.2-.4-.4-.4h-.5c-.2 0-.3.2-.3.4l4.7 27.1c0 .2.2.4.4.4h.5c.2 0 .4-.2.4-.4l4.1-24.1h.1l4.1 24.1c0 .2.2.4.4.4h.4zm-24.7-.8c-2 0-3.4-.9-4.1-2.9-.3-1-.5-2.1-.5-10.3 0-8.2.2-9.2.5-10.3.7-2 2.1-2.9 4.1-2.9 2 0 3.4.9 4.1 2.9.3 1 .5 2.1.5 10.3 0 8.2-.2 9.2-.5 10.3-.7 2-2.1 2.9-4.1 2.9m0 1.1c2.6 0 4.4-1.2 5.2-3.6.4-1.2.5-2.3.5-10.7 0-8.4-.1-9.5-.5-10.7-.8-2.4-2.6-3.6-5.2-3.6s-4.4 1.2-5.2 3.6c-.4 1.2-.5 2.3-.5 10.7 0 8.4.1 9.5.5 10.7.7 2.4 2.5 3.6 5.2 3.6m-23.1-.7c0 .2.2.4.4.4h.4c.2 0 .4-.2.4-.4v-24.6h.1l8.8 24.6c.1.3.3.4.7.4h.5c.2 0 .4-.2.4-.4v-27.1c0-.2-.2-.4-.4-.4h-.4c-.2 0-.4.2-.4.4v24.5h-.1l-8.8-24.5c-.1-.4-.3-.4-.7-.4h-.5c-.3 0-.4.1-.4.4v27.1z" class="path1"></path><path fill="#fff" d="M83.6 62.3c.8 2.4 2.6 3.6 5.2 3.6s4.4-1.2 5.2-3.6c.4-1.2.5-2.3.5-9.3v-1c0-.2-.2-.4-.4-.4h-4.8c-.2 0-.4.2-.4.4v.3c0 .2.2.4.4.4h3.8c.2 0 .2.1.2.2 0 6.9-.2 8-.5 9-.7 2-2.1 2.9-4.1 2.9-2 0-3.4-.9-4.1-2.9-.3-1-.5-2.1-.5-10.3 0-8.2.2-9.2.5-10.3.7-2 2.1-2.9 4.1-2.9 2.8 0 4.1 1.8 4.5 4.3 0 .2.2.4.5.3l.3-.1c.2-.1.3-.2.2-.5-.5-2.9-2.1-5.1-5.6-5.1-2.6 0-4.4 1.2-5.2 3.6-.4 1.2-.5 2.3-.5 10.7.2 8.4.3 9.5.7 10.7m-17.9 2.9c0 .2.2.4.4.4h.4c.2 0 .4-.2.4-.4v-24.6h.1l8.8 24.6c.1.3.3.4.7.4h.5c.2 0 .4-.2.4-.4v-27.1c0-.2-.2-.4-.4-.4h-.4c-.2 0-.4.2-.4.4v24.5h-.1l-8.8-24.5c-.1-.3-.3-.4-.7-.4h-.5c-.2 0-.4.2-.4.4v27.1zm-7.3 0c0 .2.2.4.4.4h.4c.2 0 .4-.2.4-.4v-27.1c0-.2-.2-.4-.4-.4h-.4c-.2 0-.4.2-.4.4v27.1zm-9.9.4c.2 0 .4-.2.4-.4v-11.3l5.3-15.8c.1-.2 0-.4-.2-.4h-.5c-.2 0-.4.2-.5.4l-4.6 13.7h-.1l-4.7-13.7c-.1-.2-.2-.4-.5-.4h-.5c-.2 0-.3.2-.2.4l5.3 15.8v11.3c0 .2.2.4.4.4h.4zm-16.5-8.7l3.4-16h.1l3.4 16h-6.9zm-3 8.3c0 .2.2.4.4.4h.4c.2 0 .4-.2.4-.4l1.5-7.2h7.4l1.5 7.2c0 .2.2.4.4.4h.4c.2 0 .5-.2.4-.4l-5.7-27.1c0-.2-.2-.4-.5-.4h-.5c-.2 0-.4.2-.5.4l-5.6 27.1zm-11.9 0c0 .2.2.4.4.4h8.7c.2 0 .4-.2.4-.4v-.3c0-.2-.2-.4-.4-.4h-7.7c-.2 0-.2-.1-.2-.2v-26.2c0-.2-.2-.4-.4-.4h-.4c-.2 0-.4.2-.4.4v27.1zm-11.5-12.9h-2.3c-.2 0-.2-.1-.2-.2v-13.1c0-.2.1-.2.2-.2h2.3c4.1 0 5.6 1.9 5.6 6.8.1 4.8-1.4 6.7-5.6 6.7m-3 13.3c.2 0 .4-.2.4-.4v-11.5c0-.2.1-.2.2-.2h2.3c4.8 0 6.8-2.3 6.8-7.9 0-5.6-2-7.9-6.8-7.9h-3.2c-.2 0-.4.2-.4.4v27.1c0 .2.2.4.4.4h.3z" class="path2"></path></svg>
+
+</div>              
+            </a>
+        </li>
+        <li class="m-video-hero__playlist-entry is-not-playing">
+            <a href="http://www.theverge.com/video/2016/1/20/10799220/apple-music-memos-hands-on-demo" data-chorus-video-id="85499" data-video-title="Apple Music Memos makes mobile recording easy" class="js-playlist" data-placement="entry:linkset:playlist1:list3">
+              <div class="p-dynamic-image vox-lazy-load lazy-loading" data-original="https://cdn3.vox-cdn.com/thumbor/lUssVKnubdW_pDDPKegE8WW0im4=/0x0:2039x1359/180x120/filters:format(webp)/cdn0.vox-cdn.com/uploads/chorus_image/image/48602031/musicmemos2_2040.0.0.jpg" data-imgkey="48602031:*:8" data-dim="125x82">
+                
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 95.8 66.8" class="m-video-hero__now-playing" data-svg-fallback="/v/verge/scripts/../images/ui/now_playing.png" data-svg-fallback-override=""><path fill="#fff" d="M49.7 29.6c.2 0 .4-.2.4-.4l4.7-27.1c0-.2 0-.4-.3-.4h-.5c-.2 0-.4.2-.4.4l-4.1 24.1h-.1l-4-24.1c0-.2-.2-.4-.4-.4h-.5c-.2 0-.4.2-.4.4l-4.1 24.1h-.1l-4.1-24.1c0-.2-.2-.4-.4-.4h-.5c-.2 0-.3.2-.3.4l4.7 27.1c0 .2.2.4.4.4h.5c.2 0 .4-.2.4-.4l4.1-24.1h.1l4.1 24.1c0 .2.2.4.4.4h.4zm-24.7-.8c-2 0-3.4-.9-4.1-2.9-.3-1-.5-2.1-.5-10.3 0-8.2.2-9.2.5-10.3.7-2 2.1-2.9 4.1-2.9 2 0 3.4.9 4.1 2.9.3 1 .5 2.1.5 10.3 0 8.2-.2 9.2-.5 10.3-.7 2-2.1 2.9-4.1 2.9m0 1.1c2.6 0 4.4-1.2 5.2-3.6.4-1.2.5-2.3.5-10.7 0-8.4-.1-9.5-.5-10.7-.8-2.4-2.6-3.6-5.2-3.6s-4.4 1.2-5.2 3.6c-.4 1.2-.5 2.3-.5 10.7 0 8.4.1 9.5.5 10.7.7 2.4 2.5 3.6 5.2 3.6m-23.1-.7c0 .2.2.4.4.4h.4c.2 0 .4-.2.4-.4v-24.6h.1l8.8 24.6c.1.3.3.4.7.4h.5c.2 0 .4-.2.4-.4v-27.1c0-.2-.2-.4-.4-.4h-.4c-.2 0-.4.2-.4.4v24.5h-.1l-8.8-24.5c-.1-.4-.3-.4-.7-.4h-.5c-.3 0-.4.1-.4.4v27.1z" class="path1"></path><path fill="#fff" d="M83.6 62.3c.8 2.4 2.6 3.6 5.2 3.6s4.4-1.2 5.2-3.6c.4-1.2.5-2.3.5-9.3v-1c0-.2-.2-.4-.4-.4h-4.8c-.2 0-.4.2-.4.4v.3c0 .2.2.4.4.4h3.8c.2 0 .2.1.2.2 0 6.9-.2 8-.5 9-.7 2-2.1 2.9-4.1 2.9-2 0-3.4-.9-4.1-2.9-.3-1-.5-2.1-.5-10.3 0-8.2.2-9.2.5-10.3.7-2 2.1-2.9 4.1-2.9 2.8 0 4.1 1.8 4.5 4.3 0 .2.2.4.5.3l.3-.1c.2-.1.3-.2.2-.5-.5-2.9-2.1-5.1-5.6-5.1-2.6 0-4.4 1.2-5.2 3.6-.4 1.2-.5 2.3-.5 10.7.2 8.4.3 9.5.7 10.7m-17.9 2.9c0 .2.2.4.4.4h.4c.2 0 .4-.2.4-.4v-24.6h.1l8.8 24.6c.1.3.3.4.7.4h.5c.2 0 .4-.2.4-.4v-27.1c0-.2-.2-.4-.4-.4h-.4c-.2 0-.4.2-.4.4v24.5h-.1l-8.8-24.5c-.1-.3-.3-.4-.7-.4h-.5c-.2 0-.4.2-.4.4v27.1zm-7.3 0c0 .2.2.4.4.4h.4c.2 0 .4-.2.4-.4v-27.1c0-.2-.2-.4-.4-.4h-.4c-.2 0-.4.2-.4.4v27.1zm-9.9.4c.2 0 .4-.2.4-.4v-11.3l5.3-15.8c.1-.2 0-.4-.2-.4h-.5c-.2 0-.4.2-.5.4l-4.6 13.7h-.1l-4.7-13.7c-.1-.2-.2-.4-.5-.4h-.5c-.2 0-.3.2-.2.4l5.3 15.8v11.3c0 .2.2.4.4.4h.4zm-16.5-8.7l3.4-16h.1l3.4 16h-6.9zm-3 8.3c0 .2.2.4.4.4h.4c.2 0 .4-.2.4-.4l1.5-7.2h7.4l1.5 7.2c0 .2.2.4.4.4h.4c.2 0 .5-.2.4-.4l-5.7-27.1c0-.2-.2-.4-.5-.4h-.5c-.2 0-.4.2-.5.4l-5.6 27.1zm-11.9 0c0 .2.2.4.4.4h8.7c.2 0 .4-.2.4-.4v-.3c0-.2-.2-.4-.4-.4h-7.7c-.2 0-.2-.1-.2-.2v-26.2c0-.2-.2-.4-.4-.4h-.4c-.2 0-.4.2-.4.4v27.1zm-11.5-12.9h-2.3c-.2 0-.2-.1-.2-.2v-13.1c0-.2.1-.2.2-.2h2.3c4.1 0 5.6 1.9 5.6 6.8.1 4.8-1.4 6.7-5.6 6.7m-3 13.3c.2 0 .4-.2.4-.4v-11.5c0-.2.1-.2.2-.2h2.3c4.8 0 6.8-2.3 6.8-7.9 0-5.6-2-7.9-6.8-7.9h-3.2c-.2 0-.4.2-.4.4v27.1c0 .2.2.4.4.4h.3z" class="path2"></path></svg>
+
+</div>              
+            </a>
+        </li>
+        <li class="m-video-hero__playlist-entry is-not-playing">
+            <a href="http://www.theverge.com/2016/1/20/10799000/t-pain-interview-auto-tune-music-technology" data-chorus-video-id="85523" data-video-title="T-Pain on how technology and apps shaped his sound" class="js-playlist" data-placement="entry:linkset:playlist1:list4">
+              <div class="p-dynamic-image vox-lazy-load lazy-loading" data-original="https://cdn1.vox-cdn.com/thumbor/E7OCuR0QISsvcz-j3LYv2pfBVlc=/0x0:1620x1080/180x120/filters:format(webp)/cdn0.vox-cdn.com/uploads/chorus_image/image/48601827/0P9A9607.0.0.jpg" data-imgkey="48601827:*:8" data-dim="125x82">
+                
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 95.8 66.8" class="m-video-hero__now-playing" data-svg-fallback="/v/verge/scripts/../images/ui/now_playing.png" data-svg-fallback-override=""><path fill="#fff" d="M49.7 29.6c.2 0 .4-.2.4-.4l4.7-27.1c0-.2 0-.4-.3-.4h-.5c-.2 0-.4.2-.4.4l-4.1 24.1h-.1l-4-24.1c0-.2-.2-.4-.4-.4h-.5c-.2 0-.4.2-.4.4l-4.1 24.1h-.1l-4.1-24.1c0-.2-.2-.4-.4-.4h-.5c-.2 0-.3.2-.3.4l4.7 27.1c0 .2.2.4.4.4h.5c.2 0 .4-.2.4-.4l4.1-24.1h.1l4.1 24.1c0 .2.2.4.4.4h.4zm-24.7-.8c-2 0-3.4-.9-4.1-2.9-.3-1-.5-2.1-.5-10.3 0-8.2.2-9.2.5-10.3.7-2 2.1-2.9 4.1-2.9 2 0 3.4.9 4.1 2.9.3 1 .5 2.1.5 10.3 0 8.2-.2 9.2-.5 10.3-.7 2-2.1 2.9-4.1 2.9m0 1.1c2.6 0 4.4-1.2 5.2-3.6.4-1.2.5-2.3.5-10.7 0-8.4-.1-9.5-.5-10.7-.8-2.4-2.6-3.6-5.2-3.6s-4.4 1.2-5.2 3.6c-.4 1.2-.5 2.3-.5 10.7 0 8.4.1 9.5.5 10.7.7 2.4 2.5 3.6 5.2 3.6m-23.1-.7c0 .2.2.4.4.4h.4c.2 0 .4-.2.4-.4v-24.6h.1l8.8 24.6c.1.3.3.4.7.4h.5c.2 0 .4-.2.4-.4v-27.1c0-.2-.2-.4-.4-.4h-.4c-.2 0-.4.2-.4.4v24.5h-.1l-8.8-24.5c-.1-.4-.3-.4-.7-.4h-.5c-.3 0-.4.1-.4.4v27.1z" class="path1"></path><path fill="#fff" d="M83.6 62.3c.8 2.4 2.6 3.6 5.2 3.6s4.4-1.2 5.2-3.6c.4-1.2.5-2.3.5-9.3v-1c0-.2-.2-.4-.4-.4h-4.8c-.2 0-.4.2-.4.4v.3c0 .2.2.4.4.4h3.8c.2 0 .2.1.2.2 0 6.9-.2 8-.5 9-.7 2-2.1 2.9-4.1 2.9-2 0-3.4-.9-4.1-2.9-.3-1-.5-2.1-.5-10.3 0-8.2.2-9.2.5-10.3.7-2 2.1-2.9 4.1-2.9 2.8 0 4.1 1.8 4.5 4.3 0 .2.2.4.5.3l.3-.1c.2-.1.3-.2.2-.5-.5-2.9-2.1-5.1-5.6-5.1-2.6 0-4.4 1.2-5.2 3.6-.4 1.2-.5 2.3-.5 10.7.2 8.4.3 9.5.7 10.7m-17.9 2.9c0 .2.2.4.4.4h.4c.2 0 .4-.2.4-.4v-24.6h.1l8.8 24.6c.1.3.3.4.7.4h.5c.2 0 .4-.2.4-.4v-27.1c0-.2-.2-.4-.4-.4h-.4c-.2 0-.4.2-.4.4v24.5h-.1l-8.8-24.5c-.1-.3-.3-.4-.7-.4h-.5c-.2 0-.4.2-.4.4v27.1zm-7.3 0c0 .2.2.4.4.4h.4c.2 0 .4-.2.4-.4v-27.1c0-.2-.2-.4-.4-.4h-.4c-.2 0-.4.2-.4.4v27.1zm-9.9.4c.2 0 .4-.2.4-.4v-11.3l5.3-15.8c.1-.2 0-.4-.2-.4h-.5c-.2 0-.4.2-.5.4l-4.6 13.7h-.1l-4.7-13.7c-.1-.2-.2-.4-.5-.4h-.5c-.2 0-.3.2-.2.4l5.3 15.8v11.3c0 .2.2.4.4.4h.4zm-16.5-8.7l3.4-16h.1l3.4 16h-6.9zm-3 8.3c0 .2.2.4.4.4h.4c.2 0 .4-.2.4-.4l1.5-7.2h7.4l1.5 7.2c0 .2.2.4.4.4h.4c.2 0 .5-.2.4-.4l-5.7-27.1c0-.2-.2-.4-.5-.4h-.5c-.2 0-.4.2-.5.4l-5.6 27.1zm-11.9 0c0 .2.2.4.4.4h8.7c.2 0 .4-.2.4-.4v-.3c0-.2-.2-.4-.4-.4h-7.7c-.2 0-.2-.1-.2-.2v-26.2c0-.2-.2-.4-.4-.4h-.4c-.2 0-.4.2-.4.4v27.1zm-11.5-12.9h-2.3c-.2 0-.2-.1-.2-.2v-13.1c0-.2.1-.2.2-.2h2.3c4.1 0 5.6 1.9 5.6 6.8.1 4.8-1.4 6.7-5.6 6.7m-3 13.3c.2 0 .4-.2.4-.4v-11.5c0-.2.1-.2.2-.2h2.3c4.8 0 6.8-2.3 6.8-7.9 0-5.6-2-7.9-6.8-7.9h-3.2c-.2 0-.4.2-.4.4v27.1c0 .2.2.4.4.4h.3z" class="path2"></path></svg>
+
+</div>              
+            </a>
+        </li>
+        <li class="m-video-hero__playlist-entry is-not-playing">
+            <a href="http://www.theverge.com/video/2016/1/14/10771590/woolly-mammoth-discovery-russia-2012" data-chorus-video-id="85259" data-video-title="This frozen woolly mammoth changes human history" class="js-playlist" data-placement="entry:linkset:playlist1:list5">
+              <div class="p-dynamic-image vox-lazy-load lazy-loading" data-original="https://cdn2.vox-cdn.com/thumbor/OEMY8Yi9gRdYHj7vGGUMA3A37WI=/148x0:1768x1080/180x120/filters:format(webp)/cdn0.vox-cdn.com/uploads/chorus_image/image/48566039/VRG_VUP_476_WOOLLY_MAMMOTH_STUDY_THUMB3.0.0.jpg" data-imgkey="48566039:*:8" data-dim="125x82">
+                
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 95.8 66.8" class="m-video-hero__now-playing" data-svg-fallback="/v/verge/scripts/../images/ui/now_playing.png" data-svg-fallback-override=""><path fill="#fff" d="M49.7 29.6c.2 0 .4-.2.4-.4l4.7-27.1c0-.2 0-.4-.3-.4h-.5c-.2 0-.4.2-.4.4l-4.1 24.1h-.1l-4-24.1c0-.2-.2-.4-.4-.4h-.5c-.2 0-.4.2-.4.4l-4.1 24.1h-.1l-4.1-24.1c0-.2-.2-.4-.4-.4h-.5c-.2 0-.3.2-.3.4l4.7 27.1c0 .2.2.4.4.4h.5c.2 0 .4-.2.4-.4l4.1-24.1h.1l4.1 24.1c0 .2.2.4.4.4h.4zm-24.7-.8c-2 0-3.4-.9-4.1-2.9-.3-1-.5-2.1-.5-10.3 0-8.2.2-9.2.5-10.3.7-2 2.1-2.9 4.1-2.9 2 0 3.4.9 4.1 2.9.3 1 .5 2.1.5 10.3 0 8.2-.2 9.2-.5 10.3-.7 2-2.1 2.9-4.1 2.9m0 1.1c2.6 0 4.4-1.2 5.2-3.6.4-1.2.5-2.3.5-10.7 0-8.4-.1-9.5-.5-10.7-.8-2.4-2.6-3.6-5.2-3.6s-4.4 1.2-5.2 3.6c-.4 1.2-.5 2.3-.5 10.7 0 8.4.1 9.5.5 10.7.7 2.4 2.5 3.6 5.2 3.6m-23.1-.7c0 .2.2.4.4.4h.4c.2 0 .4-.2.4-.4v-24.6h.1l8.8 24.6c.1.3.3.4.7.4h.5c.2 0 .4-.2.4-.4v-27.1c0-.2-.2-.4-.4-.4h-.4c-.2 0-.4.2-.4.4v24.5h-.1l-8.8-24.5c-.1-.4-.3-.4-.7-.4h-.5c-.3 0-.4.1-.4.4v27.1z" class="path1"></path><path fill="#fff" d="M83.6 62.3c.8 2.4 2.6 3.6 5.2 3.6s4.4-1.2 5.2-3.6c.4-1.2.5-2.3.5-9.3v-1c0-.2-.2-.4-.4-.4h-4.8c-.2 0-.4.2-.4.4v.3c0 .2.2.4.4.4h3.8c.2 0 .2.1.2.2 0 6.9-.2 8-.5 9-.7 2-2.1 2.9-4.1 2.9-2 0-3.4-.9-4.1-2.9-.3-1-.5-2.1-.5-10.3 0-8.2.2-9.2.5-10.3.7-2 2.1-2.9 4.1-2.9 2.8 0 4.1 1.8 4.5 4.3 0 .2.2.4.5.3l.3-.1c.2-.1.3-.2.2-.5-.5-2.9-2.1-5.1-5.6-5.1-2.6 0-4.4 1.2-5.2 3.6-.4 1.2-.5 2.3-.5 10.7.2 8.4.3 9.5.7 10.7m-17.9 2.9c0 .2.2.4.4.4h.4c.2 0 .4-.2.4-.4v-24.6h.1l8.8 24.6c.1.3.3.4.7.4h.5c.2 0 .4-.2.4-.4v-27.1c0-.2-.2-.4-.4-.4h-.4c-.2 0-.4.2-.4.4v24.5h-.1l-8.8-24.5c-.1-.3-.3-.4-.7-.4h-.5c-.2 0-.4.2-.4.4v27.1zm-7.3 0c0 .2.2.4.4.4h.4c.2 0 .4-.2.4-.4v-27.1c0-.2-.2-.4-.4-.4h-.4c-.2 0-.4.2-.4.4v27.1zm-9.9.4c.2 0 .4-.2.4-.4v-11.3l5.3-15.8c.1-.2 0-.4-.2-.4h-.5c-.2 0-.4.2-.5.4l-4.6 13.7h-.1l-4.7-13.7c-.1-.2-.2-.4-.5-.4h-.5c-.2 0-.3.2-.2.4l5.3 15.8v11.3c0 .2.2.4.4.4h.4zm-16.5-8.7l3.4-16h.1l3.4 16h-6.9zm-3 8.3c0 .2.2.4.4.4h.4c.2 0 .4-.2.4-.4l1.5-7.2h7.4l1.5 7.2c0 .2.2.4.4.4h.4c.2 0 .5-.2.4-.4l-5.7-27.1c0-.2-.2-.4-.5-.4h-.5c-.2 0-.4.2-.5.4l-5.6 27.1zm-11.9 0c0 .2.2.4.4.4h8.7c.2 0 .4-.2.4-.4v-.3c0-.2-.2-.4-.4-.4h-7.7c-.2 0-.2-.1-.2-.2v-26.2c0-.2-.2-.4-.4-.4h-.4c-.2 0-.4.2-.4.4v27.1zm-11.5-12.9h-2.3c-.2 0-.2-.1-.2-.2v-13.1c0-.2.1-.2.2-.2h2.3c4.1 0 5.6 1.9 5.6 6.8.1 4.8-1.4 6.7-5.6 6.7m-3 13.3c.2 0 .4-.2.4-.4v-11.5c0-.2.1-.2.2-.2h2.3c4.8 0 6.8-2.3 6.8-7.9 0-5.6-2-7.9-6.8-7.9h-3.2c-.2 0-.4.2-.4.4v27.1c0 .2.2.4.4.4h.3z" class="path2"></path></svg>
+
+</div>              
+            </a>
+        </li>
+    </ul>
+  </div>
+  <a class="m-video-hero__comment-link" href="http://www.theverge.com/2016/1/20/10801580/war-early-humans-murder">Discuss at Verge Video</a>
+  <a href="http://www.theverge.com/video" class="m-video-hero__more-videos">See <span>more</span> <i>videos</i></a>
+</div>
+
+
+
+</div>
+
+    
+
+
+    <div class="m-article__comments-section">
+
+      
+      <div class="m-article__comments__sidebar">
+        
+
+
+      </div>
+    </div>
+
+  
