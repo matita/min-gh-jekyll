@@ -1,0 +1,197 @@
+---
+title: "Jayden Seric | Forget normalize or resets; lay your own CSS foundation"
+description: "Most start their front end styles by throwing in normalize.css or a reset. There are cons to this along with a perfectionist alternative: Your own custom foundation."
+link: "http://jaydenseric.com/blog/forget-normalize-or-resets-lay-your-own-css-foundation"
+saved: "2016-01-21 15:51:24"
+---
+
+	
+	<div class="content">
+					<aside class="notice">
+				<p>Boy do things move fast! Global CSS is now an anti-pattern with components emerging as a best practice. Please read this article with that in mind. The latest version of the CSS in this article has been moved from <a href="https://github.com/jaydenseric/Barebones" target="_blank">Barebones</a> to a dedicated repo, <a href="https://github.com/jaydenseric/Fix" target="_blank">Fix</a>.</p>			</aside>
+				<h1>Overview</h1>
+<p>Most start their front end styles by throwing in a reset such as <a href="http://meyerweb.com/eric/tools/css/reset" target="_blank">Eric Myer's</a> or the more fashionable <a href="http://necolas.github.io/normalize.css" target="_blank">normalize.css</a>. I will say a few nasty things about both approaches before I present to you the perfectionist alternative: Your own custom foundation.</p>
+<p>Foundation is a good word for a different approach. Resets strip <a href="http://www.w3.org/TR/css-cascade-3/#cascade-origin-ua" target="_blank">user agent default styles</a> back. Normalizing attempts to even out the differences and fix a few things. A foundation strips and adds styles where it makes sense to minimize the amount of declarations and overrides you will have to make later. While a foundation can be replicated elsewhere, it is simple and intended to be built on top of.</p>
+<h2>Shitty things about normalize.css</h2>
+<ol>
+<li>Declarations that aren't helpful. What's the point in specifying arbitrary sizes for headings when you are going to overwrite them all anyway?</li>
+<li>Support for browsers you might not need to support. Do you really need the IE8 hacks?</li>
+<li>It's over 8 KB. Hopefully you strip the comments, minify and include it in the main stylesheet to avoid an extra network request, but I know a lot of you don't.</li>
+</ol>
+<h2>Shitty things about resets</h2>
+<ol>
+<li>Reset declarations can <em>really</em> clog your inspector when you try to trace styles.</li>
+<li>Resets don't attempt to normalize specific cross-browser issues or set helpful styles.</li>
+</ol>
+<h2>Bad things about both</h2>
+<ol>
+<li>Declarations you don't need. Do you use <code>&lt;hr&gt;</code> tags? Neither do I. Chances are you won't be using <code>&lt;kbd&gt;</code>, <code>&lt;var&gt;</code>, <code>&lt;ruby&gt;</code> and a bunch of other bloat. <a href="http://meyerweb.com/eric/tools/css/reset" target="_blank">Eric Myer's reset</a>, the most popular, still accounts for deprecated tags such as <code>&lt;tt&gt;</code> and <code>&lt;big&gt;</code>.</li>
+<li>Both tend to include <code>display: block</code> styles for HTML5 element support in old IE. This is already handled by the <a href="https://github.com/aFarkas/html5shiv" target="_blank">HTML5 shiv</a>.</li>
+<li>Essentials that technically fall outside of the scope of cross-browser normalisation are missing. E.g. making images responsive.</li>
+<li>Neither are perfect: You should try to be. Front end developers need to be intimate with <a href="http://www.w3.org/TR/css-cascade-3/#cascade-origin-ua" target="_blank">user agent default styles</a> for a million reasons. There will be times that you work on existing projects that don't use normalize.css and you will need to know what you are doing.</li>
+</ol>
+<p>Lets get on to that perfectionist solution.</p>
+<h1>The foundation</h1>
+<p>The following essential styles should set the foundation for pretty much <em>every</em> project.</p>
+<pre class=" language-scss"><code class=" language-scss"><span class="token selector">html </span><span class="token punctuation">{</span>
+    <span class="token property">-ms-text-size-adjust</span><span class="token punctuation">:</span> <span class="token number">100%</span><span class="token punctuation">;</span>
+    <span class="token property">-webkit-text-size-adjust</span><span class="token punctuation">:</span> <span class="token number">100%</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span class="token selector">
+body </span><span class="token punctuation">{</span>
+    <span class="token property">margin</span><span class="token punctuation">:</span> <span class="token number">0</span><span class="token punctuation">;</span>
+    <span class="token property">font</span><span class="token punctuation">:</span> <span class="token number">16</span>px/<span class="token number">1</span> sans-serif<span class="token punctuation">;</span>
+    <span class="token property">-moz-osx-font-smoothing</span><span class="token punctuation">:</span> grayscale<span class="token punctuation">;</span>
+    <span class="token property">-webkit-font-smoothing</span><span class="token punctuation">:</span> antialiased<span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span class="token selector">
+h1,
+h2,
+h3,
+h4,
+p,
+blockquote,
+figure,
+ol,
+ul </span><span class="token punctuation">{</span>
+    <span class="token property">margin</span><span class="token punctuation">:</span> <span class="token number">0</span><span class="token punctuation">;</span>
+    <span class="token property">padding</span><span class="token punctuation">:</span> <span class="token number">0</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span class="token selector">
+main,
+li </span><span class="token punctuation">{</span>
+    <span class="token property">display</span><span class="token punctuation">:</span> block<span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span class="token selector">
+h1,
+h2,
+h3,
+h4 </span><span class="token punctuation">{</span>
+    <span class="token property">font-size</span><span class="token punctuation">:</span> inherit<span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span class="token selector">
+strong </span><span class="token punctuation">{</span>
+    <span class="token property">font-weight</span><span class="token punctuation">:</span> bold<span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span class="token selector">
+a,
+button </span><span class="token punctuation">{</span>
+    <span class="token property">color</span><span class="token punctuation">:</span> inherit<span class="token punctuation">;</span>
+    <span class="token property">transition</span><span class="token punctuation">:</span> <span class="token number">.3</span>s<span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span class="token selector">
+a </span><span class="token punctuation">{</span>
+    <span class="token property">text-decoration</span><span class="token punctuation">:</span> none<span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span class="token selector">
+button </span><span class="token punctuation">{</span>
+    <span class="token property">overflow</span><span class="token punctuation">:</span> visible<span class="token punctuation">;</span>
+    <span class="token property">border</span><span class="token punctuation">:</span> <span class="token number">0</span><span class="token punctuation">;</span>
+    <span class="token property">font</span><span class="token punctuation">:</span> inherit<span class="token punctuation">;</span>
+    <span class="token property">-webkit-font-smoothing</span><span class="token punctuation">:</span> inherit<span class="token punctuation">;</span>
+    <span class="token property">letter-spacing</span><span class="token punctuation">:</span> inherit<span class="token punctuation">;</span>
+    <span class="token property">background</span><span class="token punctuation">:</span> none<span class="token punctuation">;</span>
+    <span class="token property">cursor</span><span class="token punctuation">:</span> pointer<span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span class="token selector">
+::-moz-focus-inner </span><span class="token punctuation">{</span>
+    <span class="token property">padding</span><span class="token punctuation">:</span> <span class="token number">0</span><span class="token punctuation">;</span>
+    <span class="token property">border</span><span class="token punctuation">:</span> <span class="token number">0</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span class="token selector">
+:focus </span><span class="token punctuation">{</span>
+    <span class="token property">outline</span><span class="token punctuation">:</span> <span class="token number">0</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span class="token selector">
+img </span><span class="token punctuation">{</span>
+    <span class="token property">max-width</span><span class="token punctuation">:</span> <span class="token number">100%</span><span class="token punctuation">;</span>
+    <span class="token property">height</span><span class="token punctuation">:</span> auto<span class="token punctuation">;</span>
+    <span class="token property">border</span><span class="token punctuation">:</span> <span class="token number">0</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span></code></pre>
+<h2>Breakdown</h2>
+<p>Lets go over this line-by-line.</p>
+<pre class=" language-scss"><code class=" language-scss"><span class="token selector">html </span><span class="token punctuation">{</span>
+    <span class="token property">-ms-text-size-adjust</span><span class="token punctuation">:</span> <span class="token number">100%</span><span class="token punctuation">;</span>
+    <span class="token property">-webkit-text-size-adjust</span><span class="token punctuation">:</span> <span class="token number">100%</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span></code></pre>
+<p>The <code>text-size-adjust</code> declarations prevent certain mobile browsers from automatically zooming fonts. Importantly this ensures iOS Safari matches the page width to wider landscape viewports instead of zooming everything. Unlike <code>none</code>, a value of <code>100%</code> allows users to still pinch-zoom. These rules appear in <a href="https://github.com/necolas/normalize.css/blob/master/normalize.css#L5" target="_blank">Normalize.css</a>, which is in turn used in the HTML5 Boilerplate and Bootstrap.</p>
+<pre class=" language-scss"><code class=" language-scss"><span class="token selector">body </span><span class="token punctuation">{</span>
+    <span class="token property">margin</span><span class="token punctuation">:</span> <span class="token number">0</span><span class="token punctuation">;</span>
+    <span class="token property">font</span><span class="token punctuation">:</span> <span class="token number">16</span>px/<span class="token number">1</span> sans-serif<span class="token punctuation">;</span>
+    <span class="token property">-moz-osx-font-smoothing</span><span class="token punctuation">:</span> grayscale<span class="token punctuation">;</span>
+    <span class="token property">-webkit-font-smoothing</span><span class="token punctuation">:</span> antialiased<span class="token punctuation">;</span>
+<span class="token punctuation">}</span></code></pre>
+<p>Often undesired page margins are removed. The default font size can vary between browsers; normalize this to a legible base size suited to your chosen main font, which should replace <code>sans-serif</code>.  A <code>line-height</code> of <code>1</code> resets inconsistent browser interpretations of the default <code>normal</code> to a more robust base value that will not cause undesired spacing.</p>
+<p>The <code>font-smoothing</code> declarations are a good idea for a few reasons:</p>
+<ol>
+<li>Fonts on OS X will look more consistent with other systems that do not render text using sub-pixel anti-aliasing.</li>
+<li>Although grayscale is inferior to <a href="http://en.wikipedia.org/wiki/Subpixel_rendering" target="_blank">sub-pixel anti-aliasing</a>, most fonts were designed for the "thinner" anti-aliasing and look better that way.</li>
+<li>Setting this smoothing beforehand prevents an ugly flickering of font "thickness" when animations start and stop. Browsers use this simpler font smoothing to save on resources when animating or transitioning elements.</li>
+</ol>
+<pre class=" language-scss"><code class=" language-scss"><span class="token selector">h1,
+h2,
+h3,
+h4,
+p,
+blockquote,
+figure,
+ol,
+ul </span><span class="token punctuation">{</span>
+    <span class="token property">margin</span><span class="token punctuation">:</span> <span class="token number">0</span><span class="token punctuation">;</span>
+    <span class="token property">padding</span><span class="token punctuation">:</span> <span class="token number">0</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span></code></pre>
+<p>Here we head into reset territory. Stripping the margin and padding from these core elements brings them to the same predictable blank slate as <code>div</code>, <code>section</code> and <code>article</code>. The vast majority of the time you style these elements you want either a <code>0</code> value or something very specific. You will override <code>0</code> a lot less than an arbitrary value such as <code>1em</code>.</p>
+<p>Only specify elements that exist in your project. For example, you may never use <code>h4</code> or <code>blockquote</code> tags. Add or remove as needed to avoid redundant code.</p>
+<pre class=" language-scss"><code class=" language-scss"><span class="token selector">main,
+li </span><span class="token punctuation">{</span>
+    <span class="token property">display</span><span class="token punctuation">:</span> block<span class="token punctuation">;</span>
+<span class="token punctuation">}</span></code></pre>
+<p>This fixes the <code>main</code> tag being unsupported and horribly breaking the layout in even recent versions of IE.</p>
+<p>It also gets rid of the little bullets and numbers from list items, saving you having to strip them off repeatedly every time you make a menu or any other component that is semantically a list. When you actually need bullets or numbering pseudo-elements provide more customisation options than the standard <code>list-style</code> approach anyway.</p>
+<pre class=" language-scss"><code class=" language-scss"><span class="token selector">h1,
+h2,
+h3,
+h4 </span><span class="token punctuation">{</span>
+    <span class="token property">font-size</span><span class="token punctuation">:</span> inherit<span class="token punctuation">;</span>
+<span class="token punctuation">}</span></code></pre>
+<p>A heading's level should be determined by it's placement in the <a href="https://developer.mozilla.org/en-US/docs/Web/Guide/HTML/Sections_and_Outlines_of_an_HTML5_document" target="_blank">document outline</a> and not by the stylistic appearance of the words. Sometimes a <code>h2</code> will be designed smaller that a <code>h3</code> elsewhere on the same page. Components of a modern web page tend to have very localised heading styles; it's never one-size-fits-all. Often headings are the same size as the accompanying text and are distinguished by bolding, capitalisation and letter spacing instead.</p>
+<p>It makes much more sense for headings to inherit the same size as the surrounding text by default and not some arbitrary larger size. You will have greater consistency and override less.</p>
+<pre class=" language-scss"><code class=" language-scss"><span class="token selector">strong </span><span class="token punctuation">{</span>
+    <span class="token property">font-weight</span><span class="token punctuation">:</span> bold<span class="token punctuation">;</span>
+<span class="token punctuation">}</span></code></pre>
+<p>This corrects some browsers defaulting to <code>bolder</code>.</p>
+<pre class=" language-scss"><code class=" language-scss"><span class="token selector">a,
+button </span><span class="token punctuation">{</span>
+    <span class="token property">color</span><span class="token punctuation">:</span> inherit<span class="token punctuation">;</span>
+    <span class="token property">transition</span><span class="token punctuation">:</span> <span class="token number">.3</span>s<span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span class="token selector">
+a </span><span class="token punctuation">{</span>
+    <span class="token property">text-decoration</span><span class="token punctuation">:</span> none<span class="token punctuation">;</span>
+<span class="token punctuation">}</span></code></pre>
+<p>Long-gone are the days where all hyperlinks were blue, underlined and only wrapped inline content.</p>
+<p><code>color: inherit</code> fixes buttons not inheriting text color in most browsers. This, along with <code>text-decoration: none</code> makes for less surprises when applying links to things. Links are styled many different ways on the same page. Think menus, sidebars, footers, buttons and within text. Some text is light-on-dark, some is dark-on-light. The browser default blue or any other color would be illegible in many places. It makes for less complex styles when links inherit the color intended for the region they are in. Sometimes you just want to apply an underline, sometimes only a color. Sometimes nothing, because you just wrapped an entire thumbnail and caption.</p>
+<p>90% of your transitions apply to links and buttons, and most of them have a similar duration. Take a look. I bet many of the remainder could have, had you assigned more styles to the link and not the parent or child (which is a good idea anyway for a few reasons, namely a larger touch-friendly clickable area). Rarely you need to remove transitions from a link or button.</p>
+<pre class=" language-scss"><code class=" language-scss"><span class="token selector">button </span><span class="token punctuation">{</span>
+    <span class="token property">overflow</span><span class="token punctuation">:</span> visible<span class="token punctuation">;</span>
+    <span class="token property">border</span><span class="token punctuation">:</span> <span class="token number">0</span><span class="token punctuation">;</span>
+    <span class="token property">font</span><span class="token punctuation">:</span> inherit<span class="token punctuation">;</span>
+    <span class="token property">-webkit-font-smoothing</span><span class="token punctuation">:</span> inherit<span class="token punctuation">;</span>
+    <span class="token property">letter-spacing</span><span class="token punctuation">:</span> inherit<span class="token punctuation">;</span>
+    <span class="token property">background</span><span class="token punctuation">:</span> none<span class="token punctuation">;</span>
+    <span class="token property">cursor</span><span class="token punctuation">:</span> pointer<span class="token punctuation">;</span>
+<span class="token punctuation">}</span></code></pre>
+<p><code>overflow: visible</code> brings IE into line. The <code>border</code>, <code>font</code>, <code>letter-spacing</code> and <code>background</code> rules conveniently reset the native appearance in all browsers. The <code>-webkit-font-smoothing</code> rule fixes buggy inheritance. For UX reasons and consistency with links it is a good idea to give all buttons a pointer cursor.</p>
+<pre class=" language-scss"><code class=" language-scss"><span class="token selector">::-moz-focus-inner </span><span class="token punctuation">{</span>
+    <span class="token property">padding</span><span class="token punctuation">:</span> <span class="token number">0</span><span class="token punctuation">;</span>
+    <span class="token property">border</span><span class="token punctuation">:</span> <span class="token number">0</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span></code></pre>
+<p>This undoes a bummer psuedo-element Firefox adds inside buttons that causes them to display larger than expected. It's a shame this has been <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=140562" target="_blank">a recognized bug</a> since <em>2002</em>.</p>
+<pre class=" language-scss"><code class=" language-scss"><span class="token selector">:focus </span><span class="token punctuation">{</span>
+    <span class="token property">outline</span><span class="token punctuation">:</span> <span class="token number">0</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span></code></pre>
+<p><em>Be carefull with this!</em> It removes the gross user agent default outline that appears when focusing interactive elements. For accessibility only do this if you are absolutely sure you have custom focus state styles set <em>everywhere</em>.</p>
+<pre class=" language-scss"><code class=" language-scss"><span class="token selector">img </span><span class="token punctuation">{</span>
+    <span class="token property">max-width</span><span class="token punctuation">:</span> <span class="token number">100%</span><span class="token punctuation">;</span>
+    <span class="token property">height</span><span class="token punctuation">:</span> auto<span class="token punctuation">;</span>
+    <span class="token property">border</span><span class="token punctuation">:</span> <span class="token number">0</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span></code></pre>
+<p>One of the fundamentals of responsive web development, this makes sure images respect the bounds of a fluid container. The image never exceeds the width of it's container. The image's aspect ratio is preserved even if it has an inline height set.</p>
+<p><code>border: 0</code> fixes images within links gaining a border in IE 8, 9 and 10.</p>
+<h1>Extras</h1>
+<p>This foundation is a minimal starting point suitable for any project; tailor it to your individual needs and avoid unnecessary rules.</p>
+<p>Some common extras you may need to cater for:</p>
+<ul>
+<li>Heading levels beyond <code>h4</code>.</li>
+<li><code>sup</code>and <code>sub</code>.</li>
+<li>Form components.</li>
+</ul>	</div>
+	
