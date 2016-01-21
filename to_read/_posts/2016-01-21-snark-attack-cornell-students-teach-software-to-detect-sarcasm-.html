@@ -1,0 +1,65 @@
+---
+title: "Snark attack: Cornell students teach software to detect sarcasm!"
+description: "Open source sarcasm detection helps save the world by eliminating snarky app reviews. "
+link: "http://arstechnica.com/information-technology/2016/01/snark-attack-cornell-students-teach-software-to-detect-sarcasm/"
+saved: "2016-01-21 14:22:47"
+---
+
+	
+	<section id="article-guts">
+		<div itemprop="articleBody" class="article-content clearfix">
+    
+<figure class="intro-image image center full-width">
+      <img src="http://cdn.arstechnica.net/wp-content/uploads/2016/01/2016-01-19-640x418.png" width="640" height="418">
+  
+<figcaption class="caption"><div class="caption-text">We are shocked that anyone would ever use sarcasm in a review of Kim Kardashian's app.</div><div class="caption-credit"><a rel="nofollow" class="caption-link" href="http://trueratr.com/">TrueRatr</a></div></figcaption>
+</figure>
+
+
+
+
+<!-- cache hit 1860:single/related:95336f2868451e1846e43961cb89f9cb --><!-- empty -->
+<p>A team of students participating in Cornell University's Tech Challenge program has developed a machine learning application that attempts to break the final frontier in language processing—identifying sarcasm. This could change everything… maybe.</p>
+<p>TrueRatr, a collaboration between Cornell Tech and Bloomberg, is intended to screen out sarcasm in product reviews. But the technology has been open sourced (<a href="https://github.com/kshreyas91/trueratr">and posted to GitHub</a>) so that others can modify it to deal with other types of text-based eye-rolling.</p>
+<p>Christopher Hong of Bloomberg acted as mentor to the interdisciplinary student team behind TrueRatr (consisting of MBA candidates, engineering, and design graduate students)—Mengjue Wang, Ming Chen, Hesed Kim, Brendan Ritter, Shreyas Kulkarni, and Karan Bir. Hong had researched sarcasm detection himself while working on his 2014 master's thesis. "Everyone uses sarcasm at some point," Hong told Ars. "Most of the time, there's some intent of harm, but sometimes it's the opposite. It’s kind of part of our nature."</p>
+<p>So it should be really easy for software to detect sarcasm… not. The problem has been that "the definition of sarcasm is not so specific," Hong explained. Past efforts to catch sarcasm have used techniques like watching for cue words ("yeah, right"), or the use of punctuation, such as ellipses. But in his research, Hong looked at what he calls "sentiment shift"—the use of both positive and negative words in the same phrase.</p>
+<p>Hong explained the concept using the example sentence, "I love getting yelled at"—"'I love', which is a positive sentiment, and then 'getting yelled at' is a negative statement—that in itself would indicate some sort of sarcasm."</p>
+<p>Using that sort of sentiment analysis, Hong was able to train a system to the point where it had an<a href="https://www.kaggle.com/wiki/MeanFScore"> F1 precision score</a> (the number of accurate detections relative to the number of both true and false positives) at a document level (for a whole passage, rather than individual sentences) of 71 percent for his test set. That's better than a coin-flip, at least. But it was based on a fairly small "corpus" of sarcasm—only using a total of 50 random sarcastic and 50 random non-sarcastic Amazon reviews as his test set. So there was no way to know how well the technique would work in the real world.</p>
+<p>To build a better snark trap, the Cornell Tech team launched the "Open Sarcasm Project"—an effort to crowdsource the collection of sarcastic product reviews. This totally worked… too slowly for the three months the team had to complete the project. Elena Filatova, now teaching at Fordham University, provided a batch of 437 "high quality" sarcastic and non-sarcastic Amazon reviews she used in her doctoral research at Columbia. The students turned to Amazon's Mechanical Turk paid crowdsourcing service to obtain 158 more sarcastic reviews and collected 99 sarcastic reviews and 257 non-sarcastic reviews on their own, achieving a total training set of 1,188. On a test sample of 100 sarcastic and 100 non-sarcastic Amazon reviews, the TrueRatr system—based on a "<a href="http://ect.bell-labs.com/who/tkh/publications/papers/odt.pdf">random forest</a>" decision tree algorithm rather than the model originally used by Hong—scored slightly better than Hong's original, achieving a 75 percent precision score.</p>
+<p>To make the best use of that sensitivity to sarcasm, the Cornell Tech students crafted TrueRatr into something useful to consumers: a tool for filtering out the distortion to the rating of Mac OS X and iOS applications. The TrueRatr site performs analysis of the reviews posted on the Apple App Stores and eliminates the reviews that it determines to be sarcastic, adjusting the overall score accordingly. By clicking on an application's listing, a user can get an analysis of what its "true" rating is—and also find the most sarcastic review. Sometimes, that's a plus for the app in question—removing sarcastic reviews from Uber's app raises the transportation app's overall score from 3.5 to nearly 4 out of 5 stars. On the other hand, <em>Grand Theft Auto: Chinatown</em> had its score drop under TrueRatr's gaze from 4.5 to 3.9 out of 5 stars.</p>
+<p>A random sampling of TrueRatr's results leaves some room for doubt about how helpful it is to screen out sarcasm in reviews. In fact, for some applications—as with Snapchat, for example—the sarcastic reviews outnumber the positive ones, and screening them out raises Snapchat's rating from 3.0 to 3.82. And it's possible that some of the sarcastic reviews are merely… dumb ones, such as this one rated as most sarcastic: "I REALLY FVCKING LOVE THIS APP BUT THE CAMERA OF THE LENS IS NOT WORKING ON MY SNAPCHAT!! PLEASE FIX IT!! THANKS!!"</p>
+<p>By opening up TrueRatr as open source, the students hope to get more people to test larger samples of text against the algorithm—and hopefully improve its performance even further over time. Bloomberg doesn't currently have plans to use the tool internally, Hong said. That's probably because no one ever uses sarcasm when they're writing the news…</p>
+
+		</div>
+    <div class="article-expander">
+      <p><a href="http://arstechnica.com/information-technology/2016/01/snark-attack-cornell-students-teach-software-to-detect-sarcasm/">Expand full story</a></p>
+    </div>
+      	</section>
+
+  <div id="article-footer-wrap">
+
+	
+	
+  <aside class="thin-divide-bottom">
+  
+  </aside>
+
+    <!-- cache hit 1860:single/author:b86d84562334628b3beec0a1495cc670 -->  	<section class="article-author clearfix-redux">
+    				<a href="http://arstechnica.com/author/sean-gallagher"><img width="47" height="47" src="http://cdn.arstechnica.net/wp-content/uploads/authors/Sean-Gallagher-sq.jpg"></a>
+    		    
+		<p><a href="http://arstechnica.com/author/sean-gallagher" class="author-name">Sean Gallagher</a>  / Sean is Ars Technica's IT Editor.  A former Navy officer, systems administrator, and network systems integrator with 20 years of IT journalism experience, he lives and works in Baltimore, Maryland.</p>
+				<a href="https://twitter.com/thepacketrat" class="twitter-link">@thepacketrat on Twitter</a>
+			</section>
+  
+  
+        <table class="post-links thick-divide-top thin-divide-bottom clearfix-redux" cellspacing="0" cellpadding="0" border="0" width="100%">
+      <tbody><tr><td width="50%" class="subheading older">
+		    &nbsp;<a href="http://arstechnica.com/tech-policy/2016/01/data-analysis-reveals-that-us-cities-are-segregating-the-wealthy/" rel="prev"><span class="arrow">←</span> Older Story</a>      </td>
+      <td class="subheading newer">
+		    <a href="http://arstechnica.com/tech-policy/2016/01/putins-top-internet-adviser-seems-to-own-a-piracy-torrent-site/" rel="next">Newer Story <span class="arrow">→</span></a>&nbsp;
+      </td>
+    </tr></tbody></table>
+
+  
+  
+  </div>
