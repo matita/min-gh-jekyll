@@ -1,0 +1,91 @@
+---
+title: "From legacy to DDD: Start with publishing events"
+description: "When you start your journey with DDD, it's quite easy to apply DDD in a fresh app. It's a bit more complicated for existing, legacy apps. This blog post shows how you can start applying DDD by publishing events."
+link: "http://blog.arkency.com/2016/01/from-legacy-to-ddd-start-with-publishing-events/"
+saved: "2016-01-22 14:06:47"
+---
+
+      
+
+      <div class="post-content">
+        
+
+        <p>When you start your journey with DDD, it’s quite easy to apply DDD in a fresh app. It’s a bit more complicated for existing, legacy apps.
+This blog post shows how you can start applying DDD by publishing events.</p>
+
+<!-- more -->
+
+<p>In an existing app, the biggest worry is to not break the existing functionality. This makes applying DDD even harder, as full DDD will require some refactorings.</p>
+
+<p><strong>I suggest to start with publishing events</strong>. Just publishing, no handling, no subscriptions. By just publishing events, you don’t change the main behaviour of your system. What you’re doing is adding a new no-op (no operation).</p>
+
+<p><strong>An optional step is to also store the events</strong>. I have an easy tool for both those things at once, so I publish/store at the same time.</p>
+
+<p>Publishing events is like a compilable/interpretable code comment. You register a fact. This is what happened at this state of code.</p>
+
+<p>I recently work on an app called Fuckups. Its role is to allow teams to track fuckups in their projects and it allows learning from those situations. I started with a typical framework approach (The Rails Way) and only after some time, I gradually escape from the framework and start applying DDD/CQRS/ES.</p>
+
+<p>It’s best to focus on the events which are clearly statements of some state changes. If you escape from a CRUD app (as I did) - they will be all those CRUD operations.</p>
+
+<p>What I did, was I also tried not to use the CRUD verbs. Instead of FuckupCreated I called it FuckupReported. That’s more true, as I’m not really creating a fuckup by filling the form. It’s more that I report that fuckup to the system.</p>
+
+<p>This is what I ended up with, in terms of events:</p>
+
+<pre><code class="language-ruby"><pre class="highlight ruby"><code><span class="no">FuckupReported</span>               <span class="o">=</span> <span class="no">Class</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="no">RailsEventStore</span><span class="o">::</span><span class="no">Event</span><span class="p">)</span>
+<span class="no">FuckupReportedFromSlack</span>      <span class="o">=</span> <span class="no">Class</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="no">RailsEventStore</span><span class="o">::</span><span class="no">Event</span><span class="p">)</span>
+<span class="no">FuckupReportedFromCodeEditor</span> <span class="o">=</span> <span class="no">Class</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="no">RailsEventStore</span><span class="o">::</span><span class="no">Event</span><span class="p">)</span>
+<span class="no">FuckupRemoved</span>                <span class="o">=</span> <span class="no">Class</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="no">RailsEventStore</span><span class="o">::</span><span class="no">Event</span><span class="p">)</span>
+<span class="no">FuckupBatchUpdated</span>           <span class="o">=</span> <span class="no">Class</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="no">RailsEventStore</span><span class="o">::</span><span class="no">Event</span><span class="p">)</span>
+<span class="no">FuckupShared</span>                 <span class="o">=</span> <span class="no">Class</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="no">RailsEventStore</span><span class="o">::</span><span class="no">Event</span><span class="p">)</span>
+<span class="no">FuckupVisitedByUser</span>          <span class="o">=</span> <span class="no">Class</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="no">RailsEventStore</span><span class="o">::</span><span class="no">Event</span><span class="p">)</span>
+<span class="no">FuckupVisitedByGuest</span>         <span class="o">=</span> <span class="no">Class</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="no">RailsEventStore</span><span class="o">::</span><span class="no">Event</span><span class="p">)</span>
+
+<span class="no">OrganizationAllowedToUseTheApp</span> <span class="o">=</span> <span class="no">Class</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="no">RailsEventStore</span><span class="o">::</span><span class="no">Event</span><span class="p">)</span>
+<span class="no">UserApprovedInTheOrganization</span>  <span class="o">=</span> <span class="no">Class</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="no">RailsEventStore</span><span class="o">::</span><span class="no">Event</span><span class="p">)</span>
+<span class="no">UserRegisteredFromGithub</span>       <span class="o">=</span> <span class="no">Class</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="no">RailsEventStore</span><span class="o">::</span><span class="no">Event</span><span class="p">)</span>
+<span class="no">UserSessionStarted</span>             <span class="o">=</span> <span class="no">Class</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="no">RailsEventStore</span><span class="o">::</span><span class="no">Event</span><span class="p">)</span>
+<span class="no">UserLoggedOut</span>                  <span class="o">=</span> <span class="no">Class</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="no">RailsEventStore</span><span class="o">::</span><span class="no">Event</span><span class="p">)</span>
+<span class="no">UserMadeAdmin</span>                  <span class="o">=</span> <span class="no">Class</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="no">RailsEventStore</span><span class="o">::</span><span class="no">Event</span><span class="p">)</span></code></pre></code></pre>
+
+<p>Using the <a href="https://github.com/arkency/rails_event_store">Rails Event Store</a> gem, this is how I publish those events:</p>
+
+<pre><code class="language-ruby"><pre class="highlight ruby"><code>    <span class="vi">@fuckup</span> <span class="o">=</span> <span class="n">current_organization</span><span class="p">.</span><span class="nf">fuckups</span><span class="p">.</span><span class="nf">create</span><span class="p">(</span><span class="n">fuckup_params</span><span class="p">)</span>
+    <span class="n">stream_name</span> <span class="o">=</span> <span class="s2">"fuckup_</span><span class="si">#{</span><span class="vi">@fuckup</span><span class="p">.</span><span class="nf">id</span><span class="si">}</span><span class="s2">"</span>
+    <span class="n">event_data</span> <span class="o">=</span> <span class="p">{</span> <span class="ss">data:
+                       </span><span class="p">{</span>
+                           <span class="ss">user_id: </span><span class="n">current_user</span><span class="p">.</span><span class="nf">id</span><span class="p">,</span>
+                           <span class="ss">organization_id: </span><span class="n">current_organization</span><span class="p">.</span><span class="nf">id</span><span class="p">,</span>
+                           <span class="ss">tldr: </span><span class="vi">@fuckup</span><span class="p">.</span><span class="nf">tldr</span><span class="p">,</span>
+                           <span class="ss">description: </span><span class="vi">@fuckup</span><span class="p">.</span><span class="nf">description</span><span class="p">,</span>
+                           <span class="ss">symptoms: </span><span class="vi">@fuckup</span><span class="p">.</span><span class="nf">symptoms</span><span class="p">,</span>
+                           <span class="ss">hotfix: </span><span class="vi">@fuckup</span><span class="p">.</span><span class="nf">hotfix</span><span class="p">,</span>
+                           <span class="ss">coldfix: </span><span class="vi">@fuckup</span><span class="p">.</span><span class="nf">coldfix</span><span class="p">,</span>
+
+                       <span class="p">}</span>
+    <span class="p">}</span></code></pre></code></pre>
+
+<p>It’s still a bit too verbose as for my taste, but it’s quite explicit what it’s doing.</p>
+
+<p>Publishing events (and storing them) is just the first step. On its own it doesn’t really change your architecture that much.</p>
+
+<p>So what’s the value?</p>
+
+<p>The value is in the fact that you need to come up with non-CRUD names, that’s first. You start using more domain vocabulary in your code.
+The main value, though, is that those events are quickly showing you potential next steps. <strong>The events tend to group in two ways</strong>.
+They show you the <strong>aggregates</strong>. If you look at the event prefixes, it’s quite clear that User and Fuckup are aggregates.
+The second grouping is by a <strong>bounded context</strong>. In my case, it’s quite clear that I have a <code>Identity&amp;Access</code> bounded context (authentication, authorization, sharing, access). The other one is just the Core - Fuckups.</p>
+
+<p>You may notice that the aggregates split when you think in aggregates. The Fuckup can be shared. This is an Identity&amp;Access concern, not the core Fuckups bounded context. In a way, the fuckup exists in both bounded contexts.</p>
+
+<p>This kind of thinking and analysing is very useful in the later phases.</p>
+
+<p>Stay tuned for the next steps!</p>
+        
+
+        
+        <div id="disqus_thread"><iframe id="dsq-app2" name="dsq-app2" allowtransparency="true" frameborder="0" scrolling="no" tabindex="0" title="Disqus" width="100%" src="http://disqus.com/embed/comments/?base=default&amp;version=8603897fbe0ee1ad21b470260ac1eafb&amp;f=arkency-blog&amp;t_u=http%3A%2F%2Fblog.arkency.com%2F2016%2F01%2Ffrom-legacy-to-ddd-start-with-publishing-events%2F&amp;t_d=%0A%20%20%20%20%20%20%20%20%20%20From%20legacy%20to%20DDD%3A%20Start%20with%20publishing%20events%0A%20%20%20%20%20%20%20%20&amp;t_t=%0A%20%20%20%20%20%20%20%20%20%20From%20legacy%20to%20DDD%3A%20Start%20with%20publishing%20events%0A%20%20%20%20%20%20%20%20&amp;s_o=default" horizontalscrolling="no" verticalscrolling="no"></iframe><iframe id="indicator-north" name="indicator-north" allowtransparency="true" frameborder="0" scrolling="no" tabindex="0" title="Disqus" src="http://blog.arkency.com/2016/01/from-legacy-to-ddd-start-with-publishing-events/?utm_source=SitePoint&amp;utm_medium=email&amp;utm_campaign=Versioning"></iframe><iframe id="indicator-south" name="indicator-south" allowtransparency="true" frameborder="0" scrolling="no" tabindex="0" title="Disqus" src="http://blog.arkency.com/2016/01/from-legacy-to-ddd-start-with-publishing-events/?utm_source=SitePoint&amp;utm_medium=email&amp;utm_campaign=Versioning"></iframe></div>
+
+<noscript>Please enable JavaScript to view the &lt;a href="https://disqus.com/?ref_noscript" rel="nofollow"&gt;comments powered by Disqus.&lt;/a&gt;</noscript>
+
+      </div>
+    
