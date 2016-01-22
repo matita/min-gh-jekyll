@@ -1,0 +1,153 @@
+---
+title: "What’s New in jQuery 3.0 and How to Use It"
+description: "Microsoft's Saurabh Kirtani discusses the new features in jQuery 3.0 and how to use them."
+link: "http://www.sitepoint.com/whats-new-jquery-use/"
+saved: "2016-01-22 14:03:35"
+---
+
+    <p><em>This article is part of a web development series from Microsoft. Thank you for supporting the partners who make SitePoint possible.</em></p>
+<p><a href="http://jquery.com/">jQuery</a>, the world’s most popular JavaScript library to date, has been a boon for a lot of us web developers out there. From the time of its initial release in 2006 till today,  a lot of us web developers have included this wonderful library in our projects to make our life easier.<br>
+</p><div class="ArticleBox u-inline"><h3 class="ArticleBox_header t-bg">
+                    <span class="ArticleBox_icon fa fa-pencil"></span> More from this author
+                 </h3><div class="ArticleBox_content"><ul class="ArticleBox_list t-list"><li><a href="http://www.sitepoint.com/how-to-build-responsive-images-with-srcset/?utm_source=sitepoint&amp;utm_medium=relatedinline&amp;utm_term=developer-center&amp;utm_campaign=relatedauthor">How to Build Responsive Images with srcset</a></li></ul></div></div><br>
+Back in July 2015, jQuery announced the first alpha of jQuery 3.0 – a major release after a long time. Let’s take a look at what’s new in jQuery and how you can use it.<p></p>
+<h2><em>show()</em> and <em>hide()</em></h2>
+<p>There’s a major change with how these functions will work. And there’s good reason to do so. With the earlier implementation, <code class=" language-javascript"><span class="token function">hide</span><span class="token punctuation">(</span><span class="token punctuation">)</span></code> would set the <code class=" language-javascript">display<span class="token punctuation">:</span>none</code> and <code class=" language-javascript"><span class="token function">show</span><span class="token punctuation">(</span><span class="token punctuation">)</span></code> would clear it up. But this led to some mess. Let’s look at a couple of examples:</p>
+<ol>
+<li>If there’s an implementation of <code class=" language-javascript">display<span class="token punctuation">:</span>inline</code> on an element in another stylesheet when the <code class=" language-javascript"><span class="token function">show</span><span class="token punctuation">(</span><span class="token punctuation">)</span></code> method was trying to set <code class=" language-javascript">display<span class="token punctuation">:</span>block</code>, this would start breaking code.</li>
+<li>When we’re working with media queries for responsive web design (RWD), we may change the visibility of elements using <code class=" language-javascript">display</code> or <code class=" language-javascript">visibility</code>. This may interfere with <code class=" language-javascript"><span class="token function">show</span><span class="token punctuation">(</span><span class="token punctuation">)</span></code> and <code class=" language-javascript"><span class="token function">hide</span><span class="token punctuation">(</span><span class="token punctuation">)</span></code>.</li>
+</ol>
+<p>In addition to these, there were many other issues which the jQuery team had to fix to get things working. This led to complex implementation and performance issues, and hence, they moved to a simple model.</p>
+<p>Hence, if you set <code class=" language-javascript">display<span class="token punctuation">:</span>none</code> and use <code class=" language-javascript"><span class="token function">show</span><span class="token punctuation">(</span><span class="token punctuation">)</span></code>, <code class=" language-javascript"><span class="token function">slideDown</span><span class="token punctuation">(</span><span class="token punctuation">)</span></code>, <code class=" language-javascript"><span class="token function">fadeIn</span><span class="token punctuation">(</span><span class="token punctuation">)</span></code> or similar methods to display that element, it won’t work. The better way to go about it is to use <code class=" language-javascript"><span class="token function">addClass</span><span class="token punctuation">(</span><span class="token punctuation">)</span></code> and <code class=" language-javascript"><span class="token function">removeClass</span><span class="token punctuation">(</span><span class="token punctuation">)</span></code> to control visibility. Or we can call <code class=" language-javascript"><span class="token function">hide</span><span class="token punctuation">(</span><span class="token punctuation">)</span></code> on the elements during the <code class=" language-javascript"><span class="token function">ready</span><span class="token punctuation">(</span><span class="token punctuation">)</span></code> call. </p>
+<p>Quick sample:</p>
+<pre class=" language-javascript"><code class=" language-javascript"><span class="token operator">&lt;</span><span class="token operator">!</span>DOCTYPE HTML<span class="token operator">&gt;</span>
+<span class="token operator">&lt;</span>html<span class="token operator">&gt;</span>
+	<span class="token operator">&lt;</span>head<span class="token operator">&gt;</span>
+	<span class="token operator">&lt;</span>style<span class="token operator">&gt;</span>
+		<span class="token punctuation">.</span>invisible<span class="token punctuation">{</span>
+			display<span class="token punctuation">:</span> none<span class="token punctuation">;</span>
+		<span class="token punctuation">}</span>
+		<span class="token punctuation">.</span>visible<span class="token punctuation">{</span>
+			background<span class="token operator">-</span>color<span class="token punctuation">:</span> deepskyblue<span class="token punctuation">;</span>
+			display<span class="token punctuation">:</span>block<span class="token punctuation">;</span>
+		<span class="token punctuation">}</span>
+	<span class="token operator">&lt;</span><span class="token operator">/</span>style<span class="token operator">&gt;</span>
+	<span class="token operator">&lt;</span>script src<span class="token operator">=</span><span class="token string">"jquery-3.0.0-alpha1.js"</span><span class="token operator">&gt;</span><span class="token operator">&lt;</span><span class="token operator">/</span>script<span class="token operator">&gt;</span>
+	<span class="token operator">&lt;</span>script<span class="token operator">&gt;</span>
+		<span class="token function">$</span><span class="token punctuation">(</span>document<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">ready</span><span class="token punctuation">(</span><span class="token keyword">function</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
+			<span class="token function">$</span><span class="token punctuation">(</span><span class="token string">"#div1"</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">addClass</span><span class="token punctuation">(</span><span class="token string">"invisible"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+			<span class="token function">$</span><span class="token punctuation">(</span><span class="token string">"#toggle"</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">click</span><span class="token punctuation">(</span><span class="token keyword">function</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
+				<span class="token function">$</span><span class="token punctuation">(</span><span class="token string">"#div1"</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">removeClass</span><span class="token punctuation">(</span><span class="token string">"visible"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+				<span class="token function">$</span><span class="token punctuation">(</span><span class="token string">"#div1"</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">addClass</span><span class="token punctuation">(</span><span class="token string">"invisible"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+			<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+		<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+	<span class="token operator">&lt;</span><span class="token operator">/</span>script<span class="token operator">&gt;</span>
+	<span class="token operator">&lt;</span>title<span class="token operator">&gt;</span>Control Visibility<span class="token operator">&lt;</span><span class="token operator">/</span>title<span class="token operator">&gt;</span>
+	<span class="token operator">&lt;</span><span class="token operator">/</span>head<span class="token operator">&gt;</span>
+	<span class="token operator">&lt;</span>body<span class="token operator">&gt;</span>
+		<span class="token operator">&lt;</span>p<span class="token operator">&gt;</span>Hello<span class="token operator">!</span><span class="token operator">&lt;</span><span class="token operator">/</span>p<span class="token operator">&gt;</span>
+		<span class="token operator">&lt;</span>div id<span class="token operator">=</span><span class="token string">"div1"</span><span class="token operator">&gt;</span>Can you see <span class="token keyword">this</span><span class="token operator">?</span><span class="token operator">&lt;</span><span class="token operator">/</span>div<span class="token operator">&gt;</span>
+		<span class="token operator">&lt;</span>button id<span class="token operator">=</span><span class="token string">"toggle"</span><span class="token operator">&gt;</span>Click me<span class="token operator">&lt;</span><span class="token operator">/</span>button<span class="token operator">&gt;</span>
+	<span class="token operator">&lt;</span><span class="token operator">/</span>body<span class="token operator">&gt;</span>	
+<span class="token operator">&lt;</span><span class="token operator">/</span>html<span class="token operator">&gt;</span>
+</code></pre>
+<p><img src="http://dab1nmslvvntp.cloudfront.net/wp-content/uploads/2016/01/1453056150whats-new-in-jquery01-control-visibility.png" alt="Control visibility" width="293" height="324" class="aligncenter size-full wp-image-122761"></p>
+<p><img src="http://dab1nmslvvntp.cloudfront.net/wp-content/uploads/2016/01/1453056157whats-new-in-jquery02-control-visibility.png" alt="Control visibility" width="293" height="323" class="aligncenter size-full wp-image-122762"></p>
+<h2>Nomenclature for <em>.data()</em> Key Names</h2>
+<p>The jQuery team changed the <code class=" language-javascript"><span class="token punctuation">.</span><span class="token function">data</span><span class="token punctuation">(</span><span class="token punctuation">)</span></code> implementation to closely match the HTML5 dataset specification. If the key in the data-* attribute contains a digit, the digits will no longer participate in the conversion. Consider this example:</p>
+<p>With jQuery 2.1.4:</p>
+<p><img src="http://dab1nmslvvntp.cloudfront.net/wp-content/uploads/2016/01/1453056161whats-new-in-jquery03-data-attribute-jquery-2-1-4.png" alt="data attribute in jQuery 2.1.4" width="868" height="468" class="aligncenter size-full wp-image-122763"></p>
+<p>The console window does not display the object.</p>
+<p>With jQuery 3.0.0:</p>
+<p><img src="http://dab1nmslvvntp.cloudfront.net/wp-content/uploads/2016/01/1453056166whats-new-in-jquery04-data-attribute-jquery-3.png" alt="data attribute in jQuery 3.0.0" width="874" height="466" class="aligncenter size-full wp-image-122764"></p>
+<p>The key is converted to foo-42-name as digits do not participate in the conversion to camel case now. Hence, we get the output in console. The fiddle is available at <a href="http://jsfiddle.net/nWCKt/25/">http://jsfiddle.net/nWCKt/25/</a>. You can change the jQuery versions to see the changes.</p>
+<p>Similarly, if we want to display all the data using <code class=" language-javascript"><span class="token function">data</span><span class="token punctuation">(</span><span class="token punctuation">)</span></code> with no arguments, the number of arguments will change in the two versions of jQuery if any of the key names of data-* attributes had a digit immediately after the hyphen (-), like in the above case.</p>
+<h3><em>width()</em> and <em>height()</em> return decimal values</h3>
+<p>Some browsers return subpixel values for width and height. jQuery now returns decimal values for <code class=" language-javascript"><span class="token punctuation">.</span><span class="token function">width</span><span class="token punctuation">(</span><span class="token punctuation">)</span></code>, <code class=" language-javascript"><span class="token punctuation">.</span><span class="token function">height</span><span class="token punctuation">(</span><span class="token punctuation">)</span></code>, <code class=" language-javascript"><span class="token punctuation">.</span><span class="token function">css</span><span class="token punctuation">(</span>“width”<span class="token punctuation">)</span></code>, and <code class=" language-javascript"><span class="token punctuation">.</span><span class="token function">css</span><span class="token punctuation">(</span>“height”<span class="token punctuation">)</span></code> whenever the browser supports it. For users looking for subpixel precision for designing webpages, this may serve as good news. </p>
+<h3><em>.load()</em>, <em>.unload()</em>, and <em>.error()</em> methods are removed</h3>
+<p>These methods which were deprecated earlier, have now been removed from in jQuery 3.0.0 alpha. The recommended way is to use <code class=" language-javascript"><span class="token punctuation">.</span><span class="token function">on</span><span class="token punctuation">(</span><span class="token punctuation">)</span></code> to handle these events. Short example:</p>
+<p>HTML:</p>
+<pre class=" language-javascript"><code class=" language-javascript"><span class="token operator">&lt;</span>img src<span class="token operator">=</span><span class="token string">"space-needle.png"</span> alt<span class="token operator">=</span><span class="token string">"Space Needle"</span> id<span class="token operator">=</span><span class="token string">"spacen"</span><span class="token operator">&gt;</span>
+</code></pre>
+<p>JavaScript:</p>
+<p>Earlier implementation (now defunct)</p>
+<pre class=" language-javascript"><code class=" language-javascript"><span class="token function">$</span><span class="token punctuation">(</span> <span class="token string">"#spacen"</span> <span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">load</span><span class="token punctuation">(</span><span class="token keyword">function</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token comment" spellcheck="true">// Handler implementation</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+</code></pre>
+<p>Recommended implementation:</p>
+<pre class=" language-javascript"><code class=" language-javascript"><span class="token function">$</span><span class="token punctuation">(</span> <span class="token string">"#spacen"</span> <span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">on</span><span class="token punctuation">(</span> <span class="token string">"load"</span><span class="token punctuation">,</span> <span class="token keyword">function</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+	<span class="token comment" spellcheck="true">// Handler implementation</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+</code></pre>
+<h2>jQuery Objects are Iterable Now</h2>
+<p>Iterating over jQuery objects is possible now, using ES2015 for-of. So, you can use things like:</p>
+<pre class=" language-javascript"><code class=" language-javascript"><span class="token keyword">for</span> <span class="token punctuation">(</span> node <span class="token keyword">of</span> <span class="token function">$</span><span class="token punctuation">(</span> <span class="token string">"&lt;div id=spacen&gt;"</span> <span class="token punctuation">)</span> <span class="token punctuation">)</span> <span class="token punctuation">{</span>
+	console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span> node<span class="token punctuation">.</span>id <span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment" spellcheck="true">// Returns ‘spacen’</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<p>(Source <a href="https://github.com/jquery/jquery/commit/bb026fc12c3c2ad37f47f0919e484bddcdc3d291">here</a>)</p>
+<h2>jQuery Animations Now Use <em>requestAnimationFrame</em> API at the Backend</h2>
+<p>All modern browsers now support <code class=" language-javascript">requestAnimationFrame</code> (status here: <a href="http://caniuse.com/#search=requestAnimationFrame">http://caniuse.com/#search=requestAnimationFrame</a>). With its popular support, jQuery will use this API when performing animations. Advantages include smoother animations and less CPU-intensive animations (hence, saving battery on mobiles).</p>
+<h2>Enhancement of <em>.unwrap()</em> Method</h2>
+<p><code class=" language-javascript"><span class="token punctuation">.</span><span class="token function">unwrap</span><span class="token punctuation">(</span><span class="token punctuation">)</span></code> method, which lets you remove the parents of the matched elements from the DOM, did not use to accept parameters earlier. This could be an issue if someone wants to unwrap basis a condition set on the parent.</p>
+<p>With jQuery 3.0.0 alpha, <code class=" language-javascript"><span class="token punctuation">.</span><span class="token function">unwrap</span><span class="token punctuation">(</span><span class="token punctuation">)</span></code> accepts the jQuery selector parameter to handle this.</p>
+<h2>jQuery.Deferred Updated to be Promises/A+ Compatible</h2>
+<p>A <code class=" language-javascript">promise</code> is an eventual result of an asynchronous operation – it is an object that promises to deliver a result in future. The primary way of interacting with promise is through the <code class=" language-javascript">then</code> method, which registers callbacks. Using Promise for asynchronous work in JavaScript is becoming increasingly popular these days. Promises/A+ is an open standard for interoperable JavaScript promises. (For more info, check out this link: <a href="https://promisesaplus.com/">https://promisesaplus.com/</a>)</p>
+<p>From jQuery documentation, the Deferred object is a chainable utility object created by calling the <code class=" language-javascript">jQuery<span class="token punctuation">.</span><span class="token function">Deferred</span><span class="token punctuation">(</span><span class="token punctuation">)</span></code> method. It can register multiple callbacks into callback queues, invoke callback queues, and relay the success or failure state of any synchronous or asynchronous function. In jquery 3.0.0 alpha, the <code class=" language-javascript">jQuery<span class="token punctuation">.</span>Deferred</code> objects are updated to be compatible with Promises/A+ and ES2015 Promises. Hence, there were major changes madeto <code class=" language-javascript"><span class="token punctuation">.</span><span class="token function">then</span><span class="token punctuation">(</span><span class="token punctuation">)</span></code> method.</p>
+<h2>Better Handling of Error Cases</h2>
+<p>This version of jQuery has better handling of error cases – incorrect requests which have been ignored till now, throw up errors. </p>
+<p>For example: Consider <code class=" language-javascript">offset</code>, which gets the current coordinates of the first element, in the set of matched elements, relative to the document. If you were trying to find out the offset for a window with earlier versions of jQuery, you’d get the result as <code class=" language-javascript"><span class="token punctuation">{</span>top<span class="token punctuation">:</span> <span class="token number">0</span><span class="token punctuation">,</span> left<span class="token punctuation">:</span> <span class="token number">0</span><span class="token punctuation">}</span></code> instead of an error being thrown, since the offset for a window does not make sense. With the 3.0 alpha version, it will now throw up an error.</p>
+<p>Another example: <code class=" language-javascript"><span class="token function">$</span><span class="token punctuation">(</span><span class="token string">"#"</span><span class="token punctuation">)</span></code> now throws an error rather than returning 0-length collection.</p>
+<h2>Massive Speedups for Custom Selectors Like <em>:visible</em></h2>
+<p>There have been massive performance improvements made when selectors like :visible are used in a document multiple times. Internally, this is done by caching – so the first time the selector is used, the result is the same. But, each call after that gives results way faster, since caching comes into play. Timmy Willison from jQuery <a href="https://github.com/jquery/sizzle/issues/315#issuecomment-74336936">reported</a> that it leads to about 17x improvement for the <code class=" language-javascript"><span class="token punctuation">:</span>visible</code> selector! </p>
+<p>These were among some of the major updates made. Entire list is available on their official blog: <a href="http://blog.jquery.com/2015/07/13/jquery-3-0-and-jquery-compat-3-0-alpha-versions-released/">http://blog.jquery.com/2015/07/13/jquery-3-0-and-jquery-compat-3-0-alpha-versions-released/</a>.</p>
+<h2>Where to Download the Latest Version</h2>
+<p>There are two releases:</p>
+<ol>
+<li>jQuery 3.0, which supports modern browsers : <a href="https://code.jquery.com/jquery-3.0.0-alpha1.js">https://code.jquery.com/jquery-3.0.0-alpha1.js</a></li>
+<li>jQuery Compat 3.0, which includes support for IE8 : <a href="https://code.jquery.com/jquery-compat-3.0.0-alpha1.js">https://code.jquery.com/jquery-compat-3.0.0-alpha1.js</a></li>
+</ol>
+<p>They are also available on npm:</p>
+<pre class=" language-javascript"><code class=" language-javascript">npm install jquery@<span class="token number">3.0</span><span class="token punctuation">.</span><span class="token number">0</span><span class="token operator">-</span>alpha1
+npm install jquery<span class="token operator">-</span>compat@<span class="token number">3.0</span><span class="token punctuation">.</span><span class="token number">0</span><span class="token operator">-</span>alpha1
+</code></pre>
+<p>Feel free to try out this alpha version and give feedback on <a href="https://github.com/jquery/jquery">https://github.com/jquery/jquery</a>. It’s worth a shot!</p>
+<h2>More Hands-on with Web Development</h2>
+<p>This article is part of the web development series from Microsoft evangelists and engineers on practical JavaScript learning, open source projects, and interoperability best practices including <a href="http://blogs.windows.com/msedgedev/2015/05/06/a-break-from-the-past-part-2-saying-goodbye-to-activex-vbscript-attachevent/?WT.mc_id=16544-DEV-sitepoint-article80">Microsoft Edge</a> browser and the new <a href="http://blogs.windows.com/msedgedev/2015/02/26/a-break-from-the-past-the-birth-of-microsofts-new-web-rendering-engine/?WT.mc_id=16544-DEV-sitepoint-article80">EdgeHTML rendering engine</a>.  </p>
+<p>We encourage you to test across browsers and devices including Microsoft Edge – the default browser for Windows 10 – with free tools on <a href="https://dev.windows.com/en-us/microsoft-edge/?utm_source=SitePoint&amp;utm_medium=article80&amp;utm_campaign=SitePoint">dev.microsoftedge.com</a>:</p>
+<ul>
+<li><a href="http://dev.modern.ie/tools/staticscan/?utm_source=SitePoint&amp;utm_medium=article80&amp;utm_campaign=SitePoint">Scan your site for out-of-date libraries, layout issues, and accessibility</a></li>
+<li><a href="http://dev.modern.ie/tools/vms/windows/?utm_source=SitePoint&amp;utm_medium=article80&amp;utm_campaign=SitePoint">Download free virtual machines for Mac, Linux, and Windows</a></li>
+<li><a href="https://dev.modern.ie/platform/status/?utm_source=SitePoint&amp;utm_medium=article80&amp;utm_campaign=SitePoint">Check Web Platform status across browsers including the Microsoft Edge roadmap</a></li>
+<li><a href="https://remote.modern.ie/?utm_source=SitePoint&amp;utm_medium=article80&amp;utm_campaign=SitePoint">Remotely test for Microsoft Edge on your own device</a></li>
+</ul>
+<p><strong>More in-depth learning from our engineers and evangelists:</strong></p>
+<ul>
+<li><strong>Interoperability best practices</strong> (<a href="https://channel9.msdn.com/Blogs/BeLux-Developer/Riding-the-Modern-Web-5-things-to-consider-as-a-web-developer/?WT.mc_id=16544-DEV-sitepoint-article80">series</a>):
+<ul>
+<li><a href="https://channel9.msdn.com/Blogs/BeLux-Developer/Riding-the-Modern-Web-Avoiding-Browser-Detection/?WT.mc_id=16544-DEV-sitepoint-article80">How to avoid Browser Detection</a></li>
+<li><a href="https://channel9.msdn.com/Blogs/BeLux-Developer/Riding-the-Modern-Web-CSS-Vendor-Prefixes?WT.mc_id=16544-DEV-sitepoint-article80">Using CSS Prefix best practices</a></li>
+<li><a href="https://channel9.msdn.com/Blogs/BeLux-Developer/Riding-the-Modern-Web-Dealing-with-JavaScript-Libraries?WT.mc_id=16544-DEV-sitepoint-article80">Keeping your JS frameworks &amp; libs updated</a></li>
+<li><a href="https://channel9.msdn.com/Blogs/BeLux-Developer/Riding-the-Modern-Web-Dealing-with-Plugins?WT.mc_id=16544-DEV-sitepoint-article80">Building plug-in free web experiences</a></li>
+</ul>
+</li>
+<li><a href="https://github.com/deltakosh/interoperable-web-development?WT.mc_id=16544-DEV-sitepoint-article80">Coding Lab on GitHub: Cross-browser testing and best practices</a></li>
+<li><a href="https://channel9.msdn.com/Events/WebPlatformSummit/2015/Woah-I-Can-Test-Edge--IE-on-a-Mac--Linux?WT.mc_id=16544-DEV-sitepoint-article80">Woah, I can test Edge &amp; IE on a Mac &amp; Linux!</a> (from Rey Bango)</li>
+<li><a href="http://channel9.msdn.com/Events/WebPlatformSummit/2015/Advancing-JavaScript-without-breaking-the-web?WT.mc_id=16544-DEV-sitepoint-article80">Advancing JavaScript without Breaking the Web</a> (from Christian Heilmann)</li>
+<li><a href="https://channel9.msdn.com/Events/WebPlatformSummit/2015/Unleash-3D-rendering-with-WebGL-and-Microsoft-Edge?WT.mc_id=16544-DEV-sitepoint-article80">Unleash 3D rendering with WebGL</a> (from David Catuhe)</li>
+<li><a href="https://channel9.msdn.com/Events/WebPlatformSummit/2015/Hosted-web-apps-and-web-platform-innovations?WT.mc_id=16544-DEV-sitepoint-article80">Hosted web apps and web platform innovations</a> (from Kiril Seksenov)</li>
+</ul>
+<p><strong>Our community open source projects:</strong></p>
+<ul>
+<li><a href="http://vorlonjs.com/?WT.mc_id=16544-DEV-sitepoint-article80">vorlon.JS</a> (cross-device remote JavaScript testing)</li>
+<li><a href="http://manifoldjs.com/?WT.mc_id=16544-DEV-sitepoint-article80">manifoldJS</a> (deploy cross-platform hosted web apps)</li>
+<li><a href="http://babylonjs.com/?WT.mc_id=16544-DEV-sitepoint-article80">babylonJS</a> (3D graphics made easy)</li>
+</ul>
+<p><strong>More free tools and back-end web dev stuff:</strong></p>
+<ul>
+<li><a href="https://code.visualstudio.com/?WT.mc_id=16544-DEV-sitepoint-article80">Visual Studio Code</a> (lightweight code-editor for Mac, Linux, or Windows)</li>
+<li><a href="https://www.visualstudio.com/en-us/products/visual-studio-dev-essentials-vs.aspx?WT.mc_id=16544-DEV-sitepoint-article80">Visual Studio Dev Essentials</a> (free, subscription-based training and cloud benefits</li>
+<li><a href="https://www.microsoftvirtualacademy.com/en-US/training-courses/building-apps-with-node-js-jump-start-8422?WT.mc_id=16544-DEV-sitepoint-article80">Code with node.JS</a> with <a href="https://azure.microsoft.com/en-us/pricing/free-trial/?WT.mc_id=16544-DEV-sitepoint-article80">trial on Azure Cloud</a></li>
+</ul>
+  
