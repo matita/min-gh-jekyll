@@ -1,0 +1,41 @@
+---
+title: "CSS Specificity is Base-Infinite | CSS-Tricks"
+description: "There is a good amount of information on this site about specificity. The seminal one is Specifics on CSS Specificity, which has been updated a few times o"
+link: "https://css-tricks.com/css-specificity-is-base-infinite/"
+saved: "2016-01-25 15:06:58"
+---
+
+
+      <div class="e-content">
+
+          
+
+        <p>There is a good amount of information on this site about specificity. The seminal one is <a href="https://css-tricks.com/specifics-on-css-specificity/">Specifics on CSS Specificity</a>, which has been updated a few times over the years. When it was originally published in 2008, it presented the information in a bit of a misleading way. It has long since been fixed, but the mistake is still interesting.</p>
+<p><span id="more-237078"></span></p>
+<p>The original article showed specificity as an integer, so a selector like <code>#main article.news p:first-child</code> would have been listed as <code>0122</code> for the 1 ID, 2 classes, and 2 elements. The mistake? That makes it seem like a base-10 system. Say the specificity value was 0129 - if it was a base-10 system, adding one more element selector would make that 0130 which is <em>definitely not what happens</em>.</p>
+<p><a href="http://snook.ca/">Jonathan Snook</a> originally corrected me:</p>
+<blockquote><p>... if you had an element with 11 classes applied to it, it would not outrank an element with a single ID selector.</p></blockquote>
+<p>And <a href="http://meyerweb.com/">Eric Meyer</a> <a href="https://css-tricks.com/specifics-on-css-specificity/#comment-31141">corroborated</a>: </p>
+<blockquote><p>Specificity is not base-10. It’s not base-anything-familiar: in fact, specificity values have an <strong>infinite base</strong>.</p></blockquote>
+<p>(You can even find a broodling <a href="http://csswizardry.com/">Harry Roberts</a> in that comment thread!)</p>
+<p>The trick with writing about specificity is to use commas so it doesn't look like a single number. <code>0122</code> is better served as <code>0, 1, 2, 2</code>. The diagrams in subsequent updated posts were better:</p>
+<figure id="post-237080" class="align-none media-237080"><img src="https://cdn.css-tricks.com/wp-content/uploads/2016/01/cssspecificity-calc-1-1.png" alt=""><br>
+<figcaption>You'd probably never actually write a selector like this, as it's way too obnoxiously specific, but it's a good demo.</figcaption>
+</figure>
+<p>The first digit represents whether an element has an inline style or not, so that's really just a 0 or a 1, but the rest are theoretically infinite. I guess it would be like this:</p>
+<pre><code>[0 or 1], ∞, ∞, ∞</code></pre>
+<p>A number in a higher column can beat any number below. <code>0, 1, 0, 0</code> beats <code>0, 0, 312, 54659392</code>. That right there is why it's so popular to <a href="https://css-tricks.com/a-line-in-the-sand/">just never use ID's</a> and <a href="https://css-tricks.com/strategies-keeping-css-specificity-low/">keep specificity flat</a>.</p>
+
+        
+        
+
+        
+
+        
+
+        
+
+        
+      </div>
+
+    
