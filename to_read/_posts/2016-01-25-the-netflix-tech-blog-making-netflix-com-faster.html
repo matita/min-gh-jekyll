@@ -1,0 +1,70 @@
+---
+title: "The Netflix Tech Blog: Making Netflix.com Faster"
+description: "null"
+link: "http://techblog.netflix.com/2015/08/making-netflixcom-faster.html"
+saved: "2016-01-25 15:07:49"
+---
+
+<p>by <a href="http://www.linkedin.com/in/kristoferbaxter">Kristofer Baxter</a></p>
+<p>Simply put, performance matters. We know members want to immediately start browsing or watching their favorite content and have found that faster startup leads to more satisfying usage. So, when building the <a href="http://blog.netflix.com/2015/06/the-netflix-website-gets-major-upgrade.html">long-awaited update to netflix.com</a>, the Website UI Engineering team made startup performance a first tier priority.</p>
+
+<p>The impact of this effort netted a 70% reduction in startup time, and was focused in three key areas:</p>
+<ol>
+<li>Server and Client Rendering</li>
+<li>Universal JavaScript</li>
+<li>JavaScript Payload Reductions</li>
+</ol>
+
+<h2>Server and Client Rendering</h2>
+<p>The netflix.com legacy website stack had a hard separation between server markup and client enhancement. This was primarily due to the different programming languages used in each part of our application. On the server, there was Java with Tomcat, Struts and Tiles. On the browser client, we enhanced server-generated markup with JavaScript, primarily via jQuery.</p>
+
+<p>This separation led to undesirable results in our startup time. Every time a visitor came to any page on netflix.com our Java tier would generate the majority of the response needed for the entire page's lifetime and deliver it as HTML markup. Often, users would be waiting for the generation of markup for large parts of the page they would never visit.</p>
+
+<div class="separator"><a href="http://1.bp.blogspot.com/-15hF-iyWas8/VcI_MdvYOJI/AAAAAAAABY4/p5H2INcbNUU/s1600/Screen%2BShot%2B2015-08-04%2Bat%2B7.24.34%2BPM.png" imageanchor="1"><img border="0" src="http://1.bp.blogspot.com/-15hF-iyWas8/VcI_MdvYOJI/AAAAAAAABY4/p5H2INcbNUU/s400/Screen%2BShot%2B2015-08-04%2Bat%2B7.24.34%2BPM.png"></a></div>
+
+<p>Our new architecture renders only a small amount of the page's markup, bootstrapping the client view. We can easily change the amount of the total view the server generates, making it easy to see the positive or negative impact. The server requires less data to deliver a response and spends less time converting data into DOM elements. Once the client JavaScript has taken over, it can retrieve all additional data for the remainder of the current and future views of a session on demand. The large wins here were the reduction of processing time in the server, and the consolidation of the rendering into one language.</p>
+
+<p>We find the flexibility afforded by server and client rendering allows us to make intelligent choices of what to request and render in the server and the client, leading to a faster startup and a smoother transition between views.</p>
+
+<h2>Universal JavaScript</h2>
+<p>In order to support identical rendering on the client and server, we needed to rethink our rendering pipeline. Our previous architecture's separation between the generation of markup on the server and the enhancement of it on the client had to be dropped.</p> 
+
+<p>Three large pain points shaped our new Node.js architecture:</p>
+<ol>
+<li>Context switching between languages was not ideal.</li>
+<li>Enhancement of markup required too much direct coupling between server-only code generating markup and the client-only code enhancing it.</li>
+<li>We’d rather generate all our markup using the same API.</li>
+</ol>
+
+<p>There are many solutions to this problem that don't require Universal JavaScript, but we found this lesson was most appropriate: When there are two copies of the same thing, it's fairly easy for one to be slightly different than the other. Using Universal JavaScript means the rendering logic is simply passed down to the client.</p>
+
+<div class="separator"><a href="http://1.bp.blogspot.com/-noNL4nc6PJ0/VcJAe2gDtCI/AAAAAAAABZE/qJrosc6qaR4/s1600/Screen%2BShot%2B2015-08-04%2Bat%2B6.55.35%2BPM.png" imageanchor="1"><img border="0" src="http://1.bp.blogspot.com/-noNL4nc6PJ0/VcJAe2gDtCI/AAAAAAAABZE/qJrosc6qaR4/s400/Screen%2BShot%2B2015-08-04%2Bat%2B6.55.35%2BPM.png"></a></div>
+
+<p>Node.js and React.js are natural fits for this style of application. With Node.js and React.js, we can <a href="https://facebook.github.io/react/docs/top-level-api.html#react.rendertostring">render from the server</a> and subsequently render changes entirely on the client after the initial markup and React.js components have been transmitted to the browser. This flexibility allows for the application to render the exact same output independent of the location of the rendering. The hard separation is no longer present and it's far less likely for the server and client to be different than one another.</p>
+
+<p>Without shared rendering logic we couldn't have realized the potential of rendering only what was necessary on startup and everything else as data became available.</p>
+
+<h2>Reduce JavaScript Payload Impact</h2>
+<p>Building rich interactive experiences on the web often translates into a large JavaScript payload for users. In our new architecture, we placed significant emphasis on pruning large dependencies we can knowingly replace with smaller modules and <a href="https://queue.acm.org/detail.cfm?id=2677720">delivering JavaScript only applicable for the current visitor</a>.</p>
+
+<p>Many of the large dependencies we relied on in the legacy architecture didn't apply in the new one. We've replaced these dependencies in favor of newer, more efficient libraries. Replacing these libraries resulted in a much smaller JavaScript payload, meaning members need less JavaScript to start browsing. We know there is significant work remaining here, and we're actively working to trim our JavaScript payload down further.</p>
+
+<h2>Time To Interactive</h2>
+<p>In order to test and understand the impact of our choices, we monitor a metric we call time to interactive (tti).</p>
+
+<p>Amount of time spent between first known startup of the application platform and when the UI is interactive regardless of view. Note that this does not require that the UI is done loading, but is the first point at which the customer can interact with the UI using an input device.</p>
+
+<p>For applications running inside a web browser, this data is easily retrievable from the <a href="https://developer.mozilla.org/en-US/docs/Web/API/Navigation_timing_API">Navigation Timing API</a> (where supported).</p>
+
+<h2>Work is Ongoing</h2>
+<p>We firmly believe high performance is not an optional engineering goal – it's a requirement for creating great user-experiences. We have made significant strides in startup performance, and are committed to challenging our industry’s best-practices in the pursuit of a better experience for our members.</p>
+
+<p>Over the coming months we'll be investigating Service Workers, ASM.js, Web Assembly, and other emerging web standards to see if we can leverage them for a more performant website experience. If you’re interested in helping create and shape the next generation of performant web user-experiences <a href="https://jobs.netflix.com/jobs/1763/apply">apply here</a>.</p>
+
+
+
+<div><div align="center">
+
+<div><fb:comments href="http://techblog.netflix.com/2015/08/making-netflixcom-faster.html" title="Making Netflix.com Faster" width="450" xid="5085242745726506614" fb-xfbml-state="rendered" class="fb_iframe_widget"><span><iframe id="f13a2ca45" name="f130d61968" scrolling="no" title="Facebook Social Plugin" class="fb_ltr" src="https://www.facebook.com/plugins/comments.php?api_key=181875188571207&amp;channel_url=http%3A%2F%2Fstaticxx.facebook.com%2Fconnect%2Fxd_arbiter.php%3Fversion%3D42%23cb%3Df10a1926e8%26domain%3Dtechblog.netflix.com%26origin%3Dhttp%253A%252F%252Ftechblog.netflix.com%252Ff343dbe3f%26relation%3Dparent.parent&amp;href=http%3A%2F%2Ftechblog.netflix.com%2F2015%2F08%2Fmaking-netflixcom-faster.html&amp;locale=en_US&amp;numposts=10&amp;sdk=joey&amp;width=450"></iframe></span></fb:comments></div>
+</div></div>
+
