@@ -1,0 +1,63 @@
+---
+title: "HunterLarco/voxel.css"
+description: "voxel.css - A lightweight 3D CSS voxel library."
+link: "https://github.com/HunterLarco/voxel.css"
+saved: "2016-01-27 16:52:38"
+---
+<h1><a id="user-content-voxelcss" class="anchor" href="https://github.com/HunterLarco/voxel.css#voxelcss" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>voxel.css</h1>
+
+<h4><a id="user-content-javascript-3d-library" class="anchor" href="https://github.com/HunterLarco/voxel.css#javascript-3d-library" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>JavaScript 3D library</h4>
+
+<p>The goal of this project is to provide a lightweight 3D CSS library with very simple implementation.</p>
+
+<p><a href="http://voxelcss.com/demo">Demo</a> — <a href="https://github.com/HunterLarco/voxel.css/blob/master/docs">Documentation</a></p>
+
+<h3><a id="user-content-usage" class="anchor" href="https://github.com/HunterLarco/voxel.css#usage" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Usage</h3>
+
+<p>Download the <a href="https://github.com/HunterLarco/voxel.css/blob/master/dist/voxelcss.js">minified library</a> and <a href="https://github.com/HunterLarco/voxel.css/blob/master/dist/voxel.css">css file</a> and include both in your html.</p>
+
+<div class="highlight highlight-text-html-basic"><pre>&lt;<span class="pl-ent">script</span> <span class="pl-e">src</span>=<span class="pl-s"><span class="pl-pds">"</span>js/voxelcss.js<span class="pl-pds">"</span></span>&gt;&lt;/<span class="pl-ent">script</span>&gt;
+&lt;<span class="pl-ent">link</span> <span class="pl-e">rel</span>=<span class="pl-s"><span class="pl-pds">'</span>stylesheet<span class="pl-pds">'</span></span> <span class="pl-e">href</span>=<span class="pl-s"><span class="pl-pds">"</span>css/voxel.css<span class="pl-pds">"</span></span>&gt;&lt;/<span class="pl-ent">link</span>&gt;</pre></div>
+
+<p>This code creates a scene, a savable world, and an editor that allow you to immediately begin building worlds with voxel.css and see how little code is required to make complex 3D voxel games. If you've built anything in the past it auto-loads your previous build instead of creating a new one.</p>
+
+<div class="highlight highlight-text-html-basic"><pre><span class="pl-s1">&lt;<span class="pl-ent">script</span>&gt;</span>
+<span class="pl-s1"></span>
+<span class="pl-s1">    <span class="pl-k">var</span> scene, world, editor;</span>
+<span class="pl-s1"></span>
+<span class="pl-s1">    <span class="pl-en">init</span>();</span>
+<span class="pl-s1"></span>
+<span class="pl-s1">    <span class="pl-k">function</span> <span class="pl-en">init</span>() {</span>
+<span class="pl-s1">    scene <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-en">voxelcss.Scene</span>();</span>
+<span class="pl-s1">    <span class="pl-smi">scene</span>.<span class="pl-en">rotate</span>(<span class="pl-k">-</span><span class="pl-smi">Math</span>.<span class="pl-c1">PI</span> <span class="pl-k">/</span> <span class="pl-c1">8</span>, <span class="pl-smi">Math</span>.<span class="pl-c1">PI</span> <span class="pl-k">/</span> <span class="pl-c1">4</span>, <span class="pl-c1">0</span>);</span>
+<span class="pl-s1">    <span class="pl-smi">scene</span>.<span class="pl-en">attach</span>(<span class="pl-smi">document</span>.<span class="pl-c1">body</span>);</span>
+<span class="pl-s1"></span>
+<span class="pl-s1">    <span class="pl-k">var</span> lightSource <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-en">voxelcss.LightSource</span>(<span class="pl-c1">300</span>, <span class="pl-c1">300</span>, <span class="pl-c1">300</span>, <span class="pl-c1">750</span>, <span class="pl-c1">0.3</span>, <span class="pl-c1">1</span>);</span>
+<span class="pl-s1">    <span class="pl-smi">scene</span>.<span class="pl-en">addLightSource</span>(lightSource);</span>
+<span class="pl-s1"></span>
+<span class="pl-s1">    world <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-en">voxelcss.World</span>(scene);</span>
+<span class="pl-s1">    editor <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-en">voxelcss.Editor</span>(world);</span>
+<span class="pl-s1">    <span class="pl-smi">editor</span>.<span class="pl-en">enableAutoSave</span>();</span>
+<span class="pl-s1"></span>
+<span class="pl-s1">    <span class="pl-smi">editor</span>.<span class="pl-c1">load</span>();</span>
+<span class="pl-s1">    <span class="pl-k">if</span>(<span class="pl-smi">world</span>.<span class="pl-en">getVoxels</span>().<span class="pl-c1">length</span> <span class="pl-k">===</span> <span class="pl-c1">0</span>)</span>
+<span class="pl-s1">      <span class="pl-smi">editor</span>.<span class="pl-c1">add</span>(<span class="pl-k">new</span> <span class="pl-en">voxelcss.Voxel</span>(<span class="pl-c1">0</span>, <span class="pl-c1">0</span>, <span class="pl-c1">0</span>, <span class="pl-c1">100</span>, {</span>
+<span class="pl-s1">        mesh<span class="pl-k">:</span> <span class="pl-smi">voxelcss</span>.<span class="pl-smi">Meshes</span>.<span class="pl-smi">grass</span></span>
+<span class="pl-s1">      }));</span>
+<span class="pl-s1">    }</span>
+<span class="pl-s1"></span>
+<span class="pl-s1">&lt;/<span class="pl-ent">script</span>&gt;</span></pre></div>
+
+<p>If everything went well you should see <a href="http://jsfiddle.net/hjlarco/rrvsL9h6/">this</a>.</p>
+
+<h3><a id="user-content-core-concepts" class="anchor" href="https://github.com/HunterLarco/voxel.css#core-concepts" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Core Concepts</h3>
+
+<p>There are 4 important classes. Scene, World, Editor and of course Voxel. The destinctions between a Scene, World, and Editor are important to know if you are to leverage them well. A Scene is simply a camera. It can rotate, pan, zoom, and contain voxels. Meanwhile a World can save the state of any voxels added to it. This is important as voxels that are in a scene but not in a world are not savable. Lastly the Editor creates all the mouse events necessary to add the user to add and remove blocks from a World with the added option to autosave all changes.</p>
+
+<h3><a id="user-content-properties-and-classes" class="anchor" href="https://github.com/HunterLarco/voxel.css#properties-and-classes" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Properties and Classes</h3>
+
+<p><a href="https://github.com/HunterLarco/voxel.css/blob/master/docs/Core">Core Classes</a> — <a href="https://github.com/HunterLarco/voxel.css/blob/master/docs/Interfaces">Interfaces</a></p>
+
+<h3><a id="user-content-change-log" class="anchor" href="https://github.com/HunterLarco/voxel.css#change-log" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Change log</h3>
+
+<p><a href="https://github.com/HunterLarco/voxel.css/releases">releases</a></p>
