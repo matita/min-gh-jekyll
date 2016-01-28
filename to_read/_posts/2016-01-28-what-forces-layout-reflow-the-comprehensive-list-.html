@@ -1,0 +1,173 @@
+---
+title: "What forces layout/reflow. The comprehensive list."
+description: "What forces layout/reflow. The comprehensive list."
+link: "https://gist.github.com/paulirish/5d52fb081b3570c81e3a"
+saved: "2016-01-28 15:01:24"
+---
+<h1><a id="user-content-what-forces-layout--reflow" class="anchor" href="https://gist.github.com/paulirish/5d52fb081b3570c81e3a?utm_source=SitePoint&amp;utm_medium=email&amp;utm_campaign=Versioning#what-forces-layout--reflow" aria-hidden="true"><span class="octicon octicon-link"></span></a>What forces layout / reflow</h1>
+
+<p>All of the below properties or methods, when requested/called in JavaScript, will trigger the browser to synchronously calculate the style and layout*. This is also called reflow or <a href="http://www.kellegous.com/j/2013/01/26/layout-performance/">layout thrashing</a>, and is common performance bottleneck. </p>
+
+<h3><a id="user-content-element" class="anchor" href="https://gist.github.com/paulirish/5d52fb081b3570c81e3a?utm_source=SitePoint&amp;utm_medium=email&amp;utm_campaign=Versioning#element" aria-hidden="true"><span class="octicon octicon-link"></span></a>Element</h3>
+
+<h5><a id="user-content-box-metrics" class="anchor" href="https://gist.github.com/paulirish/5d52fb081b3570c81e3a?utm_source=SitePoint&amp;utm_medium=email&amp;utm_campaign=Versioning#box-metrics" aria-hidden="true"><span class="octicon octicon-link"></span></a>Box metrics</h5>
+
+<ul>
+<li><code>elem.offsetLeft</code>, <code>elem.offsetTop</code>, <code>elem.offsetWidth</code>, <code>elem.offsetHeight</code>, <code>elem.offsetParent</code></li>
+<li><code>elem.clientLeft</code>, <code>elem.clientTop</code>, <code>elem.clientWidth</code>, <code>elem.clientHeight</code></li>
+<li><code>elem.getClientRects()</code>, <code>elem.getBoundingClientRect()</code></li>
+</ul>
+
+<h5><a id="user-content-scroll-stuff" class="anchor" href="https://gist.github.com/paulirish/5d52fb081b3570c81e3a?utm_source=SitePoint&amp;utm_medium=email&amp;utm_campaign=Versioning#scroll-stuff" aria-hidden="true"><span class="octicon octicon-link"></span></a>Scroll stuff</h5>
+
+<ul>
+<li><code>elem.scrollBy()</code>, <code>elem.scrollTo()</code></li>
+<li><code>elem.scrollIntoView()</code>, <code>elem.scrollIntoViewIfNeeded()</code><br></li>
+<li><code>elem.scrollWidth</code>, <code>elem.scrollHeight</code></li>
+<li><code>elem.scrollLeft</code>, <code>elem.scrollTop</code> also, setting them</li>
+</ul>
+
+<h5><a id="user-content-focus" class="anchor" href="https://gist.github.com/paulirish/5d52fb081b3570c81e3a?utm_source=SitePoint&amp;utm_medium=email&amp;utm_campaign=Versioning#focus" aria-hidden="true"><span class="octicon octicon-link"></span></a>Focus</h5>
+
+<ul>
+<li><code>elem.focus()</code>  can trigger a <em>double</em> forced layout (<a href="https://code.google.com/p/chromium/codesearch#chromium/src/third_party/WebKit/Source/core/dom/Element.cpp&amp;q=updateLayoutIgnorePendingStylesheets%20-f:out%20-f:test&amp;sq=package:chromium&amp;l=2369&amp;ct=rc&amp;cd=4&amp;dr=C">source</a>)</li>
+</ul>
+
+<h5><a id="user-content-also" class="anchor" href="https://gist.github.com/paulirish/5d52fb081b3570c81e3a?utm_source=SitePoint&amp;utm_medium=email&amp;utm_campaign=Versioning#also" aria-hidden="true"><span class="octicon octicon-link"></span></a>Also…</h5>
+
+<ul>
+<li><code>elem.computedRole</code>, <code>elem.computedName</code><br></li>
+<li><code>elem.innerText</code> (<a href="https://code.google.com/p/chromium/codesearch#chromium/src/third_party/WebKit/Source/core/dom/Element.cpp&amp;q=updateLayoutIgnorePendingStylesheets%20-f:out%20-f:test&amp;sq=package:chromium&amp;l=2626&amp;ct=rc&amp;cd=4&amp;dr=C">source</a>)</li>
+</ul>
+
+<h3><a id="user-content-getcomputedstyle" class="anchor" href="https://gist.github.com/paulirish/5d52fb081b3570c81e3a?utm_source=SitePoint&amp;utm_medium=email&amp;utm_campaign=Versioning#getcomputedstyle" aria-hidden="true"><span class="octicon octicon-link"></span></a>getComputedStyle</h3>
+
+<p><code>window.getComputedStyle()</code> will typically force style recalc (<a href="https://code.google.com/p/chromium/codesearch#chromium/src/third_party/WebKit/Source/core/dom/Document.cpp&amp;sq=package:chromium&amp;type=cs&amp;l=1860&amp;q=updateLayoutTreeForNodeIfNeeded">source</a>)</p>
+
+<p><code>window.getComputedStyle()</code> will force layout, as well, if any of the following is true: </p>
+
+<ol>
+<li>The element is in a shadow tree</li>
+<li>There are media queries (viewport-related ones). Specifically, one of the following: (<a href="https://code.google.com/p/chromium/codesearch#chromium/src/third_party/WebKit/Source/core/css/MediaQueryExp.cpp&amp;sq=package:chromium&amp;type=cs&amp;l=163&amp;q=MediaQueryExp::isViewportDependent">source</a>)
+
+<ul>
+<li><code>min-width</code>, <code>min-height</code>, <code>max-width</code>, <code>max-height</code>, <code>width</code>, <code>height</code></li>
+<li><code>aspect-ratio</code>, <code>min-aspect-ratio</code>, <code>max-aspect-ratio</code></li>
+<li><code>device-pixel-ratio</code>, <code>resolution</code>, <code>orientation</code> </li>
+</ul></li>
+<li>The property requested is one of the following:  (<a href="https://code.google.com/p/chromium/codesearch#chromium/src/third_party/WebKit/Source/core/css/CSSComputedStyleDeclaration.cpp&amp;sq=package:chromium&amp;l=457&amp;dr=C&amp;q=isLayoutDependent">source</a>)
+
+<ul>
+<li><code>height</code>, <code>width</code></li>
+<li><code>top</code>, <code>right</code>, <code>bottom</code>, <code>left</code></li>
+<li><code>margin</code> [<code>-top</code>, <code>-right</code>, <code>-bottom</code>, <code>-left</code>, or <em>shorthand</em>] only if the margin is fixed.</li>
+<li><code>padding</code> [<code>-top</code>, <code>-right</code>, <code>-bottom</code>, <code>-left</code>, or <em>shorthand</em>] only if the padding is fixed.</li>
+<li><code>transform</code>, <code>transform-origin</code>, <code>perspective-origin</code></li>
+<li><code>translate</code>, <code>rotate</code>, <code>scale</code></li>
+<li><code>webkit-filter</code>, <code>backdrop-filter</code></li>
+<li><code>motion-path</code>, <code>motion-offset</code>, <code>motion-rotation</code></li>
+<li><code>x</code>, <code>y</code>, <code>rx</code>, <code>ry</code></li>
+</ul></li>
+</ol>
+
+<h3><a id="user-content-window" class="anchor" href="https://gist.github.com/paulirish/5d52fb081b3570c81e3a?utm_source=SitePoint&amp;utm_medium=email&amp;utm_campaign=Versioning#window" aria-hidden="true"><span class="octicon octicon-link"></span></a>window</h3>
+
+<ul>
+<li><code>window.scrollX</code>, <code>window.scrollY</code></li>
+<li><code>window.innerHeight</code>, <code>window.innerWidth</code></li>
+<li><code>window.getMatchedCSSRules()</code> only forces style</li>
+</ul>
+
+<h3><a id="user-content-forms" class="anchor" href="https://gist.github.com/paulirish/5d52fb081b3570c81e3a?utm_source=SitePoint&amp;utm_medium=email&amp;utm_campaign=Versioning#forms" aria-hidden="true"><span class="octicon octicon-link"></span></a>Forms</h3>
+
+<ul>
+<li><code>inputElem.focus()</code></li>
+<li><code>inputElem.select()</code>, <code>textareaElem.select()</code> (<a href="https://code.google.com/p/chromium/codesearch#chromium/src/third_party/WebKit/Source/core/html/HTMLTextFormControlElement.cpp&amp;q=updateLayoutIgnorePendingStylesheets%20-f:out%20-f:test&amp;sq=package:chromium&amp;l=192&amp;dr=C">source</a>)</li>
+</ul>
+
+<h3><a id="user-content-mouse-events" class="anchor" href="https://gist.github.com/paulirish/5d52fb081b3570c81e3a?utm_source=SitePoint&amp;utm_medium=email&amp;utm_campaign=Versioning#mouse-events" aria-hidden="true"><span class="octicon octicon-link"></span></a>Mouse events</h3>
+
+<ul>
+<li><code>mouseEvt.layerX</code>, <code>mouseEvt.layerY</code>, <code>mouseEvt.offsetX</code>, <code>mouseEvt.offsetY</code> (<a href="https://code.google.com/p/chromium/codesearch#chromium/src/third_party/WebKit/Source/core/events/MouseRelatedEvent.cpp&amp;q=f:mouserelatedevent%20computeRelativePosition&amp;sq=package:chromium&amp;type=cs&amp;l=132">source</a>)</li>
+</ul>
+
+<h3><a id="user-content-document" class="anchor" href="https://gist.github.com/paulirish/5d52fb081b3570c81e3a?utm_source=SitePoint&amp;utm_medium=email&amp;utm_campaign=Versioning#document" aria-hidden="true"><span class="octicon octicon-link"></span></a>document</h3>
+
+<ul>
+<li><code>doc.scrollingElement</code> only forces style</li>
+</ul>
+
+<h3><a id="user-content-range" class="anchor" href="https://gist.github.com/paulirish/5d52fb081b3570c81e3a?utm_source=SitePoint&amp;utm_medium=email&amp;utm_campaign=Versioning#range" aria-hidden="true"><span class="octicon octicon-link"></span></a>Range</h3>
+
+<ul>
+<li><code>range.getClientRects()</code>, <code>range.getBoundingClientRect()</code></li>
+</ul>
+
+<h3><a id="user-content-svg" class="anchor" href="https://gist.github.com/paulirish/5d52fb081b3570c81e3a?utm_source=SitePoint&amp;utm_medium=email&amp;utm_campaign=Versioning#svg" aria-hidden="true"><span class="octicon octicon-link"></span></a>SVG</h3>
+
+<ul>
+<li>Quite a lot; haven't made an exhaustive list , but <a href="http://gent.ilcore.com/2011/03/how-not-to-trigger-layout-in-webkit.html">Tony Gentilcore's 2011 Layout Triggering List</a> pointed to a few.</li>
+</ul>
+
+<h3><a id="user-content-contenteditable" class="anchor" href="https://gist.github.com/paulirish/5d52fb081b3570c81e3a?utm_source=SitePoint&amp;utm_medium=email&amp;utm_campaign=Versioning#contenteditable" aria-hidden="true"><span class="octicon octicon-link"></span></a>contenteditable</h3>
+
+<ul>
+<li>Lots &amp; lots of stuff, …including copying an image to clipboard (<a href="https://code.google.com/p/chromium/codesearch#chromium/src/third_party/WebKit/Source/core/editing/Editor.cpp&amp;sq=package:chromium&amp;l=420&amp;dr=C&amp;rcl=1442532378">source</a>)</li>
+</ul>
+
+<h2><a id="user-content-appendix" class="anchor" href="https://gist.github.com/paulirish/5d52fb081b3570c81e3a?utm_source=SitePoint&amp;utm_medium=email&amp;utm_campaign=Versioning#appendix" aria-hidden="true"><span class="octicon octicon-link"></span></a>*Appendix</h2>
+
+<ul>
+<li>Reflow only has a cost if the document has changed and invalidated the style or layout. Typically, this is because the DOM was changed (classes modified, nodes added/removed, even adding a psuedo-class like :focus).</li>
+<li>If layout is forced, style must be recalculated first. So forced layout triggers both operations. Their costs are very dependent on the content/situation, but typically both operations are similar in cost.</li>
+<li>What should you do about all this? Well, the <code>More on forced layout</code> section below covers everything in more detail, but the short version is: 
+
+<ol>
+<li><code>for</code> loops that force layout &amp; change the DOM are the worst, avoid them. </li>
+<li>Use DevTools Timeline to see where this happens. You may be surprised to see how often your app code and library code hits this.</li>
+<li>Batch your writes &amp; reads to the DOM (via <a href="https://github.com/wilsonpage/fastdom">FastDOM</a> or a virtual DOM implementation). Read your metrics at the begininng of the frame (very very start of <code>rAF</code>, scroll handler, etc), when the numbers are still identical to the last time layout was done. </li>
+</ol></li>
+</ul>
+
+<p></p>
+<a href="https://cloud.githubusercontent.com/assets/39191/10144107/9fae0b48-65d0-11e5-8e87-c9a8e999b064.png" target="_blank"><img src="https://cloud.githubusercontent.com/assets/39191/10144107/9fae0b48-65d0-11e5-8e87-c9a8e999b064.png" alt="image"></a>
+<em>Timeline trace of The Guardian. Outbrain is forcing layout repeatedly, probably in a loop.</em>
+<p></p>
+
+<h5><a id="user-content-cross-browser" class="anchor" href="https://gist.github.com/paulirish/5d52fb081b3570c81e3a?utm_source=SitePoint&amp;utm_medium=email&amp;utm_campaign=Versioning#cross-browser" aria-hidden="true"><span class="octicon octicon-link"></span></a>Cross-browser</h5>
+
+<ul>
+<li>The above data was built by reading the Blink source, so it's true for Chrome, Opera, and most android browsers.</li>
+<li><a href="http://gent.ilcore.com/2011/03/how-not-to-trigger-layout-in-webkit.html">Tony Gentilcore's Layout Triggering List</a> was for 2011 WebKit and generally aligns with the above. </li>
+<li>Modern WebKit's instances of forced layout are mostly consistent: <a href="https://github.com/WebKit/webkit/search?q=updateLayoutIgnorePendingStylesheets&amp;utf8=%E2%9C%93"><code>updateLayoutIgnorePendingStylesheets</code> - GitHub search - WebKit/WebKit </a></li>
+<li>Gecko's reflow appears to be requested via FrameNeedsReflow. Results: <a href="http://lxr.mozilla.org/mozilla-central/search?string=FrameNeedsReflow&amp;find=&amp;findi=%5C.c&amp;filter=%5E%5B%5E%5C0%5D*%24&amp;hitlimit=&amp;tree=mozilla-central"><code>FrameNeedsReflow</code> - mozilla-central search</a></li>
+<li>No concrete data on Edge/IE, but it should fall roughly in line, as the return values for these properties are spec'd. What would differ is the amount of clever optimization.</li>
+</ul>
+
+<h5><a id="user-content-browsing-the-chromium-source" class="anchor" href="https://gist.github.com/paulirish/5d52fb081b3570c81e3a?utm_source=SitePoint&amp;utm_medium=email&amp;utm_campaign=Versioning#browsing-the-chromium-source" aria-hidden="true"><span class="octicon octicon-link"></span></a>Browsing the Chromium source:</h5>
+
+<ul>
+<li>forced layout (and style recalc): <a href="https://code.google.com/p/chromium/codesearch#search/&amp;q=updateLayoutIgnorePendingStylesheets%20-f:out%20-f:test&amp;sq=package:chromium&amp;type=cs"><code>updateLayoutIgnorePendingStylesheets</code> - Chromium Code Search</a></li>
+<li>forced style recalc: <a href="https://code.google.com/p/chromium/codesearch#search/&amp;q=updateLayoutTree%20-f:out&amp;p=1&amp;sq=package:chromium&amp;type=cs"><code>updateLayoutTree</code> - Chromium Code Search</a></li>
+</ul>
+
+<h4><a id="user-content-css-triggers" class="anchor" href="https://gist.github.com/paulirish/5d52fb081b3570c81e3a?utm_source=SitePoint&amp;utm_medium=email&amp;utm_campaign=Versioning#css-triggers" aria-hidden="true"><span class="octicon octicon-link"></span></a>CSS Triggers</h4>
+
+<p><a href="http://csstriggers.com/">CSS Triggers</a> is a related resource and all about what operations are required to happen in the browser lifecycle as a result of setting/changing a given CSS value. It's a great resource.  The above list, however, are all about what forces the purple/green/darkgreen circles synchronously from JavaScript. </p>
+
+<h4><a id="user-content-more-on-forced-layout" class="anchor" href="https://gist.github.com/paulirish/5d52fb081b3570c81e3a?utm_source=SitePoint&amp;utm_medium=email&amp;utm_campaign=Versioning#more-on-forced-layout" aria-hidden="true"><span class="octicon octicon-link"></span></a>More on forced layout</h4>
+
+<ul>
+<li><a href="https://developers.google.com/web/fundamentals/performance/rendering/avoid-large-complex-layouts-and-layout-thrashing?hl=en">Avoiding layout thrashing — Web Fundamentals</a></li>
+<li><a href="https://mattandre.ws/2014/05/really-fixing-layout-thrashing/">Fixing Layout thrashing in the real world | Matt Andrews</a></li>
+<li><a href="https://developer.chrome.com/devtools/docs/demos/too-much-layout">Timeline demo: Diagnosing forced synchronous layouts - Google Chrome</a></li>
+<li><a href="http://wilsonpage.co.uk/preventing-layout-thrashing/">Preventing 'layout thrashing' | Wilson Page</a></li>
+<li><a href="https://github.com/wilsonpage/fastdom">wilsonpage/fastdom</a></li>
+<li><a href="http://www.phpied.com/rendering-repaint-reflowrelayout-restyle/">Rendering: repaint, reflow/relayout, restyle / Stoyan</a></li>
+<li><a href="http://blog.fogcreek.com/we-spent-a-week-making-trello-boards-load-extremely-fast-heres-how-we-did-it/">We spent a week making Trello boards load extremely fast. Here’s how we did it. - Fog Creek Blog</a></li>
+<li><a href="https://developers.google.com/speed/articles/reflow?hl=en">Minimizing browser reflow &nbsp;|&nbsp; PageSpeed Insights &nbsp;|&nbsp; Google Developers</a></li>
+<li><a href="https://developer.apple.com/videos/wwdc/2012/?id=601">Optimizing Web Content in UIWebViews and Websites on iOS</a></li>
+<li><a href="http://www.html5rocks.com/en/tutorials/speed/layers/">Accelerated Rendering in Chrome</a></li>
+<li><a href="https://www.igvita.com/slides/2012/web-performance-for-the-curious/">web performance for the curious</a></li>
+<li><a href="http://jankfree.org/">Jank Free</a></li>
+</ul>
