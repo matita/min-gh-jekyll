@@ -46,10 +46,14 @@ h1, h2, h3, h4, h5, h6 {
 a[href] { color: #6a9fb5; text-decoration: none; }
 a[href]:hover { text-decoration: underline; }
 img { max-width: 100%; height: auto; display: block; margin: 0 auto; text-align: center }
-iframe { max-width: 100%; display: block; margin: 0 auto; }
+iframe { max-width: 100%; display: block; margin: 1em auto; background-color: #eee; }
 pre { padding: 1em; background: #eee; font-size: 14px; overflow: auto; }
 blockquote { border-left: 5px solid #ddd; margin-left: 0; padding-left: 1em; }
 #html-content { width: 100%; display: block; height: 300px; }
+
+.center {
+  text-align: center;
+}
 
 figcaption {
   font-size: .8em;
@@ -87,6 +91,15 @@ body:not(.gh-acquirer) .gh-only-acquirer {
 
 .gh-archiving .gh-archive {
   display: none;
+}
+
+.gh-move {
+  padding: .5em;
+  background: #6a9fb5;
+  color: white !important;
+  border-radius: 4px;
+  margin-left: .5em;
+  margin-right: .5em;
 }
 
 

@@ -1,21 +1,24 @@
         <div class="gh-post-actions">
-          <span class="gh-only-acquirer">
-            <a class="gh-save" href="#">Save article</a>
-            &middot;
-          </span>
-          <a class="view-original" href="{{ page.link }}">View original</a>
-          <span class="gh-not-acquirer">
-            &middot;
-            {% include buttons/delete.html %}
-          {% for category in site.categories %}
-            {% assign category_name = category[0] %}
-            &middot;
-            {% include buttons/move.html category=category_name %}
-          {% endfor %}
+          
+          <p class="center">
+            <a class="gh-save gh-only-acquirer" href="#">Save article</a>
+            <span class="gh-not-acquirer">
+            {% for category in site.categories %}
+              {% assign category_name = category[0] %}
+              {% include buttons/move.html category=category_name %}
+            {% endfor %}
+              {% include buttons/delete.html %}
+            </span>
             &middot;
             <a class="gh-login" href="javascript:void(0)">Log in</a>
             <a class="gh-logout" href="javascript:void(0)">Log out</a>
-          </span>
-          &middot;
-          <span class="reading-time">{% include reading-time.html text=page.content %}</span>
+          </p>
+
+          <p>
+            <span class="reading-time">{% include reading-time.html text=page.content %}</span>
+            &middot;
+            <a class="view-original" href="{{ page.link }}">View original</a>
+          </p>
+          
+          
         </div>
