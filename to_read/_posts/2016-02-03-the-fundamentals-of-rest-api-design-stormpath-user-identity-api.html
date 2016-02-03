@@ -1,0 +1,82 @@
+---
+title: "The Fundamentals of REST API Design - Stormpath User Identity API"
+description: "Get some pointers on designing your REST API - from how to manage your resources to making partial updates with POST methods."
+link: "https://stormpath.com/blog/fundamentals-rest-api-design/"
+saved: "2016-02-03 14:19:32"
+---
+
+              
+
+
+  <div class="clearfix"><p>Here at Stormpath, we give developers easy access to user management features – including authentication, authorization, and password reset – via our REST API and language-specific SDKs. Our team of experts began with already-significant knowledge about REST+JSON API design. In the process of building the REST API, they learned even more. Our CTO, Les Hazelwood, gave a well-received presentation to a group of Java developers on REST+JSON API design best practices, which you can watch here:</p>
+
+<p><iframe width="560" height="315" src="https://www.youtube.com/embed/hdSrT4yjS1g" frameborder="0" allowfullscreen=""></iframe></p>
+
+<p>We’ve also written posts on how best to <a href="https://stormpath.com/blog/secure-your-rest-api-right-way/">secure your REST API</a>, as well as <a href="https://stormpath.com/blog/linking-and-resource-expansion-rest-api-tips/">linking and resource expansion in REST APIs</a>. This post will give a high level summary of the key points that Les touches on in his talk – specifically the fundamentals of good REST+JSON API design.</p>
+
+<!-- more -->
+
+
+<h2>So Why REST?</h2>
+
+<p>Keeping the goal of rapid adoption of an API in mind, what makes RESTful APIs so appealing? Per Dr. Roy Fielding’s thesis on the REST paradigm, there are 6 distinct advantages of REST:</p>
+
+<ol>
+<li><p>Scalability – not necessarily its performance, yet rather how easy it is for RESTful APIs to adapt and grow and be plugged into other systems.</p></li>
+<li><p>Use of HTTP – being able to use HTTP methods to manage resources makes RESTful APIs easy to plug into other applications.</p></li>
+<li><p>Independency – with a REST API you can deploy or scale down specific parts of the application, without having to shut down the entire application or an entire web server form.</p></li>
+<li><p>Reduced latency due to caching – REST APIs prioritize caching, which helps to improve latency. So always keep caching top of mind when you’re developing your REST API.</p></li>
+<li><p>Security – HTTP specification lets you sport security via certain HTTP headers, so you can leverage this to make your API secure.</p></li>
+<li><p>Encapsulation – there are parts of the application that don’t need to be exposed to a REST caller, and REST as an architectural style allows you to encapsulate those gritty details and only show things that you need to show.</p></li>
+</ol>
+
+
+<h2>And Why JSON?</h2>
+
+<ol>
+<li><p>Ubiquity – over 57 percent of all web-based applications have JSON, are built on JavaScript, or have JavaScript components.</p></li>
+<li><p>Human readable – it uses very simple grammar and language, so a human can easily read it, including folks just starting to get into software development.</p></li>
+<li><p>It’s easy to change or add new fields.</p></li>
+</ol>
+
+
+<h2>What makes REST design difficult?</h2>
+
+<p>RESTful APIs are difficult to design because REST is an architectural style, and not a specification. It has no standard governing body and therefore has no hard and fast design rules. What REST does have is an interpretation of how HTTP protocol works, which allows for lots of different approaches for designing a REST API. While use of HTTP methods is a core advantage of the REST approach, it also means that there are lots of different RESTful API designs. We’re going to focus on some of the best guidelines that we’ve come up with in designing our REST API.</p>
+
+<h2>REST API Design Guidelines</h2>
+
+<h3>1. Keep your REST API resources coarse grained, not fine grained</h3>
+
+<p>Basically, you don’t know how your user is going to interact with your resources. In the case of Stormpath, resources would be accounts, groups, or directories. There are lots of different actions they might run on those resources and if they are adding in lots of arguments to methods they’ve written for a particular resource, it can be difficult to manage. So we recommend that, for a given resource in your REST API, you write a method that takes the resource itself as an argument, and the method contains all the functionality needed for said resource.</p>
+
+<p>How else do you keep things coarse grained? You work with collection and instance resources. A collection resource is what it sounds like – basically a folder containing similar resources. An instance resource is a singular instance of its parent resource. This allows you to use HTTP behavior that affects an end point definition (an instance resource), but doesn’t actually create another url for each instance-behavior combination. So don’t add behavior to the actual end point definition.</p>
+
+<h3>2. Use POST to take advantage of partial updates in your REST API</h3>
+
+<p>Since REST APIs run on standard HTTP methods, you can use PUT or POST to either create or update resources. You might think of using PUT to create a resource and POST to update a resource, but you can actually use POST for both, and that’s recommended.</p>
+
+<p>Why would you want to use POST to both create and update a resource?</p>
+
+<p>Because with POST you don’t need to send over all fields for that data resource on every call you make, whereas with PUT, you do. This is important because if for every update you make you are also sending over fields that are not updating, then your data plan is consuming more than it needs to. Using POST instead of PUT can be beneficial if your REST API is metered as it limits the quantity of traffic. Furthermore, when you get into millions or hundreds of millions of requests per month, that impacts your REST API’s performance – so use POST to limit the traffic.</p>
+
+<p>And why can’t you do the same with PUT?</p>
+
+<p>Because per HTTP specification, PUT is idempotent, meaning it has to have all its properties included (or the result will not be the same). For example, if you first create an application without specifying a description, and then in a fourth call you send in the description, the state may have been different in between, therefore breaking the idempotency mandate.</p>
+
+<h3>3. Have REST API documents link to other documents based on the notion of a media type</h3>
+
+<p>A media type is a specification of a data format and a set of parsing rules associated with that specification. With your REST API, if you’re writing as a client, be sure to include your preferred data format you would like returned in the accept-header. Likewise, as the server, return back a content-type header that notes how the data is actually being returned. You can also add additional parsing rules to whatever data type you’re using. For example, you might have media type application/JSON+foo which tells the client not only is this JSON formatted data, but it’s also foo, which tells the client how to parse that data.</p>
+
+<p>So make sure to send through accept headers specifying what media type you want (if on the client side), send through content-type headers telling the client what data format you are returning (if on server side), and take advantage of customizing your own media types to make your rest API more flexible for your clients.</p>
+
+<h2>Conclusion</h2>
+
+<p>In this post we’ve covered the advantages of the RESTful API design approach, as well as the fundamentals for creating a developer-friendly REST API. This is merely a summary of Les’ points, and only the first 30 minutes at that, so be sure to check out the rest of the presentation.</p>
+
+<h4>Like what you see? <span><iframe id="twitter-widget-0" scrolling="no" frameborder="0" allowtransparency="true" class="twitter-follow-button twitter-follow-button-rendered" title="Twitter Follow Button" data-tf-inspect="-1931256125" src="https://platform.twitter.com/widgets/follow_button.baa54ded21a982344c4ced326592f3de.en.html#dnt=false&amp;id=twitter-widget-0&amp;lang=en&amp;screen_name=goStormpath&amp;show_count=false&amp;show_screen_name=true&amp;size=m&amp;time=1454505570483" data-screen-name="goStormpath"></iframe></span> to keep up with the latest releases.</h4>
+</div>
+
+
+
+            
