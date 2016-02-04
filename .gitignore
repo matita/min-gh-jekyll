@@ -1,3 +1,5 @@
 _site
 render.html
 Gemfile
+
+Gemfile.lock

@@ -22,9 +22,9 @@
 
         {% assign all_posts = site.categories[page.category] %}
         {% include functions/next-post posts=all_posts post=page %}
-        {% if next_post %}
+        {% comment %}{% if next_post %}
         <p>Read next: <a href="{{ site.baseurl }}{{ next_post.url }}">{{ next_post.title }}</a></p>
-        {% endif %}
+        {% endif %}{% endcomment %}
 
         <p><a href="{{ site.baseurl }}/">&#8592; back to articles</a></p>
       </footer>
@@ -62,7 +62,13 @@
     <script src="{{ site.baseurl }}/public/js/view/buttons/button-move.js"></script>
     <script src="{{ site.baseurl }}/public/js/view/buttons/button-login.js"></script>
     <script>
-      var link = Link({{ page | jsonify }});
+      var link = Link({
+        path: {{ page.path | jsonify }},
+        url: {{ page.url | jsonify }},
+        filename: {{ page.filename | jsonify }},
+        frontMatter: {{ page.frontMatter | jsonify }},
+        content: {{ page.content | jsonify }}
+      });
     </script>
   {% if page.title == 'Acquire' %}
     <script src="{{ site.baseurl }}/public/js/lib/DOMasSAX.js"></script>
