@@ -6,7 +6,7 @@
     <link rel="stylesheet" href="{{ site.baseurl }}/public/css/post.css">
   </head>
   <body>
-    <article class="post category-{{ page.category }}">
+    <article class="post{% for category in page.categories %} category-{{ category }}{% endfor %}">
       <header>
         <a href="{{ site.baseurl }}/">&#8592; back to articles</a>
         <h1>{{ page.title }}</h1>
