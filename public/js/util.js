@@ -42,13 +42,25 @@ window.util = (function() {
   }
 
 
+  function spinner(container) {
+    var s = document.createElement('i');
+    s.className = 'fa fa-spinner fa-spin';
+
+    return {
+      start: function() { container.insertBefore(s, container.firstChild); },
+      stop: function() { if (s.parentNode) s.parentNode.removeChild(s); },
+    }
+  }
+
+
 
 
   return {
     actionBtn : actionBtn,
     getRepo: function() {},
     listen    : listen,
-    closest   : closest
+    closest   : closest,
+    spinner   : spinner
   };
 
 })();

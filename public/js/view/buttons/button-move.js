@@ -1,11 +1,23 @@
 util.listen(document.body)
   .on('click', '.gh-move', function(e) {
     var btn = this;
+
+    if (btn.isLoading)
+      return;
+
     var path = btn.dataset.path;
     var category = btn.dataset.category;
 
+    var spinner = util.spinner(btn);
+    spinner.start();
+
     e.preventDefault();
+
+    btn.isLoading = true;
     MyLinks.move(path, category, function(err, newPath) {
+      btn.isLoading = false;
+      spinner.stop();
+      
       if (err)
         return alert((err.error && 'Error ' + err.error) || JSON.stringify(err)); //console.error('Action failed', err);
       
