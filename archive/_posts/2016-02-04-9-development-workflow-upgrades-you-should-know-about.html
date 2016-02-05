@@ -1,0 +1,87 @@
+---
+title: "9 Development Workflow Upgrades You Should Know About"
+description: "Bruno reveals some little known tips and tricks for upgrades to your development workflow - from health to speed of development, everything's on the menu!"
+link: "http://www.sitepoint.com/9-development-workflow-upgrades-you-should-know-about/"
+saved: "2016-02-04 14:18:43"
+---
+
+    <p>Every once in a while I run into a tool or plugin so useful I can’t <em>not</em> add it to my arsenal. I usually shout out <a href="https://twitter.com/bitfalls">tweets</a> and try to spread the word that way, but this time I believe I’ve got such a neat (and somewhat random) collection of productivity boosting entries, they deserve a collective article.</p>
+<p><img src="http://dab1nmslvvntp.cloudfront.net/wp-content/uploads/2016/02/1454396155Fotolia_91410922_Subscription_Monthly_M-1024x1024.jpg" alt="Tips and Tricks intro image"></p>
+<div class="ArticleBox u-inline"><h3 class="ArticleBox_header t-bg">
+                    <span class="ArticleBox_icon fa fa-pencil"></span> More from this author
+                 </h3><div class="ArticleBox_content"><ul class="ArticleBox_list t-list"><li><a href="http://www.sitepoint.com/the-php-channels-survey-results-and-2016-plans/?utm_source=sitepoint&amp;utm_medium=relatedinline&amp;utm_term=php&amp;utm_campaign=relatedauthor">The PHP Channel's Survey Results and 2016 Plans</a></li><li><a href="http://www.sitepoint.com/setting-up-php-7-servers-with-laravel-forge-and-digitalocean/?utm_source=sitepoint&amp;utm_medium=relatedinline&amp;utm_term=php&amp;utm_campaign=relatedauthor">Setting up PHP 7 Servers with Laravel Forge and DigitalOcean</a></li></ul></div></div>
+<p>Here are 9 new upgrades to your development workflow:</p>
+<h2 id="git-fresh">1. git-fresh</h2>
+<p><a href="https://github.com/imsky/git-fresh">git-fresh</a> “<em>keeps your repo fresh</em>”. It offers a super handy set of shortcuts for some very useful git commands and combinations – it’ll prune remote branches, rebase, do merges or resets of your workspace, even stash changes effectively so you can easily push or switch branches without committing the latest changes.</p>
+<p>It only supports Linux and OS X but since we’re big on <a href="http://www.sitepoint.com/quick-tip-get-homestead-vagrant-vm-running/">Homestead Improved</a> anyway, it’s all Linux for us. In fact, we’re thinking about adding this to the default <a href="http://www.sitepoint.com/quick-tip-get-homestead-vagrant-vm-running/">Homestead Improved</a> installation, so it’s available out of the box. Thoughts?</p>
+<h2 id="git-extras">2. git-extras</h2>
+<p><a href="https://github.com/tj/git-extras">git-extras</a>, owned by the <a href="https://medium.com/@kelas/how-is-tj-holowaychuk-so-insanely-productive-604818b4e9eb#.tk6jsubpk">mythical TJ Holowaychuk</a>, similarly extends Git’s functionality with incredibly useful additional commands. It’s a pretty old addon, but I’ve only just discovered it and I’m sure there are more of you who might find it rather handy. Examples of new commands include:</p>
+<ul>
+<li>git setup: initializes a repo and does the first commit of present files for you. A more “bootstrappy” start of a repo, in essence.</li>
+<li>git ignore: a command line “ignore” so you can add files to <code class=" language-php"><span class="token punctuation">.</span>gitignore</code> without leaving the terminal or entering a text editor</li>
+<li>git summary: provides a neat summary of the repo, including its age, its most active contributors, and more</li>
+<li>git undo: this one is a real lifesaver – it undoes the last commit, but still keeps the changes as uncommitted so you can safely call <code class=" language-php">git reset <span class="token operator">--</span>hard</code> to discard them once you inspect the condition of the repo with <code class=" language-php">git status</code></li>
+<li>git changelog: automatically creates and populates a changelog file with a MarkDown list of all the commit messages since the last tag was created in the repo.</li>
+<li>git release x.y.z: a shortcut for creating a release. This invokes a pre-release hook (for builds/tests), creates a release tag of the given version, pushes the tags and the repo to the remote, and everything else you might do on release day</li>
+<li>git fork: command line forking!</li>
+<li>git squash: easier squashing of commits!</li>
+</ul>
+<p>See full list <a href="https://github.com/tj/git-extras/blob/master/Commands.md">here</a>.</p>
+<h2 id="composer-changelogs">3. Composer changelogs</h2>
+<p><a href="https://github.com/pyrech/composer-changelogs">composer-changelogs</a> is a Composer plugin for displaying richer information with appropriate links when the dependencies of a project are updated. Rather useful for changelogs!</p>
+<p><img src="https://github.com/pyrech/composer-changelogs/raw/master/doc/demo.gif" alt="Composer changelogs gif"></p>
+<h2 id="dotfiles">4. Dotfiles</h2>
+<p><a href="https://github.com/mislav/dotfiles">mislav/dotfiles</a> is a brilliant collection of various bash scripts and <em>dotfiles</em> (files starting with <code class=" language-php"><span class="token punctuation">.</span></code>) that add aliases and other useful features to your environment. For example, for directory tree listing it’ll add:</p>
+<pre class=" language-php"><code class=" language-php">alias l<span class="token operator">=</span><span class="token string">"ls -lah"</span>
+alias ll<span class="token operator">=</span><span class="token string">"ls -l"</span>
+alias la<span class="token operator">=</span><span class="token string">'ls -A'</span>
+</code></pre>
+<p>and then there are <a href="https://github.com/mislav/dotfiles/blob/master/shrc/editor.sh">vim setups</a>, <a href="https://github.com/mislav/dotfiles/blob/master/shrc/1.path.sh">PATH consolidation</a>, <a href="https://github.com/mislav/dotfiles/blob/master/bin/nginx-dir">nginx server script generation</a> and more.</p>
+<h2 id="phpstorm-faster-rendering">5. PhpStorm faster rendering</h2>
+<p>Not an addon or plugin, but a quick hack that forces <a href="http://www.sitepoint.com/tag/phpstorm/">PhpStorm</a> to use graphics acceleration to render its windows, thus increasing framerate.</p>
+<p>First, here’s the procedure on OS X, as per <a href="https://gist.github.com/marcj/d5fadfb41f9d5773a094">this gist</a>:</p>
+<pre class=" language-php"><code class=" language-php">cp <span class="token operator">/</span>Applications<span class="token operator">/</span>PhpStorm<span class="token punctuation">.</span>app<span class="token operator">/</span>Contents<span class="token operator">/</span>bin<span class="token operator">/</span>phpstorm<span class="token punctuation">.</span>vmoptions <span class="token operator">~</span><span class="token operator">/</span>Library<span class="token operator">/</span>Preferences<span class="token operator">/</span><span class="token constant">PHPSTORM_FOLDER</span>
+<span class="token keyword">echo</span> <span class="token operator">-</span>ne <span class="token string">"\n-Dawt.useSystemAAFontSettings=lcd\n-Dawt.java2d.opengl=true"</span> <span class="token operator">&gt;</span><span class="token operator">&gt;</span> <span class="token operator">~</span><span class="token operator">/</span>Library<span class="token operator">/</span>Preferences<span class="token operator">/</span><span class="token constant">PHPSTORM_FOLDER</span><span class="token operator">/</span>phpstorm<span class="token punctuation">.</span>vmoptions
+</code></pre>
+<p>Replace <code class=" language-php"><span class="token constant">PHPSTORM_FOLDER</span></code> with the name of the PhpStorm folder – likely something like <code class=" language-php">WebIde100</code> if you’re using version 10.0 (it’s usually WebIdeVERSION).</p>
+<p>On other operating systems, first find the <code class=" language-php">phpstorm<span class="token punctuation">.</span>vmoptions</code> file as per <a href="https://tldrify.com/ens">this post</a>. Then, copy it into your system’s PhpStorm preferences folder, the location of which you can find out in <a href="https://www.jetbrains.com/phpstorm/help/directories-used-by-phpstorm-to-store-settings-caches-plugins-and-logs.html">this post</a>.</p>
+<p>Finally, edit the newly copied file and add the following two lines to the bottom of it:</p>
+<pre class=" language-php"><code class=" language-php"><span class="token operator">-</span>Dawt<span class="token punctuation">.</span>useSystemAAFontSettings<span class="token operator">=</span>lcd
+<span class="token operator">-</span>Dawt<span class="token punctuation">.</span>java2d<span class="token punctuation">.</span>opengl<span class="token operator">=</span><span class="token boolean">true</span>
+</code></pre>
+<p>Save, exit, restart PhpStorm if it’s running.</p>
+<h2 id="rapid-php-version-switching-on-os-x">6. Rapid PHP version switching on OS X</h2>
+<p>If you’re an OS X user and not into <a href="http://www.sitepoint.com/re-introducing-vagrant-right-way-start-php/">Vagrant</a> a whole lot, you can use <a href="https://gist.github.com/Pierstoval/1645a26ea5d2200642b6">this script</a> to quickly switch between PHP versions for testing your apps on different runtimes.</p>
+<p>We still don’t think this is the way to go, and if you really don’t want to use VMs we’d hope you’d at least go for <a href="http://www.sitepoint.com/use-phpbrew-virtphp/">phpbrew and virtenv</a>, but hey, just putting it out there for those of you who do like running PHP on the host OS.</p>
+<h2 id="composer-parallel-downloads">7. Composer parallel downloads</h2>
+<p><a href="https://github.com/hirak/prestissimo">This plugin</a> for Composer forces it to download files “in parallel”, significantly increasing the dependency installation speed. Usage is automatic and the plugin can be globally installed via:</p>
+<pre class=" language-php"><code class=" language-php">composer <span class="token keyword">global</span> <span class="token keyword">require</span> hirak<span class="token operator">/</span>prestissimo
+</code></pre>
+<p>Mind you, the “parallel” aspect of this approach is <a href="https://www.reddit.com/r/PHP/comments/42mrq5/prestissimo_composer_plugin_to_parallelize/czca2ar">up for debate</a> but this does not devalue the fact that installation times are dramatically improved (a Laravel <code class=" language-php">create<span class="token operator">-</span>project</code> command goes from almost 5 minutes to under 30 seconds, according to the README).</p>
+<h2 id="quick-mobile-preview-with-emmet-review">8. Quick Mobile Preview with Emmet Re:View</h2>
+<p><a href="https://chrome.google.com/webstore/detail/emmet-review/epejoicbhllgiimigokgjdoijnpaphdp">Emmet Re:View</a> is a fantastic browser extension which immediately renders the currently open web page in all the sizes defined by media queries in its CSS. Very handy for quickly seeing what your app looks and feels like on different screen sizes.</p>
+<p>The extension also has some nifty additional options like defining new custom screen sizes, syncing the scroll across all screens, dynamic on-the-spot resizing of every screen so you can see the media queries in action, and more. Here’s an example render of the <a href="https://almsaeedstudio.com/themes/AdminLTE/index2.html">AdminLTE demo</a>.</p>
+<p><img src="http://dab1nmslvvntp.cloudfront.net/wp-content/uploads/2016/02/1454365098Screenshot-2016-02-01-23.14.49-1024x563.png" alt="Emmet ReView in action"></p>
+<h2 id="comfort-collection">9. Comfort Collection</h2>
+<p>Last but not least, I’d like to briefly share with you a combo setup I use to code comfortably, without back pain, weight gain, or other problems commonly associated with working on computers for a while. I use all the tools / approaches below. If you’d like to know more, please ask in the comments.</p>
+<ul>
+<li>
+<p><a href="https://justgetflux.com/">F.lux</a> is a multi-platform tool which adjusts the tint of your screen as night approaches to be more <em>yellowy</em>, removing the white/blue glare. Turns out this glare is responsible for <a href="https://prezi.com/rzw6hj6mc3z-/the-affect-of-screens-on-the-secretion-of-melatonin/">some difficulties</a> while trying to fall asleep.</p>
+</li>
+<li>
+<p><a href="http://lightheadsw.com/caffeine/">Caffeine</a> stops your Mac from falling asleep. One wouldn’t think this has a common use case, but it does – especially in my line of work. When I spread a wall of text that needs editing or proofreading across two large screens or a projector, it takes a while to read through it and OS X sometimes considers this as a sign of idleness. Having a “sleep prevention button” at my fingertips helps with that.</p>
+</li>
+<li>
+<p><a href="https://www.quora.com/Daily-Life/What-are-some-good-habits-to-follow/answer/Bruno-Skvorc">Working on a treadmill</a> helps you completely get rid of and prevent excess weight, lower back and neck pain, anterior pelvic tilt, hemorrhoids, and more. Once you get used to it, it also boosts productivity due to distracting the “let’s play” part of your brain with walking so the “let’s work” part can work in peace.</p>
+</li>
+<li>
+<p><a href="http://www.kinesis-ergo.com/shop/freestyle2-for-mac/">Split keyboard</a> – very useful when working on the treadmill desk, but also when sitting. When we type on narrow keyboards like the those on smaller Macbooks, our shoulders and head are stooped, almost converging on a point. This causes cramping, neck pain, and basically grows you a hump. It also weakens your pecs and your deltoids, and stiffens you up. Standing up after a long bout of coding and just spinning your head or your torso around their axis will almost guarantee cracking. With a split keyboard, you can hold your hands in a natural position and maintain proper posture. Plus, coupled with a treadmill, it makes you feel like Russel Crowe in Virtuosity:</p>
+<p><img src="http://dab1nmslvvntp.cloudfront.net/wp-content/uploads/2016/02/1454395300crowe-1024x433.png" alt="Crowe in Virtuosity"></p>
+</li>
+<li>
+<p><a href="http://leapmotion.com/">Leap Motion</a> this <em>abandonware</em> is actually quite handy for avoiding the mouse while on the treadmill altogether. The learning curve is super high, and it’s difficult to find the app that’s precise enough, but once you do, and once you get used to it (it might take up to two months, easy) you barely ever touch the mouse or trackpad. Besides looking cool, this also allows you to keep your posture in the rare moments when you do need to take your hands off the keyboard.</p>
+</li>
+</ul>
+<h2 id="conclusion">Conclusion</h2>
+<p>I hope at least some of the entries on this list made it into your everyday routine – if you have any others you’d like to suggest, please drop a comment below, and if you’d like to know more about the “comfort setup” or would like to share your own with us, please do let us know – including pictures is perfectly fine!</p>
+  
