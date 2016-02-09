@@ -164,7 +164,7 @@ function analyze(doc, href) {
     var nodes, n, i;
 
     // remove some html elements
-    nodes = node.querySelectorAll('script, style, header, footer, form');
+    nodes = node.querySelectorAll('script, style, header, footer, form, canvas, input, textarea');
     for (i = 0; i < nodes.length; i++) {
       n = nodes[i];
       n.parentNode.removeChild(n);
@@ -179,15 +179,6 @@ function analyze(doc, href) {
         n.parentNode.removeChild(n);
     }
 
-    // remove empty divs
-    nodes = node.getElementsByTagName('div');
-    for (i = 0; i < nodes.length; i++) {
-      n = nodes[i];
-      if (!n.lastChild)
-        n.parentNode.removeChild(n);
-    }
-
-    
     // normalize links
     nodes = node.getElementsByTagName('a');
     for (i = 0; i < nodes.length; i++) {
@@ -217,6 +208,31 @@ function analyze(doc, href) {
       var src = n.getAttribute('data-src') || n.src;
       a.href = src;
       n.src = a.href;
+    }
+
+    // move elements outside divs
+    do {
+      nodes = node.querySelectorAll('div > :not(div)');
+      for (i = 0; i < nodes.length; i++) {
+        n = nodes[i];
+        div = n.parentNode;
+        if (div.parentNode)
+          div.parentNode.insertBefore(n, div);
+      }
+    } while (nodes.length);
+
+    // remove all divs
+    nodes = node.getElementsByTagName('div');
+    for (i = 0; i < nodes.length; i++) {
+      n = nodes[i];
+      n.parentNode.removeChild(n);
+    }
+
+    // remove first and last hrs
+    nodes = node.querySelectorAll('hr:first-child, hr:last-child');
+    for (i = 0; i < nodes.length; i++) {
+      n = nodes[i];
+      n.parentNode.removeChild(n);
     }
 
     removeAttributes(node);
