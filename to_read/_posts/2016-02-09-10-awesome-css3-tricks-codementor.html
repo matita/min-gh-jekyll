@@ -1,0 +1,76 @@
+---
+title: "10 Awesome CSS3 Tricks | Codementor"
+description: "This article will introduce you to 10 CSS3 tricks that will enhance your website"
+link: "https://www.codementor.io/css/tutorial/awesome-css3-tricks"
+saved: "2016-02-09 14:14:38"
+---
+
+
+
+<p><img src="https://s3.amazonaws.com/codementor_content/2016-Jan-week1/10awesomecsstricks.png" alt="css3 tricks"></p>
+<address>This article will introduce you to 10 CSS3 tricks that will enhance your website</address>
+<hr>
+<p>When CSS was developed around 1995, you could not do much with it other than basic styling of text. Even with CSS2, things did not get better immediately. It was not until early 2010 that CSS2 was fully supported by major browsers. With CSS3, the stylesheet language became much more powerful and now we are able to develop rich interactions with CSS, and not just style text. To give you an overview and some inspiration, here are ten awesome CSS3 tricks.</p>
+<h2 id="1_CSS_Counters_0">1. CSS Counters</h2>
+<p>Few people know CSS counters, and you might ask, “What browser supports them anyway?” However, CSS counters are supported back to Internet Explorer 8. Counters are, as you might guess, for counting elements like how many pictures there are in a gallery. With counters, you can display numbers underneath the items. That does not sound very interesting yet, but did you know that CSS counters can actually replace JavaScript in some situations?</p>
+<p><img src="https://s3.amazonaws.com/codementor_content/2016-Jan-week1/csscounters.png" alt="css counters"></p>
+<p>In this blog post, <a href="http://codersblock.com/blog/fun-times-with-css-counters/" target="_blank">Fun Times with CSS Counters</a>, Will shows off some pretty crazy tricks with counters, e.g. a pagination, a counter for items with checkboxes and even a little mathematics game.</p>
+<h2 id="2_Smart_Quotes_1">2. Smart Quotes</h2>
+<p><img src="https://s3.amazonaws.com/codementor_content/2016-Jan-week1/css_smartquotes.png" alt="smart quotes"></p>
+<p>With more sophisticated CSS you can greatly enhance your website’s typography, an aspect that lots of people overlook. For instance, did you know that the quotation marks you are writing in your code are actually “primes” which are used for measurements and coordinates? When using “q” tags in HTML for quotations, you can automatically insert proper quotation marks (so-called smart quotes) before and after the quotation.</p>
+<pre class="  language-css"><code class="  language-css"><span class="token selector">q </span><span class="token punctuation">{</span>
+    <span class="token property">quotes</span><span class="token punctuation">:</span> <span class="token string">"“"</span> <span class="token string">"”"</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span></code></pre>
+<p>This is especially useful for multilingual websites where you have to deal with several sorts of quotation marks, e.g. in German, quotes look like this: <strong>„some quote“</strong>. To automatically insert quotation marks for a specific language, you have to set the lang attribute in your HTML code, for example <code>lang="de"</code> (mostly on the html tag itself). In your CSS code, you can specify the quotation marks for each language:</p>
+<pre class="  language-css"><code class="  language-css"><span class="token selector">q<span class="token pseudo-class">:lang(de)</span> </span><span class="token punctuation">{</span>
+    <span class="token property">quotes</span><span class="token punctuation">:</span> <span class="token string">"„"</span> <span class="token string">"“"</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span></code></pre>
+<p>Here is <a href="http://smartquotesforsmartpeople.com/" target="_blank">some more information</a> about smart quotes.</p>
+<h2 id="3_CSS_Hover_Effects_2">3. CSS Hover Effects</h2>
+<p>Surely some of you have a portfolio where you show off your projects in some kind of grid or gallery. For grids, most people use pretty heavy JavaScript libraries which aren’t necessary anymore since we have Flexbox. With Flexbox, you can create grids that work in every modern browser and do not require JavaScript. Here is a cool example which also features nice hover effects: </p>
+<p data-height="268" data-theme-id="0" data-slug-hash="nsbLA" data-default-tab="result" data-user="a-urban" class="codepen">See the Pen <a href="http://codepen.io/a-urban/pen/nsbLA/" target="_blank">Flexbox Grid with Pure CSS Hover Effects</a> by Anselm Urban (<a href="http://codepen.io/a-urban" target="_blank">@a-urban</a>) on <a href="http://codepen.io/" target="_blank">CodePen</a>.</p>
+<p></p>
+<h2 id="4_File_Format_Icons_3">4. File Format Icons</h2>
+<p>Next up there is a trick which uses no special features but a clever combination of selectors: Just with CSS you can display a little file format icon next to download links.</p>
+<pre class="  language-css"><code class="  language-css"><span class="token selector">[href$="<span class="token class">.pdf</span>"]<span class="token pseudo-element">::after</span></span><span class="token punctuation">{</span>
+    <span class="token property">content</span><span class="token punctuation">:</span> <span class="token string">" "</span> <span class="token url">url("pdficon.png")</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span></code></pre>
+<p>This snippet works in over 96% of all browsers.</p>
+<h2 id="5_CSS_Arrow_4">5. CSS Arrow</h2>
+<p>Another similar CSS snippet lets you display an arrow next to external links:</p>
+<pre class="  language-css"><code class="  language-css"><span class="token selector">a[href ^= 'http']<span class="token pseudo-class">:not([href *= 'yourdomain.'])</span> </span><span class="token punctuation">{</span>
+    <span class="token property">background</span><span class="token punctuation">:</span> transparent <span class="token url">url(arrow.svg)</span> no-repeat center right<span class="token punctuation">;</span>
+    <span class="token property">padding-right</span><span class="token punctuation">:</span> <span class="token number">16</span>px<span class="token punctuation">;</span>
+<span class="token punctuation">}</span></code></pre>
+<p>Pretty useful, isn’t it?</p>
+<h2 id="6_CSS_Circular_Menu_5">6. CSS Circular Menu</h2>
+<p>Designing navigation menus that work well on mobile devices is pretty hard, and hamburger menus are not the best choice. Another type is the circular menu. There is a great example by <a href="http://codepen.io/SaraSoueidan" target="_blank">Sara Soueidan</a> on CodePen: </p>
+<p data-height="268" data-theme-id="0" data-slug-hash="wpHBt" data-default-tab="result" data-user="SaraSoueidan" class="codepen">See the Pen <a href="http://codepen.io/SaraSoueidan/pen/wpHBt/" target="_blank">Simple Circular Menu</a> by Sara Soueidan (<a href="http://codepen.io/SaraSoueidan" target="_blank">@SaraSoueidan</a>) on <a href="http://codepen.io/" target="_blank">CodePen</a>.</p>
+<p></p>
+<p>This example uses nothing more than CSS, requires no JS, and the animation displays smoothly also on mobile devices. It’s probably not the best solution for normal content websites since it’s limited to only a few items, but for web apps it is a great alternative to tabbed navigation and hamburger menus.</p>
+<h2 id="7_Gooey_Menu_6">7. Gooey Menu</h2>
+<p>Speaking of circular menus, there is a similar one on CodePen with a “gooey” effect done with pure CSS and SVG filters, and it looks awesome: </p>
+<p data-height="268" data-theme-id="0" data-slug-hash="LELBEo" data-default-tab="result" data-user="lbebber" class="codepen">See the Pen <a href="http://codepen.io/lbebber/pen/LELBEo/">Gooey Menu</a> by Lucas Bebber (<a href="http://codepen.io/lbebber">@lbebber</a>) on <a href="http://codepen.io/" target="_blank">CodePen</a>.</p>
+<p><br>
+It is also a good example for the possibilities we have with modern CSS3 and SVG.</p>
+<h2 id="8_CSS_Modals_7">8. CSS Modals</h2>
+<p><img src="https://s3.amazonaws.com/codementor_content/2016-Jan-week1/cssmodal.jpg" alt="css models"></p>
+<p>Besides menus, there are other interface elements you can create using only CSS, e.g. <a href="https://drublic.github.io/css-modal/" target="_blank">modals</a>. These CSS modals do not require JavaScript, and are compatible back to Internet Explorer 8. They adapt to the screen size and look great on mobile devices unlike most “lightbox” or modal plugins you find out there.</p>
+<h2 id="9_Pure_CSS_Parallax_8">9. Pure CSS Parallax</h2>
+<p>One of the web design trends of 2015 was the parallax scrolling effect. It looks great, but is a bit sluggish sometimes, especially on mobile devices. Instead of relying on a JavaScript library, you can make a parallax effect with pure CSS: </p>
+<p data-height="268" data-theme-id="0" data-slug-hash="JycFw" data-default-tab="result" data-user="keithclark" class="codepen">See the Pen <a href="http://codepen.io/keithclark/pen/JycFw/" target="_blank">Pure CSS Parallax Scrolling</a> by Keith Clark (<a href="http://codepen.io/keithclark" target="_blank">@keithclark</a>) on <a href="http://codepen.io/" target="_blank">CodePen</a>.</p>
+<p></p>
+<h2 id="10_CSS_3D_Model_9">10. CSS 3D Model</h2>
+<p>All the tricks mentioned here show how powerful CSS has become, but the last example is by far the most mind-blowing: an interactive 3D model of the solar system! </p>
+<p data-height="268" data-theme-id="0" data-slug-hash="idhuG" data-default-tab="result" data-user="juliangarnier" class="codepen">See the Pen <a href="http://codepen.io/juliangarnier/pen/idhuG/">CSS 3D Solar System</a> by Julian Garnier (<a href="http://codepen.io/juliangarnier" target="_blank">@juliangarnier</a>) on <a href="http://codepen.io/" target="_blank">CodePen</a>.</p>
+<p></p>
+<p>It uses (almost) only CSS and displays absolutely smoothly. Although this is an awesome example of the possibilities we have with CSS, this is nothing you want to do in reality. For such complex visualisations, there are better technologies like Canvas and WebGL.</p>
+<h2 id="Final_Words_10">Final Words</h2>
+<p>As you can see, you can do a lot with pure CSS and surprisingly, also lesser known features are well supported. Using CSS instead of JavaScript, whenever possible, has some huge advantages: Unlike JavaScript, CSS cannot be turned off, thus providing a better user experience for people who decided to do so for whatever reason. CSS animations, transitions and transforms are hardware-accelerated by default and with modern CSS you can leave out heavy JavaScript libraries.<br>
+I hope this article was helpful and you found some inspiration.</p>
+<hr>
+<h4>Author Bio:</h4>
+<p><img class="alignright" src="https://s3.amazonaws.com/codementor_content/2016-Jan-week1/anselmurban.jpg" alt="" width="120" height="120"></p>
+<p>Anselm Urban is a web designer and developer from Görlitz, Germany. Since 2009 he has been designing websites. It is his passion to create not only websites that look good but are beautiful by functionality. He works on several projects, some of his own, some for clients. Currently, he is available for hire, so if you have something to do for him, <a href="mailto:hello@aurban.me">send an email</a> or <a href="https://anselmurban.de/" target="_blank">check out his site</a> for more details!</p>
+
+
