@@ -53,7 +53,7 @@
       <p class="link-url">
         <span class="gh-read-time">{% include reading-time.html %}</span>
         &middot;
-        {{ page.link }}
+        {% include functions/url-host.html url=page.link %}
       </p>
     </a>
 

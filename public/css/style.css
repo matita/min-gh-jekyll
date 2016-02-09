@@ -6,7 +6,6 @@ body {
   font-family: Helvetica, arial, sans-serif;
   font-size: 16px;
   color: #333;
-  background-color: #eee;
 }
 
 .container {
@@ -17,10 +16,8 @@ body {
 
 .link {
   display: block;
-  background: #fff;
-  border-bottom: 1px solid #eee;
   color: #333;
-  padding: 1em 2em;
+  padding: 1em 0;
   text-decoration: none;
   margin-top: 0;
   margin-bottom: 0;
@@ -39,7 +36,7 @@ body {
 
 .link-url,
 .link-date {
-  color: #ccc;
+  color: #999;
   font-size: .9em;
   font-variant: small-caps;
 }
@@ -60,7 +57,7 @@ h1 {
 }
 
 h1, h2, h3, h4, h5, h6 {
-  color: #999;
+  color: #ccc;
   font-weight: normal;
 }
 

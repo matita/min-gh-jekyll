@@ -1,0 +1,1 @@
+{% assign parts = include.url | split: '/' %}{{ parts[2] | downcase | remove_first: 'www.' }}
