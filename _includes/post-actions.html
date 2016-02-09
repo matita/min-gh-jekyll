@@ -18,6 +18,8 @@
             <span class="reading-time">{% include reading-time.html text=page.content %}</span>
             &middot;
             <a class="view-original" href="{{ page.link }}">View original</a>
+            &middot;
+            <span class="original-url">{% include functions/url-host.html url=page.link %}</span>
           </p>
           
           

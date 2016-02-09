@@ -171,7 +171,7 @@ function analyze(doc, href) {
     }
 
     // remove unrelated divs
-    var uselessRegexp = /\b(ad|comments|meta|social|shar(er?|ing)|related(posts)?|sidebar|recommended|widget)\b/;
+    var uselessRegexp = /\b(ad|comments|meta|social|shar(er?|ing)|related(posts)?|sidebar|recommend(ed|s)?|widget|linkset)\b/;
     nodes = node.querySelectorAll('*');
     for (i = 0; i < nodes.length; i++) {
       n = nodes[i];
@@ -210,6 +210,7 @@ function analyze(doc, href) {
       n.src = a.href;
     }
 
+    /*
     // move elements outside divs
     do {
       nodes = node.querySelectorAll('div > :not(div)');
@@ -234,6 +235,7 @@ function analyze(doc, href) {
       n = nodes[i];
       n.parentNode.removeChild(n);
     }
+    */
 
     removeAttributes(node);
   }

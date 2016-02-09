@@ -1,1 +1,1 @@
-{% assign parts = include.url | split: '/' %}{{ parts[2] | downcase | remove_first: 'www.' }}
+{% assign parts = include.url | downcase | split: '/' %}{{ parts[2] | remove_first: 'www.' }}{% if parts[2] == 'medium.com' %}/{{ parts[3] }}{% endif %}
