@@ -1,0 +1,556 @@
+---
+title: "The `background-clip` Property and its Use Cases | CSS-Tricks"
+description: "background-clip is one of those properties I've known about for years, but rarely used. Maybe just a couple of times as part of a solution to a Stack Overf"
+link: "https://css-tricks.com/the-backgound-clip-property-and-use-cases/"
+saved: "2016-02-10 14:03:29"
+---
+
+
+      <div class="e-content">
+
+          
+
+        <p><code>background-clip</code> is one of those properties I've known about for years, but rarely used. Maybe just a couple of times as part of a solution to a Stack Overflow question. Until last year, when I started creating <a href="http://codepen.io/collection/DgYaMj/">my huge collection of sliders</a>. Some of the designs I chose to reproduce were a bit more complex and I only had one element available per slider, which happened to be an <code>input</code> element, meaning that I couldn't even use pseudo-elements on it. Even though that does work in certain browsers, <em>the fact that it works is actually a bug</em> and I didn't want to rely on that. All this meant I ended up using backgrounds, borders, and shadows <em>a lot</em>. I also learned a lot from doing that and this article shares some of those lessons.</p>
+<p>Before anything else, let's see what <a href="https://css-tricks.com/almanac/properties/b/background-clip/"><code>background-clip</code></a> is and what it does.</p>
+<p><span id="more-237034"></span></p>
+<p>In the following image, we have an element's box model.</p>
+<figure id="post-237035" class="align-none media-237035"><img src="https://cdn.css-tricks.com/wp-content/uploads/2016/01/AT-box-model.png" alt=""><br>
+<figcaption>the box model</figcaption>
+</figure>
+<p>If the <code>padding</code> is <code>0</code>, then the <code>padding-box</code> is exactly the same size as the <code>content-box</code>, and the content limit coincides with the padding limit.</p>
+<figure id="post-237036" class="align-none media-237036"><img src="https://cdn.css-tricks.com/wp-content/uploads/2016/01/AT-with-padding0.png" alt=""><br>
+<figcaption>with <code>padding: 0</code></figcaption>
+</figure>
+<p>If the <code>border-width</code> is <code>0</code>, the <code>border-box</code> is the same size as the <code>padding-box</code>, and the border limit coincides with the padding limit.</p>
+<figure id="post-237037" class="align-none media-237037"><img src="https://cdn.css-tricks.com/wp-content/uploads/2016/01/AT-border-width0.png" alt=""><br>
+<figcaption>with <code>border-width: 0</code></figcaption>
+</figure>
+<p>If both the <code>padding</code> and the <code>border-width</code> are <code>0</code>, then all the three boxes (the <code>content-box</code>, the <code>padding-box</code>, and the <code>border-box</code>) have the same size, and the content limit, the padding limit, and the border limit all coincide.</p>
+<figure id="post-237038" class="align-none media-237038"><img src="https://cdn.css-tricks.com/wp-content/uploads/2016/01/AT-padding0-border-width0.png" alt=""><br>
+<figcaption>with <code>padding: 0</code> and <code>border-width: 0</code></figcaption>
+</figure>
+<p>By default, backgrounds cover the entire <code>border-box</code> (they are applied underneath the border as well), but their <code>background-position</code> (and also <code>%</code>-based <code>background-size</code>) is relative to the <code>padding-box</code>.</p>
+<p>In order to better understand this, let's consider an example. We take a box with random dimensions, give it a simple gradient background of <code>background-size: 50% 50%</code> and a hashed <code>border</code> (<a href="https://css-tricks.com/almanac/properties/b/border-image/">using <code>border-image</code></a>) so we can still see through the hashes what's underneath the border:</p>
+<div><div class="drag-wrap ui-resizable"><iframe id="cp_embed_3e249da77243daaf72656f70fb757f66" src="https://codepen.io/css-tricks/embed/3e249da77243daaf72656f70fb757f66?height=450&amp;theme-id=1&amp;slug-hash=3e249da77243daaf72656f70fb757f66&amp;default-tab=result&amp;user=css-tricks" scrolling="no" frameborder="0" height="450" allowtransparency="true" allowfullscreen="true" name="CodePen Embed" title="CodePen Embed" class="cp_embed_iframe undefined"></iframe><div class="ui-resizable-handle ui-resizable-e"></div></div></div>
+<p>In this demo, we can see that the gradient background covers the entire <code>border-box</code> (it's visible underneath the hashed border). We haven't specified a <code>background-position</code>, so it takes the default value — <code>0 0</code>. We can see this is relative to the <code>padding-box</code> because it starts from the top left corner (the <code>0 0</code>) of this box. We can also see that the <code>background-size</code> set in <code>%</code> is relative to the <code>padding-box</code>.</p>
+<figure id="post-237039" class="align-none media-237039"><img src="https://cdn.css-tricks.com/wp-content/uploads/2016/01/AT-background-cover-border-box.png" alt=""><br>
+<figcaption>by default, backgrounds cover the entire <code>border-box</code>, but start from the top left corner of the <code>padding-box</code></figcaption>
+</figure>
+<p>When setting the <code>background-size</code> for a gradient (but not for actual images), we usually need two values for consistent results across browsers. If we use just one value, Firefox takes the second one to be 100% (<a href="https://drafts.csswg.org/css-backgrounds-3/#the-background-size">per spec</a>), while every other browser incorrectly takes the second value to be equal to the first. A missing <code>background-size</code> value is taken to be <code>auto</code> and since gradients have no intrinsic dimensions or intrinsic proportions, the <code>auto</code> value cannot be resolved from those, so it should get treated as <code>100%</code>. So unless we want both dimensions of our <code>background-size</code> to be <code>100%</code>, we should use two values.</p>
+<figure id="post-237040" class="align-none media-237040"><img src="https://cdn.css-tricks.com/wp-content/uploads/2016/01/AT-one-value-bgsize.png" alt=""><br>
+<figcaption>Using just one value for setting the <code>background-size</code> doesn't produce consistent results across browsers (<a href="http://codepen.io/thebabydino/pen/YybEaX?editors=110">live test</a>); left: Firefox (per spec, takes the second value to be <code>100%</code>); right: Chrome/ Opera, Safari, IE/ Edge (incorrectly take the second value to be equal to the first)</figcaption>
+</figure>
+<p>We can make the background cover just the <code>padding-box</code> or just the <code>content-box</code> with the help of <code>background-clip</code>. Clipping means cutting out and not displaying what falls outside the clipping region, where the clipping region is the area inside the dotted line in the illustration below.</p>
+<figure id="post-237041" class="align-none media-237041"><img src="https://cdn.css-tricks.com/wp-content/uploads/2016/01/AT-clipping-demo.gif" alt=""><br>
+<figcaption>illustration of what clipping is</figcaption>
+</figure>
+<p>In the default case of <code>background-clip: border-box</code>, the clipping region is the <code>border-box</code>, so we have the background underneath the border as well.</p>
+<figure id="post-237042" class="align-none media-237042"><img src="https://cdn.css-tricks.com/wp-content/uploads/2016/01/AT-bgclip-border-box.png" alt=""><br>
+<figcaption><code>background-clip: border-box</code></figcaption>
+</figure>
+<p>If we set <code>background-clip: padding-box</code>, the clipping region is the <code>padding-box</code>, meaning that the background is only displayed within the <code>padding-box</code> limit (it doesn't go underneath the border).</p>
+<figure id="post-237043" class="align-none media-237043"><img src="https://cdn.css-tricks.com/wp-content/uploads/2016/01/AT-bgclip-padding-box.png" alt=""><br>
+<figcaption><code>background-clip: padding-box</code></figcaption>
+</figure>
+<p>And finally, if we have <code>background-clip: content-box</code>, the clipping region is the <code>content-box</code>, so the background is only displayed within the <code>content-box</code> limit.</p>
+<figure id="post-237044" class="align-none media-237044"><img src="https://cdn.css-tricks.com/wp-content/uploads/2016/01/AT-bgclip-content-box.png" alt=""><br>
+<figcaption><code>background-clip: content-box</code></figcaption>
+</figure>
+<p>These three situations are illustrated by the following live demo:</p>
+<div><div class="drag-wrap ui-resizable"><iframe id="cp_embed_7d5b8605cd83c27f645e03019b004cc4" src="https://codepen.io/css-tricks/embed/7d5b8605cd83c27f645e03019b004cc4?height=450&amp;theme-id=1&amp;slug-hash=7d5b8605cd83c27f645e03019b004cc4&amp;default-tab=result&amp;user=css-tricks" scrolling="no" frameborder="0" height="450" allowtransparency="true" allowfullscreen="true" name="CodePen Embed" title="CodePen Embed" class="cp_embed_iframe undefined"></iframe><div class="ui-resizable-handle ui-resizable-e"></div></div></div>
+<p>We also have another property called <code>background-origin</code> that specifies which of the three boxes the <code>background-position</code> (and <code>background-size</code>, if expressed in <code>%</code>) is relative to.</p>
+<p>Let's consider that we have an element like before, with a hashed <code>border</code> and, this time, a visible <code>padding</code>. We layer an actual image and a gradient on the background. Both have <code>background-size: 50% 50%</code> and are not repeating. In addition to this, the image has <code>background-position: 100% 100%</code> (we leave the default <code>0 0</code> for the gradient):</p>
+<pre rel="CSS" class=" language-css"><code class=" language-css"><span class="token property">background</span><span class="token punctuation">:</span> <span class="token function">linear-gradient</span>(to right bottom, 
+      #e18728, #be4c39, #9351a6, #4472b9), 
+  <span class="token url">url(tiger_lily.jpg)</span> 100% 100%<span class="token punctuation">;</span>
+<span class="token property">background-repeat</span><span class="token punctuation">:</span> no-repeat<span class="token punctuation">;</span>
+<span class="token property">background-size</span><span class="token punctuation">:</span> 50% 50%<span class="token punctuation">;</span></code></pre>
+<p>The following demo illustrates what happens for each of the three possible values for <code>background-origin</code> — <code>border-box</code>, <code>padding-box</code>, and <code>content-box</code>:</p>
+<div><div class="drag-wrap ui-resizable"><iframe id="cp_embed_6bee9d25e11266a17508b44601ec220d" src="https://codepen.io/css-tricks/embed/6bee9d25e11266a17508b44601ec220d?height=450&amp;theme-id=1&amp;slug-hash=6bee9d25e11266a17508b44601ec220d&amp;default-tab=result&amp;user=css-tricks" scrolling="no" frameborder="0" height="450" allowtransparency="true" allowfullscreen="true" name="CodePen Embed" title="CodePen Embed" class="cp_embed_iframe undefined"></iframe><div class="ui-resizable-handle ui-resizable-e"></div></div></div>
+<p>The <code>100% 100%</code> specified by the <code>background-position</code> of the actual image is the <code>100% 100%</code> of the box specified by <code>background-origin</code>. At the same time, the <code>50% 50%</code> specified by the <code>background-size</code> means half the width and half the height of the box specified by <code>background-origin</code>.</p>
+<p>In the <code>background</code> shorthand, <code>background-origin</code> and <code>background-clip</code> can be specified <em>in this order</em> at the end of the layer. Since they both take a box value, if just one box value is specified, then both are set to it. If two box values are specified, <code>background-origin</code> is set to the first and <code>background-clip</code> is set to the second. If no box values are specified, they just take the default values (<code>padding-box</code> for <code>background-origin</code> and <code>border-box</code> for <code>background-clip</code>).</p>
+<p>All right! Now let's see how we can use this to our advantage!</p>
+<h3>Transparent gap between border and background</h3>
+<p>Some may remember we can get <a href="https://css-tricks.com/transparent-borders-with-background-clip/">semitransparent borders with <code>background-clip</code></a>. But, we can also introduce a space between the border and the area with a background without introducing an extra element. The simplest way to do this is to have a <code>padding</code> in addition to a <code>border</code>, and also set <code>background-clip</code> to <code>content-box</code>. By doing it in the shorthand with just one box value, we're also setting <code>background-origin</code> to <code>content-box</code>, but that's fine in this case, it doesn't have any unwanted effect.</p>
+<pre rel="CSS" class=" language-css"><code class=" language-css"><span class="token property">border</span><span class="token punctuation">:</span> solid .5em #be4c39<span class="token punctuation">;</span>
+<span class="token property">padding</span><span class="token punctuation">:</span> .5em<span class="token punctuation">;</span>
+<span class="token property">background</span><span class="token punctuation">:</span> #e18728 content-box<span class="token punctuation">;</span></code></pre>
+<p>Clipping the background to <code>content-box</code> means it doesn't extend beyond the content limit. Beyond that, we have no background, so we can see what's underneath our element. Adding a <code>border</code> means we see that <code>border</code> between the padding limit and the border limit. But, if the <code>padding</code> is non-zero, we still have a transparent area between the content limit and the padding limit.</p>
+<figure id="post-237045" class="align-none media-237045"><img src="https://cdn.css-tricks.com/wp-content/uploads/2016/01/AT-highlighting-the-border.gif" alt=""><br>
+<figcaption>highlighting the border, padding, and content area via dev tools</figcaption>
+</figure>
+<p>We can test it live with this Pen:</p>
+<div><div class="drag-wrap ui-resizable"><iframe id="cp_embed_yYVNyz" src="https://codepen.io/thebabydino/embed/yYVNyz?height=450&amp;theme-id=1&amp;slug-hash=yYVNyz&amp;default-tab=result&amp;user=thebabydino" scrolling="no" frameborder="0" height="450" allowtransparency="true" allowfullscreen="true" name="CodePen Embed" title="CodePen Embed" class="cp_embed_iframe undefined"></iframe><div class="ui-resizable-handle ui-resizable-e"></div></div></div>
+<p>We can make things more interesting by adding a <code>drop-shadow()</code> filter that gives the whole thing a yellowish glow:</p>
+<div><div class="drag-wrap ui-resizable"><iframe id="cp_embed_gaLpaa" src="https://codepen.io/thebabydino/embed/gaLpaa?height=450&amp;theme-id=1&amp;slug-hash=gaLpaa&amp;default-tab=result&amp;user=thebabydino" scrolling="no" frameborder="0" height="450" allowtransparency="true" allowfullscreen="true" name="CodePen Embed" title="CodePen Embed" class="cp_embed_iframe undefined"></iframe><div class="ui-resizable-handle ui-resizable-e"></div></div></div>
+<p><em class="explanation"><strong>Prefix reminder:</strong> I've seen a lot of resources adding <code>-moz-</code> and <code>-ms-</code> prefixes for CSS filters. Please, don't do that! CSS filters have been unprefixed in Firefox ever since they were first implemented (Firefox 34, autumn of 2014) and now <a href="https://dev.windows.com/en-us/microsoft-edge/platform/status/filters">they've landed in Edge behind a flag</a> - also unprefixed! So CSS filters never needed the <code>-moz-</code> or <code>-ms-</code> prefixes, it's completely useless to add them, the only thing they do is bloat the stylesheet.</em></p>
+<p>We can also get a cool looking effect if we use a gradient for both the <code>background-image</code> and the <code>border-image</code>. We'll make a gradient that starts from a solid orange/red at the top, then fades down to complete transparency. Since only the shades are different and otherwise the gradients used are identical, we create a Sass function.</p>
+<pre rel="Sass" class=" language-css"><code class=" language-css"><span class="token atrule">@function fade($c)</span> <span class="token punctuation">{</span>
+  return <span class="token function">linear-gradient</span>($c, <span class="token function">rgba</span>($c, 0) 80%)<span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+
+<span class="token selector">div </span><span class="token punctuation">{</span>
+  <span class="token property">border</span><span class="token punctuation">:</span> solid 0.125em<span class="token punctuation">;</span>
+  <span class="token property">border-image</span><span class="token punctuation">:</span> <span class="token function">fade</span>(#be4c39) 1<span class="token punctuation">;</span>
+  <span class="token property">padding</span><span class="token punctuation">:</span> 0.125em<span class="token punctuation">;</span>
+  <span class="token property">background</span><span class="token punctuation">:</span> <span class="token function">fade</span>(#e18728) content-box<span class="token punctuation">;</span>
+<span class="token punctuation">}</span></code></pre>
+<p>We can test it live in this Pen:</p>
+<div><div class="drag-wrap ui-resizable"><iframe id="cp_embed_rOWVMK" src="https://codepen.io/thebabydino/embed/rOWVMK?height=450&amp;theme-id=1&amp;slug-hash=rOWVMK&amp;default-tab=result&amp;user=thebabydino" scrolling="no" frameborder="0" height="450" allowtransparency="true" allowfullscreen="true" name="CodePen Embed" title="CodePen Embed" class="cp_embed_iframe undefined"></iframe><div class="ui-resizable-handle ui-resizable-e"></div></div></div>
+<p>This approach of using the padding to create the space between the background and the border is not the best unless we only have a short text in the middle. If we have a lot more text... well, it looks crappy.</p>
+<div><div class="drag-wrap ui-resizable"><iframe id="cp_embed_zvoGLb" src="https://codepen.io/thebabydino/embed/zvoGLb?height=450&amp;theme-id=1&amp;slug-hash=zvoGLb&amp;default-tab=result&amp;user=thebabydino" scrolling="no" frameborder="0" height="450" allowtransparency="true" allowfullscreen="true" name="CodePen Embed" title="CodePen Embed" class="cp_embed_iframe undefined"></iframe><div class="ui-resizable-handle ui-resizable-e"></div></div></div>
+<p>The problem is that the text starts right from the edge of the orange <code>background</code> and we cannot add a <code>padding</code> because we've already used it for the transparent gap. We could add an extra element... or we could use <code>box-shadow</code>!</p>
+<p><code>box-shadow</code> can take <code>2</code>, <code>3</code>, or <code>4</code> length values. The first one is the <strong><code>x</code> offset</strong> (determining how much to move the shadow to the right), the second one is the <strong><code>y</code> offset</strong> (how much to move the shadow down), the third is the <strong>blur radius</strong> (determining how blurry the edge of the shadow is) and the fourth is the <strong>spread radius</strong> (determining how much the shadow expands in all directions).</p>
+<p>The following <strong>interactive demo</strong> allows playing with these values — click any of them and a popup with a slider shows up.</p>
+<div><div class="drag-wrap ui-resizable"><iframe id="cp_embed_0733d9cb92ca4213466922d2ebc775a7" src="https://codepen.io/css-tricks/embed/0733d9cb92ca4213466922d2ebc775a7?height=450&amp;theme-id=1&amp;slug-hash=0733d9cb92ca4213466922d2ebc775a7&amp;default-tab=result&amp;user=css-tricks" scrolling="no" frameborder="0" height="450" allowtransparency="true" allowfullscreen="true" name="CodePen Embed" title="CodePen Embed" class="cp_embed_iframe undefined"></iframe><div class="ui-resizable-handle ui-resizable-e"></div></div></div>
+<p>Note that, while the blur radius has to be always greater or equal to zero, the offsets and the spread radius can be negative. A negative offset simply moves the shadow in the negative direction of its axis (left or up). A negative spread radius means the shadow shrinks instead of expanding.</p>
+<p>Another important thing to notice here — because it's convenient for our use case — is that that the <code>box-shadow</code> is never visible underneath the space occupied by the <code>border-box</code>, not even when that space is (semi)transparent.</p>
+<p>If we keep the offsets and the blur radius to zero, but give the spread radius a positive value, then we get what looks like a second solid border of equal width in all directions, starting from the limit of the actual border and going outwards.</p>
+<figure id="post-237054" class="align-none media-237054"><img src="https://cdn.css-tricks.com/wp-content/uploads/2016/01/AT-emulate-border.png" alt=""><br>
+<figcaption>emulate border with <code>box-shadow</code></figcaption>
+</figure>
+<p>Note that this kind of border doesn't necessarily need to have equal width in all directions. We can give it different border widths by tweaking the offset values and the spread radius, with the restriction that the sum of the widths of the horizontal borders equals the sum of the widths of the vertical borders. Using multiple shadows could help us get past this restriction if we don't need the border to be semitransparent, but this would be the kind of solution that complicates things instead of simplifying them.</p>
+<p>Returning to our demo, we use the spread of the <code>box-shadow</code> to fake the border, use the actual <code>border</code> to create the transparent gap, set <code>background-clip</code> to <code>padding-box</code>, and let the <code>padding</code> do its job:</p>
+<pre rel="CSS" class=" language-css"><code class=" language-css"><span class="token property">border</span><span class="token punctuation">:</span> solid 1em transparent<span class="token punctuation">;</span>
+<span class="token property">padding</span><span class="token punctuation">:</span> 1em<span class="token punctuation">;</span>
+<span class="token property">box-shadow</span><span class="token punctuation">:</span> 0 0 0 1em #be4c39<span class="token punctuation">;</span>
+<span class="token property">background</span><span class="token punctuation">:</span> #e18728 padding-box<span class="token punctuation">;</span></code></pre>
+<figure id="post-237071" class="align-none media-237071"><img src="https://cdn.css-tricks.com/wp-content/uploads/2016/01/AT-highlighting-bpc.gif" alt=""><br>
+<figcaption>highlighting the border, padding, and content area via dev tools</figcaption>
+</figure>
+<p>It can be seen in action in the following Pen:</p>
+<div><div class="drag-wrap ui-resizable"><iframe id="cp_embed_BoQNOZ" src="https://codepen.io/thebabydino/embed/BoQNOZ?height=450&amp;theme-id=1&amp;slug-hash=BoQNOZ&amp;default-tab=result&amp;user=thebabydino" scrolling="no" frameborder="0" height="450" allowtransparency="true" allowfullscreen="true" name="CodePen Embed" title="CodePen Embed" class="cp_embed_iframe undefined"></iframe><div class="ui-resizable-handle ui-resizable-e"></div></div></div>
+<p>We could also fake a border by emulating an <code>inset</code> shadow. In this case, it starts at the padding limit (the limit between the <code>padding</code> and the <code>border</code> areas) and goes inwards as much as the spread specifies:</p>
+<figure id="post-237556" class="align-none media-237556"><img src="https://cdn.css-tricks.com/wp-content/uploads/2016/01/AT-emulate-border-inset.png" alt=""><br>
+<figcaption>emulate a second border with an inset <code>box-shadow</code></figcaption>
+</figure>
+<p>Because we can have multiple box shadows, we can fake multiple borders this way. Let's take the case where we have two, one of them an <code>inset</code> one. If the actual <code>border</code> of the element is non-zero and <code>transparent</code> and the <code>background-clip</code> is set to <code>padding-box</code>, then we get a fake double border with a transparent area (the actual border area) between its inner and outer components. Note that this requires also increasing the <code>padding</code> to compensate for the space taken by the inset <code>box-shadow</code>.</p>
+<pre rel="CSS" class=" language-css"><code class=" language-css"><span class="token property">border</span><span class="token punctuation">:</span> solid 1em transparent<span class="token punctuation">;</span>
+<span class="token property">padding</span><span class="token punctuation">:</span> 2em<span class="token punctuation">;</span> // increased from 1em to 2em to compensate for inner <span class="token string">"border"</span>
+<span class="token property">box-shadow</span><span class="token punctuation">:</span> 
+  0 0 0 0.25em #be4c39 <span class="token comment" spellcheck="true">/* outer "border" */</span>,
+  inset 0 0 0 1em #be4c39 <span class="token comment" spellcheck="true">/* inner "border" */</span><span class="token punctuation">;</span>
+<span class="token property">background</span><span class="token punctuation">:</span> #e18728 padding-box<span class="token punctuation">;</span></code></pre>
+<p>It can be tested live in this Pen, where we also have a <code>drop-shadow()</code> filter for a glow effect:</p>
+<div><div class="drag-wrap ui-resizable"><iframe id="cp_embed_NGbqEX" src="https://codepen.io/thebabydino/embed/NGbqEX?height=450&amp;theme-id=1&amp;slug-hash=NGbqEX&amp;default-tab=result&amp;user=thebabydino" scrolling="no" frameborder="0" height="450" allowtransparency="true" allowfullscreen="true" name="CodePen Embed" title="CodePen Embed" class="cp_embed_iframe undefined"></iframe><div class="ui-resizable-handle ui-resizable-e"></div></div></div>
+<h3>Single element (no pseudos) target with smooth edges</h3>
+<p>Let's say we want to get a target like the one below, with the restriction that we can only use one element and no pseudo-elements.</p>
+<figure id="post-237059" class="align-none media-237059"><img src="https://cdn.css-tricks.com/wp-content/uploads/2016/01/AT-target.svg" alt=""><br>
+<figcaption>the target we want to CSS</figcaption>
+</figure>
+<p>The first idea would be to use a <code>repeating-radial-gradient</code>. Our target is structured something like this:</p>
+<figure id="post-237060" class="align-none media-237060"><img src="https://cdn.css-tricks.com/wp-content/uploads/2016/01/AT-target-structure.svg" alt=""><br>
+<figcaption>target structure illustration</figcaption>
+</figure>
+<p>So half the target would be <code>9</code> units, meaning the horizontal and vertical dimensions of the target are each <code>18</code> units. Our repeating radial gradient is black for the first unit, then transparent until the third unit, then black again and then transparent again... and this sounds like a repetition. Except we only have one unit from <code>0</code> to <code>1</code>, the first time we have a black region, but then the second time we have a black region, it goes from <code>3</code> to <code>5</code> — that's two units! So... we shouldn't start from <code>0</code> there, but from <code>-1</code> instead, right? Well, that <em>should</em> work, <a href="http://www.w3.org/TR/css3-images/#radial-color-stops">according to the spec</a>.</p>
+<pre rel="SCSS" class=" language-scss"><code class=" language-scss"><span class="token variable">$unit</span><span class="token punctuation">:</span> 1em<span class="token punctuation">;</span>
+
+<span class="token property">background</span><span class="token punctuation">:</span> <span class="token function">repeating-radial-gradient</span>(
+  #000 (-<span class="token variable">$unit</span>), #000 <span class="token variable">$unit</span>, 
+  transparent <span class="token variable">$unit</span>, transparent 3*<span class="token variable">$unit</span>
+)<span class="token punctuation">;</span></code></pre>
+<p>This Pen illustrates the idea:</p>
+<div><div class="drag-wrap ui-resizable"><iframe id="cp_embed_MKKxwQ" src="https://codepen.io/thebabydino/embed/MKKxwQ?height=450&amp;theme-id=1&amp;slug-hash=MKKxwQ&amp;default-tab=result&amp;user=thebabydino" scrolling="no" frameborder="0" height="450" allowtransparency="true" allowfullscreen="true" name="CodePen Embed" title="CodePen Embed" class="cp_embed_iframe undefined"></iframe><div class="ui-resizable-handle ui-resizable-e"></div></div></div>
+<p>The first problem here is that IE has a different opinion on how this should work.</p>
+<figure id="post-237061" class="align-none media-237061"><img src="https://cdn.css-tricks.com/wp-content/uploads/2016/01/repeating-radial-negstop.png" alt=""><br>
+<figcaption>repeating-radial-gradient with negative first stop: expected result (left) vs. IE (right)</figcaption>
+</figure>
+<p>Luckily, this <a href="https://twitter.com/dstorey/status/677269006508621824">has been fixed in Edge</a>, but if IE support is needed, it's still a problem. One that we can solve by using a plain radial gradient because we don't need that many circles anyway. It's more code, but it's not <em>that</em> bad...</p>
+<pre rel="SCSS" class=" language-scss"><code class=" language-scss"><span class="token property">background</span><span class="token punctuation">:</span> <span class="token function">radial-gradient</span>(
+  #000 <span class="token variable">$unit</span>, transparent 0, 
+  transparent 3*<span class="token variable">$unit</span>, #000 0, 
+  #000 5*<span class="token variable">$unit</span>, transparent 0, 
+  transparent 7*<span class="token variable">$unit</span>, #000 0, 
+  #000 9*<span class="token variable">$unit</span>, transparent 0
+)<span class="token punctuation">;</span></code></pre>
+<p>We can see it in action in this Pen:</p>
+<div><div class="drag-wrap ui-resizable"><iframe id="cp_embed_LGGawN" src="https://codepen.io/thebabydino/embed/LGGawN?height=450&amp;theme-id=1&amp;slug-hash=LGGawN&amp;default-tab=result&amp;user=thebabydino" scrolling="no" frameborder="0" height="450" allowtransparency="true" allowfullscreen="true" name="CodePen Embed" title="CodePen Embed" class="cp_embed_iframe undefined"></iframe><div class="ui-resizable-handle ui-resizable-e"></div></div></div>
+<p>The circles are now distributed the same way in all browsers, but we still have another problem: the edges may not be as far from smooth as in the original image in IE/ Edge, but they look ugly in Firefox and Chrome!</p>
+<figure id="post-237062" class="align-none media-237062"><img src="https://cdn.css-tricks.com/wp-content/uploads/2016/01/AT-repeating-radial-quad.png" alt=""><br>
+<figcaption>original (top left) vs. IE/ Edge (top right) vs. Firefox (bottom left) vs. Chrome (bottom right)</figcaption>
+</figure>
+<p>We could use the <a href="https://css-tricks.com/why-do-we-have-repeating-linear-gradient-anyway/">non-sharp transition trick</a>:</p>
+<pre rel="SCSS" class=" language-scss"><code class=" language-scss"><span class="token property">background</span><span class="token punctuation">:</span> <span class="token function">radial-gradient</span>(
+  #000 <span class="token function">calc</span>(<span class="token variable">#{$unit}</span> - 1px), 
+  transparent <span class="token variable">$unit</span>, 
+  transparent <span class="token function">calc</span>(#<span class="token punctuation">{</span>3*<span class="token variable">$unit</span><span class="token punctuation">}</span> - 1px), 
+  #000 3*<span class="token variable">$unit</span>, 
+  #000 <span class="token function">calc</span>(#<span class="token punctuation">{</span>5*<span class="token variable">$unit</span><span class="token punctuation">}</span> - 1px), 
+  transparent 5*<span class="token variable">$unit</span>, 
+  transparent <span class="token function">calc</span>(#<span class="token punctuation">{</span>7*<span class="token variable">$unit</span><span class="token punctuation">}</span> - 1px), 
+  #000 7*<span class="token variable">$unit</span>, 
+  #000 <span class="token function">calc</span>(#<span class="token punctuation">{</span>9*<span class="token variable">$unit</span><span class="token punctuation">}</span> - 1px), 
+  transparent 9*<span class="token variable">$unit</span>
+)<span class="token punctuation">;</span></code></pre>
+<p>Live test:</p>
+<div><div class="drag-wrap ui-resizable"><iframe id="cp_embed_ZQQZOg" src="https://codepen.io/thebabydino/embed/ZQQZOg?height=450&amp;theme-id=1&amp;slug-hash=ZQQZOg&amp;default-tab=result&amp;user=thebabydino" scrolling="no" frameborder="0" height="450" allowtransparency="true" allowfullscreen="true" name="CodePen Embed" title="CodePen Embed" class="cp_embed_iframe undefined"></iframe><div class="ui-resizable-handle ui-resizable-e"></div></div></div>
+<p>Well, this improves things in IE (where the result already looked good) and Firefox, but the edges still look ugly in Chrome.</p>
+<figure id="post-237063" class="align-none media-237063"><img src="https://cdn.css-tricks.com/wp-content/uploads/2016/01/AT-radial-quad2.png" alt=""><br>
+<figcaption>original (top left) vs. IE (top right) vs. Firefox (bottom left) vs. Chrome (bottom right)</figcaption>
+</figure>
+<p>Maybe radial gradients are not the best solution after all. What if we were to adapt the <code>background-clip</code> and <code>box-shadow</code> solution from the previous section to this problem? We can use an outer <code>box-shadow</code> for the outer circle and an <code>inset</code> one for the inner circle. The space between them gets taken by a transparent border. We also set background-clip to <code>content-box</code> and give the element enough padding so that we have a transparent area between the central disc and the inner circle.</p>
+<pre rel="SCSS" class=" language-scss"><code class=" language-scss"><span class="token property">border</span><span class="token punctuation">:</span> solid 2*<span class="token variable">$unit</span> transparent<span class="token punctuation">;</span>
+<span class="token property">padding</span><span class="token punctuation">:</span> 4*<span class="token variable">$unit</span><span class="token punctuation">;</span>
+<span class="token property">width</span><span class="token punctuation">:</span> 2*<span class="token variable">$unit</span><span class="token punctuation">;</span> <span class="token property">height</span><span class="token punctuation">:</span> 2*<span class="token variable">$unit</span><span class="token punctuation">;</span>
+<span class="token property">border-radius</span><span class="token punctuation">:</span> 50%<span class="token punctuation">;</span>
+<span class="token property">box-shadow</span><span class="token punctuation">:</span> 
+  0 0 0 2*<span class="token variable">$unit</span> #000, 
+  inset 0 0 0 2*<span class="token variable">$unit</span> #000<span class="token punctuation">;</span>
+<span class="token property">background</span><span class="token punctuation">:</span> #000 content-box<span class="token punctuation">;</span></code></pre>
+<p>We can see it working in the following pen, no jagged edges and no trouble:</p>
+<div><div class="drag-wrap ui-resizable"><iframe id="cp_embed_09b434a2ae841dabeb83c429096ba01d" src="https://codepen.io/css-tricks/embed/09b434a2ae841dabeb83c429096ba01d?height=450&amp;theme-id=1&amp;slug-hash=09b434a2ae841dabeb83c429096ba01d&amp;default-tab=result&amp;user=css-tricks" scrolling="no" frameborder="0" height="450" allowtransparency="true" allowfullscreen="true" name="CodePen Embed" title="CodePen Embed" class="cp_embed_iframe undefined"></iframe><div class="ui-resizable-handle ui-resizable-e"></div></div></div>
+<h3>Real life-like looking controls</h3>
+<p>I first got this idea when trying to style a range input's thumb, track and, for non-WebKit browsers, progress (fill). Browsers provide pseudo-elements for these components.</p>
+<p>For the track, we have <code>-webkit-slider-runnable-track</code>, <code>-moz-range-track</code> and <code>-ms-track</code>. For the thumb, <code>-webkit-slider-thumb</code>, <code>-moz-range-thumb</code> and <code>-ms-thumb</code>. And for the progress/ fill, we have <code>-moz-range-progress</code>, <code>-ms-fill-lower</code> (both to the left of the thumb) and <code>-ms-fill-upper</code> (to the right of the thumb). WebKit browsers don't provide a pseudo-element that would allow styling the part before the thumb different from the part after.</p>
+<p>These look inconsistent and ugly, but what's even uglier is that we cannot list all the browser versions for the same component together to style them. Something like this <em>won't work</em>:</p>
+<pre rel="Bad CSS" class=" language-css"><code class=" language-css"><span class="token selector">input[type='range']<span class="token pseudo-element">::-webkit-slider-thumb</span>, 
+input[type='range']<span class="token pseudo-element">::-moz-range-thumb</span>, 
+input[type='range']<span class="token pseudo-element">::-ms-thumb</span> </span><span class="token punctuation">{</span> <span class="token comment" spellcheck="true">/* styles here */</span> <span class="token punctuation">}</span></code></pre>
+<p>We have to always write them like this:</p>
+<pre rel="CSS" class=" language-css"><code class=" language-css"><span class="token selector">input[type='range']<span class="token pseudo-element">::-webkit-slider-thumb</span> </span><span class="token punctuation">{</span> <span class="token comment" spellcheck="true">/* styles here */</span> <span class="token punctuation">}</span>
+<span class="token selector">input[type='range']<span class="token pseudo-element">::-moz-range-thumb</span> </span><span class="token punctuation">{</span> <span class="token comment" spellcheck="true">/* styles here */</span> <span class="token punctuation">}</span> 
+<span class="token selector">input[type='range']<span class="token pseudo-element">::-ms-thumb</span> </span><span class="token punctuation">{</span> <span class="token comment" spellcheck="true">/* styles here */</span> <span class="token punctuation">}</span></code></pre>
+<p>Which looks like a very <a href="https://twitter.com/g16n/status/647717260837171200">WET</a> style of writing code and it actually is in a lot of cases—though given the many browser inconsistencies when it comes to sliders, it's also useful for leveling things across the field. My solution to this was to use a <code>thumb()</code> mixin and maybe give it arguments for handling inconsistencies. Something like this, for example:</p>
+<pre rel="SCSS" class=" language-scss"><code class=" language-scss"><span class="token keyword">@mixin</span> <span class="token function">thumb</span>(<span class="token variable">$flag</span><span class="token punctuation">:</span> false)<span class="token selector"> </span><span class="token punctuation">{</span>
+  <span class="token comment" spellcheck="true">/* styles */</span>
+	
+  <span class="token keyword">@if</span><span class="token selector"> $flag </span><span class="token punctuation">{</span> <span class="token comment" spellcheck="true">/* more styles */</span> <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span class="token selector">
+
+input[type='range'] </span><span class="token punctuation">{</span><span class="token selector">
+  &amp;::-webkit-slider-thumb </span><span class="token punctuation">{</span> <span class="token keyword">@include</span> <span class="token function">thumb</span>(true)<span class="token punctuation">;</span> <span class="token punctuation">}</span><span class="token selector">
+  &amp;::-moz-range-thumb </span><span class="token punctuation">{</span> <span class="token keyword">@include</span> <span class="token function">thumb</span>()<span class="token punctuation">;</span> <span class="token punctuation">}</span><span class="token selector"> 
+  &amp;::-ms-thumb </span><span class="token punctuation">{</span> <span class="token keyword">@include</span> <span class="token function">thumb</span>()<span class="token punctuation">;</span> <span class="token punctuation">}</span>
+<span class="token punctuation">}</span></code></pre>
+<p>But let's go back to how we can style things. We can only add pseudo-elements to these components for Chrome/ Opera, which means that, in reproducing their look, we have to get as close as possible to it without relying on pseudo-elements. This leaves backgrounds, borders, shadows, filters on the thumb element itself.</p>
+<p>Let's see a few examples!</p>
+<h4>Soft plastic control</h4>
+<p>For a visual example, think something like the thumb of the slider below:</p>
+<figure id="post-237064" class="align-none media-237064"><img src="https://cdn.css-tricks.com/wp-content/uploads/2016/01/soft-plastic-thumb.png" alt=""><br>
+<figcaption>slider with soft plastic thumb</figcaption>
+</figure>
+<p>First thought would be it's as simple as a gradient <code>background</code> and a gradient for <code>border-image</code>, then just drop a <code>box-shadow</code> there and that's it for such a control:</p>
+<pre rel="CSS" class=" language-css"><code class=" language-css"><span class="token property">border</span><span class="token punctuation">:</span> solid 0.375em<span class="token punctuation">;</span>
+<span class="token property">border-image</span><span class="token punctuation">:</span> <span class="token function">linear-gradient</span>(#fdfdfd, #c4c4c4) 1<span class="token punctuation">;</span>
+<span class="token property">box-shadow</span><span class="token punctuation">:</span> 0 0.375em 0.5em -0.125em #808080<span class="token punctuation">;</span>
+<span class="token property">background</span><span class="token punctuation">:</span> <span class="token function">linear-gradient</span>(#c5c5c5, #efefef)<span class="token punctuation">;</span></code></pre>
+<p>And this does work (using a <code>button</code> element instead of the slider thumb to simplify things):</p>
+<div><div class="drag-wrap ui-resizable"><iframe id="cp_embed_eJZddq" src="https://codepen.io/thebabydino/embed/eJZddq?height=268&amp;theme-id=1&amp;slug-hash=eJZddq&amp;default-tab=result&amp;user=thebabydino" scrolling="no" frameborder="0" height="268" allowtransparency="true" allowfullscreen="true" name="CodePen Embed" title="CodePen Embed" class="cp_embed_iframe undefined"></iframe><div class="ui-resizable-handle ui-resizable-e"></div></div></div>
+<p>Except our control is round, not square. We'd just need to set <code>border-radius: 50%</code> on it then, right? Well... that doesn't work because we're using <code>border-image</code>, which <a href="http://stackoverflow.com/a/5707228/1397351">makes <code>border-radius</code> be ignored on the element itself</a>, though, funny enough, it <a href="http://codepen.io/thebabydino/pen/PZNGEa">still gets applied on the <code>box-shadow</code></a>, if there is one.</p>
+<p>What should we do then? Well, use <code>background-clip</code>! We first give the element a non-zero <code>padding</code>, no border and make it round with <code>border-radius: 50%</code>. Then we layer two gradient backgrounds, the top one being restricted to the <code>content-box</code> (note the clipping is being applied as part of the background shorthand). Finally, we add two box shadows, the first one being a dark one that creates the shadow underneath the control and the second being an <code>inset</code> one, that should darken a bit the bottom and laterals of the control's outer part.</p>
+<pre rel="CSS" class=" language-css"><code class=" language-css"><span class="token property">border</span><span class="token punctuation">:</span> none<span class="token punctuation">;</span> <span class="token comment" spellcheck="true">/* makes border-box ≡ padding-box */</span>
+<span class="token property">padding</span><span class="token punctuation">:</span> .375em<span class="token punctuation">;</span>
+<span class="token property">border-radius</span><span class="token punctuation">:</span> 50%<span class="token punctuation">;</span>
+<span class="token property">box-shadow</span><span class="token punctuation">:</span> 0 .375em .5em -.125em #808080, 
+      inset 0 -.25em .5em -.125em #bbb<span class="token punctuation">;</span>
+<span class="token property">background</span><span class="token punctuation">:</span> 
+  <span class="token function">linear-gradient</span>(#c5c5c5, #efefef) content-box, 
+  <span class="token function">linear-gradient</span>(#fdfdfd, #c4c4c4)<span class="token punctuation">;</span></code></pre>
+<p>The final result can be seen in this Pen:</p>
+<div><div class="drag-wrap ui-resizable"><iframe id="cp_embed_OMNRvw" src="https://codepen.io/thebabydino/embed/OMNRvw?height=268&amp;theme-id=1&amp;slug-hash=OMNRvw&amp;default-tab=result&amp;user=thebabydino" scrolling="no" frameborder="0" height="268" allowtransparency="true" allowfullscreen="true" name="CodePen Embed" title="CodePen Embed" class="cp_embed_iframe undefined"></iframe><div class="ui-resizable-handle ui-resizable-e"></div></div></div>
+<h4>Matte control</h4>
+<p>Something like the thumb of the slider in the following image:</p>
+<figure id="post-237065" class="align-none media-237065"><img src="https://cdn.css-tricks.com/wp-content/uploads/2016/01/matte-thumb.png" alt=""><br>
+<figcaption>slider with matte thumb</figcaption>
+</figure>
+<p>This looks pretty similar to the previous case, except now we have a lighter line at the top and an inset shadow for the middle part. If we use an outer <code>box-shadow</code> to create the lighter line, the whole thing wouldn't be round anymore unless we also decrease its height to compensate for the shadow. That would mean we need to do more computations to determine the position of the inner part. If we use an <code>inset</code> one instead, then we can't use that for the dark shadow of the inner part. However, we could emulate that with a <code>radial-gradient</code> that gets conveniently sized, positioned, and clipped to the <code>content-box</code>. This means the same strategy as in the previous case, except we have an extra <code>radial-gradient</code> layered on top of the other backgrounds. The actual <code>background-size</code> of the radial gradient is larger than the <code>content-box</code> so we <a href="http://codepen.io/thebabydino/pen/zrqoJR">can shift it down without bringing its top edge within the content limit</a>.</p>
+<pre rel="CSS" class=" language-css"><code class=" language-css"><span class="token property">border</span><span class="token punctuation">:</span> none<span class="token punctuation">;</span> <span class="token comment" spellcheck="true">/* makes border-box ≡ padding-box */</span>
+<span class="token property">padding</span><span class="token punctuation">:</span> .625em<span class="token punctuation">;</span>
+<span class="token property">width</span><span class="token punctuation">:</span> 1.75em<span class="token punctuation">;</span> <span class="token property">height</span><span class="token punctuation">:</span> 1.75em<span class="token punctuation">;</span>
+<span class="token property">border-radius</span><span class="token punctuation">:</span> 50%<span class="token punctuation">;</span>
+<span class="token property">box-shadow</span><span class="token punctuation">:</span> 
+  0 1px .125em #444 <span class="token comment" spellcheck="true">/* dark lower shadow */</span>, 
+  inset 0 1px .125em #fff <span class="token comment" spellcheck="true">/* light top hint */</span><span class="token punctuation">;</span>
+<span class="token property">background</span><span class="token punctuation">:</span> 
+  <span class="token comment" spellcheck="true">/* inner shadow effect */</span>
+  <span class="token function">radial-gradient</span>(transparent 35%, #444) 
+    50% <span class="token function">calc</span>(50% + .125em) content-box, 
+  
+  <span class="token comment" spellcheck="true">/* inner background */</span>
+  <span class="token function">linear-gradient</span>(#bbb, #bbb) content-box, 
+  
+  <span class="token comment" spellcheck="true">/* outer background */</span>
+  <span class="token function">linear-gradient</span>(#d0d3d5, #d2d5d7)<span class="token punctuation">;</span>
+<span class="token property">background-size</span><span class="token punctuation">:</span> 
+  175% 175% <span class="token comment" spellcheck="true">/* make radial-gradient bg larger */</span>, 
+  100% 100%, 100% 100%<span class="token punctuation">;</span></code></pre>
+<p>We can see it live in this Pen:</p>
+<div><div class="drag-wrap ui-resizable"><iframe id="cp_embed_rxeWwm" src="https://codepen.io/thebabydino/embed/rxeWwm?height=268&amp;theme-id=1&amp;slug-hash=rxeWwm&amp;default-tab=result&amp;user=thebabydino" scrolling="no" frameborder="0" height="268" allowtransparency="true" allowfullscreen="true" name="CodePen Embed" title="CodePen Embed" class="cp_embed_iframe undefined"></iframe><div class="ui-resizable-handle ui-resizable-e"></div></div></div>
+<h4>3D control</h4>
+<p>For example, the thumb of the following slider:</p>
+<figure id="post-237067" class="align-none media-237067"><img src="https://cdn.css-tricks.com/wp-content/uploads/2016/01/AT-3dthumb.png" alt=""><br>
+<figcaption>slider with 3D thumb</figcaption>
+</figure>
+<p>This one is a bit more complex and requires that the three boxes (the <code>content-box</code>, the <code>padding-box</code>, and the <code>border-box</code>) are all different, so that we can layer backgrounds and use <code>background-clip</code> to get the desired effect. </p>
+<p>So for the main part of the slider, we have a gradient <code>background</code> clipped to the <code>content-box</code> layered on top of another clipped to the <code>padding-box</code>, both of them over a third <code>linear-gradient</code> clipped to <code>border-box</code>. We also make use of inset <code>box-shadow</code> to highlight the padding limit (between the <code>padding</code> and the <code>border</code>):</p>
+<pre rel="CSS" class=" language-css"><code class=" language-css"><span class="token property">border</span><span class="token punctuation">:</span> solid .25em transparent<span class="token punctuation">;</span>
+<span class="token property">padding</span><span class="token punctuation">:</span> .25em<span class="token punctuation">;</span>
+<span class="token property">border-radius</span><span class="token punctuation">:</span> 1.375em<span class="token punctuation">;</span>
+<span class="token property">box-shadow</span><span class="token punctuation">:</span> 
+  inset 0 1px 1px <span class="token function">rgba</span>(#f7f7f7, .875) <span class="token comment" spellcheck="true">/* top */</span>, 
+  inset 0 -1px 1px <span class="token function">rgba</span>(#bbb, .75) <span class="token comment" spellcheck="true">/* bottom */</span><span class="token punctuation">;</span>
+<span class="token property">background</span><span class="token punctuation">:</span> 
+  <span class="token function">linear-gradient</span>(#9ea1a6, #fdfdfe) content-box, 
+  <span class="token function">linear-gradient</span>(#fff, #9c9fa4) padding-box, 
+  <span class="token function">linear-gradient</span>(#eee, #a4a7ab) border-box<span class="token punctuation">;</span></code></pre>
+<p>The result for this part can be seen in this Pen:</p>
+<div><div class="drag-wrap ui-resizable"><iframe id="cp_embed_LGNWex" src="https://codepen.io/thebabydino/embed/LGNWex?height=268&amp;theme-id=1&amp;slug-hash=LGNWex&amp;default-tab=result&amp;user=thebabydino" scrolling="no" frameborder="0" height="268" allowtransparency="true" allowfullscreen="true" name="CodePen Embed" title="CodePen Embed" class="cp_embed_iframe undefined"></iframe><div class="ui-resizable-handle ui-resizable-e"></div></div></div>
+<p>Now what's left is the little round part. This is one case where I felt a pseudo-element was really needed. I did end up taking that route for Blink, but managed to get a decent-looking fallback for the rest of the browsers by layering two radial gradients on top of the linear ones:</p>
+<div><div class="drag-wrap ui-resizable"><iframe id="cp_embed_LGNWdW" src="https://codepen.io/thebabydino/embed/LGNWdW?height=268&amp;theme-id=1&amp;slug-hash=LGNWdW&amp;default-tab=result&amp;user=thebabydino" scrolling="no" frameborder="0" height="268" allowtransparency="true" allowfullscreen="true" name="CodePen Embed" title="CodePen Embed" class="cp_embed_iframe undefined"></iframe><div class="ui-resizable-handle ui-resizable-e"></div></div></div>
+<p>We might be able to get even closer to what we want with better chosen shades, extra radial gradients, or even using <code>background-blend-mode</code>, but I don't have the artistic sense needed for something like that.</p>
+<p>With a pseudo-element, it's a lot easier to get the desired result — we first need to position and size it properly, make it round with <code>border-radius: 50%</code>. Then we give it a <code>padding</code>, no border, and use two gradients for the <code>background</code>, the top one being a radial one clipped to the <code>content-box</code>:</p>
+<pre rel="CSS" class=" language-css"><code class=" language-css"><span class="token property">padding</span><span class="token punctuation">:</span> .125em<span class="token punctuation">;</span>
+<span class="token property">background</span><span class="token punctuation">:</span> 
+  <span class="token function">radial-gradient</span>(circle at 50% 10%, 
+      #f7f8fa, #9a9b9f) content-box, 
+  <span class="token function">linear-gradient</span>(#ddd, #bbb)<span class="token punctuation">;</span></code></pre>
+<p>The result for this can be seen in the following Pen:</p>
+<div><div class="drag-wrap ui-resizable"><iframe id="cp_embed_wMGJQR" src="https://codepen.io/thebabydino/embed/wMGJQR?height=268&amp;theme-id=1&amp;slug-hash=wMGJQR&amp;default-tab=result&amp;user=thebabydino" scrolling="no" frameborder="0" height="268" allowtransparency="true" allowfullscreen="true" name="CodePen Embed" title="CodePen Embed" class="cp_embed_iframe undefined"></iframe><div class="ui-resizable-handle ui-resizable-e"></div></div></div>
+<p>For the actual slider thumb, I used the same thumb <code>background</code> with the radial gradients on top everywhere, and added the pseudo for Blink right on top of the radial gradients. This is because thumb slider styles in Safari get applied via <code>::-webkit-slider-thumb</code>, but Safari doesn't support pseudo-elements on the thumb (or track). So if I were to remove the fallback from the styles applied to <code>::-webkit-slider-thumb</code>, then Safari wouldn't display the round part at all.</p>
+<h4>Illusion of depth</h4>
+<p>The track of the following slider illustrates this idea:</p>
+<figure id="post-237068" class="align-none media-237068"><img src="https://cdn.css-tricks.com/wp-content/uploads/2016/01/AT-slider-with-depth.png" alt=""><br>
+<figcaption>slider with track having depth</figcaption>
+</figure>
+<p>Just like before, we do this by giving the element a non-zero transparent <code>border</code>, a <code>padding</code>, and layering backgrounds with different <code>background-clip</code> values (remember that those with <code>content-box</code> values need to be on top of those with <code>padding-box</code> values, which need to be on top of those with <code>border-box</code> values). In this case, we have a lighter <code>linear-gradient</code> to cover the <code>border</code> area, a darker one plus a couple of radial ones which we make smaller and non-repeating to darken the ends even further for the <code>padding</code> area, and a really dark one for the content area. Then we give this a <code>border-radius</code> equal to at least half the <code>height</code> of the content area plus twice the <code>padding</code> and twice the <code>border</code>. We also add an inset <code>box-shadow</code> to subtly highlight the padding limit.</p>
+<pre rel="CSS" class=" language-css"><code class=" language-css"><span class="token property">border</span><span class="token punctuation">:</span> solid .375em transparent<span class="token punctuation">;</span>
+<span class="token property">padding</span><span class="token punctuation">:</span> 1em 3em<span class="token punctuation">;</span>
+<span class="token property">width</span><span class="token punctuation">:</span> 15.75em<span class="token punctuation">;</span> <span class="token property">height</span><span class="token punctuation">:</span> 1.75em<span class="token punctuation">;</span>
+<span class="token property">border-radius</span><span class="token punctuation">:</span> 2.25em<span class="token punctuation">;</span>
+<span class="token property">background</span><span class="token punctuation">:</span> 
+  <span class="token function">linear-gradient</span>(#090909, #090909) content-box, 
+  <span class="token function">radial-gradient</span>(at 5% 40%, #0b0b0b, transparent 70%) 
+    no-repeat 0 35% padding-box <span class="token comment" spellcheck="true">/* left */</span>, 
+  <span class="token function">radial-gradient</span>(at 95% 40%, #111, transparent 70%) 
+    no-repeat 100% 35% padding-box <span class="token comment" spellcheck="true">/* right */</span>, 
+  <span class="token function">linear-gradient</span>(90deg, #3a3a3a, #161616) padding-box,
+  <span class="token function">linear-gradient</span>(90deg, #2b2d2c, #2a2c2b) border-box<span class="token punctuation">;</span>
+<span class="token property">background-size</span><span class="token punctuation">:</span> 100%, 9em 4.5em, 4.5em 4.5em, 100%, 100%<span class="token punctuation">;</span></code></pre>
+<p>But there's a problem with this, and it can be seen in the following Pen:</p>
+<div><div class="drag-wrap ui-resizable"><iframe id="cp_embed_dGMWBr" src="https://codepen.io/thebabydino/embed/dGMWBr?height=268&amp;theme-id=1&amp;slug-hash=dGMWBr&amp;default-tab=result&amp;user=thebabydino" scrolling="no" frameborder="0" height="268" allowtransparency="true" allowfullscreen="true" name="CodePen Embed" title="CodePen Embed" class="cp_embed_iframe undefined"></iframe><div class="ui-resizable-handle ui-resizable-e"></div></div></div>
+<p>Due to the way <code>border-radius</code> works — the radius for the content area being the one we specify minus the <code>border-width</code> minus the <code>padding</code>, which ends up being negative — there is no rounding for the corners of the content area. Well, we can fix this! We can emulate the shape we want by using both linear and radial gradients for the content area.</p>
+<p>The way we do this is by first making sure the <code>width</code> of our content area is a multiple of its <code>height</code> (in our case, <code>15.75em = 9*1.75em</code>). We first layer a non-repeating <code>linear-gradient</code> positioned in the middle that covers the entire <code>height</code> of the content area vertically, but leaves a space of half the content area <code>height</code> at both the left and the right ends. On top of this we add a <code>radial-gradient</code> with a <code>background-size</code> equal to the content area <code>height</code> both horizontally and vertically.</p>
+<div><div class="drag-wrap ui-resizable"><iframe id="cp_embed_YwqVgM" src="https://codepen.io/thebabydino/embed/YwqVgM?height=268&amp;theme-id=1&amp;slug-hash=YwqVgM&amp;default-tab=result&amp;user=thebabydino" scrolling="no" frameborder="0" height="268" allowtransparency="true" allowfullscreen="true" name="CodePen Embed" title="CodePen Embed" class="cp_embed_iframe undefined"></iframe><div class="ui-resizable-handle ui-resizable-e"></div></div></div>
+<h4>Metallic controls</h4>
+<p>For example, something like the button illustrated below:</p>
+<figure id="post-237576" class="align-none media-237576"><img src="https://cdn.css-tricks.com/wp-content/uploads/2016/02/AT-metallic-control.png" alt=""><br>
+<figcaption>metallic control</figcaption>
+</figure>
+<p>This is a bit more complex, so let's break it down. First of all, we make the button circular by giving it equal <code>width</code> and <code>height</code> and setting <code>border-radius: 50%</code>. Then we make sure it has <code>box-sizing: border-box</code>, so that the <code>border-width</code> and the <code>padding</code> go inwards (get subtracted from the dimensions we have set). Now the next logical step is to give it a transparent border and a padding. So far, this is what we have:</p>
+<pre rel="SCSS" class=" language-scss"><code class=" language-scss"><span class="token variable">$d-btn</span><span class="token punctuation">:</span> 27em<span class="token punctuation">;</span> <span class="token comment" spellcheck="true">/* control diameter */</span>
+<span class="token variable">$bw</span><span class="token punctuation">:</span> 1.5em<span class="token punctuation">;</span> <span class="token comment" spellcheck="true">/* border-width */</span><span class="token selector">
+
+button </span><span class="token punctuation">{</span>
+  <span class="token property">box-sizing</span><span class="token punctuation">:</span> border-box<span class="token punctuation">;</span>
+  <span class="token property">border</span><span class="token punctuation">:</span> solid <span class="token variable">$bw</span> transparent<span class="token punctuation">;</span>
+  <span class="token property">padding</span><span class="token punctuation">:</span> 1.5em<span class="token punctuation">;</span>
+  <span class="token property">width</span><span class="token punctuation">:</span> <span class="token variable">$d-btn</span><span class="token punctuation">;</span> <span class="token property">height</span><span class="token punctuation">:</span> <span class="token variable">$d-btn</span><span class="token punctuation">;</span>
+  <span class="token property">border-radius</span><span class="token punctuation">:</span> 50%<span class="token punctuation">;</span>
+<span class="token punctuation">}</span></code></pre>
+<p>It doesn't look like anything yet and that's because the entire look is achieved with the help of just two properties we haven't added in yet: <code>box-shadow</code> and <code>background</code>.</p>
+<div><div class="drag-wrap ui-resizable"><iframe id="cp_embed_fa29ac06add80a7b5858c4e5b9f158cf" src="https://codepen.io/thebabydino/embed/fa29ac06add80a7b5858c4e5b9f158cf?height=468&amp;theme-id=1&amp;slug-hash=fa29ac06add80a7b5858c4e5b9f158cf&amp;default-tab=result&amp;user=thebabydino" scrolling="no" frameborder="0" height="468" allowtransparency="true" allowfullscreen="true" name="CodePen Embed" title="CodePen Embed" class="cp_embed_iframe undefined"></iframe><div class="ui-resizable-handle ui-resizable-e"></div></div></div>
+<p>Before doing anything else, let's deconstruct the control a bit:</p>
+<figure id="post-237577" class="align-none media-237577"><img src="https://cdn.css-tricks.com/wp-content/uploads/2016/02/AT-metallic-control-annotated.png" alt=""><br>
+<figcaption>deconstructing the metallic control</figcaption>
+</figure>
+<p>Starting from the outer part and going inwards, we have:</p>
+<ul>
+<li>a thick outer ring with LEDs</li>
+<li>a thin inner ring</li>
+<li>a perforated area (that includes the cyan glow around the following inner part)</li>
+<li>a big central part</li>
+</ul>
+<p>The thick outer ring is the border area, the central part is the content area and everything in between (the thin inner ring and the perforated part) is the padding area. We create the thin inner ring with inset box shadows:</p>
+<pre rel="CSS" class=" language-css"><code class=" language-css"><span class="token property">box-shadow</span><span class="token punctuation">:</span> 
+  <span class="token comment" spellcheck="true">/* discrete dark shadow to act as separator from outer ring */</span>
+  inset 0 0 1px #666, 
+
+  <span class="token comment" spellcheck="true">/* darker top area */</span>
+  inset 0 1px .125em #8b8b8b, 
+  inset 0 2px .25em #a4a2a3, 
+
+  <span class="token comment" spellcheck="true">/* darker bottom area */</span>
+  inset 0 -1px .125em #8b8b8b, 
+  inset 0 -2px .25em #a4a2a3, 
+
+  <span class="token comment" spellcheck="true">/* the base circular strip for the inner ring */</span>
+  inset 0 0 0 .375em #cdcdcd<span class="token punctuation">;</span></code></pre>
+<p>We also add two more outer box shadows, one for the lighter top highlight of the outer ring and the second for the discrete dark shadow below the control, so we now have:</p>
+<pre rel="CSS" class=" language-css"><code class=" language-css"><span class="token property">box-shadow</span><span class="token punctuation">:</span> 
+  0 -1px 1px #eee, 
+  0 2px 2px #1d1d1d, 
+  inset 0 0 1px #666, 
+  inset 0 1px .125em #8b8b8b, 
+  inset 0 2px .25em #a4a2a3, 
+  inset 0 -1px .125em #8b8b8b, 
+  inset 0 -2px .25em #a4a2a3, 
+  inset 0 0 0 .375em #cdcdcd<span class="token punctuation">;</span></code></pre>
+<p>Still not much, but it's more than before:</p>
+<div><div class="drag-wrap ui-resizable"><iframe id="cp_embed_984fe390d604f2c05c394d3bb5080e11" src="https://codepen.io/thebabydino/embed/984fe390d604f2c05c394d3bb5080e11?height=468&amp;theme-id=1&amp;slug-hash=984fe390d604f2c05c394d3bb5080e11&amp;default-tab=result&amp;user=thebabydino" scrolling="no" frameborder="0" height="468" allowtransparency="true" allowfullscreen="true" name="CodePen Embed" title="CodePen Embed" class="cp_embed_iframe undefined"></iframe><div class="ui-resizable-handle ui-resizable-e"></div></div></div>
+<p>Now we have to layer three types of backgrounds, from top to bottom: limited to the <code>content-box</code> (creating the central area), limited to the <code>padding-box</code> (creating the perforated area and cyan glow) and limited to the <code>border-box</code> (creating the thick outer ring and LEDs).</p>
+<p>We start with the central area, where we have some discrete circular lines created with three repeating radial gradients stacked one on top of the other, with the values of the stops based on <a href="http://www.sitepoint.com/the-cicada-principle-and-why-it-matters-to-web-designers/">the cicada principle</a> and conic reflections created with a conic gradient. Note that conic gradients are not yet supported in any browser so we need to use <a href="http://leaverou.github.io/conic-gradient/">a polyfill</a> at this point.</p>
+<pre rel="CSS" class=" language-css"><code class=" language-css"><span class="token property">background</span><span class="token punctuation">:</span>
+  <span class="token comment" spellcheck="true">/* ======= content-box ======= */</span>
+  <span class="token comment" spellcheck="true">/* circular lines - 13, 19, 23 being prime numbers */</span>
+  <span class="token function">repeating-radial-gradient</span>(
+      <span class="token function">rgba</span>(#e4e4e4, 0) 0, 
+      <span class="token function">rgba</span>(#e4e4e4, 0) 23px, 
+      <span class="token function">rgba</span>(#e4e4e4, .05) 25px, 
+      <span class="token function">rgba</span>(#e4e4e4, 0) 27px) content-box, 
+  <span class="token function">repeating-radial-gradient</span>(
+      <span class="token function">rgba</span>(#a6a6a6, 0) 0, 
+      <span class="token function">rgba</span>(#a6a6a6, 0) 13px, 
+      <span class="token function">rgba</span>(#a6a6a6, .05) 15px, 
+      <span class="token function">rgba</span>(#a6a6a6, 0) 17px) content-box, 
+  <span class="token function">repeating-radial-gradient</span>(
+      <span class="token function">rgba</span>(#8b8b8b, 0) 0, 
+      <span class="token function">rgba</span>(#8b8b8b, 0) 19px, 
+      <span class="token function">rgba</span>(#8b8b8b, .05) 21px, 
+      <span class="token function">rgba</span>(#8b8b8b, 0) 23px) content-box, 
+  <span class="token comment" spellcheck="true">/* conic reflections */</span>
+  <span class="token function">conic-gradient</span>(<span class="token comment" spellcheck="true">/* random variations of some shades of grey */</span>
+      #cdcdcd, #9d9d9d, #808080, 
+      #bcbcbc, #c4c4c4, #e6e6e6, 
+      #dddddd, #a1a1a1, #7f7f7f, 
+      #8b8b8b, #bfbfbf, #e3e3e3, 
+      #d2d2d2, #a6a6a6, #858585, 
+      #8d8d8d, #c0c0c0, #e5e5e5, 
+      #d6d6d6, #9e9e9e, #828282, 
+      #8f8f8f, #bdbdbd, #e3e3e3, #cdcdcd) 
+    content-box<span class="token punctuation">;</span></code></pre>
+<p>Now this is finally starting to look like something!</p>
+<div><div class="drag-wrap ui-resizable"><iframe id="cp_embed_ae6d00286980b6fee6f69d7bae76f898" src="https://codepen.io/thebabydino/embed/ae6d00286980b6fee6f69d7bae76f898?height=468&amp;theme-id=1&amp;slug-hash=ae6d00286980b6fee6f69d7bae76f898&amp;default-tab=result&amp;user=thebabydino" scrolling="no" frameborder="0" height="468" allowtransparency="true" allowfullscreen="true" name="CodePen Embed" title="CodePen Embed" class="cp_embed_iframe undefined"></iframe><div class="ui-resizable-handle ui-resizable-e"></div></div></div>
+<p>We move on to the perforated area. The cyan glow is just a radial gradient to transparency in the outer part, while the perforations are based on the <a href="http://lea.verou.me/css3patterns/#carbon-fibre">Carbon fibre</a> pattern from the gallery Lea Verou put together some five years ago - still damn useful for artistically challenged people such as myself.</p>
+<pre rel="SCSS" class=" language-scss"><code class=" language-scss"><span class="token variable">$d-hole</span><span class="token punctuation">:</span> 1.25em<span class="token punctuation">;</span> <span class="token comment" spellcheck="true">/* perforation diameter*/</span>
+<span class="token variable">$r-hole</span><span class="token punctuation">:</span> .5*<span class="token variable">$d-hole</span><span class="token punctuation">;</span> <span class="token comment" spellcheck="true">/* perforation radius */</span>
+
+<span class="token property">background</span><span class="token punctuation">:</span> 
+  <span class="token comment" spellcheck="true">/* ======= padding-box ======= */</span>
+  <span class="token comment" spellcheck="true">/* cyan glow */</span>
+  <span class="token function">radial-gradient</span>(
+      #00d7ff 53%, transparent 65%) padding-box, 
+  <span class="token comment" spellcheck="true">/* holes */</span>
+  <span class="token function">radial-gradient</span>(
+      #272727 20%, transparent 25%) 
+    0 0 / <span class="token variable">#{$d-hole}</span> <span class="token variable">#{$d-hole}</span> 
+    padding-box,
+  <span class="token function">radial-gradient</span>(
+      #272727 20%, transparent 25%) 
+    <span class="token variable">$r-hole</span> <span class="token variable">$r-hole</span> / <span class="token variable">#{$d-hole}</span> <span class="token variable">#{$d-hole}</span> 
+    padding-box,
+  <span class="token function">radial-gradient</span>(#444 20%, transparent 28%) 
+    0 .125em / <span class="token variable">#{$d-hole}</span> <span class="token variable">#{$d-hole}</span> 
+    padding-box,
+  <span class="token function">radial-gradient</span>(#444 20%, #3d3d3d 28%) 
+    <span class="token variable">#{$r-hole}</span> #<span class="token punctuation">{</span><span class="token variable">$r-hole</span> + .125em<span class="token punctuation">}</span> / <span class="token variable">#{$d-hole}</span> <span class="token variable">#{$d-hole}</span> 
+    padding-box</code></pre>
+<p>It looks like we're getting close to something decent looking:</p>
+<div><div class="drag-wrap ui-resizable"><iframe id="cp_embed_4890d7ff30ef841899d26be2cf03a3f3" src="https://codepen.io/thebabydino/embed/4890d7ff30ef841899d26be2cf03a3f3?height=468&amp;theme-id=1&amp;slug-hash=4890d7ff30ef841899d26be2cf03a3f3&amp;default-tab=result&amp;user=thebabydino" scrolling="no" frameborder="0" height="468" allowtransparency="true" allowfullscreen="true" name="CodePen Embed" title="CodePen Embed" class="cp_embed_iframe undefined"></iframe><div class="ui-resizable-handle ui-resizable-e"></div></div></div>
+<p>The basic thick outer ring (without the LEDs) is created with a single conic gradient:</p>
+<pre rel="CSS" class=" language-css"><code class=" language-css"><span class="token function">conic-gradient</span>(
+  #b5b5b5, #8d8d8d, #838383, 
+  #ababab, #d7d7d7, #e3e3e3, 
+  #aeaeae, #8f8f8f, #878787, 
+  #acacac, #d7d7d7, #dddddd, 
+  #b8b8b8, #8e8e8e, #848484, 
+  #a6a6a6, #d8d8d8, #e3e3e3, 
+  #8e8e8e, #868686, #a8a8a8, 
+  #d5d5d5, #dedede, #b5b5b5) border-box<span class="token punctuation">;</span></code></pre>
+<p>We now have a metallic control!</p>
+<div><div class="drag-wrap ui-resizable"><iframe id="cp_embed_4aee0470fba7176fc1c0c279cd4a40a9" src="https://codepen.io/thebabydino/embed/4aee0470fba7176fc1c0c279cd4a40a9?height=468&amp;theme-id=1&amp;slug-hash=4aee0470fba7176fc1c0c279cd4a40a9&amp;default-tab=result&amp;user=thebabydino" scrolling="no" frameborder="0" height="468" allowtransparency="true" allowfullscreen="true" name="CodePen Embed" title="CodePen Embed" class="cp_embed_iframe undefined"></iframe><div class="ui-resizable-handle ui-resizable-e"></div></div></div>
+<p>It has no LEDs at this point, so let's fix that!</p>
+<p>Every LED is made up of two non-repeating radial gradients stacked one on top of the other. The top one is the actual LED, while the bottom one, slightly offset vertically, creates the lighter highlight in the lower part of the LED. It's pretty much the same effect used for the holes in the perforated area. The bottom gradient is always the same, but the top one differs depending on whether the LEDs are on or off.</p>
+<p>We take the LEDs to be on up to the <code>$k</code>-th one. So up to the point we use the cyan variation for the top gradient, while after that we use the grey one.</p>
+<p>We have <code>24</code> LEDs that are positioned on a circle passing through the middle of its border area. So its radius is the radius of the control minus half the border width.</p>
+<p>We generate all these gradients with Sass. We first create an empty list of gradients, then we loop and, for every iteration, we add two gradients to the list. Their positions are computed so they're on the previously mentioned circle. The first gradient depends on the loop index, while the second one is always the same (only at another position on the circle).</p>
+<pre rel="SCSS" class=" language-scss"><code class=" language-scss"><span class="token variable">$d-btn</span><span class="token punctuation">:</span> 27em<span class="token punctuation">;</span>
+<span class="token variable">$bw</span><span class="token punctuation">:</span> 1.5em<span class="token punctuation">;</span>
+<span class="token variable">$r-pos</span><span class="token punctuation">:</span> .5*(<span class="token variable">$d-btn</span> - <span class="token variable">$bw</span>)<span class="token punctuation">;</span>
+<span class="token variable">$n-leds</span><span class="token punctuation">:</span> 24<span class="token punctuation">;</span>
+<span class="token variable">$ba-led</span><span class="token punctuation">:</span> 360deg/<span class="token variable">$n-leds</span><span class="token punctuation">;</span>
+<span class="token variable">$d-led</span><span class="token punctuation">:</span> 1em<span class="token punctuation">;</span>
+<span class="token variable">$r-led</span><span class="token punctuation">:</span> .5*<span class="token variable">$d-led</span><span class="token punctuation">;</span>
+<span class="token variable">$k</span><span class="token punctuation">:</span> 7<span class="token punctuation">;</span>
+<span class="token variable">$leds</span><span class="token punctuation">:</span> ()<span class="token punctuation">;</span>
+
+<span class="token keyword">@for</span><span class="token selector"> $i from 0 to $n-leds </span><span class="token punctuation">{</span>
+  <span class="token variable">$a</span><span class="token punctuation">:</span> <span class="token variable">$i</span>*<span class="token variable">$ba-led</span> - 90deg<span class="token punctuation">;</span>
+  <span class="token variable">$x</span><span class="token punctuation">:</span> .5*<span class="token variable">$d-btn</span> + <span class="token variable">$r-pos</span>*<span class="token function">cos</span>(<span class="token variable">$a</span>) - <span class="token variable">$r-led</span><span class="token punctuation">;</span>
+  <span class="token variable">$y</span><span class="token punctuation">:</span> .5*<span class="token variable">$d-btn</span> + <span class="token variable">$r-pos</span>*<span class="token function">sin</span>(<span class="token variable">$a</span>) - <span class="token variable">$r-led</span><span class="token punctuation">;</span>
+  <span class="token variable">$leds</span><span class="token punctuation">:</span> <span class="token variable">$leds</span>, 
+    <span class="token function">if</span>(<span class="token variable">$i</span> &lt; <span class="token variable">$k</span>, 
+      (<span class="token function">radial-gradient</span>(circle, #01d6ff, 
+          #178b98 .5*<span class="token variable">$r-led</span>, 
+          <span class="token function">rgba</span>(#01d6ff, .35) .7*<span class="token variable">$r-led</span>, 
+          <span class="token function">rgba</span>(#01d6ff, 0) 1.3*<span class="token variable">$r-led</span>) no-repeat 
+        #<span class="token punctuation">{</span><span class="token variable">$x</span> - <span class="token variable">$r-led</span><span class="token punctuation">}</span> #<span class="token punctuation">{</span><span class="token variable">$y</span> - <span class="token variable">$r-led</span><span class="token punctuation">}</span> / 
+        #<span class="token punctuation">{</span>2*<span class="token variable">$d-led</span><span class="token punctuation">}</span> #<span class="token punctuation">{</span>2*<span class="token variable">$d-led</span><span class="token punctuation">}</span> border-box), 
+      (<span class="token function">radial-gradient</span>(circle, #898989, 
+          #4d4d4d .5*<span class="token variable">$r-led</span>, #999 .65*<span class="token variable">$r-led</span>, 
+          <span class="token function">rgba</span>(#999, 0) .7*<span class="token variable">$r-led</span>) no-repeat 
+        <span class="token variable">$x</span> <span class="token variable">$y</span> / <span class="token variable">#{$d-led}</span> <span class="token variable">#{$d-led}</span> border-box)
+    ), 
+    <span class="token function">radial-gradient</span>(circle, 
+        <span class="token function">rgba</span>(#e8e8e8, .5) .5*<span class="token variable">$r-led</span>, 
+        <span class="token function">rgba</span>(#e8e8e8, 0) .7*<span class="token variable">$r-led</span>) no-repeat 
+      <span class="token variable">$x</span> (<span class="token variable">$y</span> + .125em) / <span class="token variable">#{$d-led}</span> <span class="token variable">#{$d-led}</span> 
+      border-box<span class="token punctuation">;</span>
+<span class="token punctuation">}</span></code></pre>
+<p>The final result can be seen in this Pen:</p>
+<div><div class="drag-wrap ui-resizable"><iframe id="cp_embed_mVKayj" src="https://codepen.io/thebabydino/embed/mVKayj?height=498&amp;theme-id=1&amp;slug-hash=mVKayj&amp;default-tab=result&amp;user=thebabydino" scrolling="no" frameborder="0" height="498" allowtransparency="true" allowfullscreen="true" name="CodePen Embed" title="CodePen Embed" class="cp_embed_iframe undefined"></iframe><div class="ui-resizable-handle ui-resizable-e"></div></div></div>
+<h4>Shadows in a perpendicular plane</h4>
+<p>Consider the case of controls being in the vertical plane of the screen, for which we want to have a shadow in a horizontal plane below. Something like in the following image:</p>
+<figure id="post-237679" class="align-none media-237679"><img src="https://cdn.css-tricks.com/wp-content/uploads/2016/02/AT-shadow-perpendicular-plane.png" alt=""><br>
+<figcaption>controls with shadow in a horizontal plane below them</figcaption>
+</figure>
+<p>What we want is to recreate this effect using just one element and no pseudo-elements.</p>
+<p>Layering backgrounds with different <code>background-clip</code> and <code>background-origin</code> values does the trick in this case as well. We create the actual button with two backgrounds, the one on top clipped to the <code>content-box</code> and the one under it clipped to the <code>padding-box</code> and use a <code>radial-gradient()</code> background with <code>background-clip</code> and <code>background-origin</code> set to <code>border-box</code> to create the shadow.</p>
+<p>The basic styling is pretty similar to that of the metallic control in the previous section: </p>
+<pre rel="SCSS" class=" language-scss"><code class=" language-scss"><span class="token variable">$l</span><span class="token punctuation">:</span> 6.25em<span class="token punctuation">;</span>
+<span class="token variable">$bw</span><span class="token punctuation">:</span> .1*<span class="token variable">$l</span><span class="token punctuation">;</span>
+
+<span class="token property">border</span><span class="token punctuation">:</span> solid <span class="token variable">$bw</span> transparent<span class="token punctuation">;</span>
+<span class="token property">padding</span><span class="token punctuation">:</span> 3px<span class="token punctuation">;</span>
+<span class="token property">width</span><span class="token punctuation">:</span> <span class="token variable">$l</span><span class="token punctuation">;</span> <span class="token property">height</span><span class="token punctuation">:</span> <span class="token variable">$l</span><span class="token punctuation">;</span>
+<span class="token property">border-radius</span><span class="token punctuation">:</span> 1.75*<span class="token variable">$bw</span><span class="token punctuation">;</span></code></pre>
+<p>We give it a thickish transparent border all around, so that we have enough space to recreate that shadow in the bottom border area. We do this for all borders, not just for the bottom one because we want the same kind of symmetrical rounding for all the corners of the <code>padding-box</code> (if you need a refresher of how this works, check out Lea Verou's <a href="https://www.youtube.com/watch?v=b9HGzJIcfDE">excellent <code>border-radius</code> talk</a>).</p>
+<div><div class="drag-wrap ui-resizable"><iframe id="cp_embed_QyVNoM" src="https://codepen.io/thebabydino/embed/QyVNoM?height=170&amp;theme-id=1&amp;slug-hash=QyVNoM&amp;default-tab=result&amp;user=thebabydino" scrolling="no" frameborder="0" height="170" allowtransparency="true" allowfullscreen="true" name="CodePen Embed" title="CodePen Embed" class="cp_embed_iframe undefined"></iframe><div class="ui-resizable-handle ui-resizable-e"></div></div></div>
+<p>The first <code>background</code> from the top is a <code>conic-gradient()</code> one to create the conic metal reflections. This one is clipped to the <code>content-box</code>. Right underneath it, we have a simple <code>linear-gradient()</code> clipped to the <code>padding-box</code>. We use three inset box shadows to make this second background less flat - add another shade all around with a zero blur, positive spread shadow, make it lighter at the top with a semitransparent white shadow and darker at the bottom with a semitransparent black shadow.</p>
+<pre rel="SCSS" class=" language-scss"><code class=" language-scss"><span class="token property">box-shadow</span><span class="token punctuation">:</span> 
+  inset 0 0 0 1px #eedc00, 
+  inset 0  1px 2px <span class="token function">rgba</span>(#fff, .5), 
+  inset 0 -1px 2px <span class="token function">rgba</span>(#000, .5)<span class="token punctuation">;</span>
+<span class="token property">background</span><span class="token punctuation">:</span> 
+  <span class="token function">conic-gradient</span>(
+      #edc800, #e3b600, #f3cf00, #ffe800, 
+      #ffe900, #ffeb00, #ffe000, #ebc500, 
+      #e0b100, #f1cc00, #fcdc00, #ffe500, 
+      #fad900, #eec200, #e7b900, #f7d300, 
+      #ffe800, #ffe300, #f5d100, #e6b900, 
+      #e3b600, #f4d000, #ffe400, #ebc600, 
+      #e3b600, #f6d500, #ffe900, #ffe90a, 
+      #edc800) content-box, 
+  <span class="token function">linear-gradient</span>(#f6d600, #f6d600) padding-box</code></pre>
+<p>This gives us the metallic button (without the shadow yet):</p>
+<div><div class="drag-wrap ui-resizable"><iframe id="cp_embed_2ec400ed1518ad8e535c6052ff5cd833" src="https://codepen.io/thebabydino/embed/2ec400ed1518ad8e535c6052ff5cd833?height=250&amp;theme-id=1&amp;slug-hash=2ec400ed1518ad8e535c6052ff5cd833&amp;default-tab=result&amp;user=thebabydino" scrolling="no" frameborder="0" height="250" allowtransparency="true" allowfullscreen="true" name="CodePen Embed" title="CodePen Embed" class="cp_embed_iframe undefined"></iframe><div class="ui-resizable-handle ui-resizable-e"></div></div></div>
+<p>For the shadow, layer a third background for which we set both <code>background-clip</code> and <code>background-origin</code> to <code>border-box</code>. This background is a non-repeating <code>radial-gradient()</code> whose position we attach to the <code>bottom</code> (and horizontally in the middle) and which we shrink vertically so that it fits into that bottom border area and even leaves a bit of space - so we take it for example to be something like <code>.75</code> of the <code>border-width</code>.</p>
+<pre rel="SCSS" class=" language-scss"><code class=" language-scss"><span class="token function">radial-gradient</span>(<span class="token function">rgba</span>(#787878, .9), <span class="token function">rgba</span>(#787878, 0) 70%) 
+  50% bottom / 80% .75*<span class="token variable">$bw</span> no-repeat border-box</code></pre>
+<p>And this is it! You can play with the buttons in the following Pen:</p>
+<div><div class="drag-wrap ui-resizable"><iframe id="cp_embed_VeBoXx" src="https://codepen.io/thebabydino/embed/VeBoXx?height=545&amp;theme-id=1&amp;slug-hash=VeBoXx&amp;default-tab=result&amp;user=thebabydino" scrolling="no" frameborder="0" height="545" allowtransparency="true" allowfullscreen="true" name="CodePen Embed" title="CodePen Embed" class="cp_embed_iframe undefined"></iframe><div class="ui-resizable-handle ui-resizable-e"></div></div></div>
+<hr>
+<p>Background-clip certainly has its use cases! Particularly when layering multiple effects around the edges of elements.</p>
+
+        
+        
+
+        
+
+        
+
+        
+
+        
+      </div>
+
+    
