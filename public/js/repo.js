@@ -5,9 +5,59 @@ var MyLinks = (function() {
   var branch = 'gh-pages';
   var defaultCategory = 'to_read';
   var repo;
+  var moving = loadMovingPosts();
+  console.log('load moving', moving);
 
   init();
 
+
+  function loadMovingPosts() {
+    if (!window.localStorage)
+      return {};
+
+    return JSON.parse(localStorage['mylinks_moving'] || '{}');
+  }
+
+
+  function saveMovingPosts() {
+    console.log('save moving', moving);
+    if (!window.localStorage)
+      return;
+
+    localStorage['mylinks_moving'] = JSON.stringify(moving || {});
+  }
+
+
+  function setAsMoving(link, targetCategory) {
+    console.log('set as moving', link);
+    moving[link] = targetCategory;
+    saveMovingPosts();
+  }
+
+  function setAsMoved(link) {
+    console.log('set as moved', link);
+    delete moving[link];
+  }
+
+  function displayMovingLinks() {
+    if (!document.querySelector('.category-links'))
+      return;
+
+    for (var path in moving) {
+      var node = document.querySelector('[data-path="' + path + '"]');
+      if (node) {
+        var currentCategory = node.getAttribute('data-category');
+        var targetCategory = moving[path];
+        if (currentCategory == targetCategory)
+          setAsMoved(path);
+        else
+          node.setAttribute('data-target-category', targetCategory);
+      } else {
+        setAsMoved(path);
+      }
+    }
+    saveMovingPosts();
+  }
 
 
   function init() {
@@ -15,6 +65,7 @@ var MyLinks = (function() {
     if (token)
       setRepo(token);
 
+    displayMovingLinks();
     initBodyClass();
   }
 
@@ -114,6 +165,7 @@ var MyLinks = (function() {
     var newPath = category + '/_posts' + title;
 
     console.log('read', oldPath);
+    setAsMoving(oldPath, category);
     repo.read(branch, oldPath, function(err, content) {
       if (err)
         return cb(err);

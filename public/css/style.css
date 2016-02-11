@@ -49,6 +49,15 @@ body {
   text-overflow: ellipsis;
 }
 
+[data-target-category] {
+  opacity: .5;
+}
+
+[data-target-category]:before {
+  content: 'Moving to ' attr(data-target-category);
+  color: #999;
+}
+
 h1 {
   text-align: center;
   color: #999;
