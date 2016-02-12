@@ -1,0 +1,189 @@
+---
+title: "Building a Jekyll Site – Part 3 of 3: Creating a Firebase-Backed Commenting System | CSS-Tricks"
+description: "The following is a guest post by Mike Neumegen from CloudCannon. This final post is about adding some functionality to a Jekyll site that isn't possible: c"
+link: "https://css-tricks.com/building-a-jekyll-site-part-3-of-3/"
+saved: "2016-02-12 09:43:03"
+---
+
+
+      <div class="e-content">
+
+          
+
+        <p><em class="explanation">The following is a guest post by <a href="http://mikeneumegen.com/">Mike Neumegen</a> from <a href="http://cloudcannon.com/">CloudCannon</a>. This final post is about adding some functionality to a Jekyll site that isn't possible: comments. That's because Jekyll has no backend component in which to save comments. But, we don't even need that if we do it entirely front-end with Firebase!</em></p>
+<p><span id="more-237855"></span></p>
+<div class="explanation">
+<h4>This is a three-part series:</h4>
+<p>Part 1: <a href="https://css-tricks.com/building-a-jekyll-site-part-1-of-3/">Converting a Static Website To Jekyll</a><br>
+Part 2: <a href="https://css-tricks.com/building-a-jekyll-site-part-2-of-3/">Adding a Jekyll CMS with CloudCannon</a><br>
+Part 3: <em>(This post)</em> Creating a Firebase-Backed Commenting System
+</p></div>
+<p>In this series, we're building a site with a blog and content management system for Coffee Cafe, a fictional cafe. This final post is about building a custom commenting system with <a href="http://firebase.com/">Firebase</a>.</p>
+<p>Custom built solutions provide more control of the design, functionality and data than drop-in solutions, such as <a href="https://disqus.com/">Disqus</a> and <a href="https://developers.facebook.com/docs/plugins/comments">Facebook Comments</a>.</p>
+<h3>What is Firebase?</h3>
+<p>Firebase is a real-time, scalable backend. It allows developers to build applications with authentication and persistent data for static websites.</p>
+<p>We're going to store our blog comments in Firebase and retrieve them when someone views a blog post.</p>
+<h3>Sign Up</h3>
+<p>First, sign up for a Firebase account. </p>
+<figure id="post-237860" class="align-none media-237860"><img src="https://cdn.css-tricks.com/wp-content/uploads/2016/02/sign-up-firebase.jpg" alt=""></figure>
+<p>Once you've signed up, create a new app for the blog comments and record the <strong>App URL</strong> for later.</p>
+<figure id="post-237861" class="align-none media-237861"><img src="https://cdn.css-tricks.com/wp-content/uploads/2016/02/app-url.jpg" alt=""></figure>
+<h3>Setup</h3>
+<p>We need a number of JavaScript libraries to run the commenting system. Firebase saves and fetches comments, jQuery adds elements to the page, Moment formats dates, and blueimp-md5 generates MD5s. `/js/blog.js` contains the custom application code for the commenting system</p>
+<p>Add the following scripts above <code>&lt;/body&gt;</code> in `_layouts/default.html` (or do whatever build process / concatenation thing you normally do):</p>
+<pre rel="HTML" class=" language-markup"><code class=" language-markup"><span class="token script language-javascript"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>script</span> <span class="token attr-name">src</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>https://cdn.firebase.com/js/client/2.2.1/firebase.js<span class="token punctuation">"</span></span><span class="token punctuation">&gt;</span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>script</span><span class="token punctuation">&gt;</span></span></span>
+<span class="token script language-javascript"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>script</span> <span class="token attr-name">src</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js<span class="token punctuation">"</span></span><span class="token punctuation">&gt;</span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>script</span><span class="token punctuation">&gt;</span></span></span>
+<span class="token script language-javascript"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>script</span> <span class="token attr-name">src</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.11.0/moment.min.js<span class="token punctuation">"</span></span><span class="token punctuation">&gt;</span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>script</span><span class="token punctuation">&gt;</span></span></span>
+<span class="token script language-javascript"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>script</span> <span class="token attr-name">src</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>https://cdnjs.cloudflare.com/ajax/libs/blueimp-md5/2.1.0/js/md5.js<span class="token punctuation">"</span></span><span class="token punctuation">&gt;</span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>script</span><span class="token punctuation">&gt;</span></span></span>
+<span class="token script language-javascript"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>script</span> <span class="token attr-name">src</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>/js/blog.js<span class="token punctuation">"</span></span><span class="token punctuation">&gt;</span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>script</span><span class="token punctuation">&gt;</span></span></span></code></pre>
+<h3>Firebase Overview</h3>
+<p>When a visitor views a blog post we get all the relevant comments from Firebase.</p>
+<p>Visitors post comments with a name, email address and message. We take this information, add a timestamp and the current page, then store it in Firebase.</p>
+<p>In Firebase, data is stored as JSON objects. The comments are stored as an array of objects for each blog post:</p>
+<pre rel="JSON" class=" language-javascript"><code class=" language-javascript"><span class="token punctuation">{</span>
+  <span class="token string">"/tutorial/2016/01/02/title-tag.html"</span><span class="token punctuation">:</span> <span class="token punctuation">[</span>
+    <span class="token punctuation">{</span>
+      <span class="token string">"name"</span><span class="token punctuation">:</span> <span class="token string">"Bill"</span><span class="token punctuation">,</span>
+      <span class="token string">"email"</span><span class="token punctuation">:</span> <span class="token string">"bill@example.org"</span><span class="token punctuation">,</span>
+      <span class="token string">"message"</span><span class="token punctuation">:</span> <span class="token string">"Hi there, nice blog!"</span><span class="token punctuation">,</span>
+      <span class="token string">"timestamp"</span><span class="token punctuation">:</span> <span class="token number">1452042357209</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token punctuation">{</span>
+      <span class="token string">"name"</span><span class="token punctuation">:</span> <span class="token string">"Bob"</span><span class="token punctuation">,</span>
+      <span class="token string">"email"</span><span class="token punctuation">:</span> <span class="token string">"bob@example.org"</span><span class="token punctuation">,</span>
+      <span class="token string">"message"</span><span class="token punctuation">:</span> <span class="token string">"Wow look at this blog."</span><span class="token punctuation">,</span>
+      <span class="token string">"timestamp"</span><span class="token punctuation">:</span> <span class="token number">145204235846</span>
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">]</span><span class="token punctuation">,</span>
+  <span class="token string">"/announcement/2016/01/01/latest-seo-trends.html"</span><span class="token punctuation">:</span> <span class="token punctuation">[</span>
+    <span class="token punctuation">{</span>
+      <span class="token string">"name"</span><span class="token punctuation">:</span> <span class="token string">"Steve"</span><span class="token punctuation">,</span>
+      <span class="token string">"email"</span><span class="token punctuation">:</span> <span class="token string">"steve@example.org"</span><span class="token punctuation">,</span>
+      <span class="token string">"message"</span><span class="token punctuation">:</span> <span class="token string">"First post!"</span><span class="token punctuation">,</span>
+      <span class="token string">"timestamp"</span><span class="token punctuation">:</span> <span class="token number">1452043267245</span>
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">]</span>
+<span class="token punctuation">}</span></code></pre>
+<h3>Implementation</h3>
+<p>Firebase references provide read and write access to the database. Add a reference to the database in `/js/blog.js`:</p>
+<pre rel="JavaScript" class=" language-javascript"><code class=" language-javascript"><span class="token keyword">var</span> ref <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Firebase</span><span class="token punctuation">(</span><span class="token string">"https://&lt;YOUR-APP-ID&gt;.firebaseio.com/"</span><span class="token punctuation">)</span><span class="token punctuation">;</span></code></pre>
+<p><code>ref</code> gives us access to the root of the database. We can get a reference to a blog post using <code>ref.child("&lt;PATH_TO_BLOG_POST&gt;")</code>.</p>
+<h4>Saving Comments</h4>
+<p>The path is a great way to identify a blog post, but Firebase doesn't support characters like ampersands in the key name. To solve this issue, add a function to replace unsupported characters:</p>
+<pre rel="JavaScript" class=" language-javascript"><code class=" language-javascript"><span class="token keyword">function</span> <span class="token function">slugify<span class="token punctuation">(</span></span>text<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">return</span> text<span class="token punctuation">.</span><span class="token function">toString<span class="token punctuation">(</span></span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">toLowerCase<span class="token punctuation">(</span></span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">trim<span class="token punctuation">(</span></span><span class="token punctuation">)</span>
+    <span class="token punctuation">.</span><span class="token function">replace<span class="token punctuation">(</span></span><span class="token regex">/&amp;/g</span><span class="token punctuation">,</span> <span class="token string">'-and-'</span><span class="token punctuation">)</span>
+    <span class="token punctuation">.</span><span class="token function">replace<span class="token punctuation">(</span></span><span class="token regex">/[\s\W-]+/g</span><span class="token punctuation">,</span> <span class="token string">'-'</span><span class="token punctuation">)</span>
+    <span class="token punctuation">.</span><span class="token function">replace<span class="token punctuation">(</span></span><span class="token regex">/[^a-zA-Z0-9-_]+/g</span><span class="token punctuation">,</span><span class="token string">''</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span></code></pre>
+<p>Save a reference to the slugified current path:</p>
+<pre rel="JavaScript" class=" language-javascript"><code class=" language-javascript"><span class="token keyword">var</span> postRef <span class="token operator">=</span> ref<span class="token punctuation">.</span><span class="token function">child<span class="token punctuation">(</span></span><span class="token function">slugify<span class="token punctuation">(</span></span>window<span class="token punctuation">.</span>location<span class="token punctuation">.</span>pathname<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span></code></pre>
+<p>Add a form to post new comments below the blog posts. Enter the following markup below <code>{{ content }}</code> in `_layouts/post.html`:</p>
+<pre rel="HTML" class=" language-markup"><code class=" language-markup"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>h3</span><span class="token punctuation">&gt;</span></span>Leave a comment<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>h3</span><span class="token punctuation">&gt;</span></span>
+
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>form</span> <span class="token attr-name">id</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>comment<span class="token punctuation">"</span></span><span class="token punctuation">&gt;</span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>label</span> <span class="token attr-name">for</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>message<span class="token punctuation">"</span></span><span class="token punctuation">&gt;</span></span>Message<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>label</span><span class="token punctuation">&gt;</span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>textarea</span> <span class="token attr-name">id</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>message<span class="token punctuation">"</span></span><span class="token punctuation">&gt;</span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>textarea</span><span class="token punctuation">&gt;</span></span>
+
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>label</span> <span class="token attr-name">for</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>name<span class="token punctuation">"</span></span><span class="token punctuation">&gt;</span></span>Name<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>label</span><span class="token punctuation">&gt;</span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>input</span> <span class="token attr-name">type</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>text<span class="token punctuation">"</span></span> <span class="token attr-name">id</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>name<span class="token punctuation">"</span></span><span class="token punctuation">&gt;</span></span>
+
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>label</span> <span class="token attr-name">for</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>email<span class="token punctuation">"</span></span><span class="token punctuation">&gt;</span></span>Email<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>label</span><span class="token punctuation">&gt;</span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>input</span> <span class="token attr-name">type</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>text<span class="token punctuation">"</span></span> <span class="token attr-name">id</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>email<span class="token punctuation">"</span></span><span class="token punctuation">&gt;</span></span>
+
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>input</span> <span class="token attr-name">type</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>submit<span class="token punctuation">"</span></span> <span class="token attr-name">value</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>Post Comment<span class="token punctuation">"</span></span><span class="token punctuation">&gt;</span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>form</span><span class="token punctuation">&gt;</span></span></code></pre>
+<p>To send the data to Firebase when the form is submitted, override the default submit listener in `/js/blog.js`:</p>
+<pre rel="jQuery" class=" language-javascript"><code class=" language-javascript">$<span class="token punctuation">(</span><span class="token string">"#comment"</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">submit<span class="token punctuation">(</span></span><span class="token keyword">function</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  postRef<span class="token punctuation">.</span><span class="token function">push<span class="token punctuation">(</span></span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token keyword">set</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+    name<span class="token punctuation">:</span> $<span class="token punctuation">(</span><span class="token string">"#name"</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">val<span class="token punctuation">(</span></span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+    message<span class="token punctuation">:</span> $<span class="token punctuation">(</span><span class="token string">"#message"</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">val<span class="token punctuation">(</span></span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+    md5Email<span class="token punctuation">:</span> <span class="token function">md5<span class="token punctuation">(</span></span>$<span class="token punctuation">(</span><span class="token string">"#email"</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">val<span class="token punctuation">(</span></span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+    postedAt<span class="token punctuation">:</span> Firebase<span class="token punctuation">.</span>ServerValue<span class="token punctuation">.</span>TIMESTAMP
+  <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+  $<span class="token punctuation">(</span><span class="token string">"input[type=text], textarea"</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">val<span class="token punctuation">(</span></span><span class="token string">""</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token keyword">return</span> <span class="token keyword">false</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span></code></pre>
+<p><code>postRef.push()</code> creates an array in Firebase if it doesn't exist and returns a reference to the first item. <code>set</code> saves the data to Firebase.</p>
+<p>We store an MD5 of the email address to protect the privacy of commenters since the data is public. <a href="https://en.gravatar.com/">Gravatar</a> uses MD5s to display profile images.</p>
+<p>Instead of <code>new Date().getTime()</code> for the timestamp, we use <code>Firebase.ServerValue.TIMESTAMP</code>. This is a timestamp from Firebase servers which avoids timezone issues and forged requests.</p>
+<h4>Displaying Comments</h4>
+<p>Add a container to hold comments the above the comment form in _layouts/post.html:</p>
+<pre rel="HTML" class=" language-markup"><code class=" language-markup"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>hr</span><span class="token punctuation">&gt;</span></span>
+
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>comments<span class="token punctuation">"</span></span><span class="token punctuation">&gt;</span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">&gt;</span></span></code></pre>
+<p>Firebase has a reference to listen for new comments. The <code>child_added</code> event triggers for existing and new comments. We use the same event to render all comments.</p>
+<p><code>child_added</code> returns a current snapshot of the data. We get the data from the snapshot, format it into HTML then prepend it to <code>&lt;div class="comments"&gt;&lt;/div&gt;</code>.</p>
+<pre rel="jQuery" class=" language-javascript"><code class=" language-javascript">postRef<span class="token punctuation">.</span><span class="token function">on<span class="token punctuation">(</span></span><span class="token string">"child_added"</span><span class="token punctuation">,</span> <span class="token keyword">function</span><span class="token punctuation">(</span>snapshot<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">var</span> newComment <span class="token operator">=</span> snapshot<span class="token punctuation">.</span><span class="token function">val<span class="token punctuation">(</span></span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  $<span class="token punctuation">(</span><span class="token string">".comments"</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">prepend<span class="token punctuation">(</span></span><span class="token string">'&lt;div class="comment"&gt;'</span> <span class="token operator">+</span>
+    <span class="token string">'&lt;h4&gt;'</span> <span class="token operator">+</span> newComment<span class="token punctuation">.</span>name <span class="token operator">+</span> <span class="token string">'&lt;/h4&gt;'</span> <span class="token operator">+</span>
+    <span class="token string">'&lt;div class="profile-image"&gt;&lt;img src="http://www.gravatar.com/avatar/'</span> <span class="token operator">+</span> newComment<span class="token punctuation">.</span>md5Email <span class="token operator">+</span> <span class="token string">'?s=100&amp;d=retro"/&gt;&lt;/div&gt; '</span> <span class="token operator">+</span>
+    <span class="token string">''</span> <span class="token operator">+</span> <span class="token function">moment<span class="token punctuation">(</span></span>newComment<span class="token punctuation">.</span>postedAt<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">fromNow<span class="token punctuation">(</span></span><span class="token punctuation">)</span> <span class="token operator">+</span> <span class="token string">'&lt;p&gt;'</span> <span class="token operator">+</span> newComment<span class="token punctuation">.</span>message  <span class="token operator">+</span> <span class="token string">'&lt;/p&gt;&lt;/div&gt;'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span></code></pre>
+<h4>The Complete File</h4>
+<p>Save the complete file to `/js/blog.js`. Change <code>&lt;YOUR-APP-ID&gt;</code> to ID you recorded earlier.</p>
+<pre rel="jQuery" class=" language-javascript"><code class=" language-javascript">$<span class="token punctuation">(</span><span class="token keyword">function</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">var</span> ref <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Firebase</span><span class="token punctuation">(</span><span class="token string">"https://&lt;YOUR-APP-ID&gt;.firebaseio.com/"</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+    postRef <span class="token operator">=</span> ref<span class="token punctuation">.</span><span class="token function">child<span class="token punctuation">(</span></span><span class="token function">slugify<span class="token punctuation">(</span></span>window<span class="token punctuation">.</span>location<span class="token punctuation">.</span>pathname<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    postRef<span class="token punctuation">.</span><span class="token function">on<span class="token punctuation">(</span></span><span class="token string">"child_added"</span><span class="token punctuation">,</span> <span class="token keyword">function</span><span class="token punctuation">(</span>snapshot<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+      <span class="token keyword">var</span> newPost <span class="token operator">=</span> snapshot<span class="token punctuation">.</span><span class="token function">val<span class="token punctuation">(</span></span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+      $<span class="token punctuation">(</span><span class="token string">".comments"</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">prepend<span class="token punctuation">(</span></span><span class="token string">'&lt;div class="comment"&gt;'</span> <span class="token operator">+</span>
+        <span class="token string">'&lt;h4&gt;'</span> <span class="token operator">+</span> newPost<span class="token punctuation">.</span>name <span class="token operator">+</span> <span class="token string">'&lt;/h4&gt;'</span> <span class="token operator">+</span>
+        <span class="token string">'&lt;div class="profile-image"&gt;&lt;img src="http://www.gravatar.com/avatar/'</span> <span class="token operator">+</span> newPost<span class="token punctuation">.</span>md5Email <span class="token operator">+</span> <span class="token string">'?s=100&amp;d=retro"/&gt;&lt;/div&gt; '</span> <span class="token operator">+</span>
+        <span class="token string">'&lt;span class="date"&gt;'</span> <span class="token operator">+</span> <span class="token function">moment<span class="token punctuation">(</span></span>newPost<span class="token punctuation">.</span>postedAt<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">fromNow<span class="token punctuation">(</span></span><span class="token punctuation">)</span> <span class="token operator">+</span> <span class="token string">'&lt;/span&gt;&lt;p&gt;'</span> <span class="token operator">+</span> newPost<span class="token punctuation">.</span>message  <span class="token operator">+</span> <span class="token string">'&lt;/p&gt;&lt;/div&gt;'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    $<span class="token punctuation">(</span><span class="token string">"#comment"</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">submit<span class="token punctuation">(</span></span><span class="token keyword">function</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+      postRef<span class="token punctuation">.</span><span class="token function">push<span class="token punctuation">(</span></span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token keyword">set</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+        name<span class="token punctuation">:</span> $<span class="token punctuation">(</span><span class="token string">"#name"</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">val<span class="token punctuation">(</span></span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+        message<span class="token punctuation">:</span> $<span class="token punctuation">(</span><span class="token string">"#message"</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">val<span class="token punctuation">(</span></span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+        md5Email<span class="token punctuation">:</span> <span class="token function">md5<span class="token punctuation">(</span></span>$<span class="token punctuation">(</span><span class="token string">"#email"</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">val<span class="token punctuation">(</span></span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+        postedAt<span class="token punctuation">:</span> Firebase<span class="token punctuation">.</span>ServerValue<span class="token punctuation">.</span>TIMESTAMP
+      <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+      $<span class="token punctuation">(</span><span class="token string">"input[type=text], textarea"</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">val<span class="token punctuation">(</span></span><span class="token string">""</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+      <span class="token keyword">return</span> <span class="token keyword">false</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token keyword">function</span> <span class="token function">slugify<span class="token punctuation">(</span></span>text<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">return</span> text<span class="token punctuation">.</span><span class="token function">toString<span class="token punctuation">(</span></span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">toLowerCase<span class="token punctuation">(</span></span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">trim<span class="token punctuation">(</span></span><span class="token punctuation">)</span>
+    <span class="token punctuation">.</span><span class="token function">replace<span class="token punctuation">(</span></span><span class="token regex">/&amp;/g</span><span class="token punctuation">,</span> <span class="token string">'-and-'</span><span class="token punctuation">)</span>
+    <span class="token punctuation">.</span><span class="token function">replace<span class="token punctuation">(</span></span><span class="token regex">/[\s\W-]+/g</span><span class="token punctuation">,</span> <span class="token string">'-'</span><span class="token punctuation">)</span>
+    <span class="token punctuation">.</span><span class="token function">replace<span class="token punctuation">(</span></span><span class="token regex">/[^a-zA-Z0-9-_]+/g</span><span class="token punctuation">,</span><span class="token string">''</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span></code></pre>
+<p>The completed commenting system looks like this:</p>
+<figure id="post-237862" class="align-none media-237862"><img src="https://cdn.css-tricks.com/wp-content/uploads/2016/02/comment-system.jpg" alt=""></figure>
+<p><a href="http://amber-plane.cloudvent.net/information/2016/01/01/what-is-coffee.html">Try out a working demo here.</a> Open two windows and post a comment, you'll see it appear in both windows straight away.</p>
+<h3>Security</h3>
+<p>At the moment, anyone can edit or delete comments. For basic security we'll make a rule that visitors can only add comments. In Firebase, open up the <strong>Security and Rules</strong> tab:</p>
+<figure id="post-237863" class="align-none media-237863"><img src="https://cdn.css-tricks.com/wp-content/uploads/2016/02/firebase-security.jpg" alt=""></figure>
+<p>The current rules allow global reads and writes. To prevent Firebase deleting or writing data if it already exists, change <code>.write</code> to:</p>
+<pre><code>".write": "!data.exists()"</code></pre>
+<p>A <a href="https://www.firebase.com/docs/web/guide/user-auth.html">full set of authentication options</a> is available to build something more complex.</p>
+<h3>The Finished Site</h3>
+<p>With a few libraries and 31 lines of JavaScript, we have a full featured backend for blog comments working on a static website. </p>
+<p>That brings us to the end of this series. In three short tutorials, we've gone from a static site to an updatable, live Jekyll site with our own commenting system.</p>
+<div class="explanation">
+<h4>This is a three-part series:</h4>
+<p>Part 1: <a href="https://css-tricks.com/building-a-jekyll-site-part-1-of-3/">Converting a Static Website To Jekyll</a><br>
+Part 2: <a href="https://css-tricks.com/building-a-jekyll-site-part-2-of-3/">Adding a Jekyll CMS with CloudCannon</a><br>
+Part 3: <em>(This post)</em> Creating a Firebase-Backed Commenting System
+</p></div>
+
+        
+        
+
+        
+
+        
+
+        
+
+        
+      </div>
+
+    
