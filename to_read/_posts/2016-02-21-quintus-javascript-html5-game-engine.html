@@ -1,0 +1,463 @@
+---
+title: "Quintus JavaScript HTML5 Game Engine"
+description: "null"
+link: "http://www.html5quintus.com/guide/core.md#.VsoJofnhCUk"
+saved: "2016-02-21 20:11:09"
+---
+<h1>Core Quintus Basics</h1>
+
+<p>The core engine, located in <a href="http://www.html5quintus.com/quintus/docs/quintus.html">quintus.js</a>, does very little game-wise by itself and provides little more than a backbone for the other modules to build around. The main features of the core engine are the module system; a set of utility methods (primarily taken from Underscore.js.); Game Loop support; support for classes, events and components; setup methods for getting a game container on screen; asset loading and math utility methods.</p>
+
+<p><a href="http://www.html5quintus.com/quintus/docs/quintus.html">quintus.js</a> is well commented and viewing the annotated source code is worth a quick read-through if you want to understand more about the engine. There are a couple pieces (Matrix functionality, all the Underscore.js carryovers) that aren't covered in this guide.</p>
+
+<h2>Creating an engine instance</h2>
+
+<p>To create a new instance of the engine, you use the <code>Quintus()</code> constructor method and save the result:</p>
+
+<pre><code class="javascript"><span class="comment">// Create a new instance of the engine.</span>
+<span class="keyword">var</span> Q = Quintus();
+</code></pre>
+
+<p>These guides will generally use the variable <code>Q</code> to refer to an instance of the engine. You can create multiple instances of the engine on a single page, but note that each instance is completely separate from the other and they won't interact with each other in any way.</p>
+
+<h2>Turning on development mode</h2>
+
+<p>Forcing your assets to reload can be a pain during development. To turn on development mode, which adds a timestamp to asset urls to force them to reload every refresh, simply pass in <code>{ development: true }</code> to the Quintus instance as an option:</p>
+
+<pre><code class="javascript"><span class="keyword">var</span> Q = Quintus({ development: <span class="literal">true</span> });
+</code></pre>
+
+<h2>Including modules</h2>
+
+<p>To make the engine do anything useful, you'll need to include at least a few modules. Quintus uses modules even for core behavior to reduce coupling between the various parts of the engine, make it clear what the responsibility of each subsystem is, and make it easier for someone to swap out a custom piece of functionality (want your own input library? Duplicate the external API in <a href="http://www.html5quintus.com/quintus/docs/quintus_input.html">quintus_input.js</a> and swap out your module for the provided one)</p>
+
+<p>To include a module in Quintus, you use <code>Q.include(...)</code> and pass either a string of comma-separated module names or an array of the modules themselves. The former syntax is more compact and more common, but both are allowed:</p>
+
+<pre><code class="javascript"><span class="comment">// Include the Sprites, Scenes and Input modules</span>
+<span class="keyword">var</span> Q = Quintus().include(<span class="string">"Sprites, Scenes, Input"</span>);
+
+<span class="comment">// Alternate syntax, same result.</span>
+<span class="keyword">var</span> Q2 = Quintus().include([
+            Quintus.Sprites,
+            Quintus.Scenes,
+            Quintus.Input ]);
+</code></pre>
+
+<h2>Creating your own modules</h2>
+
+<p>Modules aren't anything terribly special, all they do is extend an instance of the engine with additional functionality. They are generally created by adding a method to the base <code>Quintus</code> object that takes in an instance of the engine and adds properties onto it. </p>
+
+<p>For example, if you wanted to create a <code>Quintus.Random</code> module that adds in a <code>Q.random(min,max)</code> method to generate random numbers, you could write the following:</p>
+
+<pre><code class="javascript">Quintus.Random = <span class="keyword">function</span>(Q) {
+
+  Q.random = <span class="keyword">function</span>(min,max) {
+    <span class="keyword">return</span> min + Math.random() * (max - min);
+  }
+
+};
+</code></pre>
+
+<p>While any method that takes in a single argument (the engine instance <code>Q</code>) can be used as a Quintus module, if you add your module onto the base <code>Quintus</code> constructor method, as is done above, you can use the shortened string syntax from the last section.</p>
+
+<p>Notice that modules are added onto the <code>Quintus</code> constructor object, while they operate (and add functionality to) an instance of the engine (usually stored in <code>Q</code>).</p>
+
+<h2>Getting your game on the page</h2>
+
+<p>Before you can do anything with your game, you need to get an instance of the engine onto the page. The <code>Q.setup([id],[options={}])</code> method is responsible for binding the engine to a canvas element on the page and configuring the size of the canvas element. Both arguments are optional.</p>
+
+<p>At its simplest invocation, you can call <code>Q.setup</code> with no arguments to create a canvas element 320 pixels wide by 420 pixels tall and add it to the page for you:</p>
+
+<pre><code class="javascript"><span class="keyword">var</span> Q = Quintus().setup();
+</code></pre>
+
+<p>All the initial Quintus setup methods return the <code>Q</code> object, so you can generally chain together your initial configuration calls:</p>
+
+<pre><code class="javascript"><span class="keyword">var</span> Q = Quintus().include(<span class="string">"Sprites, Scenes, Input"</span>)
+                 .setup();
+</code></pre>
+
+<p>If you already have a canvas element on the page, you pass the <code>id</code> of that element and Quintus will bind to that existing element (note, since Quintus doesn't rely on jQuery don't prefix the id with a pound sign):</p>
+
+<pre><code class="xml"><span class="tag">&lt;<span class="title">canvas</span> <span class="attribute">id</span>=<span class="value">'myGame'</span> <span class="attribute">width</span>=<span class="value">'500'</span> <span class="attribute">height</span>=<span class="value">'500'</span>&gt;</span><span class="tag">&lt;/<span class="title">canvas</span>&gt;</span>
+
+<span class="tag">&lt;<span class="title">script</span>&gt;</span><span class="javascript">
+  <span class="keyword">var</span> Q = Quintus().setup(<span class="string">"myGame"</span>);
+</span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
+</code></pre>
+
+<p>If you want your game to take up the full page, you can pass a <code>maximize</code> option set to true and Quintus will resize the canvas element to the size of the page. If you want the game only to maximize on touch devices, but otherwise to stay in a fixed box, set the option to the string "touch":</p>
+
+<pre><code class="javascript"><span class="comment">// Always maximize</span>
+<span class="keyword">var</span> Q = Quintus().setup({ maximize: <span class="literal">true</span> });
+
+<span class="comment">// Maximize only on touch devices</span>
+<span class="keyword">var</span> Q2 = Quintus().setup({ maximize: <span class="string">"touch"</span> });
+</code></pre>
+
+<p>In addition to maximize, setup also takes a number of different options to control the size of the element on the page, as shown in the example below:</p>
+
+<pre><code class="javascript"><span class="keyword">var</span> Q = Quintus.setup({
+  width:   <span class="number">800</span>, <span class="comment">// Set the default width to 800 pixels</span>
+  height:  <span class="number">600</span>, <span class="comment">// Set the default height to 600 pixels</span>
+  upsampleWidth:  <span class="number">420</span>,  <span class="comment">// Double the pixel density of the </span>
+  upsampleHeight: <span class="number">320</span>,  <span class="comment">// game if the w or h is 420x320</span>
+                        <span class="comment">// or smaller (useful for retina phones)</span>
+  downsampleWidth: <span class="number">1024</span>, <span class="comment">// Halve the pixel density if resolution</span>
+  downsampleHeight: <span class="number">768</span>  <span class="comment">// is larger than or equal to 1024x768</span>
+});
+</code></pre>
+
+<p>Another alternative is to scale your game so that it fits the screen of the device, keeping the game's width:height ratio.</p>
+
+<pre><code class="javascript"><span class="keyword">var</span> Q = Quintus.setup({
+  width:   <span class="number">800</span>, <span class="comment">// Set the default width to 800 pixels</span>
+  height:  <span class="number">600</span>, <span class="comment">// Set the default height to 600 pixels</span>
+  scaleToFit: <span class="literal">true</span> <span class="comment">// Scale the game to fit the screen of the player's device</span>
+}); 
+</code></pre>
+
+<h2>The canvas context</h2>
+
+<p>For canvas games, the rendering context will be available in the Q.ctx variable. Unless you are creating your own rendering loop, you generally won't need to access <code>Q.ctx</code> directly as the context will be passed in to a Sprite's <code>draw</code> method.</p>
+
+<p>If you are using the Scenes module, drawing directly to the context at other times (such as during the <code>step</code> method) usually isn't a good idea as the context is cleared preceding the calls to draw.</p>
+
+<h2>Creating classes</h2>
+
+<p>Once you have the engine on the page, you'll want to start building some classes for your game. Quintus provides a customized implementation of John Resig's <a href="http://ejohn.org/blog/simple-javascript-inheritance/">simple JavaScript inheritance</a> to add a traditional inheritance model into Quintus.</p>
+
+<p>The base class is <code>Q.Class</code>. To extend from this class you call <code>Q.Class.extend(ClassName, { .. methods .. }, { .. class methods .. })</code>. The class name is included as an argument to allow the class some introspection properties. A special <code>init</code> method acts as the constructor. For example, calling extend with a name of "MyClass" will automatically add MyClass to Q, as shown below:</p>
+
+<pre><code class="javascript">Q.Class.extend(<span class="string">"MyClass"</span>, { 
+   init: <span class="keyword">function</span>() { console.log(<span class="string">"MyClass instance created"</span>); },
+   doIt: <span class="keyword">function</span>() { alert(<span class="string">"Doin it!"</span>); }  
+});
+
+<span class="keyword">var</span> myInstance = <span class="keyword">new</span> Q.MyClass(); <span class="comment">// MyClass instance created</span>
+
+myInstance.doIt(); <span class="comment">// Doin it!</span>
+
+console.log(myInstance.className); <span class="comment">// 'MyClass'</span>
+console.log(myInstance <span class="keyword">instanceof</span> Q.Class); <span class="comment">// true</span>
+console.log(myInstance <span class="keyword">instanceof</span> Q.MyClass); <span class="comment">// true</span>
+</code></pre>
+
+<p>If you are overriding an existing method on a class, you can call the method you overloaded via <code>this._super(..)</code>.</p>
+
+<h3>Events with Evented</h3>
+
+<p>Instead of building off of the base class, most of the time you'll inherit from a built-in class that provides a little more functionality. Oftentimes, you'll start with the <code>Q.Sprite</code> class, described in the next chapter.</p>
+
+<p>If you don't need the full functionality provided by <code>Q.Sprite</code>, you can start with a lighter class, either <code>Q.Evented</code> or <code>Q.GameObject</code>.</p>
+
+<p>The <code>Q.Evented</code> class adds an event system into the base class. It provides a mechanism for listening for and triggering events. Quintus uses events extensively to reduce coupling between different components while still making it easy for various parts of your game to interact with each other. </p>
+
+<p>Components (described in the next section,) often use events to extend the functionality of the object they are added to without needing to override methods.</p>
+
+<p>Quintus provides two methods, <code>on</code> and <code>off</code> to add and remove listeners respectively. The syntax is:</p>
+
+<pre><code class="css"><span class="tag">srcObj</span><span class="class">.on</span>("<span class="tag">eventName</span>",<span class="attr_selector">[ targetObj, ]</span> <span class="attr_selector">[ callback ]</span>);
+<span class="tag">srcObj</span><span class="class">.off</span>("<span class="tag">eventName</span>",<span class="attr_selector">[ targetObj, ]</span> <span class="attr_selector">[ callback ]</span>);
+</code></pre>
+
+<p>The only required parameter to each method is the event name, in the form of a string. If no other parameters are provided, then the method will assume the target object is the same as the source object and the callback is the same as the event name. If you provide a string for a callback instead of a function, the system will look up a property of that name on the <code>targetObj</code>.</p>
+
+<p>For example the collision system will trigger a <code>hit</code> event on an object each time it collides with another. If you just wanted that object to call its own <code>hit</code> method each time that event is triggered, you could write:</p>
+
+<pre><code class="undefined"> srcObj.on("hit");
+</code></pre>
+
+<p>For the <code>off</code> method, the more parameters you provide the more specific the event unbound will be. If you only provide an event name, all events on that source object with that name will be removed. If you provide all three parameters, only 1 specific event will be unbound.</p>
+
+<p><code>Evented</code> also provides a <code>debind</code> method that will remove all the events an object is listening to. <code>debind</code> is called automatically when Sprites are destroyed, meaning you don't normally need to worry about unbinding events yourself.</p>
+
+<p>Some more examples of how <code>on</code> can be called are shown below:</p>
+
+<pre><code class="javascript"><span class="keyword">var</span> spaceship = <span class="keyword">new</span> Q.SpaceShip();
+<span class="keyword">var</span> spacestation = <span class="keyword">new</span> Q.SpaceStation();
+
+<span class="comment">// Provide callback inline</span>
+spaceship.on(<span class="string">"fire"</span>,<span class="keyword">function</span>(gun) {
+  console.log(<span class="string">"Just fired gun: "</span> + gun);
+});
+
+<span class="comment">// The rechargeShield method will be called on spaceship</span>
+<span class="comment">// each step</span>
+spaceship.on(<span class="string">"step"</span>,<span class="string">"rechargeShield"</span>); 
+
+spaceship.on(<span class="string">"dock"</span>,spacestation,<span class="string">"shipDocked"</span>);
+</code></pre>
+
+<p>To trigger events, you call the <code>trigger</code> method with the name of the event you are triggering and up to 3 arguments. It's important to be consistent with what arguments you pass to events as these provide much of the external API to your objects.</p>
+
+<p>For example, to continue with our spaceship example, you might have the following:</p>
+
+<pre><code class="javascript">spaceship.on(<span class="string">"step"</span>, <span class="keyword">function</span>() {
+  <span class="keyword">if</span>(Q.inputs[<span class="string">'fire1'</span>]) {
+    <span class="keyword">this</span>.trigger(<span class="string">"fire"</span>,<span class="string">"gun1"</span>);
+  }
+  <span class="keyword">if</span>(Q.inputs[<span class="string">'fire2'</span>]) {
+    <span class="keyword">this</span>.trigger(<span class="string">"fire"</span>,<span class="string">"gun2"</span>);
+  }
+});
+</code></pre>
+
+<p>Quintus does not support namespaced events at this time, but you can use any characters in your event names that you like.</p>
+
+<h2>Components with GameObject</h2>
+
+<p>The last generic base class that Quintus provides is the <code>GameObject</code> class. It inherits from <code>Evented</code> and adds in support for components. Components are small pieces of reusable functionality that can be added and removed from objects dynamically. Components will often trigger events when anything exciting happens so that the main object can be notified that it might want to take some action.</p>
+
+<p>You'll often create sprites that add a number of existing components to it in the <code>init</code> constructor method to set up some basic functionality and then listen for some events on those components. Components are added by calling the <code>GameObject.add</code> method and passing a comma separated string of components.</p>
+
+<p>For example the 2D module defines a number of components to make working with 2D games easier and the Input module defines components for having sprites be controlled by player input.</p>
+
+<p>To have a sprite that acts like a player-controlled 2D platformer, you could simply add those two components to the sprite on <code>init</code>:</p>
+
+<pre><code class="javascript"> <span class="keyword">var</span> Q = Quintus().include(<span class="string">"Sprites, Scenes, 2D, Input"</span>);
+
+ <span class="comment">// Every instance of Q.Player will have these two components</span>
+ Q.Sprite.extend(<span class="string">"Player"</span>, {
+   init: <span class="keyword">function</span>() {
+     <span class="keyword">this</span>.add(<span class="string">"2d, platformerControls"</span>);
+   }
+ });
+</code></pre>
+
+<p>(Note: this sprite doesn't define an asset or a sprite sheet and doesn't have a width or height, so it wouldn't look like anything yet. Take a look at the <a href="http://www.html5quintus.com/guide/sprites.md">Chapter on sprites</a> for more details)</p>
+
+<p>Since components are added and removed dynamically, you can add and remove them as you like on the fly. To remove a component, use the <code>GameObject.del</code> method. Let's say you were using components to control what gun a user was currently firing, you could remove the pistol component and add the rocket launcher component in:</p>
+
+<pre><code class="undefined">player.del("pistol");
+player.add("rocketLauncher");
+</code></pre>
+
+<p>You can use <code>GameObject.has</code> to determine if a object has a certain component:</p>
+
+<pre><code class="javascript">player.has(<span class="string">"pistol"</span>); <span class="comment">// false</span>
+player.has(<span class="string">"rocketLauncher"</span>); <span class="comment">// true</span>
+</code></pre>
+
+<h2>Creating Components</h2>
+
+<p>To create your own component, you use the <code>Q.component</code> method with a component name and a set of methods. If you call <code>Q.component</code> with only a single parameter, it will return that component class.</p>
+
+<p>You generally don't want to override the <code>init</code> method of a component, which is called when the component is created but has not yet been added to an object. Instead you should override the <code>added</code> method which is called once the component has actually been added to an existing sprite. The object the component is added to is stored in the <code>entity</code> property.</p>
+
+<p>Methods are generally added to the entity under the namespace of the component, but you can also extend the main object directly by adding in an <code>extend</code> property to the component. </p>
+
+<p>For example, to create a <code>pistol</code> component that has its own method called <code>refillAmmo</code> and adds a method on the player called <code>fire</code> you could write:</p>
+
+<pre><code class="javascript">Q.component(<span class="string">"pistol"</span>, {
+  added: <span class="keyword">function</span>() {
+    <span class="comment">// Start the ammo out 1/2 filled</span>
+    <span class="keyword">this</span>.entity.p.ammo = <span class="number">30</span>;
+  },
+
+  refillAmmo: <span class="keyword">function</span>() {
+    <span class="comment">// We need to say this.entity because refillAmmo is </span>
+    <span class="comment">// added on the component</span>
+    <span class="keyword">this</span>.entity.p.ammo = <span class="number">60</span>;
+  },
+
+  extend: {
+    fire: <span class="keyword">function</span>() {
+      <span class="comment">// We can use this.p to set properties</span>
+      <span class="comment">// because fire is called directly on the player</span>
+      <span class="keyword">if</span>(<span class="keyword">this</span>.p.ammo &gt; <span class="number">0</span>) {
+        <span class="keyword">this</span>.p.ammo-=<span class="number">1</span>;
+        console.log(<span class="string">"Fire!"</span>);
+      }
+    }      
+  }
+});
+
+
+<span class="comment">// Example usage:</span>
+
+Q.Sprite.extend(<span class="string">"Player"</span>);
+
+<span class="keyword">var</span> player = <span class="keyword">new</span> Q.Player();
+
+player.add(<span class="string">"pistol"</span>);
+
+<span class="comment">// Call fire directly</span>
+player.fire(); <span class="comment">// Fire!</span>
+
+<span class="comment">// Call refillAmmo on the pistol component</span>
+player.pistol.refillAmmo();
+</code></pre>
+
+<h2>The Game Loop</h2>
+
+<p>Any game you build with Quintus is going to need a game loop. The good news is most of the time the game loop is completely transparent as a special game loop gets started automatically by the <code>Scenes</code> modules when you stage your first scene in a game, but it's worth knowing how the game loop works as you can use it to pause and unpause your game.</p>
+
+<p>If you want to write a custom game loop callback, you can do that by calling <code>Q.gameLoop(callback)</code> with a custom callback function. The callback will be called up to 60 times per second with an argument of <code>dt</code> which represents the time in seconds (usually fractions of a second) since the method was last called.</p>
+
+<p>For example:</p>
+
+<pre><code class="javascript"> Q.gameLoop(<span class="keyword">function</span>(dt) {
+    Q.clear();
+    <span class="comment">// .. do something .. </span>
+ });
+</code></pre>
+
+<p>Each instance of Quintus can only have one <code>gameLoop</code>, so if you are using the <code>Scenes</code> module you should let that module handle creating the loop.</p>
+
+<p>If you want to pause or unpause Quintus completely, you can run:</p>
+
+<pre><code class="javascript">Q.pauseGame();
+<span class="comment">// Do something ..</span>
+Q.unpauseGame();
+</code></pre>
+
+<p>This will stop the game loop from running at all and then restart it afterwards. Please note, pausing the game will turn off both stepping and drawing.</p>
+
+<h2>Game State</h2>
+
+<p>Quintus (v0.0.4 and up) provides a mechanism for tracking global game state - be it number of lives remaining, score or inventory. This comes in the form of the <code>Q.state</code> object (an instance of <code>Q.GameState</code>).</p>
+
+<p><code>Q.state</code> is nothing more than a light wrapper on top of <code>Q.GameObject</code> to allow you to set properties and track changes to those properties. The most common use case might be something like a player's score. </p>
+
+<p>When a player starts a new game, you can use <code>Q.state.reset({ ... props ... })</code> to set some initial properties, such as:</p>
+
+<pre><code class="css"><span class="tag">Q</span><span class="class">.state</span><span class="class">.reset</span>(<span class="rules">{ <span class="rule"><span class="attribute">score</span>:<span class="value"> <span class="number">0</span>, lives: <span class="number">2</span> </span>}</span></span>);
+</code></pre>
+
+<p><code>Q.state.reset</code> resets all the properties to the passed in hash (or nothing if no hash is passed in) and removes all event listeners to the game state. You can add listeners to the game state that are triggered on certain properties. For example, let's say you have a score sprite, you could do something like the following:</p>
+
+<pre><code class="javascript">Q.UI.Text.extend(<span class="string">"Score"</span>,{ 
+  init: <span class="keyword">function</span>(p) {
+    <span class="keyword">this</span>._super({
+      label: <span class="string">"score: 0"</span>,
+      x: <span class="number">0</span>,
+      y: <span class="number">0</span>
+    });
+
+    Q.state.on(<span class="string">"change.score"</span>,<span class="keyword">this</span>,<span class="string">"score"</span>);
+  },
+
+  score: <span class="keyword">function</span>(score) {
+    <span class="keyword">this</span>.p.label = <span class="string">"score: "</span> + score;
+  }
+});
+</code></pre>
+
+<p>Now the above sprite will update itself whenever the score changes.</p>
+
+<p>To change the score in <code>Q.state</code>, it's important to use the <code>set</code>, <code>inc</code>, or <code>dec</code> methods, for example:</p>
+
+<pre><code class="javascript">Q.state.set(<span class="string">"score"</span>,<span class="number">50</span>); <span class="comment">// set the score to fifty</span>
+Q.state.set({ score: <span class="number">50</span>, lives: <span class="number">1</span> }); <span class="comment">// alternative object syntax</span>
+
+Q.state.inc(<span class="string">"score"</span>,<span class="number">50</span>); <span class="comment">// add 50 to the score</span>
+Q.state.dec(<span class="string">"score"</span>,<span class="number">50</span>); <span class="comment">// remove fifty from the score</span>
+</code></pre>
+
+<p>All of these calls will trigger both a "change.score" event and a more generic "change" event on <code>Q.state</code></p>
+
+<p>If you need to return a property, use <code>Q.state.get(prop)</code>, for example:</p>
+
+<pre><code class="javascript">Q.state.get(<span class="string">"score"</span>); <span class="comment">// return the score</span>
+</code></pre>
+
+<p>If you need more objects that behave like this, you can instantiate new instances of <code>Q.GameState</code>.</p>
+
+<h2>Assets &amp; Asset loading</h2>
+
+<p>Assets are an important part of any game, and Quintus provides a couple of easy ways to get your Art, Audio and Data assets loaded into the system. Once an asset is loaded, it's available by calling <code>Q.asset</code> with the name of the asset.</p>
+
+<p>Quintus provides two main ways to load assets: <code>Q.load</code> and <code>Q.preload</code>. Both do the same thing (<code>Q.preload</code> actually uses <code>Q.load</code>) but have a little bit of a different philosophy.</p>
+
+<p>The easiest way to load assets is to call <code>Q.load</code> with an array or hash of assets and pass a callback to be called once all are loaded. For example:</p>
+
+<pre><code class="javascript">Q.load([ <span class="string">"sprites.png"</span>, <span class="string">"sprites.json"</span>, <span class="string">"music.ogg"</span> ], <span class="keyword">function</span>() {
+  <span class="comment">// Start your game</span>
+});
+</code></pre>
+
+<p>The callback won't be called until all the assets are loaded.</p>
+
+<p>To help organize your assets, Quintus defines some default paths for where you should put your assets. Image assets are loaded from "images/" (nested under the main directory where your HTML file is located). Audio is loaded under "audio/" and anything else is loaded via Ajax from "data/". You can control these by passing in an options hash to the initial Quintus constructor method if you want to use different paths, for example to load everything from "http://cdn.yourgame.com/assets/":</p>
+
+<pre><code class="javascript"><span class="keyword">var</span> Q = Quintus({ imagePath: <span class="string">"http://cdn.yourgame.com/assets/"</span>,
+                  audioPath: <span class="string">"http://cdn.yourgame.com/assets/"</span>,
+                  dataPath: <span class="string">"http://cdn.yourgame.com/assets/"</span> });
+</code></pre>
+
+<p>Quintus by default assumes you have both .mp3 and .ogg versions of any audio files and will load the appropriate one depending on what the browser supports. If you want to override this behavior you can adjust the supported formats by passing in a property called <code>audioSupported</code>. If the browser can't handle any of the supported formats, no audio will be loaded.</p>
+
+<p>If you want to accumulate a set of files to load before loading, you can use <code>Q.preload</code>. Call preload as many times as you like with object to be loaded and then one final time with a callback method to be called when all those files are ready. For example:</p>
+
+<pre><code class="javascript">Q.preload(<span class="string">"sprites.png"</span>);
+Q.preload([ <span class="string">"music1.ogg"</span>, <span class="string">"music2.ogg"</span> ]);
+
+Q.preload(<span class="keyword">function</span>() {
+  <span class="comment">// Go time</span>
+});
+</code></pre>
+
+<h2>Loading status</h2>
+
+<p>If you have a number of assets to load, it's probably a good idea to add in some sort of loading bar on the screen. Quintus doesn't have a loading bar built in, but you can pass a <code>progressCallback</code> to <code>Q.load</code> to achieve the necessary effect with a DOM element and a little bit of CSS if you like:</p>
+
+<h3>HTML:</h3>
+
+<pre><code class="xml">    <span class="tag">&lt;<span class="title">div</span> <span class="attribute">id</span>=<span class="value">'loading'</span>&gt;</span>
+      <span class="tag">&lt;<span class="title">div</span> <span class="attribute">id</span>=<span class="value">'loading_container'</span>&gt;</span>
+        Loading...
+        <span class="tag">&lt;<span class="title">div</span> <span class="attribute">id</span>=<span class="value">'loading_progress'</span>&gt;</span><span class="tag">&lt;/<span class="title">div</span>&gt;</span>
+      <span class="tag">&lt;/<span class="title">div</span>&gt;</span>
+    <span class="tag">&lt;/<span class="title">div</span>&gt;</span>
+</code></pre>
+
+<h3>CSS:</h3>
+
+<pre><code class="css">    <span class="id">#loading</span> <span class="rules">{
+      <span class="rule"><span class="attribute">margin</span>:<span class="value"><span class="number">50</span>px auto</span>;</span>
+      <span class="rule"><span class="attribute">max-width</span>:<span class="value"><span class="number">1024</span>px</span>;</span>
+      <span class="rule"><span class="attribute">position</span>:<span class="value">fixed</span>;</span>
+      <span class="rule"><span class="attribute">width</span>:<span class="value"><span class="number">100</span>%</span>;</span>
+      <span class="rule"><span class="attribute">height</span>:<span class="value"><span class="number">100</span>%</span>;</span>
+      <span class="rule"><span class="attribute">text-align</span>:<span class="value">center</span>;</span>
+    <span class="rule">}</span></span>
+
+    <span class="id">#loading_container</span> <span class="rules">{
+      <span class="rule"><span class="attribute">position</span>:<span class="value">relative</span>;</span>
+      <span class="rule"><span class="attribute">margin</span>:<span class="value"><span class="number">0</span> auto</span>;</span>
+      <span class="rule"><span class="attribute">width</span>:<span class="value"><span class="number">50</span>%</span>;</span>
+      <span class="rule"><span class="attribute">height</span>:<span class="value"><span class="number">20</span>px</span>;</span>
+      <span class="rule"><span class="attribute">border</span>:<span class="value"><span class="number">1</span>px solid black</span>;</span>
+      <span class="rule"><span class="attribute">text-align</span>:<span class="value">center</span>;</span>
+      <span class="rule"><span class="attribute">padding-top</span>:<span class="value"><span class="number">10</span>px</span>;</span>
+    <span class="rule">}</span></span>
+
+    <span class="id">#loading_progress</span> <span class="rules">{
+      <span class="rule"><span class="attribute">width</span>:<span class="value"><span class="number">0</span>%</span>;</span>
+      <span class="rule"><span class="attribute">background-color</span>:<span class="value">red</span>;</span>
+      <span class="rule"><span class="attribute">position</span>:<span class="value">absolute</span>;</span>
+      <span class="rule"><span class="attribute">height</span>:<span class="value"><span class="number">30</span>px</span>;</span>
+      <span class="rule"><span class="attribute">top</span>:<span class="value"><span class="number">0</span>px</span>;</span>
+      <span class="rule"><span class="attribute">left</span>:<span class="value"><span class="number">0</span>px</span>;</span>
+      <span class="rule"><span class="attribute">opacity</span>:<span class="value"><span class="number">0.4</span></span>;</span>
+    <span class="rule">}</span></span>
+</code></pre>
+
+<h3>Quintus</h3>
+
+<pre><code class="javascript">Q.load([ <span class="string">"sprites.png"</span>, <span class="string">"sprites.json"</span>, <span class="string">"music.ogg"</span> ], <span class="keyword">function</span>() {
+  <span class="comment">// Start your game</span>
+}, {
+  progressCallback: <span class="keyword">function</span>(loaded,total) {
+    <span class="keyword">var</span> element = document.getElementById(<span class="string">"loading_progress"</span>);
+    element.style.width = Math.floor(loaded/total*<span class="number">100</span>) + <span class="string">"%"</span>;
+  }
+});
+</code></pre>
+
+<h2>Chapter summary</h2>
+
+<p>This covers the basics of the core Quintus engine. It didn't cover the helper methods or the Math and Matrix manipulation methods as those are lower level and often you won't touch 'em when building a game, but if you'd like to know more please see the <a href="http://www.html5quintus.com/quintus/docs/quintus.html">annotated source code</a></p>
+
+<p>On to sprites! <a href="http://www.html5quintus.com/guide/sprites.md">Working with Sprites</a></p><a class="found-typo-button" href="http://www.html5quintus.com/guide/core.md#"><img src="http://foundatypo.com/assets/button.png"></a>
