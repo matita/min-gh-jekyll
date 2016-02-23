@@ -1,0 +1,258 @@
+---
+title: "Contributing to Open Source: Gatekeeper Case Study"
+description: "Bruno goes through the entire process of contributing to an open source project - from contact with the author to sending PRs. Come see how it works!"
+link: "http://www.sitepoint.com/contributing-to-open-source-gatekeeper-case-study/"
+saved: "2016-02-23 15:20:15"
+---
+
+    <p><a href="https://github.com/psecio/gatekeeper">GateKeeper</a> is a pretty nifty user registration, authentication and authorization library which uses its own database to store and query the user records. This means that it’s completely decoupled from your main app (so you can, essentially, use Postgre or Mongo for your business logic while using a completely different engine like MySQL for basic user records) and easy to tweak and extend.</p>
+<p><img src="http://dab1nmslvvntp.cloudfront.net/wp-content/uploads/2016/02/1454847071open-source-initiative.svg.gzip" alt="Open source logo"></p>
+<p>An example of the library’s use is clearly demonstrated in our post about [the skeleton no-framework project][nowf] which is a sample app composed entirely of Composer packages and acting like a framework-powered app, but completely free of any framework coupling.</p>
+<div class="ArticleBox u-inline"><h3 class="ArticleBox_header t-bg">
+                    <span class="ArticleBox_icon fa fa-pencil"></span> More from this author
+                 </h3><div class="ArticleBox_content"><ul class="ArticleBox_list t-list"><li><a href="http://www.sitepoint.com/building-microsofts-what-dog-ai-in-under-100-lines-of-code/?utm_source=sitepoint&amp;utm_medium=relatedinline&amp;utm_term=php&amp;utm_campaign=relatedauthor">Building Microsoft's What-Dog AI in under 100 Lines of Code</a></li><li><a href="http://www.sitepoint.com/building-an-spress-svbtle-theme-responsive-static-blogs/?utm_source=sitepoint&amp;utm_medium=relatedinline&amp;utm_term=php&amp;utm_campaign=relatedauthor">Building an Spress Svbtle Theme - Responsive Static Blogs!</a></li></ul></div></div>
+<p>This post isn’t about Gatekeeper per-se, though. It’s about contributing to open source, and going about the right way to doing it.</p>
+<p>In this tutorial, we’ll extend GateKeeper with a <code class=" language-php">count</code> feature. Currently, in order to find out the total number of users in the database one would have to fetch them all, then count them – either that or write a query to do so manually. But it might be better if this were built into the adapter interface so that it’s not only a native feature, but also a requirement for future database engines to be added.</p>
+<h2 id="step-1-ask-the-owner">Step 1: Ask the owner</h2>
+<p>The first step of contributing to open source is doing due diligence. This can be as simple as asking the repo owner about the status of this feature, in order to make sure it isn’t planned and is, in fact, desirable. An issue in the repo is often enough, as evident in <a href="https://github.com/psecio/gatekeeper/issues/45">this case</a>.</p>
+<h2 id="step-2-fork-clone-test">Step 2: Fork, clone, test</h2>
+<p><em>Note: if you’d like to follow along, please clone an older version of Gatekeeper which doesn’t have this feature yet. <a href="https://github.com/psecio/gatekeeper/releases/tag/2.9.2">This one</a> should do.</em></p>
+<p>First, let’s fork the repo so we can start working on it.</p>
+<p><img src="http://dab1nmslvvntp.cloudfront.net/wp-content/uploads/2016/02/1454863512Screenshot-2016-02-07-12.20.30.png" alt="Fork button on Github"></p>
+<p>Next, we need to set up a development environment in which to work on the package. Naturally, we use our trusty <a href="http://www.sitepoint.com/quick-tip-get-homestead-vagrant-vm-running/">Homestead Improved</a> for this. Once the VM has been set up and SSHed into, we can clone our fork, install dependencies and run tests:</p>
+<pre class=" language-php"><code class=" language-php">git clone https<span class="token punctuation">:</span><span class="token operator">/</span><span class="token operator">/</span>github<span class="token punctuation">.</span>com<span class="token operator">/</span>swader<span class="token operator">/</span>gatekeeper
+cd gatekeeper
+composer install
+vendor<span class="token operator">/</span>bin<span class="token operator">/</span>phpunit
+</code></pre>
+<p>All the tests should be green:</p>
+<p><img src="http://dab1nmslvvntp.cloudfront.net/wp-content/uploads/2016/02/1454846918Screenshot-2016-02-07-13.08.09-1024x363.png" alt=""></p>
+<p>At this point, it’s preferred to make a separate branch for all the changes we’ll be making.</p>
+<pre class="  language-bash"><code class="prism  language-bash"><span class="token function">git</span> checkout <span class="token operator">-</span>b <span class="token string">"feature-count"</span>
+</code></pre>
+<h2 id="step-3-plan-of-action">Step 3: Plan of Action</h2>
+<p>Gatekeeper currently only supports MySQL – this makes our job a bit easier, but still not trivial. Despite only supporting a single type of datasource (for now), abstract and interface classes still need to be updated, seeing as they’re written with future compatibility with different data sources in mind.</p>
+<p>We will, thus, need to modify:</p>
+<ul>
+<li><code class=" language-php">Gatekeeper<span class="token operator">/</span>DataSource</code> – the abstract DataSource class</li>
+<li><code class=" language-php">DataSource<span class="token operator">/</span>MySQL</code> – the MySQL datasource which contains the actual methods we use</li>
+<li><code class=" language-php">DataSource<span class="token operator">/</span>Stub</code> – to upgrade the stub with which to write other datasources, so other contributors know they need a <code class=" language-php">count</code> method, too</li>
+</ul>
+<p>We also need to create a new <code class=" language-php">Count</code> handler, because Gatekeeper uses magic static calls to create, find, update and delete entities, forwarding them to the appropriate handler depending on the name of the invoked method. For an example, see the <code class=" language-php">__callStatic</code> magic method in <code class=" language-php">Gatekeeper<span class="token operator">/</span>Gatekeeper<span class="token punctuation">.</span>php</code>, and how it defers method calls to handlers like <code class=" language-php">Handler<span class="token operator">/</span>Create<span class="token punctuation">.</span>php</code> or <code class=" language-php">Handler<span class="token operator">/</span>FindBy<span class="token punctuation">.</span>php</code>, etc.</p>
+<h2 id="step-4-just-do-it-™">Step 4: Just Do It ™</h2>
+<h3 id="delegating-the-static-call">Delegating the static call</h3>
+<p>To prepare the foundation for our custom <code class=" language-php">Count</code> handler, we delegate the static call to it and pass forward the argument and the data source. This is all done by simply adding another <code class=" language-php"><span class="token keyword">elseif</span></code> block to <code class=" language-php"><span class="token scope">Gatekeeper<span class="token punctuation">::</span></span>__callStatic</code>:</p>
+<pre class=" language-php"><code class=" language-php">        <span class="token punctuation">}</span> <span class="token keyword">elseif</span> <span class="token punctuation">(</span><span class="token variable">$action</span> <span class="token operator">==</span> <span class="token string">'count'</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token variable">$action</span> <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name"><span class="token punctuation">\</span>Psecio<span class="token punctuation">\</span>Gatekeeper<span class="token punctuation">\</span>Handler<span class="token punctuation">\</span>Count</span><span class="token punctuation">(</span><span class="token variable">$name</span><span class="token punctuation">,</span> <span class="token variable">$args</span><span class="token punctuation">,</span> <span class="token scope"><span class="token keyword">self</span><span class="token punctuation">::</span></span><span class="token variable">$datasource</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+
+</code></pre>
+<p>Since we added a new action, we need to modify the static property <code class=" language-php"><span class="token variable">$actions</span></code> as well:</p>
+<pre class=" language-php"><code class=" language-php">    <span class="token comment" spellcheck="true">/**
+     * Allowed actions
+     * @var array
+     */</span>
+    <span class="token keyword">private</span> <span class="token keyword">static</span> <span class="token variable">$actions</span> <span class="token operator">=</span> <span class="token keyword">array</span><span class="token punctuation">(</span>
+        <span class="token string">'find'</span><span class="token punctuation">,</span> <span class="token string">'delete'</span><span class="token punctuation">,</span> <span class="token string">'create'</span><span class="token punctuation">,</span> <span class="token string">'save'</span><span class="token punctuation">,</span> <span class="token string">'clone'</span><span class="token punctuation">,</span> <span class="token string">'count'</span>
+    <span class="token punctuation">)</span><span class="token punctuation">;</span>
+</code></pre>
+<h3 id="count-handler">Count handler</h3>
+<p>We then create the handler in the file <code class=" language-php">Psecio<span class="token operator">/</span>Gatekeeper<span class="token operator">/</span>Handler<span class="token operator">/</span>Count<span class="token punctuation">.</span>php</code>:</p>
+<pre class=" language-php"><code class=" language-php"><span class="token delimiter">&lt;?php</span>
+
+<span class="token keyword">namespace</span> <span class="token package">Psecio<span class="token punctuation">\</span>Gatekeeper<span class="token punctuation">\</span>Handler</span><span class="token punctuation">;</span>
+
+<span class="token keyword">class</span> <span class="token class-name">Count</span> <span class="token keyword">extends</span> <span class="token class-name"><span class="token punctuation">\</span>Psecio<span class="token punctuation">\</span>Gatekeeper<span class="token punctuation">\</span>Handler</span>
+<span class="token punctuation">{</span>
+    <span class="token comment" spellcheck="true">/**
+     * Execute the object/record count handling
+     *
+     * @throws \Psecio\Gatekeeper\Exception\ModelNotFoundException If model type is not found
+     * @return int Count of entities
+     */</span>
+    <span class="token keyword">public</span> <span class="token keyword">function</span> <span class="token function">execute</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token punctuation">{</span>
+        <span class="token variable">$args</span> <span class="token operator">=</span> <span class="token this">$this</span><span class="token operator">-</span><span class="token operator">&gt;</span><span class="token function">getArguments</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token variable">$name</span> <span class="token operator">=</span> <span class="token this">$this</span><span class="token operator">-</span><span class="token operator">&gt;</span><span class="token function">getName</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token variable">$model</span> <span class="token operator">=</span> <span class="token string">'\\Psecio\\Gatekeeper\\'</span> <span class="token punctuation">.</span> <span class="token function">str_replace</span><span class="token punctuation">(</span><span class="token string">'count'</span><span class="token punctuation">,</span> <span class="token string">''</span><span class="token punctuation">,</span>
+                <span class="token variable">$name</span><span class="token punctuation">)</span> <span class="token punctuation">.</span> <span class="token string">'Model'</span><span class="token punctuation">;</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token function">class_exists</span><span class="token punctuation">(</span><span class="token variable">$model</span><span class="token punctuation">)</span> <span class="token operator">===</span> <span class="token boolean">true</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token variable">$instance</span> <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token variable">$model</span><span class="token punctuation">(</span><span class="token this">$this</span><span class="token operator">-</span><span class="token operator">&gt;</span><span class="token function">getDb</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+            <span class="token variable">$count</span> <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token operator">!</span><span class="token variable">$args</span><span class="token punctuation">)</span> <span class="token operator">?</span> <span class="token this">$this</span><span class="token operator">-</span><span class="token operator">&gt;</span><span class="token function">getDb</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">-</span><span class="token operator">&gt;</span><span class="token function">count</span><span class="token punctuation">(</span><span class="token variable">$instance</span><span class="token punctuation">)</span> <span class="token punctuation">:</span> <span class="token this">$this</span><span class="token operator">-</span><span class="token operator">&gt;</span><span class="token function">getDb</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">-</span><span class="token operator">&gt;</span><span class="token function">count</span><span class="token punctuation">(</span><span class="token variable">$instance</span><span class="token punctuation">,</span>
+                <span class="token variable">$args</span><span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token keyword">return</span> <span class="token punctuation">(</span>int<span class="token punctuation">)</span><span class="token variable">$count</span><span class="token punctuation">[</span><span class="token string">'count'</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
+            <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name"><span class="token punctuation">\</span>Psecio<span class="token punctuation">\</span>Gatekeeper<span class="token punctuation">\</span>Exception<span class="token punctuation">\</span>ModelNotFoundException</span><span class="token punctuation">(</span>
+                <span class="token string">'Model type '</span> <span class="token punctuation">.</span> <span class="token variable">$model</span> <span class="token punctuation">.</span> <span class="token string">' could not be found'</span>
+            <span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<p>It’s almost identical to the <code class=" language-php">Create</code> handler, except for the unreachable <code class=" language-php"><span class="token keyword">return</span></code> statement at the bottom which I’ve removed, small changes in the body, and a minor alteration to the class’ description.</p>
+<h3 id="datasource-and-stub">DataSource and Stub</h3>
+<p>Next, let’s get the easy ones out of the way.</p>
+<p>In <code class=" language-php">Psecio<span class="token operator">/</span>Gatekeeper<span class="token operator">/</span>DataSource<span class="token operator">/</span>Stub<span class="token punctuation">.</span>php</code>, we add a new blank method:</p>
+<pre class=" language-php"><code class=" language-php">    <span class="token comment" spellcheck="true">/**
+     * Return the number of entities in DB per condition or in general
+     *
+     * @param \Modler\Model $model Model instance
+     * @param array $where
+     * @return bool Success/fail of action
+     * @internal param array $where "Where" data to locate record
+     */</span>
+    <span class="token keyword">public</span> <span class="token keyword">function</span> <span class="token function">count</span><span class="token punctuation">(</span>\<span class="token package">Modler<span class="token punctuation">\</span>Model</span> <span class="token variable">$model</span><span class="token punctuation">,</span> <span class="token keyword">array</span> <span class="token variable">$where</span> <span class="token operator">=</span> <span class="token keyword">array</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">{</span><span class="token punctuation">}</span>
+</code></pre>
+<p>We then add a similar signature to the abstract:</p>
+<pre class=" language-php"><code class=" language-php">    <span class="token comment" spellcheck="true">/**
+     * Return the number of entities in DB per condition or in general
+     *
+     * @param \Modler\Model $model Model instance
+     * @param array $where
+     * @return bool Success/fail of action
+     * @internal param array $where "Where" data to locate record
+     */</span>
+    <span class="token keyword">public</span> <span class="token keyword">abstract</span> <span class="token keyword">function</span> <span class="token function">count</span><span class="token punctuation">(</span>\<span class="token package">Modler<span class="token punctuation">\</span>Model</span> <span class="token variable">$model</span><span class="token punctuation">,</span> <span class="token keyword">array</span> <span class="token variable">$where</span> <span class="token operator">=</span> <span class="token keyword">array</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+</code></pre>
+<p>With all this out of the way, it’s time to write the actual logic that takes care of counting.</p>
+<h3 id="mysql">MySQL</h3>
+<p>It’s time to change <code class=" language-php">DataSource<span class="token operator">/</span>MySQL<span class="token punctuation">.</span>php</code> now. We’ll add the <code class=" language-php">count</code> method right under the <code class=" language-php">find</code> method:</p>
+<pre class=" language-php"><code class=" language-php">    <span class="token comment" spellcheck="true">/**
+     * Find count of entities by where conditions.
+     * All where conditions applied with AND
+     *
+     * @param \Modler\Model $model Model instance
+     * @param array $where Data to use in "where" statement
+     * @return array Fetched data
+     */</span>
+    <span class="token keyword">public</span> <span class="token keyword">function</span> <span class="token function">count</span><span class="token punctuation">(</span>\<span class="token package">Modler<span class="token punctuation">\</span>Model</span> <span class="token variable">$model</span><span class="token punctuation">,</span> <span class="token keyword">array</span> <span class="token variable">$where</span> <span class="token operator">=</span> <span class="token keyword">array</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+    <span class="token punctuation">{</span>
+        <span class="token variable">$properties</span> <span class="token operator">=</span> <span class="token variable">$model</span><span class="token operator">-</span><span class="token operator">&gt;</span><span class="token function">getProperties</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token function">list</span><span class="token punctuation">(</span><span class="token variable">$columns</span><span class="token punctuation">,</span> <span class="token variable">$bind</span><span class="token punctuation">)</span> <span class="token operator">=</span> <span class="token this">$this</span><span class="token operator">-</span><span class="token operator">&gt;</span><span class="token function">setup</span><span class="token punctuation">(</span><span class="token variable">$where</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token variable">$update</span> <span class="token operator">=</span> <span class="token keyword">array</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">foreach</span> <span class="token punctuation">(</span><span class="token variable">$bind</span> <span class="token keyword">as</span> <span class="token variable">$column</span> <span class="token operator">=</span><span class="token operator">&gt;</span> <span class="token variable">$name</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+           <span class="token comment" spellcheck="true"> // See if we keep to transfer it over to a column name
+</span>            <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token function">array_key_exists</span><span class="token punctuation">(</span><span class="token variable">$column</span><span class="token punctuation">,</span> <span class="token variable">$properties</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                <span class="token variable">$column</span> <span class="token operator">=</span> <span class="token variable">$properties</span><span class="token punctuation">[</span><span class="token variable">$column</span><span class="token punctuation">]</span><span class="token punctuation">[</span><span class="token string">'column'</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+            <span class="token variable">$update</span><span class="token punctuation">[</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token variable">$column</span><span class="token punctuation">.</span><span class="token string">' = '</span><span class="token punctuation">.</span><span class="token variable">$name</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+
+        <span class="token variable">$sql</span> <span class="token operator">=</span> <span class="token string">'select count(*) as `count` from '</span><span class="token punctuation">.</span><span class="token variable">$model</span><span class="token operator">-</span><span class="token operator">&gt;</span><span class="token function">getTableName</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span><span class="token function">empty</span><span class="token punctuation">(</span><span class="token variable">$update</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token variable">$sql</span> <span class="token punctuation">.</span><span class="token operator">=</span> <span class="token string">' where '</span><span class="token punctuation">.</span><span class="token function">implode</span><span class="token punctuation">(</span><span class="token string">' and '</span><span class="token punctuation">,</span> <span class="token variable">$update</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+
+        <span class="token variable">$result</span> <span class="token operator">=</span> <span class="token this">$this</span><span class="token operator">-</span><span class="token operator">&gt;</span><span class="token function">fetch</span><span class="token punctuation">(</span><span class="token variable">$sql</span><span class="token punctuation">,</span> <span class="token variable">$where</span><span class="token punctuation">,</span> <span class="token boolean">true</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">return</span> <span class="token variable">$result</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+</code></pre>
+<p>Harvesting the logic from the similar <code class=" language-php">find</code> method above, our <code class=" language-php">count</code> method does the following:</p>
+<ol>
+<li>Grab properties as defined in model in question (e.g. see <code class=" language-php"><span class="token scope">UserModel<span class="token punctuation">::</span></span><span class="token variable">$properties</span></code>)</li>
+<li>Separate the values as passed in via <code class=" language-php"><span class="token variable">$where</span></code> into columns and their values</li>
+<li>Build the <code class=" language-php"><span class="token constant">WHERE</span></code> part of the query by looking into the <code class=" language-php">properties</code>, seeing if any of them have different names to those requested (e.g. requested <code class=" language-php">FirstName</code> has a database counterpart of <code class=" language-php">first_name</code>)</li>
+<li>Build whole query</li>
+<li>Execute with forced <code class=" language-php">single</code> mode on <code class=" language-php"><span class="token boolean">true</span></code> (see <code class=" language-php">fetch</code> method) because we only expect to get a single value back – an integer indicating the count.</li>
+<li>Return the count.</li>
+</ol>
+<h2 id="step-5-testing">Step 5: Testing</h2>
+<p><em>Ordinarily, there would be a unit testing stage. This is out of the scope of this tutorial, and I encourage you to look at <a href="http://www.sitepoint.com/basic-tdd-new-php-package/">this tutorial</a> instead. If there’s sufficient interest in seeing unit tests developed for this package, we will, of course, accommodate. Let us know in the comments.</em></p>
+<h3 id="implementing-the-experimental-version">Implementing the Experimental Version</h3>
+<p>Let’s do a manual test. First, we’ll commit and push our work online.</p>
+<pre class=" language-php"><code class=" language-php">git add <span class="token operator">-</span>A
+git commit <span class="token operator">-</span>m <span class="token string">"Adding count feature"</span>
+git push origin feature<span class="token operator">-</span>count
+</code></pre>
+<p>The changes will now be in our fork, online. Then, let’s go ahead and create a brand new project in another folder with the following <code class=" language-php">composer<span class="token punctuation">.</span>json</code> file:</p>
+<pre class=" language-php"><code class=" language-php"><span class="token punctuation">{</span>
+    <span class="token string">"require"</span><span class="token punctuation">:</span> <span class="token punctuation">{</span>
+        <span class="token string">"psecio/gatekeeper"</span><span class="token punctuation">:</span> <span class="token string">"dev-master"</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token string">"repositories"</span><span class="token punctuation">:</span> <span class="token punctuation">[</span>
+        <span class="token punctuation">{</span>
+            <span class="token string">"type"</span><span class="token punctuation">:</span> <span class="token string">"vcs"</span><span class="token punctuation">,</span>
+            <span class="token string">"url"</span><span class="token punctuation">:</span> <span class="token string">"https://github.com/swader/gatekeeper"</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">]</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<p>Using Composer’s <a href="https://getcomposer.org/doc/05-repositories.md">Repositories</a> feature, we can make sure that Composer fetches our copy of Gatekeeper instead of the original, while still thinking it has the original – this allows us to test our changes as if in a real project using Gatekeeper – arguably a more realistic testing scenario than unit tests would be at this point. Save and exit this file, and then run:</p>
+<pre class=" language-php"><code class=" language-php">composer <span class="token keyword">require</span> symfony<span class="token operator">/</span><span class="token keyword">var</span><span class="token operator">-</span>dumper <span class="token operator">--</span>dev
+</code></pre>
+<p>This will both install the above defined custom package, and <a href="http://www.sitepoint.com/var_dump-introducing-symfony-vardumper/">Symfony’s VarDumper</a> for easier debugging. You might get asked for a Github token during installation – if that’s the case, just follow the instructions.</p>
+<p>Lo and behold, if we look inside the <code class=" language-php">Gatekeeper</code> main class now, we’ll see that our <code class=" language-php">count</code> updates are all there. Next, let’s follow the typical Gatekeeper installation procedure now by executing <code class=" language-php">vendor<span class="token operator">/</span>bin<span class="token operator">/</span>setup<span class="token punctuation">.</span>sh</code> and following instructions. If you’re using <a href="http://www.sitepoint.com/quick-tip-get-homestead-vagrant-vm-running/">Homestead Improved</a>, just enter the default values (<code class=" language-php">localhost</code>, <code class=" language-php">homestead</code>, <code class=" language-php">homestead</code>, <code class=" language-php">secret</code>).</p>
+<h3 id="testing">Testing</h3>
+<p>Now let’s create an <code class=" language-php">index<span class="token punctuation">.</span>php</code> file which we’ll use for testing:</p>
+<pre class=" language-php"><code class=" language-php"><span class="token delimiter">&lt;?php</span>
+
+<span class="token keyword">require_once</span> <span class="token string">'vendor/autoload.php'</span><span class="token punctuation">;</span>
+
+<span class="token keyword">use</span> <span class="token package">Psecio<span class="token punctuation">\</span>Gatekeeper<span class="token punctuation">\</span>Gatekeeper</span><span class="token punctuation">;</span>
+<span class="token scope">Gatekeeper<span class="token punctuation">::</span></span><span class="token function">init</span><span class="token punctuation">(</span><span class="token string">'./'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token variable">$groups</span> <span class="token operator">=</span> <span class="token punctuation">[</span>
+    <span class="token string">'admin'</span> <span class="token operator">=</span><span class="token operator">&gt;</span> <span class="token string">'Administrators'</span><span class="token punctuation">,</span>
+    <span class="token string">'users'</span> <span class="token operator">=</span><span class="token operator">&gt;</span> <span class="token string">'Regular users'</span>
+<span class="token punctuation">]</span><span class="token punctuation">;</span>
+
+<span class="token keyword">foreach</span> <span class="token punctuation">(</span><span class="token variable">$groups</span> <span class="token keyword">as</span> <span class="token variable">$name</span> <span class="token operator">=</span><span class="token operator">&gt;</span> <span class="token variable">$description</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span><span class="token scope">Gatekeeper<span class="token punctuation">::</span></span><span class="token function">findGroupByName</span><span class="token punctuation">(</span><span class="token variable">$name</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token scope">Gatekeeper<span class="token punctuation">::</span></span><span class="token function">createGroup</span><span class="token punctuation">(</span><span class="token punctuation">[</span>
+            <span class="token string">'name'</span> <span class="token operator">=</span><span class="token operator">&gt;</span> <span class="token variable">$name</span><span class="token punctuation">,</span>
+            <span class="token string">'description'</span> <span class="token operator">=</span><span class="token operator">&gt;</span> <span class="token variable">$description</span>
+        <span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<p>We activate the autoloader, initialize Gatekeeper (it uses the <code class=" language-php"><span class="token punctuation">.</span>env</code> file from the root of our folder for credentials), and set up two default groups.</p>
+<p><img src="http://dab1nmslvvntp.cloudfront.net/wp-content/uploads/2016/02/1454857444Screenshot-2016-02-07-16.03.29-1024x343.png" alt="Sequel Pro Screenshot of the two groups"></p>
+<p>Then, let’s go ahead and test counting on the groups:</p>
+<pre class=" language-php"><code class=" language-php"><span class="token function">dump</span><span class="token punctuation">(</span><span class="token scope">Gatekeeper<span class="token punctuation">::</span></span><span class="token function">countGroup</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token function">dump</span><span class="token punctuation">(</span><span class="token scope">Gatekeeper<span class="token punctuation">::</span></span><span class="token function">countGroup</span><span class="token punctuation">(</span><span class="token punctuation">[</span><span class="token string">'id'</span> <span class="token operator">=</span><span class="token operator">&gt;</span> <span class="token number">1</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+</code></pre>
+<p>Sure enough, it works.</p>
+<p><img src="http://dab1nmslvvntp.cloudfront.net/wp-content/uploads/2016/02/1454857815Screenshot-2016-02-07-16.10.03.png" alt="Group count accurate"></p>
+<p>Let’s test users now.</p>
+<pre class=" language-php"><code class=" language-php"><span class="token scope">Gatekeeper<span class="token punctuation">::</span></span><span class="token function">countUser</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+</code></pre>
+<p>This accurately produces a count of 0. A common use case for out-of-the-box apps is seeing if there are no users in the database when a user is being created, and then giving that new user Admin privileges. The first user of a system is often considered its owner, so it’s a convenience for setting up super-user accounts. Let’s do that.</p>
+<pre class=" language-php"><code class=" language-php"><span class="token scope">Gatekeeper<span class="token punctuation">::</span></span><span class="token function">createUser</span><span class="token punctuation">(</span><span class="token punctuation">[</span>
+    <span class="token string">'username'</span> <span class="token operator">=</span><span class="token operator">&gt;</span> <span class="token string">'bruno-admin'</span><span class="token punctuation">,</span>
+    <span class="token string">'first_name'</span> <span class="token operator">=</span><span class="token operator">&gt;</span> <span class="token string">'Bruno'</span><span class="token punctuation">,</span>
+    <span class="token string">'last_name'</span> <span class="token operator">=</span><span class="token operator">&gt;</span> <span class="token string">'Skvorc'</span><span class="token punctuation">,</span>
+    <span class="token string">'email'</span> <span class="token operator">=</span><span class="token operator">&gt;</span> <span class="token string">'bruno.skvorc@sitepoint.com'</span><span class="token punctuation">,</span>
+    <span class="token string">'password'</span> <span class="token operator">=</span><span class="token operator">&gt;</span> <span class="token string">'12345'</span><span class="token punctuation">,</span>
+    <span class="token string">'groups'</span> <span class="token operator">=</span><span class="token operator">&gt;</span> <span class="token punctuation">(</span><span class="token scope">Gatekeeper<span class="token punctuation">::</span></span><span class="token function">countUser</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token operator">?</span> <span class="token punctuation">[</span><span class="token string">'users'</span><span class="token punctuation">]</span> <span class="token punctuation">:</span> <span class="token punctuation">[</span><span class="token string">'admin'</span><span class="token punctuation">]</span>
+<span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token scope">Gatekeeper<span class="token punctuation">::</span></span><span class="token function">createUser</span><span class="token punctuation">(</span><span class="token punctuation">[</span>
+    <span class="token string">'username'</span> <span class="token operator">=</span><span class="token operator">&gt;</span> <span class="token string">'reg-user'</span><span class="token punctuation">,</span>
+    <span class="token string">'first_name'</span> <span class="token operator">=</span><span class="token operator">&gt;</span> <span class="token string">'Reggie'</span><span class="token punctuation">,</span>
+    <span class="token string">'last_name'</span> <span class="token operator">=</span><span class="token operator">&gt;</span> <span class="token string">'User'</span><span class="token punctuation">,</span>
+    <span class="token string">'email'</span> <span class="token operator">=</span><span class="token operator">&gt;</span> <span class="token string">'reg@example.com'</span><span class="token punctuation">,</span>
+    <span class="token string">'password'</span> <span class="token operator">=</span><span class="token operator">&gt;</span> <span class="token string">'12345'</span><span class="token punctuation">,</span>
+    <span class="token string">'groups'</span> <span class="token operator">=</span><span class="token operator">&gt;</span> <span class="token punctuation">(</span><span class="token scope">Gatekeeper<span class="token punctuation">::</span></span><span class="token function">countUser</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token operator">?</span> <span class="token punctuation">[</span><span class="token string">'users'</span><span class="token punctuation">]</span> <span class="token punctuation">:</span> <span class="token punctuation">[</span><span class="token string">'admin'</span><span class="token punctuation">]</span>
+<span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+
+<span class="token function">dump</span><span class="token punctuation">(</span><span class="token scope">Gatekeeper<span class="token punctuation">::</span></span><span class="token function">findUserByUsername</span><span class="token punctuation">(</span><span class="token string">'bruno-admin'</span><span class="token punctuation">)</span><span class="token operator">-</span><span class="token operator">&gt;</span><span class="token property">groups</span><span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token operator">-</span><span class="token operator">&gt;</span><span class="token property">name</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token function">dump</span><span class="token punctuation">(</span><span class="token scope">Gatekeeper<span class="token punctuation">::</span></span><span class="token function">findUserByUsername</span><span class="token punctuation">(</span><span class="token string">'reg-user'</span><span class="token punctuation">)</span><span class="token operator">-</span><span class="token operator">&gt;</span><span class="token property">groups</span><span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token operator">-</span><span class="token operator">&gt;</span><span class="token property">name</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+</code></pre>
+<p>Sure enough, the output is accurate – the first group printed on screen is <code class=" language-php">admin</code>, and the second is <code class=" language-php">users</code>.</p>
+<p>With the count mechanics correctly implemented, it’s time to submit a pull request.</p>
+<h3 id="submitting-a-pr">Submitting a PR</h3>
+<p>First, we go to our own fork of the project. Then, we click the “New Pull Request” button. On the next screen everything should be green – the UI should say “Able to merge”:</p>
+<p><img src="http://dab1nmslvvntp.cloudfront.net/wp-content/uploads/2016/02/1454859830Screenshot-2016-02-07-16.43.31-1024x325.png" alt="Able to merge"></p>
+<p>Once we click the “Create Pull Request” button, we should add a title and a description as detailed as possible, preferably referencing the issue from Step 1 above.</p>
+<p><img src="http://dab1nmslvvntp.cloudfront.net/wp-content/uploads/2016/02/1454860025Screenshot-2016-02-07-16.46.46-1024x622.png" alt="Creating the PR"></p>
+<p>That’s it – pressing the “Create Pull Request” button wraps things up – all we can do now is wait for feedback from the project owner.</p>
+<h2 id="conclusion">Conclusion</h2>
+<p>This was a case study of contributing to a relatively popular PHP package. I hope it was useful as a learning material and a basic guide into giving back and the process of adding features into something you use.</p>
+<p>It’s important to note that while this is a common process, as I mentioned before, it’s rather uncommon in that it had no unit tests. However, the original library doesn’t test the handlers either, and making a mocking framework for the handlers and the data they can interact with would be too out of scope for this particular post. Again, if you’re curious about that process and would like us to cover it in depth, please do let us know in the comments below that like button.</p>
+<p>It should also be noted that while this was a very easy feature upgrade, sometimes things don’t go according to plan and the changes won’t work immediately in the new project where they’re being tested. In that case, changes can, for example, be made in the <code class=" language-php">vendor</code> folder of the test project until everything works, copied over to the development project, pushed online and then re-installed into the test project to make sure everything still works.</p>
+<p>Have your own contribution stories to share? Let us know – we’d love to explore them!</p>
+  
