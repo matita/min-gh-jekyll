@@ -1,0 +1,106 @@
+---
+title: "Delivering Octicons with SVG"
+description: "GitHub.com no longer delivers its icons via icon font. Instead, we’ve replaced all the Octicons throughout our codebase with SVG alternatives. While the changes are mostly under-the-hood, you’ll im..."
+link: "https://github.com/blog/2112-delivering-octicons-with-svg"
+saved: "2016-02-23 15:19:02"
+---
+
+    <p>GitHub.com no longer delivers its icons via icon font. Instead, we’ve replaced all the <a href="http://octicons.github.com/">Octicons</a> throughout our codebase with SVG alternatives. While the changes are mostly under-the-hood, you’ll immediately feel the benefits of the SVG icons.</p>
+
+<p><a href="https://cloud.githubusercontent.com/assets/1369864/13088505/5c79d3ee-d4a1-11e5-89f4-aeb7c86a0c65.png" target="_blank"><img src="https://cloud.githubusercontent.com/assets/1369864/13088505/5c79d3ee-d4a1-11e5-89f4-aeb7c86a0c65.png" alt="Octicon comparison"></a></p>
+
+<p>Switching to SVG renders our icons as images instead of text, locking nicely to whole pixel values at any resolution. Compare the zoomed-in icon font version on the left with the crisp SVG version on the right.</p>
+
+<h1>
+<a id="why-svg" class="anchor" href="https://github.com/blog/2112-delivering-octicons-with-svg?utm_source=SitePoint&amp;utm_medium=email&amp;utm_campaign=Versioning#why-svg" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Why SVG?</h1>
+
+<h3>
+<a id="icon-font-rendering-issues" class="anchor" href="https://github.com/blog/2112-delivering-octicons-with-svg?utm_source=SitePoint&amp;utm_medium=email&amp;utm_campaign=Versioning#icon-font-rendering-issues" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Icon font rendering issues</h3>
+
+<p>Icon fonts have always been a hack. We originally used a custom font with our icons as unicode symbols. This allowed us to include our icon font in our CSS bundle. Simply adding a class to any element would make our icons appear. We could then change the size and color on the fly using only CSS.</p>
+
+<p>Unfortunately, even though these icons were vector shapes, they’d often render poorly on 1x displays. In Webkit-based browsers, you’d get blurry icons depending on the browser’s window width. Since our icons were delivered as text, sub-pixel rendering meant to improve text legibility actually made our icons look much worse.</p>
+
+<h3>
+<a id="page-rendering-improvements" class="anchor" href="https://github.com/blog/2112-delivering-octicons-with-svg?utm_source=SitePoint&amp;utm_medium=email&amp;utm_campaign=Versioning#page-rendering-improvements" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Page rendering improvements</h3>
+
+<p>Since our SVG is injected directly into the markup (more on why we used this approach in a bit), we no longer see a flash of unstyled content as the icon font is downloaded, cached, and rendered.</p>
+
+<p><a href="https://cloud.githubusercontent.com/assets/1369864/13187194/68fa7d7e-d70f-11e5-85e6-f6c528c436db.gif" target="_blank"><img src="https://cloud.githubusercontent.com/assets/1369864/13187194/68fa7d7e-d70f-11e5-85e6-f6c528c436db.gif" alt="Jank"></a></p>
+
+<h3>
+<a id="accessibility" class="anchor" href="https://github.com/blog/2112-delivering-octicons-with-svg?utm_source=SitePoint&amp;utm_medium=email&amp;utm_campaign=Versioning#accessibility" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Accessibility</h3>
+
+<p>As laid out in <em><a href="https://speakerdeck.com/ninjanails/death-to-icon-fonts">Death to Icon Fonts</a></em>, some users override GitHub’s fonts. For dyslexics, certain typefaces can be more readable. To those changing their fonts, our font-based icons were rendered as empty squares. This messed up GitHub’s page layouts and didn’t provide any meaning. SVGs will display regardless of font overrides. For screen readers, SVG provides us the ability to add pronouncable <code>alt</code> attributes, or leave them off entirely.</p>
+
+<h3>
+<a id="properly-sized-glyphs" class="anchor" href="https://github.com/blog/2112-delivering-octicons-with-svg?utm_source=SitePoint&amp;utm_medium=email&amp;utm_campaign=Versioning#properly-sized-glyphs" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Properly sized glyphs</h3>
+
+<p>For each icon, we currently serve a single glyph at all sizes. Since the loading of our site is dependent on the download of our icon font, we were forced to limited the icon set to just the essential 16px shapes. This led to some concessions on the visuals of each symbol since we’d optimized for the 16px grid. When scaling our icons up in blankslates or marketing pages, we’re still showing the 16px version of the icon. With SVGs, we can easily fork the entire icon set and offer more appropriate glyphs at any size we specify. We could have done this with our icon fonts, but then our users would need to download twice as much data. Possibly more.</p>
+
+<h3>
+<a id="ease-of-authoring" class="anchor" href="https://github.com/blog/2112-delivering-octicons-with-svg?utm_source=SitePoint&amp;utm_medium=email&amp;utm_campaign=Versioning#ease-of-authoring" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Ease of authoring</h3>
+
+<p>Building custom fonts is hard. A few web apps have popped up to solve this pain. Internally, we’d built our own. With SVG, adding a new icon could be as trivial as dragging another SVG file into a directory.</p>
+
+<h3>
+<a id="we-can-animate-them" class="anchor" href="https://github.com/blog/2112-delivering-octicons-with-svg?utm_source=SitePoint&amp;utm_medium=email&amp;utm_campaign=Versioning#we-can-animate-them" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>We can animate them</h3>
+
+<p>We’re not saying we should, but we could, though SVG animation does have some practical applications—<a href="http://codepen.io/aaronshekey/pen/wMZBgK">preloader animations</a>, for example.</p>
+
+<h1>
+<a id="how" class="anchor" href="https://github.com/blog/2112-delivering-octicons-with-svg?utm_source=SitePoint&amp;utm_medium=email&amp;utm_campaign=Versioning#how" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>How</h1>
+
+<p>Our Octicons appear nearly 2500 times throughout GitHub’s codebase. Prior to SVG, Octicons were included as simple spans <code>&lt;span class="octicon octicon-alert"&gt;&lt;/span&gt;</code>. To switch to SVG, we first added a Rails helper for injecting SVG paths directly into to our markup. Relying on the helper allowed us to test various methods of delivering SVG to our staff before enabling it for the public. Should a better alternative to SVG come along, or if we need to revert back to icon fonts for any reason, we’d only have to change the output of the helper.</p>
+
+<h3>
+<a id="helper-usage" class="anchor" href="https://github.com/blog/2112-delivering-octicons-with-svg?utm_source=SitePoint&amp;utm_medium=email&amp;utm_campaign=Versioning#helper-usage" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Helper usage</h3>
+
+<p>Input
+<code>&lt;%= octicon(:symbol =&gt; "plus") %&gt;</code></p>
+
+<p>Output</p>
+
+<div class="highlight highlight-text-html-basic"><pre>&lt;<span class="pl-ent">svg</span> <span class="pl-e">aria-hidden</span>=<span class="pl-s"><span class="pl-pds">"</span>true<span class="pl-pds">"</span></span> <span class="pl-e">class</span>=<span class="pl-s"><span class="pl-pds">"</span>octicon octicon-plus<span class="pl-pds">"</span></span> <span class="pl-e">width</span>=<span class="pl-s"><span class="pl-pds">"</span>12<span class="pl-pds">"</span></span> <span class="pl-e">height</span>=<span class="pl-s"><span class="pl-pds">"</span>16<span class="pl-pds">"</span></span> <span class="pl-e">role</span>=<span class="pl-s"><span class="pl-pds">"</span>img<span class="pl-pds">"</span></span> <span class="pl-e">version</span>=<span class="pl-s"><span class="pl-pds">"</span>1.1<span class="pl-pds">"</span></span> <span class="pl-e">viewBox</span>=<span class="pl-s"><span class="pl-pds">"</span>0 0 12 16<span class="pl-pds">"</span></span>&gt;
+    &lt;<span class="pl-ent">path</span> <span class="pl-e">d</span>=<span class="pl-s"><span class="pl-pds">"</span>M12 9H7v5H5V9H0V7h5V2h2v5h5v2z<span class="pl-pds">"</span></span>&gt;&lt;/<span class="pl-ent">path</span>&gt;
+&lt;/<span class="pl-ent">svg</span>&gt;</pre></div>
+
+<h3>
+<a id="our-approach" class="anchor" href="https://github.com/blog/2112-delivering-octicons-with-svg?utm_source=SitePoint&amp;utm_medium=email&amp;utm_campaign=Versioning#our-approach" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Our approach</h3>
+
+<p>You can see we’ve landed on directly injecting the SVGs directly in our page markup. This allows us the flexibility to change the color of the icons with CSS using the <code>fill:</code> declaration on the fly.</p>
+
+<p>Instead of an icon font, we now have a directory of SVG shapes whose paths are directly injected into the markup by our helper based on which <code>symbol</code> we choose. For example, if we want an <code>alert</code> icon, we call the helper <code>&lt;%= octicon(:symbol =&gt; "alert") %&gt;</code>. It looks for the icon of the same file name and injects the SVG.</p>
+
+<p>We tried a number of approaches when adding SVG icons to our pages. Given the constraints of GitHub’s production environment, some were dead-ends.</p>
+
+<ol>
+<li>External .svg — We first attempted to serve a single external “svgstore”. We’d include individual sprites using the <code>&lt;use&gt;</code> element. With our current cross-domain security policy and asset pipeline, we found it difficult to serve the SVG sprites externally.</li>
+<li>SVG background images — This wouldn’t let us color our icons on the fly.</li>
+<li>SVGs linked via <code>&lt;img&gt;</code> and the <code>src</code> attribute — This wouldn’t let us color our icons on the fly.</li>
+<li>Embedding the entire “svgstore” in every view and using <code>&lt;use&gt;</code> — It just didn’t feel quite right to embed every SVG shape we have on every single page throughout GitHub.com especially if a page didn’t include a single icon.</li>
+</ol>
+
+<h2>
+<a id="performance" class="anchor" href="https://github.com/blog/2112-delivering-octicons-with-svg?utm_source=SitePoint&amp;utm_medium=email&amp;utm_campaign=Versioning#performance" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Performance</h2>
+
+<p>We’ve found there were no adverse effects on <a href="https://cloud.githubusercontent.com/assets/54012/13176951/eedb1330-d6e3-11e5-8dfb-99932ff7ee25.png">pageload or performance</a> when switching to SVG. We’d hoped for a more dramatic drop in rendering times, but often performance has more to do with perception. Since SVG icons are being rendered like images in the page with defined widths and heights, the page doesn’t have nearly as much <a href="http://jankfree.org/">jank</a>.</p>
+
+<p>We were also able to <a href="https://cloud.githubusercontent.com/assets/54012/13176888/70d42346-d6e3-11e5-88eb-0ca0a393392c.png">kill a bit of bloat from our CSS bundles</a> since we’re no longer serving the font CSS.</p>
+
+<h2>
+<a id="drawbacks--gotchas" class="anchor" href="https://github.com/blog/2112-delivering-octicons-with-svg?utm_source=SitePoint&amp;utm_medium=email&amp;utm_campaign=Versioning#drawbacks--gotchas" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Drawbacks &amp; Gotchas</h2>
+
+<ul>
+<li>Firefox still has pixel-rounding errors in SVG, though the icon font had the same issue.</li>
+<li>You may have to wrap these SVGs with another div if you want to give them a background color.</li>
+<li>Since SVG is being delivered as an image, some CSS overrides might need to be considered. If you see anything weird in our layouts, <a href="https://github.com/contact">let us know</a>. </li>
+<li>Internet Explorer needs defined width and height attributes on the <code>svg</code> element in order for them to be sized correctly.</li>
+<li>We were serving both SVG and our icon font during our transition. This would cause IE to crash while we were still applying font-family to each of the SVG icons. This was cleared up as soon as we transitioned fully to SVG.</li>
+</ul>
+
+<h1>
+<a id="tldr" class="anchor" href="https://github.com/blog/2112-delivering-octicons-with-svg?utm_source=SitePoint&amp;utm_medium=email&amp;utm_campaign=Versioning#tldr" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>TL;DR</h1>
+
+<p>By switching from icon fonts, we can serve our icons more easily, more quickly, and more accessibly. And they look better. Enjoy.</p>
+  
