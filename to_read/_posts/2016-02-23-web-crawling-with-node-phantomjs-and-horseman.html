@@ -1,0 +1,387 @@
+---
+title: "Web Crawling with Node, PhantomJS and Horseman"
+description: "Andrew Forth demonstrates how to set up a lightweight CLI framework to automate various web crawling tasks, such as scraping links and taking screenshots."
+link: "http://www.sitepoint.com/web-crawling-node-phantomjs-horseman/"
+saved: "2016-02-23 15:19:32"
+---
+
+    <p><em>This article was peer reviewed by <a href="http://www.sitepoint.com/author/lwhite">Lukas White</a>. Thanks to all of SitePoint’s peer reviewers for making SitePoint content the best it can be!</em></p>
+<p>It is quite common during the course of a project to find yourself needing to write custom scripts for performing a variety of actions. Such one-off scripts, which are typically executed via the command-line (<a href="https://en.wikipedia.org/wiki/Command-line_interface">CLI</a>), can be used for virtually any type of task. Having written many such scripts over the years, I have grown to appreciate the value of taking a small amount of time upfront to put in place a custom CLI <a href="https://en.wikipedia.org/wiki/Microframework">microframework</a> to facilitate this process. Fortunately, <a href="https://nodejs.org/">Node.js</a> and its extensive package ecosystem, <a href="https://www.npmjs.com/">npm</a>, make it easy to do just that. Whether parsing a text file or running an <a href="https://en.wikipedia.org/wiki/Extract,_transform,_load">ETL</a>, having a convention in place makes it easy to add new functionality in an efficient and structured way.</p>
+
+<p>While not necessarily associated with the command-line, web crawling is often employed in certain problem domains like automated functional testing and defacement detection. This tutorial demonstrates how to implement a lightweight CLI framework whose supported actions revolve around web crawling. Hopefully, this will get your creative juices flowing, whether your interest be specific to crawling or to the command-line. Technologies covered include Node.js, <a href="http://phantomjs.org/">PhantomJS</a>, and an assortment of npm packages related to both crawling and the CLI.</p>
+<p>The source code for this tutorial can be found on <a href="https://github.com/sitepoint-editors/node-phantom-cli">GitHub</a>. In order to run the examples, you will need to have both Node.js and PhantomJS installed. Instructions for downloading and installing them can be found here: <a href="https://nodejs.org/en/download/">Node.js</a>, <a href="http://phantomjs.org/download.html">PhantomJS</a>.</p>
+<h2 id="settingupabasiccommandlineframework">Setting up a Basic Command-Line Framework</h2>
+<p>At the heart of any CLI framework is the concept of converting a command, which typically includes one or more optional or required arguments, into a concrete action. Two npm packages that are quite helpful in this regard are <a href="https://www.npmjs.com/package/commander">commander</a> and <a href="https://www.npmjs.com/package/prompt">prompt</a>.</p>
+<p>Commander allows you to define which arguments are supported, while prompt allows you to (appropriately enough) prompt the user for input at runtime. The end result is a <a href="https://en.wikipedia.org/wiki/Syntactic_sugar">syntactically sweet</a> interface for performing a variety of actions with dynamic behaviors based on some user-supplied data.</p>
+<p>Say, for example, we want our command to look like this:</p>
+<pre class=" language-bash"><code class="bash  language-bash">$ node run<span class="token punctuation">.</span>js <span class="token operator">-</span>x hello_world
+</code></pre>
+<p>Our entry point (<a href="https://github.com/sitepoint-editors/node-phantom-cli/blob/master/run.js">run.js</a>) defines the possible arguments like this:</p>
+<pre class=" language-javascript"><code class="javascript  language-javascript">program
+  <span class="token punctuation">.</span><span class="token function">version</span><span class="token punctuation">(</span><span class="token string">'1.0.0'</span><span class="token punctuation">)</span>
+  <span class="token punctuation">.</span><span class="token function">option</span><span class="token punctuation">(</span><span class="token string">'-x --action-to-perform [string]'</span><span class="token punctuation">,</span> <span class="token string">'The type of action to perform.'</span><span class="token punctuation">)</span>
+  <span class="token punctuation">.</span><span class="token function">option</span><span class="token punctuation">(</span><span class="token string">'-u --url [string]'</span><span class="token punctuation">,</span> <span class="token string">'Optional URL used by certain actions'</span><span class="token punctuation">)</span>
+  <span class="token punctuation">.</span><span class="token function">parse</span><span class="token punctuation">(</span>process<span class="token punctuation">.</span>argv<span class="token punctuation">)</span><span class="token punctuation">;</span>
+</code></pre>
+<p>and defines the various user input cases like this:</p>
+<pre class=" language-javascript"><code class="javascript  language-javascript"><span class="token keyword">var</span> performAction <span class="token operator">=</span> <span class="token function">require</span><span class="token punctuation">(</span><span class="token string">'./actions/'</span> <span class="token operator">+</span> program<span class="token punctuation">.</span>actionToPerform<span class="token punctuation">)</span>
+
+<span class="token keyword">switch</span> <span class="token punctuation">(</span>program<span class="token punctuation">.</span>actionToPerform<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">case</span> <span class="token string">'hello_world'</span><span class="token punctuation">:</span>
+    prompt<span class="token punctuation">.</span><span class="token keyword">get</span><span class="token punctuation">(</span><span class="token punctuation">[</span><span class="token punctuation">{</span>
+
+      <span class="token comment" spellcheck="true">// What the property name should be in the result object</span>
+      name<span class="token punctuation">:</span> <span class="token string">'url'</span><span class="token punctuation">,</span>
+
+      <span class="token comment" spellcheck="true">// The prompt message shown to the user</span>
+      description<span class="token punctuation">:</span> <span class="token string">'Enter a URL'</span><span class="token punctuation">,</span>
+
+      <span class="token comment" spellcheck="true">// Whether or not the user is required to enter a value</span>
+      required<span class="token punctuation">:</span> <span class="token keyword">true</span><span class="token punctuation">,</span>
+
+      <span class="token comment" spellcheck="true">// Validates the user input</span>
+      conform<span class="token punctuation">:</span> <span class="token keyword">function</span> <span class="token punctuation">(</span>value<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+
+        <span class="token comment" spellcheck="true">// In this case, the user must enter a valid URL</span>
+        <span class="token keyword">return</span> validUrl<span class="token punctuation">.</span><span class="token function">isWebUri</span><span class="token punctuation">(</span>value<span class="token punctuation">)</span><span class="token punctuation">;</span>
+      <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span><span class="token punctuation">]</span><span class="token punctuation">,</span> <span class="token keyword">function</span> <span class="token punctuation">(</span>err<span class="token punctuation">,</span> result<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+
+      <span class="token comment" spellcheck="true">// Perform some action following successful input</span>
+      <span class="token function">performAction</span><span class="token punctuation">(</span>phantomInstance<span class="token punctuation">,</span> result<span class="token punctuation">.</span>url<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">break</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<p>At this point, we’ve defined a basic path through which we can specify an action to perform, and have added a prompt to accept a URL. We just need to add a module to handle the logic that is specific to this action. We can do this by adding a file named <a href="https://github.com/sitepoint-editors/node-phantom-cli/blob/master/actions/hello_world.js">hello_world.js</a> to the <a href="https://github.com/sitepoint-editors/node-phantom-cli/tree/master/actions">actions</a> directory:</p>
+<pre class=" language-javascript"><code class="javascript  language-javascript"><span class="token string">'use strict'</span><span class="token punctuation">;</span>
+
+<span class="token comment" spellcheck="true">/**
+ * @param Horseman phantomInstance
+ * @param string url
+ */</span>
+module<span class="token punctuation">.</span>exports <span class="token operator">=</span> <span class="token keyword">function</span> <span class="token punctuation">(</span>phantomInstance<span class="token punctuation">,</span> url<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+
+  <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>url <span class="token operator">||</span> <span class="token keyword">typeof</span> url <span class="token operator">!</span><span class="token operator">==</span> <span class="token string">'string'</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">throw</span> <span class="token string">'You must specify a url to ping'</span><span class="token punctuation">;</span>
+  <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
+    console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token string">'Pinging url: '</span><span class="token punctuation">,</span> url<span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token punctuation">}</span>
+
+  phantomInstance
+    <span class="token punctuation">.</span><span class="token function">open</span><span class="token punctuation">(</span>url<span class="token punctuation">)</span>
+    <span class="token punctuation">.</span><span class="token function">status</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token punctuation">.</span><span class="token function">then</span><span class="token punctuation">(</span><span class="token keyword">function</span> <span class="token punctuation">(</span>statusCode<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+      <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token function">Number</span><span class="token punctuation">(</span>statusCode<span class="token punctuation">)</span> <span class="token operator">&gt;=</span> <span class="token number">400</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">throw</span> <span class="token string">'Page failed with status: '</span> <span class="token operator">+</span> statusCode<span class="token punctuation">;</span>
+      <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
+        console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token string">'Hello world. Status code returned: '</span><span class="token punctuation">,</span> statusCode<span class="token punctuation">)</span><span class="token punctuation">;</span>
+      <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span><span class="token punctuation">)</span>
+    <span class="token punctuation">.</span><span class="token keyword">catch</span><span class="token punctuation">(</span><span class="token keyword">function</span> <span class="token punctuation">(</span>err<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+      console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token string">'Error: '</span><span class="token punctuation">,</span> err<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span><span class="token punctuation">)</span>
+
+    <span class="token comment" spellcheck="true">// Always close the Horseman instance</span>
+    <span class="token comment" spellcheck="true">// Otherwise you might end up with orphaned phantom processes</span>
+    <span class="token punctuation">.</span><span class="token function">close</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span class="token punctuation">;</span>
+</code></pre>
+<p>As you can see, the module expects to be supplied with an instance of a PhantomJS object (<code class=" language-undefined">phantomInstance</code>) and a URL (<code class=" language-undefined">url</code>). We will get into the specifics of defining a PhantomJS instance momentarily, but for now it’s enough to see that we’ve laid the groundwork for triggering a particular action. Now that we’ve put a convention in place, we can easily add new actions in a defined and sane manner.</p>
+<h2 id="crawlingwithphantomjsusinghorseman">Crawling with PhantomJS Using Horseman</h2>
+<p><a href="https://github.com/johntitus/node-horseman">Horseman</a> is a Node.js package that provides a powerful interface for creating and interacting with PhantomJS processes. A comprehensive explanation of Horseman and its features would warrant its own article, but suffice to say that it allows you to easily simulate just about any behavior that a human user might exhibit in their browser. Horseman provides a wide range of configuration options, including things like automatically injecting jQuery and ignoring SSL certificate warnings. It also provides features for cookie handling and taking screenshots.</p>
+<p>Each time we trigger an action through our CLI framework, our entry script (<code class=" language-undefined">run.js</code>) instantiates an instance of Horseman and passes it along to the specified action module. In pseudo-code it looks something like this:</p>
+<pre class=" language-javascript"><code class="javascript  language-javascript"><span class="token keyword">var</span> phantomInstance <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Horseman</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+  phantomPath<span class="token punctuation">:</span> <span class="token string">'/usr/local/bin/phantomjs'</span><span class="token punctuation">,</span>
+  loadImages<span class="token punctuation">:</span> <span class="token keyword">true</span><span class="token punctuation">,</span>
+  injectJquery<span class="token punctuation">:</span> <span class="token keyword">true</span><span class="token punctuation">,</span>
+  webSecurity<span class="token punctuation">:</span> <span class="token keyword">true</span><span class="token punctuation">,</span>
+  ignoreSSLErrors<span class="token punctuation">:</span> <span class="token keyword">true</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token function">performAction</span><span class="token punctuation">(</span>phantomInstance<span class="token punctuation">,</span> <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+</code></pre>
+<p>Now when we run our command, the Horseman instance and input URL get passed to the <a href="https://github.com/sitepoint-editors/node-phantom-cli/blob/master/actions/hello_world.js">hello_world</a> module, causing PhantomJS to request the URL, capture its status code, and print the status to the console. We’ve just run our first bona fide crawl using Horseman. Giddyup!</p>
+<p><img src="http://dab1nmslvvntp.cloudfront.net/wp-content/uploads/2016/02/1454672588running_hello_world_command.png" alt="Output of running hello_world command"></p>
+<h2 id="chaininghorsemanmethodsforcomplexinteractions">Chaining Horseman Methods for Complex Interactions</h2>
+<p>So far we’ve looked at a very simple usage of Horseman, but the package can do much more when we chain its methods together to perform a sequence of actions in the browser. In order to demonstrate a few of these features, let’s define an action that simulates a user navigating through <a href="https://github.com/">GitHub</a> to create a new repository.</p>
+<p><strong>Please note:</strong> This example is purely for demonstration purposes and should not be considered a viable method for creating Github repositories. It is merely an example of how one could use Horseman to interact with a web application. You should use the official <a href="https://developer.github.com/v3/repos/#create">Github API</a> if you are interested in creating repositories in an automated fashion.</p>
+<p>Let us suppose that the new crawl will be triggered like so:</p>
+<pre class=" language-bash"><code class="bash  language-bash">$ node run<span class="token punctuation">.</span>js <span class="token operator">-</span>x create_repo
+</code></pre>
+<p>Following the convention of the CLI framework we’ve already put in place, we need to add a new module to the actions directory named <a href="https://github.com/sitepoint-editors/node-phantom-cli/blob/master/actions/create_repo.js">create_repo.js</a>. As with our previous “hello world” example, the <code class=" language-undefined">create_repo</code> module exports a single function containing all of the logic for that action.</p>
+<pre class=" language-javascript"><code class="javascript  language-javascript">module<span class="token punctuation">.</span>exports <span class="token operator">=</span> <span class="token keyword">function</span> <span class="token punctuation">(</span>phantomInstance<span class="token punctuation">,</span> username<span class="token punctuation">,</span> password<span class="token punctuation">,</span> repository<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+
+  <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>username <span class="token operator">||</span> <span class="token operator">!</span>password <span class="token operator">||</span> <span class="token operator">!</span>repository<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">throw</span> <span class="token string">'You must specify login credentials and a repository name'</span><span class="token punctuation">;</span>
+  <span class="token punctuation">}</span>
+
+  <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<p>Notice that with this action we are passing more parameters to the exported function than we did previously. The parameters include <code class=" language-undefined">username</code>, <code class=" language-undefined">password</code>, and <code class=" language-undefined">repository</code>. We will pass these values from <code class=" language-undefined">run.js</code> once the user has successfully completed the prompt challenge.</p>
+<p>Before any of that can happen though, we have to add logic to <code class=" language-undefined">run.js</code> to trigger the prompt and capture the data. We do this by adding a case to our main <code class=" language-undefined">switch</code> statement:</p>
+<pre class=" language-javascript"><code class="javascript  language-javascript"><span class="token keyword">switch</span> <span class="token punctuation">(</span>program<span class="token punctuation">.</span>actionToPerform<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+
+  <span class="token keyword">case</span> <span class="token string">'create_repo'</span><span class="token punctuation">:</span>
+    prompt<span class="token punctuation">.</span><span class="token keyword">get</span><span class="token punctuation">(</span><span class="token punctuation">[</span><span class="token punctuation">{</span>
+       name<span class="token punctuation">:</span> <span class="token string">'repository'</span><span class="token punctuation">,</span>
+       description<span class="token punctuation">:</span> <span class="token string">'Enter repository name'</span><span class="token punctuation">,</span>
+       required<span class="token punctuation">:</span> <span class="token keyword">true</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span> <span class="token punctuation">{</span>
+       name<span class="token punctuation">:</span> <span class="token string">'username'</span><span class="token punctuation">,</span>
+       description<span class="token punctuation">:</span> <span class="token string">'Enter GitHub username'</span><span class="token punctuation">,</span>
+       required<span class="token punctuation">:</span> <span class="token keyword">true</span>
+     <span class="token punctuation">}</span><span class="token punctuation">,</span> <span class="token punctuation">{</span>
+       name<span class="token punctuation">:</span> <span class="token string">'password'</span><span class="token punctuation">,</span>
+       description<span class="token punctuation">:</span> <span class="token string">'Enter GitHub password'</span><span class="token punctuation">,</span>
+       hidden<span class="token punctuation">:</span> <span class="token keyword">true</span><span class="token punctuation">,</span>
+       required<span class="token punctuation">:</span> <span class="token keyword">true</span>
+    <span class="token punctuation">}</span><span class="token punctuation">]</span><span class="token punctuation">,</span> <span class="token keyword">function</span> <span class="token punctuation">(</span>err<span class="token punctuation">,</span> result<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+      <span class="token function">performAction</span><span class="token punctuation">(</span>
+        phantomInstance<span class="token punctuation">,</span>
+        result<span class="token punctuation">.</span>username<span class="token punctuation">,</span>
+        result<span class="token punctuation">.</span>password<span class="token punctuation">,</span>
+        result<span class="token punctuation">.</span>repository
+      <span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">break</span><span class="token punctuation">;</span>
+
+    <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+</code></pre>
+<p>Now that we’ve added this hook to <code class=" language-undefined">run.js</code>, when the user enters the relevant data it will be passed to the action, allowing us to proceed with the crawl.</p>
+<p>As for the <code class=" language-undefined">create_repo</code> crawl logic itself, we use Horseman’s array of methods to navigate to the Github login page, enter the supplied <code class=" language-undefined">username</code> and <code class=" language-undefined">password</code>, and submit the form:</p>
+<pre class=" language-javascript"><code class="javascript  language-javascript">phantomInstance
+  <span class="token punctuation">.</span><span class="token function">open</span><span class="token punctuation">(</span><span class="token string">'https://github.com/login'</span><span class="token punctuation">)</span>
+  <span class="token punctuation">.</span><span class="token function">type</span><span class="token punctuation">(</span><span class="token string">'input[name="login"]'</span><span class="token punctuation">,</span> username<span class="token punctuation">)</span>
+  <span class="token punctuation">.</span><span class="token function">type</span><span class="token punctuation">(</span><span class="token string">'input[name="password"]'</span><span class="token punctuation">,</span> password<span class="token punctuation">)</span>
+  <span class="token punctuation">.</span><span class="token function">click</span><span class="token punctuation">(</span><span class="token string">'input[name="commit"]'</span><span class="token punctuation">)</span>
+</code></pre>
+<p>We continue the chain by waiting for the form submission page to load:</p>
+<pre class=" language-javascript"><code class="javascript  language-javascript"><span class="token punctuation">.</span><span class="token function">waitForNextPage</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+</code></pre>
+<p>after which we use jQuery to determine if the login was successful:</p>
+<pre class=" language-javascript"><code class="javascript  language-javascript"><span class="token punctuation">.</span><span class="token function">evaluate</span><span class="token punctuation">(</span><span class="token keyword">function</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  $ <span class="token operator">=</span> window<span class="token punctuation">.</span>$ <span class="token operator">||</span> window<span class="token punctuation">.</span>jQuery<span class="token punctuation">;</span>
+  <span class="token keyword">var</span> fullHtml <span class="token operator">=</span> <span class="token function">$</span><span class="token punctuation">(</span><span class="token string">'body'</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">html</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token keyword">return</span> <span class="token operator">!</span>fullHtml<span class="token punctuation">.</span><span class="token function">match</span><span class="token punctuation">(</span><span class="token regex">/Incorrect username or password/</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span>
+<span class="token punctuation">.</span><span class="token function">then</span><span class="token punctuation">(</span><span class="token keyword">function</span> <span class="token punctuation">(</span>isLoggedIn<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>isLoggedIn<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">throw</span> <span class="token string">'Login failed'</span><span class="token punctuation">;</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span>
+</code></pre>
+<p>An error is thrown if the login fails. Otherwise, we continue chaining methods to navigate to our profile page:</p>
+<pre class=" language-javascript"><code class="javascript  language-javascript"><span class="token punctuation">.</span><span class="token function">click</span><span class="token punctuation">(</span><span class="token string">'a:contains("Your profile")'</span><span class="token punctuation">)</span>
+<span class="token punctuation">.</span><span class="token function">waitForNextPage</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+</code></pre>
+<p>Once we’re on our profile page, we navigate to our repositories tab:</p>
+<pre class=" language-javascript"><code class="javascript  language-javascript"><span class="token punctuation">.</span><span class="token function">click</span><span class="token punctuation">(</span><span class="token string">'nav[role="navigation"] a:nth-child(2)'</span><span class="token punctuation">)</span>
+<span class="token punctuation">.</span><span class="token function">waitForSelector</span><span class="token punctuation">(</span><span class="token string">'a.new-repo'</span><span class="token punctuation">)</span>
+</code></pre>
+<p>While on our repositories tab, we check to see if a repository with the specified name already exists. If it does, then we throw an error. If not, then we continue with our sequence:</p>
+<pre class=" language-javascript"><code class="javascript  language-javascript"><span class="token comment" spellcheck="true">// Gather the names of the user's existing repositories</span>
+<span class="token punctuation">.</span><span class="token function">evaluate</span><span class="token punctuation">(</span><span class="token keyword">function</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  $ <span class="token operator">=</span> window<span class="token punctuation">.</span>$ <span class="token operator">||</span> window<span class="token punctuation">.</span>jQuery<span class="token punctuation">;</span>
+
+  <span class="token keyword">var</span> possibleRepositories <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+  <span class="token function">$</span><span class="token punctuation">(</span><span class="token string">'.repo-list-item h3 a'</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">each</span><span class="token punctuation">(</span><span class="token keyword">function</span> <span class="token punctuation">(</span>i<span class="token punctuation">,</span> el<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    possibleRepositories<span class="token punctuation">.</span><span class="token function">push</span><span class="token punctuation">(</span><span class="token function">$</span><span class="token punctuation">(</span>el<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">text</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">replace</span><span class="token punctuation">(</span><span class="token regex">/^\s+/</span><span class="token punctuation">,</span> <span class="token string">''</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+  <span class="token keyword">return</span> possibleRepositories<span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span>
+
+<span class="token comment" spellcheck="true">// Determine if the specified repository already exists</span>
+<span class="token punctuation">.</span><span class="token function">then</span><span class="token punctuation">(</span><span class="token keyword">function</span> <span class="token punctuation">(</span>possibleRepositories<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">if</span> <span class="token punctuation">(</span>possibleRepositories<span class="token punctuation">.</span><span class="token function">indexOf</span><span class="token punctuation">(</span>repository<span class="token punctuation">)</span> <span class="token operator">&gt;</span> <span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">throw</span> <span class="token string">'Repository already exists: '</span> <span class="token operator">+</span> repository<span class="token punctuation">;</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span>
+</code></pre>
+<p>Assuming no errors have been thrown, we proceed by programmatically clicking the “new repository” button and waiting for the next page:</p>
+<pre class=" language-javascript"><code class="javascript  language-javascript"><span class="token punctuation">.</span><span class="token function">click</span><span class="token punctuation">(</span><span class="token string">'a:contains("New")'</span><span class="token punctuation">)</span>
+<span class="token punctuation">.</span><span class="token function">waitForNextPage</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+</code></pre>
+<p>after which we enter the supplied <code class=" language-undefined">repository</code> name and submit the form:</p>
+<pre class=" language-javascript"><code class="javascript  language-javascript"><span class="token punctuation">.</span><span class="token function">type</span><span class="token punctuation">(</span><span class="token string">'input#repository_name'</span><span class="token punctuation">,</span> repository<span class="token punctuation">)</span>
+<span class="token punctuation">.</span><span class="token function">click</span><span class="token punctuation">(</span><span class="token string">'button:contains("Create repository")'</span><span class="token punctuation">)</span>
+</code></pre>
+<p>Once we reach the resulting page we know that the repository has been created:</p>
+<pre class=" language-javascript"><code class="javascript  language-javascript"><span class="token punctuation">.</span><span class="token function">waitForNextPage</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span class="token punctuation">.</span><span class="token function">then</span><span class="token punctuation">(</span><span class="token keyword">function</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token string">'Success! You should now have a new repository at: '</span><span class="token punctuation">,</span> <span class="token string">'https://github.com/'</span> <span class="token operator">+</span> username <span class="token operator">+</span> <span class="token string">'/'</span> <span class="token operator">+</span> repository<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span>
+</code></pre>
+<p>As with any Horseman crawl, it is crucial that we close the Horseman instance at the end:</p>
+<pre class=" language-javascript"><code class="javascript  language-javascript"><span class="token punctuation">.</span><span class="token function">close</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+</code></pre>
+<p>Failing to close the Horseman instance can result in orphaned PhantomJS processes persisting on the machine.</p>
+<h2 id="crawlingtogatherdata">Crawling to Gather Data</h2>
+<p>At this point we have assembled a static sequence of actions to programmatically create a new repository on GitHub. To accomplish this, we chained a series of Horseman methods.</p>
+<p>This approach can be useful for specific structural and behavioral patterns that are known beforehand, however, you may find that you need to implement more flexible scripting at some point. This might be the case if your action sequence has the potential to vary widely based on context or produce multiple different outcomes. It would also be the case if you need to extract data from the DOM.</p>
+<p>In such cases you can use Horseman’s <a href="https://github.com/johntitus/node-horseman#evaluatefn-arg1-arg2">evaluate()</a> method, which allows you to execute free-form interactions in the browser by injecting either inline or externally-linked JavaScript.</p>
+<p>This section demonstrates an example of extracting basic data from a page (anchor links, in this case). One scenario where this might be necessary would be building a defacement detection crawler to hit every URL on a domain.</p>
+<p>As with our last example, we have to first add a new module to the actions directory:</p>
+<pre class=" language-javascript"><code class="javascript  language-javascript">module<span class="token punctuation">.</span>exports <span class="token operator">=</span> <span class="token keyword">function</span> <span class="token punctuation">(</span>phantomInstance<span class="token punctuation">,</span> url<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+
+  <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>url <span class="token operator">||</span> <span class="token keyword">typeof</span> url <span class="token operator">!</span><span class="token operator">==</span> <span class="token string">'string'</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">throw</span> <span class="token string">'You must specify a url to gather links'</span><span class="token punctuation">;</span>
+  <span class="token punctuation">}</span>
+
+  phantomInstance
+    <span class="token punctuation">.</span><span class="token function">open</span><span class="token punctuation">(</span>url<span class="token punctuation">)</span>
+
+    <span class="token comment" spellcheck="true">// Interact with the page. This code is run in the browser.</span>
+    <span class="token punctuation">.</span><span class="token function">evaluate</span><span class="token punctuation">(</span><span class="token keyword">function</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+      $ <span class="token operator">=</span> window<span class="token punctuation">.</span>$ <span class="token operator">||</span> window<span class="token punctuation">.</span>jQuery<span class="token punctuation">;</span>
+
+      <span class="token comment" spellcheck="true">// Return a single result object with properties for</span>
+      <span class="token comment" spellcheck="true">// whatever intelligence you want to derive from the page</span>
+      <span class="token keyword">var</span> result <span class="token operator">=</span> <span class="token punctuation">{</span>
+        links<span class="token punctuation">:</span> <span class="token punctuation">[</span><span class="token punctuation">]</span>
+      <span class="token punctuation">}</span><span class="token punctuation">;</span>
+
+      <span class="token keyword">if</span> <span class="token punctuation">(</span>$<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token function">$</span><span class="token punctuation">(</span><span class="token string">'a'</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">each</span><span class="token punctuation">(</span><span class="token keyword">function</span> <span class="token punctuation">(</span>i<span class="token punctuation">,</span> el<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+          <span class="token keyword">var</span> href <span class="token operator">=</span> <span class="token function">$</span><span class="token punctuation">(</span>el<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">attr</span><span class="token punctuation">(</span><span class="token string">'href'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+          <span class="token keyword">if</span> <span class="token punctuation">(</span>href<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>href<span class="token punctuation">.</span><span class="token function">match</span><span class="token punctuation">(</span><span class="token regex">/^(#|javascript|mailto)/</span><span class="token punctuation">)</span> <span class="token operator">&amp;&amp;</span> result<span class="token punctuation">.</span>links<span class="token punctuation">.</span><span class="token function">indexOf</span><span class="token punctuation">(</span>href<span class="token punctuation">)</span> <span class="token operator">===</span> <span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+              result<span class="token punctuation">.</span>links<span class="token punctuation">.</span><span class="token function">push</span><span class="token punctuation">(</span>href<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+          <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+      <span class="token punctuation">}</span>
+      <span class="token comment" spellcheck="true">// jQuery should be present, but if it's not, then collect the links using pure javascript</span>
+      <span class="token keyword">else</span> <span class="token punctuation">{</span>
+        <span class="token keyword">var</span> links <span class="token operator">=</span> document<span class="token punctuation">.</span><span class="token function">getElementsByTagName</span><span class="token punctuation">(</span><span class="token string">'a'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">var</span> i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> links<span class="token punctuation">.</span>length<span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+          <span class="token keyword">var</span> href <span class="token operator">=</span> links<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">.</span>href<span class="token punctuation">;</span>
+          <span class="token keyword">if</span> <span class="token punctuation">(</span>href<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>href<span class="token punctuation">.</span><span class="token function">match</span><span class="token punctuation">(</span><span class="token regex">/^(#|javascript|mailto)/</span><span class="token punctuation">)</span> <span class="token operator">&amp;&amp;</span> result<span class="token punctuation">.</span>links<span class="token punctuation">.</span><span class="token function">indexOf</span><span class="token punctuation">(</span>href<span class="token punctuation">)</span> <span class="token operator">===</span> <span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+              result<span class="token punctuation">.</span>links<span class="token punctuation">.</span><span class="token function">push</span><span class="token punctuation">(</span>href<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+          <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span>
+      <span class="token punctuation">}</span>
+
+      <span class="token keyword">return</span> result<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span><span class="token punctuation">)</span>
+    <span class="token punctuation">.</span><span class="token function">then</span><span class="token punctuation">(</span><span class="token keyword">function</span> <span class="token punctuation">(</span>result<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+      console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token string">'Success! Here are the derived links: \n'</span><span class="token punctuation">,</span> result<span class="token punctuation">.</span>links<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span><span class="token punctuation">)</span>
+
+    <span class="token punctuation">.</span><span class="token keyword">catch</span><span class="token punctuation">(</span><span class="token keyword">function</span> <span class="token punctuation">(</span>err<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+      console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token string">'Error getting links: '</span><span class="token punctuation">,</span> err<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span><span class="token punctuation">)</span>
+
+    <span class="token comment" spellcheck="true">// Always close the Horseman instance</span>
+    <span class="token comment" spellcheck="true">// Otherwise you might end up with orphaned phantom processes</span>
+    <span class="token punctuation">.</span><span class="token function">close</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+</code></pre>
+<p>And then add a hook for the new action in <code class=" language-undefined">run.js</code>:</p>
+<pre class=" language-javascript"><code class="javascript  language-javascript"><span class="token keyword">switch</span> <span class="token punctuation">(</span>program<span class="token punctuation">.</span>actionToPerform<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+
+  <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+
+  <span class="token keyword">case</span> <span class="token string">'get_links'</span><span class="token punctuation">:</span>
+    prompt<span class="token punctuation">.</span><span class="token keyword">get</span><span class="token punctuation">(</span><span class="token punctuation">[</span><span class="token punctuation">{</span>
+        name<span class="token punctuation">:</span> <span class="token string">'url'</span><span class="token punctuation">,</span>
+        description<span class="token punctuation">:</span> <span class="token string">'Enter URL to gather links from'</span><span class="token punctuation">,</span>
+        required<span class="token punctuation">:</span> <span class="token keyword">true</span><span class="token punctuation">,</span>
+        conform<span class="token punctuation">:</span> <span class="token keyword">function</span> <span class="token punctuation">(</span>value<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+          <span class="token keyword">return</span> validUrl<span class="token punctuation">.</span><span class="token function">isWebUri</span><span class="token punctuation">(</span>value<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span><span class="token punctuation">]</span><span class="token punctuation">,</span> <span class="token keyword">function</span> <span class="token punctuation">(</span>err<span class="token punctuation">,</span> result<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+      <span class="token function">performAction</span><span class="token punctuation">(</span>phantomInstance<span class="token punctuation">,</span> result<span class="token punctuation">.</span>url<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">break</span><span class="token punctuation">;</span>
+</code></pre>
+<p>Now that this code is in place, we can run a crawl to extract links from any given page by running the following command:</p>
+<pre class=" language-bash"><code class="bash  language-bash">$ node run<span class="token punctuation">.</span>js <span class="token operator">-</span>x get_links
+</code></pre>
+<p>This action demonstrates extracting data from a page, and does not utilize any browser actions that are built-in by Horseman. It directly executes whatever JavaScript you put in the <code class=" language-undefined">evaluate()</code> method, and does so as if it’s natively running in a browser environment.</p>
+<p>One last thing should be noted in this section, which was alluded to earlier: not only can you execute custom JavaScript in the browser using the <code class=" language-undefined">evaluate()</code> method, but you can also inject external scripts into the runtime environment prior to running your evaluation logic. This can be done like so:</p>
+<pre class=" language-javascript"><code class="javascript  language-javascript">phantomInstance
+  <span class="token punctuation">.</span><span class="token function">open</span><span class="token punctuation">(</span>url<span class="token punctuation">)</span>
+  <span class="token punctuation">.</span><span class="token function">injectJs</span><span class="token punctuation">(</span><span class="token string">'scripts/CustomLogic.js'</span><span class="token punctuation">)</span>
+  <span class="token punctuation">.</span><span class="token function">evaluate</span><span class="token punctuation">(</span><span class="token keyword">function</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">var</span> x <span class="token operator">=</span> CustomLogic<span class="token punctuation">.</span><span class="token function">getX</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment" spellcheck="true">// Assumes variable 'CustomLogic' was loaded by scripts/custom_logic.js</span>
+    console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token string">'Retrieved x using CustomLogic: '</span><span class="token punctuation">,</span> x<span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token punctuation">}</span><span class="token punctuation">)</span>
+</code></pre>
+<p>By extending the logic above, you could perform virtually any action on any website.</p>
+<h2 id="usinghorsemantotakescreenshots">Using Horseman to Take Screenshots</h2>
+<p>The final use case I want to demonstrate is how you would use Horseman to take screenshots. We can do this with Horseman’s <a href="https://github.com/johntitus/node-horseman#screenshotbase64type">screenshotBase64()</a> method, which returns a base64 encoded string representing the screenshot.</p>
+<p>As with our previous example, we have to first add a new module to the actions directory:</p>
+<pre class=" language-javascript"><code class="javascript  language-javascript">module<span class="token punctuation">.</span>exports <span class="token operator">=</span> <span class="token keyword">function</span> <span class="token punctuation">(</span>phantomInstance<span class="token punctuation">,</span> url<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+
+  <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>url <span class="token operator">||</span> <span class="token keyword">typeof</span> url <span class="token operator">!</span><span class="token operator">==</span> <span class="token string">'string'</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">throw</span> <span class="token string">'You must specify a url to take a screenshot'</span><span class="token punctuation">;</span>
+  <span class="token punctuation">}</span>
+
+  console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token string">'Taking screenshot of: '</span><span class="token punctuation">,</span> url<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+  phantomInstance
+    <span class="token punctuation">.</span><span class="token function">open</span><span class="token punctuation">(</span>url<span class="token punctuation">)</span>
+
+    <span class="token comment" spellcheck="true">// Optionally, determine the status of the response</span>
+    <span class="token punctuation">.</span><span class="token function">status</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token punctuation">.</span><span class="token function">then</span><span class="token punctuation">(</span><span class="token keyword">function</span> <span class="token punctuation">(</span>statusCode<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+      console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token string">'HTTP status code: '</span><span class="token punctuation">,</span> statusCode<span class="token punctuation">)</span><span class="token punctuation">;</span>
+      <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token function">Number</span><span class="token punctuation">(</span>statusCode<span class="token punctuation">)</span> <span class="token operator">&gt;=</span> <span class="token number">400</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">throw</span> <span class="token string">'Page failed with status: '</span> <span class="token operator">+</span> statusCode<span class="token punctuation">;</span>
+      <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span><span class="token punctuation">)</span>
+
+    <span class="token comment" spellcheck="true">// Take the screenshot</span>
+    <span class="token punctuation">.</span><span class="token function">screenshotBase64</span><span class="token punctuation">(</span><span class="token string">'PNG'</span><span class="token punctuation">)</span>
+
+    <span class="token comment" spellcheck="true">// Save the screenshot to a file</span>
+    <span class="token punctuation">.</span><span class="token function">then</span><span class="token punctuation">(</span><span class="token keyword">function</span> <span class="token punctuation">(</span>screenshotBase64<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+
+      <span class="token comment" spellcheck="true">// Name the file based on a sha1 hash of the url</span>
+      <span class="token keyword">var</span> urlSha1 <span class="token operator">=</span> crypto<span class="token punctuation">.</span><span class="token function">createHash</span><span class="token punctuation">(</span><span class="token string">'sha1'</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">update</span><span class="token punctuation">(</span>url<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">digest</span><span class="token punctuation">(</span><span class="token string">'hex'</span><span class="token punctuation">)</span>
+        <span class="token punctuation">,</span> filePath <span class="token operator">=</span> <span class="token string">'screenshots/'</span> <span class="token operator">+</span> urlSha1 <span class="token operator">+</span> <span class="token string">'.base64.png.txt'</span><span class="token punctuation">;</span>
+
+      fs<span class="token punctuation">.</span><span class="token function">writeFile</span><span class="token punctuation">(</span>filePath<span class="token punctuation">,</span> screenshotBase64<span class="token punctuation">,</span> <span class="token keyword">function</span> <span class="token punctuation">(</span>err<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>err<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+          <span class="token keyword">throw</span> err<span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+        console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token string">'Success! You should now have a new screenshot at: '</span><span class="token punctuation">,</span> filePath<span class="token punctuation">)</span><span class="token punctuation">;</span>
+      <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span><span class="token punctuation">)</span>
+
+    <span class="token punctuation">.</span><span class="token keyword">catch</span><span class="token punctuation">(</span><span class="token keyword">function</span> <span class="token punctuation">(</span>err<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+      console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token string">'Error taking screenshot: '</span><span class="token punctuation">,</span> err<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span><span class="token punctuation">)</span>
+
+    <span class="token comment" spellcheck="true">// Always close the Horseman instance</span>
+    <span class="token comment" spellcheck="true">// Otherwise you might end up with orphaned phantom processes</span>
+    <span class="token punctuation">.</span><span class="token function">close</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span class="token punctuation">;</span>
+</code></pre>
+<p>And then add a hook for the new action in <code class=" language-undefined">run.js</code>:</p>
+<pre class=" language-javascript"><code class="javascript  language-javascript"><span class="token keyword">case</span> <span class="token string">'take_screenshot'</span><span class="token punctuation">:</span>
+  prompt<span class="token punctuation">.</span><span class="token keyword">get</span><span class="token punctuation">(</span><span class="token punctuation">[</span><span class="token punctuation">{</span>
+      name<span class="token punctuation">:</span> <span class="token string">'url'</span><span class="token punctuation">,</span>
+      description<span class="token punctuation">:</span> <span class="token string">'Enter URL to take screenshot of'</span><span class="token punctuation">,</span>
+      required<span class="token punctuation">:</span> <span class="token keyword">true</span><span class="token punctuation">,</span>
+      conform<span class="token punctuation">:</span> <span class="token keyword">function</span> <span class="token punctuation">(</span>value<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">return</span> validUrl<span class="token punctuation">.</span><span class="token function">isWebUri</span><span class="token punctuation">(</span>value<span class="token punctuation">)</span><span class="token punctuation">;</span>
+      <span class="token punctuation">}</span>
+  <span class="token punctuation">}</span><span class="token punctuation">]</span><span class="token punctuation">,</span> <span class="token keyword">function</span> <span class="token punctuation">(</span>err<span class="token punctuation">,</span> result<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token function">performAction</span><span class="token punctuation">(</span>phantomInstance<span class="token punctuation">,</span> result<span class="token punctuation">.</span>url<span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token keyword">break</span><span class="token punctuation">;</span>
+</code></pre>
+<p>Now you can take screenshots with the following command:</p>
+<pre class=" language-bash"><code class="bash  language-bash">$ node run<span class="token punctuation">.</span>js <span class="token operator">-</span>x take_screenshot
+</code></pre>
+<p>The reason for using base64  encoded strings (and not, for example, saving actual images) is that they are a convenient way to represent raw image data. This <a href="http://stackoverflow.com/a/201510/1136887">StackOverflow answer</a> goes into more detail.</p>
+<p>If you wanted to save actual images, you’d use the <a href="https://github.com/johntitus/node-horseman#screenshotpath">screenshot()</a> method.</p>
+<h2 id="conclusion">Conclusion</h2>
+<p>This tutorial has attempted to demonstrate both a custom CLI microframework and some basic logic for crawling in Node.js, using the Horseman package to leverage PhantomJS. While using a CLI framework would likely benefit many projects, the use of crawling is typically limited to very specific problem domains. One common area is in quality assurance (QA), where crawling can be used for functional and user interface testing. Another area is security where, for example, you might want to crawl your website periodically to detect if it has been defaced or otherwise compromised.</p>
+<p>Whatever the case may be for your project, make sure to clearly define your goals and be as unobtrusive as possible. Get permission when you can, be polite to the maximum extent that you can, and take care never to <a href="https://en.wikipedia.org/wiki/Denial-of-service_attack">DDoS</a> a site. If you suspect that you’re generating a lot of automated traffic then you probably are, and should likely re-evaluate your goals, implementation, or level of permission.</p>
+  
