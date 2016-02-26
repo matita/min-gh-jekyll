@@ -1,0 +1,335 @@
+---
+title: "Twitter’s missing manual / fuzzy notepad"
+description: "null"
+link: "https://eev.ee/blog/2016/02/20/twitters-missing-manual/"
+saved: "2016-02-26 14:44:50"
+---
+
+        
+
+        <div class="entry-content">
+            
+            <p>I mentioned recently, buried in <a href="https://eev.ee/blog/2016/02/10/we-have-always-been-at-war-with-ui/">a post about <span class="caps">UI</span> changes</a>, that Twitter’s latest earnings report <a href="http://venturebeat.com/2016/02/10/twitter-is-fixing-that-thing-where-you-type-for-everyone-to-see-your-tweet/">included this bombshell</a>:</p>
+<blockquote>
+<p>We are going to fix the broken windows and confusing parts, like the .@name syntax and @reply rules, that we know inhibit usage and drive people&nbsp;away</p>
+</blockquote>
+<p>There’s an interesting problem here.  <span class="caps">UI</span> is hard.  You can’t just slap a button on the screen for every feature that could conceivably be used at any given time.  Some features are only of interest to so-called “power users”, so they’re left subtle, spread by word-of-mouth.  Some features you try to make invisible and heuristic.  Some features are added just to solve one influential user’s problem.  Some features are, ah,&nbsp;accidental.</p>
+<p>A sufficiently mature, popular, and interesting product thus tends to accumulate a small pile of hidden features, sometimes not documented or even officially acknowledged.  I’d say this is actually a <em>good thing</em>!  Using something for a while should absolutely reward you with a new trick every so often — that below-the-surface knowledge makes you feel involved with the thing you’re using and makes it feel deeper&nbsp;overall.</p>
+<p>The hard part is striking a balance.  On one end of the spectrum you have tools like Notepad, where the only easter egg is that pressing F5 inserts the current time.  On the other end you have tools like vim, which consist exclusively of easter&nbsp;eggs.</p>
+<p>One of Twitter’s problems is that it’s tilted a little too far towards the vim end of the scale.  It looks like a dead-simple service, but those humble 140 characters have been crammed full of features over the years, and the ways they interact aren’t always obvious.  There are rules, and the rules generally make sense once you know them, but it’s also really easy to overlook&nbsp;them.</p>
+<p>Here, then, is a list of all the non-obvious things about Twitter that I know.  Consider it both a reference for people who aren’t up to their eyeballs in Twitter, and an example of how these hidden features can pile up.  I’m also throwing in a couple notes on etiquette, because I think that’s strongly informed by the shape of the&nbsp;platform.</p>
+
+
+<h2 id="text"><a class="toclink" href="https://eev.ee/blog/2016/02/20/twitters-missing-manual/?utm_source=SitePoint&amp;utm_medium=email&amp;utm_campaign=Versioning#text">Text</a></h2>
+<ul>
+<li>
+<p>Tweets are limited to 140 <em>Unicode</em> characters, meaning that even astral plane characters (such as emoji) only count as&nbsp;one.</p>
+</li>
+<li>
+<p>Leading and trailing whitespace is stripped from&nbsp;tweets.</p>
+</li>
+<li>
+<p>Tweets may contain newlines, and there doesn’t seem to be any limit to how&nbsp;many.</p>
+</li>
+<li>
+<p>In the middle of a tweet, strings of whitespace (e.g. multiple spaces) are preserved.  However, more than two <em>consecutive</em> newlines will be reduced to only&nbsp;two.</p>
+</li>
+<li>
+<p>Anything remotely resembling a link will be mangled into some <code>http://t.co/asdf</code> link-shortened garbage.  In some cases, such as when talking about a domain name, this can make the tweet <em>longer</em>.  You can defeat this by sticking an invisible character, such as U+200D <span class="caps">ZERO</span> <span class="caps">WIDTH</span> <span class="caps">JOINER</span>, around the final dot so it no longer looks like a domain&nbsp;name.</p>
+</li>
+<li>
+<p>For the sake of its <span class="caps">SMS</span>-based roots, Twitter supports performing several commands by typing them <em>in a tweet</em>.  In particular, if you start a tweet with the word <code>d</code> or <code>dm</code>, the second word will be treated as a username, and the rest of the tweet will be <span class="caps">DM</span>’d to that&nbsp;user.</p>
+</li>
+<li>
+<p>Accounts managed by multiple people, such as support accounts or politicians’ accounts, sometimes sign tweets with a <code>^</code> followed by the author’s initials.  This has no special significance to&nbsp;Twitter.</p>
+</li>
+<li>
+<p>You cannot use astral plane characters (which includes most emoji) in your display name or bio; they will be silently stripped.  However, you <em>can</em> use anything from the <a href="https://en.wikipedia.org/wiki/Miscellaneous_Symbols">Miscellaneous Symbols</a> or <a href="https://en.wikipedia.org/wiki/Dingbat#Dingbats_Unicode_block">Dingbats</a> blocks, and many of these characters are rendered with color glyphs on Web Twitter.  Results may vary on phones and in other&nbsp;clients.</p>
+</li>
+</ul>
+<h2 id="replies-and-mentions"><a class="toclink" href="https://eev.ee/blog/2016/02/20/twitters-missing-manual/?utm_source=SitePoint&amp;utm_medium=email&amp;utm_campaign=Versioning#replies-and-mentions">Replies and&nbsp;mentions</a></h2>
+<p>A tweet can “mention” other users, which just means including their <code>@handle</code> somewhere in the tweet.  This will notify every mentioned user of the&nbsp;tweet.</p>
+<ul>
+<li>
+<p>A tweet that <em>begins</em> with a mention — that is, the very first character is <code>@</code> and it’s immediately followed by an extant username — won’t appear on your profile on Web Twitter.  It’ll still appear on the “with replies” page.  It’ll also appear on your profile on Android Twitter, which doesn’t separate replies from&nbsp;not.</p>
+</li>
+<li>
+<p>A tweet that begins with a mention won’t appear on the timelines of anyone who follows you, <em>unless</em> they also follow the first person you mention.  That is, if you tweet <code>@foo @bar heya</code>, it’ll only appear on the timelines of people who follow both you and <code>@foo</code>.</p>
+</li>
+<li>
+<p>If you put some other character before the first <code>@</code>, the previous rule no longer applies, and your tweet will appear to all your followers.  So <code>.@foo @bar heya</code> will be visible to everyone (and show on your Web profile).  This is called “dot-replying”.  The dot isn’t actually special; it’s just an easy-to-type and unobtrusive character.  I like to use <code>→</code> or <code>\</code>.  Some people prefer to put the mentions at the end instead, producing <code>heya @foo @bar</code>.</p>
+</li>
+</ul>
+<p>You can reply to tweets, which threads them together.  A tweet can only have one parent (or no parent), but any number of replies.  Everything on Twitter is thus arranged into a number of trees, where the root of the tree is a new tweet not responding to anything, and replies branch out from&nbsp;there.</p>
+<ul>
+<li>
+<p>A reply <em>must</em>, somewhere, mention the author of the tweet it’s replying to.  If you reply to a tweet and delete the author’s <code>@handle</code>, it’ll become a new top-level tweet rather than a&nbsp;reply.</p>
+</li>
+<li>
+<p>There is one exception to the previous rule: if you’re replying to <em>yourself</em>, you don’t have to include your own <code>@handle</code>, even though clients include it by default.  So if you want to say something that spans multiple tweets, you can just keep replying to yourself and deleting the <code>@handle</code>.</p>
+<p>It’s a really good idea to do this whenever you’re making multiple tweets about something.  Otherwise, someone who stumbles upon one of the tweets later will have no idea what the context was, and won’t be able to find it without scrolling back however long on your&nbsp;profile.</p>
+<p>If you reply to yourself but leave your <code>@handle</code> at the beginning, the first tweet will appear on your profile, but the others won’t, because they start with a&nbsp;mention.</p>
+<p>I’m told that many third-party clients don’t support replying to yourself without your handle included, and the <span class="caps">API</span> documentation doesn’t mention that it’s a feature.  But I’m <em>also</em> told that <em>only</em> first-party clients require you to mention someone in a reply in order to thread, and that third-party clients will merrily thread anything to anything.  (I remember when Web Twitter allowed that, so I totally believe the <span class="caps">API</span> still does.)  If you don’t use the official clients, I guess give it a whirl and see what&nbsp;happens.</p>
+</li>
+<li>
+<p>The previous rule also applies when making longer replies to someone else.  Reply to them once, then reply to <em>yourself</em> with the next tweet (and remove your own <code>@handle</code>).  You’ll end up with three tweets all threaded&nbsp;together.</p>
+<p>This is even more important, because Twitter shows the replies to a tweet in a somewhat arbitrary order, bubbling “important” ones to the top.  If you write a very long response and break it across three tweets, all replying to the same original tweet, they’ll probably show as an incoherent jumble to anyone reading the thread.  If you make each tweet a reply to the previous one, they’re guaranteed to stay in&nbsp;order.</p>
+</li>
+<li>
+<p>Replying to a tweet will also prefill the <code>@handle</code> of anyone mentioned in the tweet.  Replying to a retweet will additionally prefill the <code>@handle</code> of the person who retweeted it.  In some cases, it may be polite to remove some of these; you only need the original author’s <code>@handle</code> to make a reply.  (It’s not uncommon to accumulate multiple mentions, then end up in an extended conversation with only one other person, while constantly notifying several third&nbsp;parties.)</p>
+</li>
+<li>
+<p>In official clients (Web and Android, at least), long threads of tweets are collapsed on your timeline.  Only the first tweet and the last <em>two</em> tweets are visible.  If you have a lot to say about something, it’s a good idea to put the important bits in one of those three tweets where your followers will actually see them.  This is another reason it’s polite to thread your tweets together — it saves people from having their timelines flooded by your&nbsp;tweetstorm.</p>
+<p>Sometimes, it’s possible to see multiple “branches” of the same conversation on your timeline.  For example, if A makes a few tweets, and B and C both reply, and you follow all three of them, then you’ll see B’s replies and C’s replies separately.  Clients don’t handle this particularly well and it can become a bit of a clusterfuck, with the same root tweet appearing multiple&nbsp;times.</p>
+</li>
+<li>
+<p>Because official clients treat a thread as a single unit, you can effectively “bump” your own tweet by replying to it.  Your reply is new, so it’ll appear on your followers’ timelines; but the client will also include the first tweet in the thread as context, regardless of its&nbsp;age.</p>
+</li>
+<li>
+<p>When viewing a single tweet, official clients may not show the replies in chronological order.  Usually the “best” replies are bumped to the top.  “Best” is entirely determined by Twitter, but it seems to work fairly well.  If you reply to yourself, your own replies will almost certainly appear&nbsp;first.</p>
+</li>
+<li>
+<p>If reply to a tweet with <code>@foo heya</code>, and <code>@foo</code> later renames their account to <code>@quux</code>, the tweet will retain its threading even though it no longer mentions the author of the parent tweet.  However, your reply will now appear on your profile, because it doesn’t begin with the handle of an existing user.  Note that this means it’s fairly easy for a non-follower to figure out what you renamed your account to, by searching for replies to your old&nbsp;name.</p>
+</li>
+<li>
+<p>Threads are preserved even if some of the tweets are hidden (either because you’ve blocked some participants, or because they have their accounts set to private).  Those tweets won’t appear for you, but any visible replies to them&nbsp;will.</p>
+</li>
+<li>
+<p>If a tweet in the <em>middle</em> of a thread is deleted (or the author’s account is deleted), the thread will break at that point.  Replies to the deleted tweet won’t be visible when looking at the parent, and the parent won’t be visible when looking at the&nbsp;replies.</p>
+</li>
+<li>
+<p>You can <em>quote</em> tweets by including a link to them in your tweet, which will cause the quoted tweet to appear in a small box below yours.  This <em>does not</em> create a reply and will not be part of the quoted tweet’s thread.  If you want to do that, you can’t use the retweet/quote button.  You have to reply to the tweet, manually include a link to it, <em>and</em> be sure to mention the&nbsp;author.</p>
+</li>
+<li>
+<p>When you quote a tweet, the author is notified; however, unlike a retweet, they won’t be notified when people like or retweet your quote (unless you also mention them).  If you don’t want to notify the author, you can take a screenshot (though this doesn’t let them delete the tweet) or use a <span class="caps">URL</span> shortener (though this doesn’t let them obviously disable a quote by blocking&nbsp;you).</p>
+</li>
+<li>
+<p>Due to the nature of Twitter, it’s common for a tweet to end up on many people’s timelines simultaneously and attract many similar replies within a short span of time.  It’s polite to check the existing replies to a popular tweet, or a tweet from a popular person, before giving your two&nbsp;cents.</p>
+</li>
+<li>
+<p>It’s generally considered rude to barge into the middle of a conversation between two other people, especially if they seem to know each other much better than you know them, and especially if you’re being antagonistic.  There are myriad cases where this may be more or less appropriate, and no hard and fast rules.  You’re a passerby overhearing two people talking on the street; act&nbsp;accordingly.</p>
+</li>
+<li>
+<p>When you quote or publicly mention someone for the sake of criticizing them, be aware that you’re exposing them to all of your followers, some of whom may be eager for an argument.  If you have a lot of followers, you might inadvertently invite a&nbsp;dogpile.</p>
+</li>
+</ul>
+<h2 id="hashtags"><a class="toclink" href="https://eev.ee/blog/2016/02/20/twitters-missing-manual/?utm_source=SitePoint&amp;utm_medium=email&amp;utm_campaign=Versioning#hashtags">Hashtags</a></h2>
+<p>Hashtags are a <code>#</code> character followed by some number of non-whitespace&nbsp;characters.</p>
+<ul>
+<li>
+<p>Exactly <em>which</em> characters may appear in a hashtag is somewhat inconsistent, and has quietly changed at least&nbsp;once.</p>
+</li>
+<li>
+<p>The only real point to hashtags is that you can click on them in clients to jump directly to search&nbsp;results.</p>
+</li>
+<li>
+<p>Hashtags can appear in the “trending” widget, but so can any other regular&nbsp;text.</p>
+</li>
+<li>
+<p>There is no reason to tag a bunch of random words in your tweets.  No one is searching Twitter for <code>#funny</code>.  Doing this makes you look like an extremely out-of-touch&nbsp;marketer.</p>
+</li>
+<li>
+<p>Twitter also supports “cashtags”, which are prefixed with a <code>$</code> instead and are generally stock symbols.  I only even know this because it makes shell and Perl code look&nbsp;goofy.</p>
+</li>
+</ul>
+<h2 id="media"><a class="toclink" href="https://eev.ee/blog/2016/02/20/twitters-missing-manual/?utm_source=SitePoint&amp;utm_medium=email&amp;utm_campaign=Versioning#media">Media</a></h2>
+<p>A tweet may have <em>one</em> embedded&nbsp;attachment.</p>
+<ul>
+<li>
+<p>You may explicitly include a set of up to four images <em>or</em> a video <em>or</em> a poll.  You cannot combine this within a single tweet.  Brands™ have access to a handful of other embedded&nbsp;gizmos.</p>
+</li>
+<li>
+<p>If you include images or a video, you will lose 24 characters of writing space, because a direct link to the images/video will be silently added to the end of your tweet.  This is for the sake of text-only clients, e.g. people using Twitter over <span class="caps">SMS</span>, so they can see that there’s an attachment and possibly view it in a&nbsp;browser.</p>
+</li>
+<li>
+<p>Including a poll will not append a link, but curiously, you’ll still lose 24 characters.  It’s possible this is a client bug, but it happens in both Web and Android&nbsp;Twitter.</p>
+</li>
+<li>
+<p>Alternative clients may not support new media types at first.  In particular, people who used TweetDeck were frequently confused right after polls were launched, because TweetDeck showed only the tweet text and no indication that a poll had ever been there.  Some third-party clients still don’t support polls.  Consider mentioning when you’re using a new attachment type.  Might I suggest prefixing your tweet with&nbsp;📊?</p>
+</li>
+<li>
+<p>If you don’t include an explicit attachment, Twitter will examine the links in your tweet, in <em>reverse</em> order.  If you link to a tweet, that tweet will be quoted in yours.  If you link to a website that supports Twitter “cards” (small brief descriptions of a site, possibly with images), that card will be attached.  There can only be one attachment, so as soon as Twitter finds something it can use, it stops&nbsp;looking.</p>
+</li>
+<li>
+<p>You can embed someone <em>else</em>‘s media in your own tweet by ending it with a link to the media <span class="caps">URL</span> — that is, the one that ends with <code>/photo/1</code>.  This is different from a quoted tweet, and won’t notify the original&nbsp;tweeter.</p>
+</li>
+<li>
+<p>Quoted tweets are always just tweets that include links to other tweets.  Even if the tweet is deleted, an embed box will still appear, though it’ll be grayed out and say the tweet is&nbsp;unavailable.</p>
+<p>If the link is the last thing to appear in the tweet text, official clients <em>will not show</em> the link.  This can be extremely confusing if you try to link to two tweets — the first one will be left as a regular link, and the second one will be <em>replaced</em> by a quoted tweet, so at a glance it looks like you linked to a tweet and it was also embedded.  A workaround for this is just to add text after the final link, so it’s not the last thing in the tweet and thus isn’t&nbsp;hidden.</p>
+</li>
+<li>
+<p>Twitter cards may be associated with a Twitter account.  On Android Twitter (not Web Twitter!), replying to a tweet with a card will also include the <code>@handle</code> for the associated account.  For example, replying to a tweet that links to a YouTube video will prefill <code>@YouTube</code>.  This is pretty goofy, since YouTube itself didn’t <em>make</em> the video, and it causes replies to notify the person even though the original link&nbsp;doesn’t.</p>
+</li>
+<li>
+<p>Uploaded media may be flagged as “sensitive”, which generally means “pornographic”.  This will require viewers to click through a warning to see the media, unless they’re logged in and have their account set to skip the warning.  Flagged media also won’t appear in the sidebar on profile pages for people who have the warning&nbsp;enabled.</p>
+</li>
+<li>
+<p>The <span class="caps">API</span> supports marking individual tweets as containing sensitive media, but official clients <em>do not</em> — instead, there’s an account setting that applies to everything you upload from that point forward.  Media may also be flagged by other users as sensitive.  Twitter also has some sort of auto-detection for sensitive media, which I only know about because it sometimes thinks photos of my hairless cats are&nbsp;pornographic.</p>
+</li>
+<li>
+<p>If <em>your own</em> tweets have “sensitive” media attached, <em>you</em> will have to click through the warning, even if you have the warning disabled.  A Twitter employee tells me this is so you’re aware when your own tweets are flagged, but the message still tells you to disable the warning in account settings, so this is mostly just&nbsp;confusing.</p>
+</li>
+</ul>
+<h2 id="blocking-and-muting"><a class="toclink" href="https://eev.ee/blog/2016/02/20/twitters-missing-manual/?utm_source=SitePoint&amp;utm_medium=email&amp;utm_campaign=Versioning#blocking-and-muting">Blocking and&nbsp;muting</a></h2>
+<ul>
+<li>
+<p>A blocked user cannot view your profile.  They can, of course, use a different account, or merely log out.  This is entirely client-side, too, so it’s possible that some clients don’t even support this&nbsp;“feature”.</p>
+</li>
+<li>
+<p>A blocked user cannot like or retweet your&nbsp;tweets.</p>
+</li>
+<li>
+<p>A blocked user cannot follow you.  If you block someone who’s already following you, they’ll be forced to immediately unfollow.  Likewise, you cannot follow a blocked&nbsp;user.</p>
+</li>
+<li>
+<p>A blocked user’s tweets won’t appear on your timeline, or in any thread.  As of fairly recently, their tweets won’t appear in search results, either.  However, if you view the profile of someone who’s retweeted a blocked user, you <strong>will</strong> still see that&nbsp;retweet.</p>
+</li>
+<li>
+<p>A blocked user <strong>can</strong> see your tweets, if someone they follow retweets&nbsp;you.</p>
+</li>
+<li>
+<p>A blocked user <strong>can</strong> mention or reply to you, though you won’t be notified either by the tweet itself or by any retweets/likes.  However, if someone else replies to them, your <code>@handle</code> will be prefilled, and you’ll be notified.  Also, other people viewing your tweets will still see their replies&nbsp;threaded.</p>
+</li>
+<li>
+<p>A blocked user <strong>can</strong> link to your tweets — however, rather than an embedded quote, their tweet will have a gray “this tweet is unavailable” box attached.  This effect is retroactive.  However (I think?), if a quoted tweet can’t be shown, the <em>link</em> to the tweet is left visible, so people can still click it to view the tweet&nbsp;manually.</p>
+</li>
+<li>
+<p>Muting has two different effects.  If you mute someone you’re <em>following</em>, their tweets won’t appear in your timeline, but you’ll still get notifications from them.  This can be useful if you set your phone to only buzz on notifications from people you follow.  If you mute someone you’re <em>not following</em>, nothing they do will send you notifications.  Either way, their tweets will still be visible in threads and search&nbsp;results.</p>
+</li>
+<li>
+<p>Relatedly, if you follow someone who’s a little eager with the retweeting, you can turn off just their retweets.  It’s in the menu on their&nbsp;profile.</p>
+</li>
+<li>
+<p>It’s trivial to tell whether someone’s blocked you, since their profile will tell you.  However, it’s <em>impossible</em> to know for sure if someone has muted you or is just manually ignoring you, since being muted doesn’t actually prevent you from doing&nbsp;anything.</p>
+</li>
+<li>
+<p>You can block and mute someone at the same time, though this has no special effect.  If you unblock them, they’ll just still be&nbsp;muted.</p>
+</li>
+<li>
+<p>The <span class="caps">API</span> strips out tweets from blocked and muted users server-side for streaming requests (such as your timeline), but leaves it up to the client for other requests (such as viewing a single tweet).  So it’s possible that a client will neglect to apply the usual rule of “you never see a blocked user’s tweets in threads”.  In particular, I’ve heard several reports that this is the case in the official iOS Twitter&nbsp;(!).</p>
+</li>
+<li>
+<p>Tweeting screenshots of “you have been blocked” is getting pretty old and we can probably stop doing&nbsp;it.</p>
+</li>
+</ul>
+<h2 id="search"><a class="toclink" href="https://eev.ee/blog/2016/02/20/twitters-missing-manual/?utm_source=SitePoint&amp;utm_medium=email&amp;utm_campaign=Versioning#search">Search</a></h2>
+<ul>
+<li>
+<p><em>Almost</em> all of Twitter’s advanced search options are exposed on the <a href="https://twitter.com/search-advanced">advanced search page</a>.  All of them are shorthand for using a prefix in your search query; for example, “from these accounts” just becomes something like <code>from:username</code>.</p>
+</li>
+<li>
+<p>The one that isn’t listed there is <code>filter:</code>, which is only mentioned in the <a href="https://dev.twitter.com/rest/public/search"><span class="caps">API</span> documentation</a>.  It can appear as <code>filter:safe</code>, <code>filter:media</code>, <code>filter:images</code>, or <code>filter:links</code>.  It’s possible there are other undocumented&nbsp;forms.</p>
+</li>
+<li>
+<p>Search applies to <em>unshortened</em> links, so you can find links to a website just by searching for its <span class="caps">URL</span>.  However, because Twitter displays links without a protocol (<code>http://</code>), you have to leave it off when searching.  Be aware that people who mention your work without mentioning <em>you</em> might be saying unkind things about&nbsp;it.</p>
+</li>
+<li>
+<p>As a side effect, you can search for <em>quotes</em> of a given user’s tweets by searching for <code>twitter.com/username/status</code>, because all tweet URLs begin with that prefix.  This will also include any tweets from that user that have photos or video attached, because attaching media appends a photo <span class="caps">URL</span>, but you can fix that by adding <code>-from:username</code>.</p>
+</li>
+<li>
+<p>Searching for <code>to:foo</code> will only find tweets that <em>begin with</em> <code>@foo</code>; dot-replies and other mentions are not included.  Searching for <code>@foo</code> will find mentions as well as tweets from that person.  To find only someone’s mentions, you can search for <code>@foo -from:foo</code>.  You can combine this with the above trick to find quotes as&nbsp;well.</p>
+</li>
+<li>
+<p>I’ve been told that <code>from:</code> only applies to the handle a user had <em>when the tweet was made</em>, but this doesn’t match my own experience.  It’s possible the behavior is different depending on whether the old handle has been reclaimed by someone&nbsp;else.</p>
+</li>
+<li>
+<p>Some clients, such as TweetDeck, support showing live feeds of search results right alongside your timeline and notifications.  It’s therefore possible for people to keep an eye on a live stream of everyone who’s talking about them, even when their <code>@handle</code> isn’t mentioned.  Bear this in mind when grumbling, especially about people whose attention you’d prefer to&nbsp;avoid.</p>
+</li>
+<li>
+<p>Namesearch — that is, look for mentions of you or your work that don’t actually <code>@</code>-mention you — with caution.  Liking or replying amicably to tweets that compliment you is probably okay.  Starting arguments with people who dislike your work is rude and kind of creepy, and certainly not likely to improve anyone’s impression of&nbsp;you.</p>
+</li>
+</ul>
+<h2 id="locked-accounts"><a class="toclink" href="https://eev.ee/blog/2016/02/20/twitters-missing-manual/?utm_source=SitePoint&amp;utm_medium=email&amp;utm_campaign=Versioning#locked-accounts">Locked&nbsp;accounts</a></h2>
+<ul>
+<li>
+<p>You may set your account to private, which will hide your tweets from the general public.  Only people who follow you will be able to see your tweets.  Twitter calls this “protected”, but since it shows a lock icon next to your handle, everyone calls it&nbsp;“locked”.</p>
+</li>
+<li>
+<p>Specifically: your banner, avatar, display name, and bio (including location, website, etc.) are still public.  The <em>number</em> of tweets, follows, followers, likes, and lists you have are also public.  Your actual tweets, media, follows, followers, lists, etc. are all&nbsp;hidden.</p>
+</li>
+<li>
+<p>iOS Twitter hides the bio and numbers, as well, which is sort of inconvenient if you were using it to explain who you are and who you’re cool with having follow&nbsp;you.</p>
+</li>
+<li>
+<p>When you lock your account, any existing followers will remain.  Anyone else will only be able to send a follow <em>request</em>, which you can then approve or deny.  You can force anyone to unfollow you at any time (whether locked or not) by blocking and then unblocking them.  Or just blocking&nbsp;them.</p>
+</li>
+<li>
+<p>Follow requests are easy to miss; only a few places in the <span class="caps">UI</span> make a point of telling you when you have new&nbsp;ones.</p>
+</li>
+<li>
+<p>Approving or denying a follow request doesn’t directly notify the requester.  If you approve, obviously they’ll start seeing your tweets in their timeline.  If you deny, the only difference is that if they look at your profile again, the follow button will no longer say&nbsp;“pending”.</p>
+</li>
+<li>
+<p>If you <em>unlock</em> your account, any pending follow requests are automatically&nbsp;accepted.</p>
+</li>
+<li>
+<p>The only way to see your pending follows (accounts you have <em>tried to follow</em> that haven’t yet accepted) is via the <span class="caps">API</span>, or a client that makes use of the <span class="caps">API</span>.  The official clients don’t show them&nbsp;anywhere.</p>
+</li>
+<li>
+<p>No one can retweet a locked account, not even&nbsp;followers.</p>
+</li>
+<li>
+<p>Quoting doesn’t work with locked account; the quoted tweet will only show the “unavailable” message, even if a locked account quotes itself.  Clicking the tweet link will still work, of&nbsp;course.</p>
+</li>
+<li>
+<p>Locked accounts never create notifications for people who aren’t following them.  A locked account can like, retweet, quote, follow, etc. as usual, and the various numbers will go up, but only their followers will be&nbsp;notified.</p>
+</li>
+<li>
+<p>If a locked account likes a bunch of your tweets (or retweets, etc.), and then you follow them, the notifications will not be created&nbsp;retroactively.</p>
+</li>
+<li>
+<p>Locked accounts do not appear in the lists of who liked or retweeted a tweet (except, of course, when viewed by someone following&nbsp;them).</p>
+</li>
+<li>
+<p>While a locked account’s own follows and followers are hidden, a locked account <strong>will still appear publicly</strong> in the following/follower lists of other unlocked accounts.  There is no blessed way to automatically cross-reference this, but be aware that the <em>existence</em> of a locked account is still public.  In particular, if you follow someone who keeps an eye on their follower count, they can just look at their own list of followers to find&nbsp;you.</p>
+</li>
+<li>
+<p>Anyone can still mention a locked account, whether or not they follow it, and it’ll receive&nbsp;notifications.</p>
+</li>
+<li>
+<p>Open DMs (“receive direct messages from anyone”) work as normal for locked accounts.  A locked account can send DMs to anyone with open DMs, and a locked account may turn on open DMs to receive DMs from&nbsp;anyone.</p>
+</li>
+<li>
+<p>Replies to a locked account are <strong>not</strong> protected in any way.  If a locked account participates in a thread, its own tweets will be hidden from non-followers, but any public tweets will be left in.  Also, anyone can search for mentions of a locked account to find conversations it’s participated in, and may be able to infer what the locked account was saying from&nbsp;context.</p>
+</li>
+</ul>
+<h2 id="api-other-clients-etc"><a class="toclink" href="https://eev.ee/blog/2016/02/20/twitters-missing-manual/?utm_source=SitePoint&amp;utm_medium=email&amp;utm_campaign=Versioning#api-other-clients-etc">API, other clients,&nbsp;etc.</a></h2>
+<p>I’ve mentioned issues with non-primary clients throughout, but a couple more things to be aware&nbsp;of:</p>
+<ul>
+<li>
+<p>Web Twitter has some keyboard shortcuts, which you can view by pressing <code>?</code>.</p>
+</li>
+<li>
+<p>When I say Web Twitter throughout this document, I mean desktop Web Twitter; there’s also a mobile Web Twitter, which is much&nbsp;simpler.</p>
+</li>
+<li>
+<p>The official <span class="caps">API</span> doesn’t support a number of Twitter features, including polls, ads, and DMs with multiple participants.  Clients that use the <span class="caps">API</span> (i.e. clients not made by Twitter) thus cannot support these&nbsp;features.</p>
+</li>
+<li>
+<p>Even TweetDeck, which is maintained by Twitter, frequently lags behind in feature support.  TweetDeck had the original (client-side-only) implementation of muting, but even after Twitter added it as a real feature, TweetDeck was never changed to make use of it.  So TweetDeck’s muting is separate from Twitter’s&nbsp;muting.</p>
+</li>
+<li>
+<p>Tweets know what client they were sent from.  Official Twitter apps don’t show this any more, but it’s still available in the <span class="caps">API</span>, and some alternative clients show&nbsp;it.</p>
+</li>
+<li>
+<p>By default, Twitter allows people to find your account by searching for your email address or phone number.  You may wish to turn this&nbsp;off.</p>
+</li>
+<li>
+<p>Twitter has a “collections” feature, which lets you put any public tweets you like (even other people’s) in a group for other people to look over.  However, no official client lets you <em>create</em> one; you have to do it via the <span class="caps">API</span> or TweetDeck.  Collections aren’t listed anywhere (you have to link to them directly), and you can’t control the order of the tweets (they’re always reverse&nbsp;chronological).</p>
+</li>
+<li>
+<p>Lists are a thing.  I’ve never really used them.  They don’t support a lot of the features the regular timeline does; most notably, threaded tweets aren’t shown together.  You can create a private list and add people to it to follow them without their knowledge,&nbsp;though.</p>
+</li>
+<li>
+<p>You can “promote” a tweet, i.e. turn it into an ad, which is generally only of interest to advertisers.  However, promoted tweets have the curious property that they don’t appear on your profile or in search results <em>for anyone</em>.  It’s possible to target a promoted tweet at a specific list of users (or no one!), which allows for a couple creative hacks that you’ll have to imagine&nbsp;yourself.</p>
+</li>
+<li>
+<p>And then there’s the verified checkmark (given out arbitrarily), the power tools given to verified users (mysterious), the limits on duplicate tweets and follows and whatnot (pretty high), the analytics tools (pretty but pointless), the secret <span class="caps">API</span>-only notifications (Twitter tells you when your tweet is unfavorited!), the Web Twitter metadata that let me <a href="https://twitter.com/eevee/status/694600729227440128">write a hack to hide mentions from non-followers</a>…  you get the&nbsp;idea.</p>
+</li>
+</ul>
+        </div>
+
+        
+
+        
+    
