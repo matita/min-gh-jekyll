@@ -1,0 +1,533 @@
+---
+title: "REM vs EM – The Great Debate | Zell Liew's blog about web design and development"
+description: " 
+One of the best practices to typography on the web is to use relative
+    "
+link: "http://zellwk.com/blog/rem-vs-em/"
+saved: "2016-03-01 14:22:55"
+---
+
+  <h1>REM vs EM – The Great Debate</h1>
+  
+  <div class="Article__meta">
+    <h6 class="Article__tags">
+      <span>Written under:</span>
+      
+      <a href="http://zellwk.com/tags/responsive">Responsive</a>
+      
+      <a href="http://zellwk.com/tags/typography">Typography</a>
+      
+    </h6>
+    <h6>17th February, 2016</h6>
+  </div>
+  <p>One of the best practices to typography on the web is to use relative units like <code>rem</code> and <code>em</code>. </p>
+<p>The question is, <strong>which should you use</strong>? There’s been a longstanding debate between <code>rem</code> supporters and <code>em</code> supporters, believing that you should use one over the other. </p>
+<p>In this article, you’re going to find my take on <code>rem</code> vs <code>em</code>. You’re also going to learn exactly what <code>rem</code> and <code>em</code> are, and how to use them to build modular components. </p>
+<!--more-->
+<h2 id="what-is-em-">What is EM?</h2>
+<blockquote>An EM is a unit of typography, equal to the currently specified point-size 
+<cite> Wikipedia </cite></blockquote>
+
+<p>This statement doesn’t make sense on the web since we don’t use <code>point-size</code>. It makes complete sense if we substituted <code>point-size</code> with <code>font-size</code> though. </p>
+<p><strong>What it means is: <code>1em = 20px</code> if a selector has a <code>font-size</code> of <code>20px</code></strong>.</p>
+<pre><code class="lang-css"><span class="hljs-selector-tag">h1</span> { <span class="hljs-attribute">font-size</span>: <span class="hljs-number">20px</span> } <span class="hljs-comment">/* 1em = 20px */</span>
+<span class="hljs-selector-tag">p</span> { <span class="hljs-attribute">font-size</span>: <span class="hljs-number">16px</span> } <span class="hljs-comment">/* 1em = 16px */</span>
+</code></pre>
+<p>The <code>em</code> unit can be used to declare font-sizes. In fact, it’s a <a href="http://zellwk.com/blog/responsive-typography">best practice</a> to use relative units like <code>em</code> for <code>font-size</code>. </p>
+<p>Consider the following: </p>
+<pre><code class="lang-scss"><span class="hljs-selector-tag">h1</span> { <span class="hljs-attribute">font-size</span>: <span class="hljs-number">2em</span> } <span class="hljs-comment">/* What does this even mean?! */</span>
+</code></pre>
+<p>What’s the actual size of the <code>h1</code> selector here? </p>
+<p>We have to look at the parent element in order to compute the <code>&lt;h1&gt;</code>‘s <code>font-size</code>. Let’s say the parent element is <code>&lt;html&gt;</code>, and it’s <code>font-size</code> is set to <code>`16px</code>. </p>
+<p>When put this way, we can see that the computed value of <code>&lt;h1&gt;</code> is <code>32px</code>, or <code>2 * 16px</code>. </p>
+<pre><code class="lang-scss"><span class="hljs-selector-tag">html</span> { <span class="hljs-attribute">font-size</span>: <span class="hljs-number">16px</span> }
+<span class="hljs-selector-tag">h1</span> { <span class="hljs-attribute">font-size</span>: <span class="hljs-number">2em</span> } <span class="hljs-comment">/* 16px * 2 = 32px */</span>
+</code></pre>
+<p><strong>Although this is possible, it’s often a bad idea to set <code>font-size</code> in the <code>&lt;html&gt;</code> to a pixel value</strong> because it overrides the user’s browser settings. </p>
+<p>Instead, you can either choose to use a <code>percentage</code> value, or leave out the <code>font-size</code> declaration entirely. </p>
+<p>Note: <code>font-size</code> will be set to <code>100%</code> if you left it out entirely.</p>
+<pre><code class="lang-scss"><span class="hljs-selector-tag">html</span> { <span class="hljs-attribute">font-size</span>: <span class="hljs-number">100%</span> } <span class="hljs-comment">/* This means 16px by default*/</span>
+</code></pre>
+<p>For most users (and browsers), a <code>font-size</code> of <code>100%</code> would default to <code>16px</code> unless they change the default <code>font-size</code> through their browser settings. It’s rare that anyone would do that though. </p>
+<p>Okay so far? Let’s come back to <code>em</code>. </p>
+<p><strong><code>em</code> can also be used to specify values for other properties in addition to <code>font-size</code></strong>. <code>margin</code> and <code>padding</code> are two of such properties that are commonly sized in <code>em</code>s.</p>
+<p>This is where many people start to get confused with <code>em</code> values. </p>
+<p>Consider the following code. What should the <code>margin-bottom</code> value be for both the <code>&lt;h1&gt;</code> and <code>&lt;p&gt;</code> elements? (Assume <code>font-size</code> of <code>&lt;html&gt;</code> is set to <code>100%</code>).</p>
+<pre><code class="lang-scss"><span class="hljs-selector-tag">h1</span> {
+  <span class="hljs-attribute">font-size</span>: <span class="hljs-number">2em</span>; <span class="hljs-comment">/* 1em = 16px */</span>
+  <span class="hljs-attribute">margin-bottom</span>: <span class="hljs-number">1em</span>; <span class="hljs-comment">/* 1em = 32px */</span>
+}
+
+<span class="hljs-selector-tag">p</span> {
+  <span class="hljs-attribute">font-size</span>: <span class="hljs-number">1em</span>; <span class="hljs-comment">/* 1em = 16px */</span>
+  <span class="hljs-attribute">margin-bottom</span>: <span class="hljs-number">1em</span>; <span class="hljs-comment">/* 1em = 16px */</span>
+}
+</code></pre>
+<p>Are you surprised that the computed value of <code>1em</code> on <code>margin-bottom</code> is different in these two scenarios`?  </p>
+<p>This phenomenon occurs because <code>1em</code> is equal to it’s current <code>font-size</code>. <strong>Since the <code>font-size</code> in <code>&lt;h1&gt;</code> is now set to <code>2em</code>. Other properties computed with <code>em</code> in <code>&lt;h1&gt;</code> would see that <code>1em = 32px</code></strong>. </p>
+<p>What throws people off is that <code>1em</code> can take on different values in different parts of the code. It can be confusing if you’re just starting out with <code>em</code>s.</p>
+<p>Anyway, that’s <code>em</code>. Let’s find out what <code>rem</code> is next. </p>
+<h2 id="what-is-rem-">What is REM?</h2>
+<p><strong><code>rem</code> means Root EM.</strong> It’s built to provide some relief the <code>em</code> computational problem that many faced. </p>
+<p>It is a unit of typography equal to the <strong>root <code>font-size</code></strong>. This means <code>1rem</code> is always equal to the <code>font-size</code> defined in <code>&lt;html&gt;</code>. </p>
+<p>Consider the same code above, written in <code>rem</code>s instead. What are the computed <code>margin-bottom</code> values now?</p>
+<pre><code class="lang-scss">h1 {
+  font-size: <span class="hljs-number">2</span><span class="hljs-comment">rem;</span>
+  margin-bottom: <span class="hljs-number">1</span><span class="hljs-comment">rem; /* 1rem = 16px */</span>
+}
+
+p {
+  font-size: <span class="hljs-number">1</span><span class="hljs-comment">rem;</span>
+  margin-bottom: <span class="hljs-number">1</span><span class="hljs-comment">rem; /* 1rem = 16px */</span>
+}
+</code></pre>
+<p>As you can see, <strong><code>1rem</code> would always take on the value of <code>16px</code></strong> no matter where you set it (unless you changed the <code>font-size</code> of <code>&lt;html&gt;</code>). </p>
+<p>It’s dependable. It’s simple to understand. </p>
+<p>That’s <code>rem</code>. Pretty easy to get once you know what <code>em</code> is, don’t you agree? </p>
+<p>Now, let’s get into the meat of this article. <code>rem</code> or <code>em</code>? </p>
+<h2 id="rems-or-ems-">REMs or EMs?</h2>
+<p><strong>It’s highly debatable.</strong></p>
+<p>Some developers avoid <code>rem</code> entirely, claiming that using <code>rem</code> make their components less modular. Others use <code>rem</code> for everything, preferring the simplicity that <code>rem</code> provides. </p>
+<p>Oddly, I fell into the trap of strictly only <code>rem</code> or <code>em</code> at different points in my development career. I loved how <code>em</code> helped me make modular components, but I loathed the complexity it brought to my code. I also loved how <code>rem</code> made calculations simple, but I hated the hacks I used to make my components modular. </p>
+<p>Turns out, <strong><code>rem</code> and <code>em</code> have their strengths and weaknesses. They should be used differently, depending on the circumstances.</strong> </p>
+<p>How? <strong>I have two simple rules</strong>:</p>
+<ol>
+<li>Size in <code>em</code> if the property scales according to it’s <code>font-size</code></li>
+<li>Size everything else in <code>rem</code>. </li>
+</ol>
+<p>A tad too simple? Well, let’s consider writing a simple component (a header element) either using <code>rem</code> or <code>em</code>, and you’ll see how these two rules play out nicely.</p>
+<h2 id="using-only-rems-to-make-a-header-element">Using Only REMs to Make a Header Element</h2>
+<p>Say you have a header element (<code>&lt;h2&gt;</code>) that looks like this:</p>
+<figure>
+  <img src="http://zellwk.com/images/2016/rem-vs-em/header.png" alt="A header element">
+</figure>
+
+<figcaption>I’m a header!</figcaption>
+
+<p>The header’s styles should be similar to the following if you sized everything in <code>rem</code>: </p>
+<pre><code class="lang-css"><span class="hljs-selector-class">.header</span> {
+  <span class="hljs-attribute">font-size</span>: <span class="hljs-number">1rem</span>;
+  <span class="hljs-attribute">padding</span>: <span class="hljs-number">0.5rem</span> <span class="hljs-number">0.75rem</span>;
+  <span class="hljs-attribute">background</span>: <span class="hljs-number">#7F7CFF</span>;
+}
+</code></pre>
+<p>So far so good. </p>
+<p>Next, let’s create a slightly bigger header element since it’s common to have differently-sized elements on the same website. While doing so, let’s try inherit as many styles as possible. </p>
+<p>The markup of the bigger header element might be something like this: </p>
+<pre><code class="lang-html"><span class="hljs-tag">&lt;<span class="hljs-name">a</span> <span class="hljs-attr">href</span>=<span class="hljs-string">"#"</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"header header--large"</span>&gt;</span>header!<span class="hljs-tag">&lt;/<span class="hljs-name">a</span>&gt;</span>
+</code></pre>
+<p>The CSS would be: </p>
+<pre><code class="lang-scss"><span class="hljs-selector-class">.header</span> {
+  <span class="hljs-attribute">font-size</span>: <span class="hljs-number">1rem</span>;
+  <span class="hljs-attribute">padding</span>: <span class="hljs-number">0.5rem</span> <span class="hljs-number">0.75rem</span>;
+  <span class="hljs-attribute">background</span>: <span class="hljs-number">#7F7CFF</span>;
+}
+
+<span class="hljs-selector-class">.header--large</span> {
+  <span class="hljs-attribute">font-size</span>: <span class="hljs-number">2rem</span>;
+}
+</code></pre>
+<p>Unfortunately, the code doesn’t turn out well. You can see that there’s too little breathing space between the edge and text of <code>.header--large</code>. </p>
+<figure>
+  <img src="http://zellwk.com/images/2016/rem-vs-em/header-large.png" alt="A large header with not enough breaking space">
+</figure>
+
+<figcaption>Not enough breathing space between edge and text on this large header</figcaption>
+
+<p>If you insist on using only <code>rem</code>s, the only way to fix this problem is to redeclare the <code>padding</code> on the large header: </p>
+<pre><code class="lang-scss"><span class="hljs-selector-class">.header</span> {
+  <span class="hljs-attribute">font-size</span>: <span class="hljs-number">1rem</span>;
+  <span class="hljs-attribute">padding</span>: <span class="hljs-number">0.5rem</span> <span class="hljs-number">0.75rem</span>;
+  <span class="hljs-attribute">background</span>: <span class="hljs-number">#7F7CFF</span>;
+}
+
+<span class="hljs-selector-class">.header--large</span> {
+  <span class="hljs-attribute">font-size</span>: <span class="hljs-number">2rem</span>;
+  <span class="hljs-attribute">padding</span>: <span class="hljs-number">1rem</span> <span class="hljs-number">1.5rem</span>;
+}
+</code></pre>
+<figure>
+  <img src="http://zellwk.com/images/2016/rem-vs-em/header-large--fixed.png" alt="A large header with good breathing space">
+</figure>
+
+<figcaption>More padding the large header now!</figcaption>
+
+<p>Notice the pattern here? <strong><code>.header--large</code>‘s <code>font-size</code> is twice as large as <code>.header</code>. Consequently, <code>padding</code> on <code>.header--large</code> is twice as large as the <code>padding</code> on <code>.header</code>.</strong></p>
+<p>What would happen if we have more headers of different sizes, or if the headers have to change in size? You can already see how coding the entire site in <code>rem</code> can cause duplication and super complex code. </p>
+<p>We can simplify the code such that there’s no need to redeclare <code>padding</code> on <code>.header--large</code> if we don’t mind using both <code>em</code> and <code>rem</code>:</p>
+<pre><code class="lang-css"><span class="hljs-selector-class">.header</span> {
+  <span class="hljs-attribute">font-size</span>: <span class="hljs-number">1rem</span>;
+  <span class="hljs-attribute">padding</span>: <span class="hljs-number">0.5em</span> <span class="hljs-number">0.75em</span>;
+  <span class="hljs-attribute">background</span>: <span class="hljs-number">#7F7CFF</span>;
+}
+
+<span class="hljs-selector-class">.header--large</span> {
+  <span class="hljs-attribute">font-size</span>: <span class="hljs-number">2rem</span>;
+}
+</code></pre>
+<p>As you can see, <strong><code>em</code> can be incredibly helpful when you have a property that needs to scale with it’s font size</strong>. This is where the first rule was born. </p>
+<p>Next, let’s take a look at what happens if you use a <code>em</code> only approach for the same header.</p>
+<h2 id="using-only-ems-to-make-a-header-element">Using Only EMs to Make a Header Element</h2>
+<p>An <code>em</code> implementation isn’t far from the <code>rem</code> code we left off. All we have to do is change <code>rem</code> to <code>em</code>. </p>
+<pre><code class="lang-css"><span class="hljs-selector-class">.header</span> {
+  <span class="hljs-attribute">font-size</span>: <span class="hljs-number">1em</span>;
+  <span class="hljs-attribute">padding</span>: <span class="hljs-number">0.5em</span> <span class="hljs-number">0.75em</span>;
+  <span class="hljs-attribute">background</span>: <span class="hljs-number">#7F7CFF</span>;
+}
+
+<span class="hljs-selector-class">.header--large</span> {
+  <span class="hljs-attribute">font-size</span>: <span class="hljs-number">2em</span>;
+}
+</code></pre>
+<p>Both <code>.header</code> and <code>.header--large</code> will look exactly the same as their <code>rem</code> counterparts. </p>
+<p>Is that it? </p>
+<p>Nope! </p>
+<p>It’s highly unlikely that your website contains only one header element. We have to consider how this header interacts with other elements on your page.</p>
+<p>It’s common to see other elements before or after the header, like this:</p>
+<figure>
+  <img src="http://zellwk.com/images/2016/rem-vs-em/header-relationship.png" alt="Header has relationships with other elements">
+</figure>
+
+<figcaption>Header elements have other relationships surrounding it</figcaption>
+
+<p>The markup for this set of elements is:</p>
+<pre><code class="lang-html">&lt;<span class="hljs-keyword">div</span> <span class="hljs-built_in">class</span>=<span class="hljs-string">"header header--large"</span>&gt;A Header Element&lt;/<span class="hljs-keyword">div</span>&gt;
+&lt;p&gt;A <span class="hljs-built_in">paragraph</span> <span class="hljs-keyword">of</span> <span class="hljs-built_in">text</span>&lt;/p&gt;
+&lt;p&gt;A <span class="hljs-built_in">paragraph</span> <span class="hljs-keyword">of</span> <span class="hljs-built_in">text</span>&lt;/p&gt;
+&lt;<span class="hljs-keyword">div</span> <span class="hljs-built_in">class</span>=<span class="hljs-string">"header"</span>&gt;A Header Element&lt;/<span class="hljs-keyword">div</span>&gt;
+&lt;p&gt;A <span class="hljs-built_in">paragraph</span> <span class="hljs-keyword">of</span> <span class="hljs-built_in">text</span>&lt;/p&gt;
+</code></pre>
+<p>For the styles, we need to add some <code>margin</code>s to the left and right of the <code>&lt;p&gt;</code> tags. </p>
+<pre><code class="lang-scss"><span class="hljs-selector-tag">p</span> {
+  <span class="hljs-attribute">margin-left</span>: <span class="hljs-number">0.75em</span>;
+  <span class="hljs-attribute">margin-right</span>: <span class="hljs-number">0.75em</span>;
+}
+</code></pre>
+<figure>
+  <img src="http://zellwk.com/images/2016/rem-vs-em/header-em.png" alt="padding on the large header are doesn't align with the text">
+</figure>
+
+<figcaption>Uh oh. <code>padding</code> on the large header are doesn’t align with the text</figcaption>
+
+
+<p>Nooo! :(</p>
+<p>The <code>padding</code> on the left and right of <code>.header--large</code> is too big! </p>
+<p>If you insist on using only <code>em</code>, the only way to fix this problem is to redeclare the <code>padding-left</code>  and <code>padding-right</code> properties on the large header: </p>
+<pre><code class="lang-scss"><span class="hljs-selector-class">.header</span> {
+  <span class="hljs-attribute">font-size</span>: <span class="hljs-number">1em</span>;
+  <span class="hljs-attribute">padding</span>: <span class="hljs-number">0.5em</span> <span class="hljs-number">0.75em</span>;
+  <span class="hljs-comment">/* Other styles */</span>
+}
+
+<span class="hljs-selector-class">.header--large</span> {
+  <span class="hljs-attribute">font-size</span>: <span class="hljs-number">2em</span>;
+  <span class="hljs-attribute">padding-left</span>: <span class="hljs-number">0.375em</span>;
+  <span class="hljs-attribute">padding-right</span>: <span class="hljs-number">0.375em</span>;
+  <span class="hljs-attribute">margin</span>: <span class="hljs-number">0.75em</span> <span class="hljs-number">0</span>; 
+}
+</code></pre>
+<figure>
+  <img src="http://zellwk.com/images/2016/rem-vs-em/header-relationship.png" alt="Padding on the large header element is now align with the rest of the text">
+</figure>
+
+<figcaption>Left and right paddings are now aligned!</figcaption>
+
+<p>Notice the pattern here? <strong>The <code>font-size</code> of <code>.header--large</code> is twice the size of the <code>font-size</code> of <code>.header</code>. Yet, the <code>padding-left</code> and <code>padding-right</code> of <code>.header--large</code> are half the <code>padding-left</code> and <code>padding-right</code> of <code>.header</code>!</strong></p>
+<p>Like in the above case, we can simplify the code if you are open to using a combination of <code>rem</code> and <code>em</code> in your code. Specifically, <code>rem</code> for left and right <code>padding</code>s and <code>em</code> for top and bottom <code>padding</code>s:</p>
+<pre><code class="lang-css"><span class="hljs-selector-class">.header</span> {
+  <span class="hljs-attribute">padding</span>: <span class="hljs-number">0.5em</span> <span class="hljs-number">0.75rem</span>;
+  <span class="hljs-attribute">font-size</span>: <span class="hljs-number">1em</span>;
+  <span class="hljs-attribute">background</span>: <span class="hljs-number">#7F7CFF</span>;
+}
+
+<span class="hljs-selector-class">.header--large</span> {
+  <span class="hljs-attribute">font-size</span>: <span class="hljs-number">2em</span>;
+}
+</code></pre>
+<p>As you can see, the <code>em</code> unit is useful when you need to scale a property with it’s <code>font-size</code>. However, you’ll run into problems if you need to size the property accordingly to the root <code>font-size</code>.</p>
+<p>It’s much clearer to see how <code>rem</code> and <code>em</code> can work together in a component now, isn’t it? </p>
+<p>Now, let’s take it a notch further and see how the header and paragraph interacts with a grid. </p>
+<h2 id="components-on-a-grid">Components on a Grid</h2>
+<p>Before we move on, let’s combine the header and paragraph elements together into a component: </p>
+<figure>
+  <img src="http://zellwk.com/images/2016/rem-vs-em/component.png" alt="Component">
+</figure>
+
+<pre><code class="lang-html">&lt;<span class="hljs-keyword">div</span> <span class="hljs-built_in">class</span>=<span class="hljs-string">"component"</span>&gt;
+  &lt;<span class="hljs-keyword">div</span> <span class="hljs-built_in">class</span>=<span class="hljs-string">"component__header"</span>&gt;A header element&lt;/<span class="hljs-keyword">div</span>&gt;
+  &lt;p&gt;Some <span class="hljs-built_in">paragraph</span> <span class="hljs-built_in">text</span>&lt;/p&gt;
+&lt;/<span class="hljs-keyword">div</span>&gt;
+</code></pre>
+<p>The basic styles for this component are: </p>
+<pre><code class="lang-scss"><span class="hljs-selector-class">.component</span> {
+  <span class="hljs-attribute">background</span>: white;
+  <span class="hljs-attribute">border</span>: <span class="hljs-number">2px</span> solid <span class="hljs-number">#7F7CFF</span>;
+}
+
+<span class="hljs-selector-class">.component__header</span> {
+  <span class="hljs-attribute">font-size</span>: <span class="hljs-number">2em</span>;
+  <span class="hljs-attribute">padding</span>: <span class="hljs-number">0.5em</span> <span class="hljs-number">1.5rem</span>;
+  <span class="hljs-attribute">background</span>: <span class="hljs-number">#7F7CFF</span>;
+  <span class="hljs-attribute">margin</span>: <span class="hljs-number">0</span>;
+}
+
+<span class="hljs-selector-class">.component</span> <span class="hljs-selector-tag">p</span> {
+  <span class="hljs-attribute">padding-left</span>: <span class="hljs-number">1.5rem</span>;
+  <span class="hljs-attribute">padding-right</span>: <span class="hljs-number">1.5rem</span>;
+  <span class="hljs-attribute">margin</span>: <span class="hljs-number">1.5rem</span> <span class="hljs-number">0</span>;
+}
+</code></pre>
+<p>So far so good. This was everything we covered in the earlier sections.</p>
+<p>Moving on, this component can be found in differents of a website. Potential areas include: </p>
+<ol>
+<li>The main content area</li>
+<li>The sidebar</li>
+<li>In a 1/3 grid layout</li>
+<li>… </li>
+</ol>
+<figure>
+  <img src="http://zellwk.com/images/2016/rem-vs-em/component-locations.png" alt="Possible Locations of the component">
+</figure>
+
+<figcaption>Possible locations of the component</figcaption>
+
+<p>The header element might be rendered with a smaller <code>font-size</code> when the component is placed a narrow location, like the sidebar.</p>
+<figure>
+  <img src="http://zellwk.com/images/2016/rem-vs-em/gridded-component.png" alt="Component on a grid">
+</figure>
+
+<figcaption>Header components on a grid.</figcaption>
+
+<p>We can create a variant for this by modifying the component’s class. The markup would look like this: </p>
+<pre><code class="lang-html"><span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"component component--small"</span>&gt;</span>
+  <span class="hljs-comment">&lt;!-- Contents of the component. --&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+</code></pre>
+<p>And the style for this variant is: </p>
+<pre><code class="lang-scss"><span class="hljs-selector-class">.component--small</span> <span class="hljs-selector-class">.component__header</span> {
+  <span class="hljs-attribute">font-size</span>: <span class="hljs-number">1em</span>;
+}
+</code></pre>
+<p>Now, on to the component’s styles. The same two rules still apply: </p>
+<ol>
+<li>Size in <code>em</code> if property should scale according to it’s <code>font-size</code></li>
+<li>Size everything else in <code>rem</code>. </li>
+</ol>
+<p>As with the header element, you can identify which properties to size in <code>em</code> by seeing if they interact with the rest of the page. There are two different ways to think about building this component: </p>
+<ol>
+<li>Properties of <strong>all inner elements</strong> scale with the component’s <code>font-size</code>.</li>
+<li>Properties of <strong>some inner elements</strong> scale with the component’s <code>font-size</code>.</li>
+</ol>
+<p>Let’s build the component in both ways and you’ll see what I mean.</p>
+<h2 id="case-1-properties-of-all-elements-scale-with-the-component-s-font-size">Case 1: Properties of all Elements Scale With The Component’s Font-Size</h2>
+<p>Let’s begin with an example of what such a component looks like: </p>
+<figure>
+  <img src="http://zellwk.com/images/2016/rem-vs-em/case1.gif" alt="Case 1 Component">
+</figure>
+
+<figcaption>How component resizes (Case 1)</figcaption>
+
+<p>Notice how the <code>font-size</code>, <code>margin</code> and <code>padding</code> of all elements within the component change at the same time? </p>
+<p>If your component behaves in this manner when resized, you need to size everything in <code>em</code>s. The code then becomes: </p>
+<pre><code class="lang-scss"><span class="hljs-selector-class">.component</span> {
+  <span class="hljs-attribute">background</span>: white;
+  <span class="hljs-attribute">border</span>: <span class="hljs-number">2px</span> solid <span class="hljs-number">#7F7CFF</span>;
+}
+
+<span class="hljs-selector-class">.component__header</span> {
+  <span class="hljs-attribute">font-size</span>: <span class="hljs-number">2em</span>;
+  <span class="hljs-attribute">padding</span>: <span class="hljs-number">0.5em</span> <span class="hljs-number">0.75em</span>; <span class="hljs-comment">/* Changed padding into em */</span>
+  <span class="hljs-attribute">background</span>: <span class="hljs-number">#7F7CFF</span>;
+  <span class="hljs-attribute">margin</span>: <span class="hljs-number">0</span>;
+}
+
+<span class="hljs-selector-class">.component</span> <span class="hljs-selector-tag">p</span> {
+  <span class="hljs-attribute">padding-left</span>: <span class="hljs-number">1.5em</span>; <span class="hljs-comment">/* Changed padding into em */</span>
+  <span class="hljs-attribute">padding-right</span>: <span class="hljs-number">1.5em</span>; <span class="hljs-comment">/* Changed padding into em */</span>
+  <span class="hljs-attribute">margin</span>: <span class="hljs-number">1.5em</span> <span class="hljs-number">0</span>; <span class="hljs-comment">/* Changed margin into em */</span>
+}
+
+<span class="hljs-comment">// Small variant </span>
+<span class="hljs-selector-class">.component--small</span> <span class="hljs-selector-class">.component__header</span> {
+  <span class="hljs-attribute">font-size</span>: <span class="hljs-number">1em</span>;
+  <span class="hljs-attribute">padding-left</span>: <span class="hljs-number">1.5em</span>; <span class="hljs-comment">/* Added em-sized padding */</span>
+  <span class="hljs-attribute">padding-right</span>: <span class="hljs-number">1.5em</span>; <span class="hljs-comment">/* Added em-sized padding */</span>
+}
+</code></pre>
+<p>Then, to activate the change in sizes, all you have to do is to change the component’s <code>font-size</code> property.</p>
+<pre><code class="lang-scss"><span class="hljs-selector-class">.component</span> {
+  <span class="hljs-comment">// Other styles</span>
+  <span class="hljs-keyword">@media</span> (<span class="hljs-attribute">min-width</span>: <span class="hljs-number">800px</span>) {
+    <span class="hljs-attribute">font-size</span>: <span class="hljs-number">1.5em</span>;
+  }
+}
+</code></pre>
+<figure>
+  <img src="http://zellwk.com/images/2016/rem-vs-em/case1.gif" alt="Case 1 Component">
+</figure>
+
+<p>So far so good. </p>
+<p>Now, let’s bring the complexity up a bit. </p>
+<p>Imagine if you had a grid like this. The vertical and horizontal spaces between each grid item needs to remain the same across all devices (for of good aesthetics). </p>
+<figure>
+  <img src="http://zellwk.com/images/2016/rem-vs-em/component-grid2.png" alt="Grid with equal margins">
+</figure>
+
+<figcaption>Equal margins on a 1 + 2 grid!</figcaption>
+
+<p>The markup for this grid is: </p>
+<pre><code><span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"grid"</span>&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"grid-item"</span>&gt;</span> 
+    <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"component"</span>&gt;</span> <span class="hljs-comment">&lt;!-- component --&gt;</span> <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span> 
+  <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+
+  <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"grid-item"</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"component component--small"</span>&gt;</span> <span class="hljs-comment">&lt;!-- A --&gt;</span> <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"component component--small"</span>&gt;</span> <span class="hljs-comment">&lt;!-- B --&gt;</span> <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+  <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+</code></pre><p>I’ve set the gutter width between each grid item to be <code>2em</code> at a root <code>font-size</code> of <code>16px</code>. In order words, the computed width of the gutter is <code>32px</code>. </p>
+<p>The challenge in this grid is to separate small component A and small component B with a margin of <code>32px</code>. We can try setting a <code>margin-top</code> of component B to be <code>2em</code> for start. </p>
+<pre><code class="lang-scss"><span class="hljs-selector-class">.component</span> {
+  <span class="hljs-comment">/* Other styles */</span>
+  <span class="hljs-keyword">@media</span> (<span class="hljs-attribute">min-width</span>: <span class="hljs-number">800px</span>) {
+    <span class="hljs-attribute">font-size</span>: <span class="hljs-number">1.25em</span>;
+  }
+}
+
+<span class="hljs-selector-class">.component</span> + <span class="hljs-selector-class">.component</span> {
+  <span class="hljs-attribute">margin-top</span>: <span class="hljs-number">2em</span>;
+}
+</code></pre>
+<p>Unfortunately, this doesn’t turn out well. The <code>margin</code> between small component A and small component B is larger than the gutter width at a viewport above 800px. </p>
+<figure>
+  <img src="http://zellwk.com/images/2016/rem-vs-em/space-between-a-b.png" alt="Vertical space between the two smaller components isn't equal to the gutters when the screen is wider than 800px">
+</figure>
+
+<figcaption>Space between the two smaller components isn’t equal to the gutters when the screen is wider than 800px </figcaption>
+
+<p>Boo :( </p>
+<p>This happens because the <code>font-size</code> of the component is <code>1.5em</code> (or <code>24px</code>) when the viewport is larger than <code>800px</code>. Since the <code>font-size</code> is <code>24px</code>, the computed value of <code>2em</code> becomes <code>48px</code>, which is different from the <code>32px</code> we were looking for. </p>
+<p>Grrrrr! (╯°□°）╯︵ ┻━┻</p>
+<p>Thankfully, we can solve this issue simply by sizing in <code>rem</code> since we know we’re the gutter width is sized according to the root <code>font-size</code>. </p>
+<pre><code class="lang-scss">.component + .component {
+  margin-top: <span class="hljs-number">2</span><span class="hljs-comment">rem;</span>
+}
+</code></pre>
+<figure>
+  <img src="http://zellwk.com/images/2016/rem-vs-em/grid-2--fixed.png" alt="spaces between component A and component B are now equal">
+</figure>
+
+<figcaption>Vertical space is now equal! :) </figcaption>
+
+<p>Tada! Problem solved :) Here’s a Codepen for you to play with. </p>
+<div><iframe id="cp_embed_JGVXOo" src="http://codepen.io/zellwk/embed/JGVXOo?height=400&amp;theme-id=7929&amp;slug-hash=JGVXOo&amp;default-tab=result&amp;user=zellwk" scrolling="no" frameborder="0" height="400" allowtransparency="true" allowfullscreen="true" name="CodePen Embed" title="CodePen Embed" class="cp_embed_iframe "></iframe></div>
+
+
+
+<p>Note: You need to use Flexbox to build this grid. I won’t explain how I built it since it’s way out of scope. Check out <a href="https://www.smashingmagazine.com/2015/12/website-layout-tools-compared-flexbox-vs-susy/">this article</a> if you’re interested in finding out more about Flexbox</p>
+<p>Oh by the way, I didn’t come up with this technique. Chris Coyier <a href="https://css-tricks.com/rems-ems/">wrote about it</a> a year ago. (He’s a genius).</p>
+<p>Anyway, are we good so far? If yes, let’s move on to case 2. If not, feel free to leave a comment and I’ll figure a way to explain this further. </p>
+<h2 id="case-2-properties-of-some-elements-scale-with-the-component-s-font-size">Case 2: Properties of Some Elements Scale With The Component’s Font-Size</h2>
+<p>Case 1 is easy to understand. The downsides though, is that <strong>it’s tough for you to stay true to your modular scale, main good vertical rhythms and ensure that every component is sized well AT the same time</strong> (especially when building responsive websites).</p>
+<p>Sometimes you just need to tune a small section of your component instead of resizing everything at once. For example, you might want to change only the header <code>font-size</code> at a larger viewport. </p>
+<figure>
+  <img src="http://zellwk.com/images/2016/rem-vs-em/case2.gif" alt="Case 2">
+</figure>
+
+<figcaption>Only the headers change in size when the viewport changes</figcaption>
+
+<p>Let’s start styling this case by taking a look at the basic styles we wrote above: </p>
+<pre><code class="lang-scss"><span class="hljs-selector-class">.component</span> {
+  <span class="hljs-attribute">background</span>: white;
+  <span class="hljs-attribute">border</span>: <span class="hljs-number">2px</span> solid <span class="hljs-number">#7F7CFF</span>;
+}
+
+<span class="hljs-selector-class">.component__header</span> {
+  <span class="hljs-attribute">font-size</span>: <span class="hljs-number">2em</span>;
+  <span class="hljs-attribute">padding</span>: <span class="hljs-number">0.5em</span> <span class="hljs-number">1.5rem</span>;
+  <span class="hljs-attribute">background</span>: <span class="hljs-number">#7F7CFF</span>;
+  <span class="hljs-attribute">margin</span>: <span class="hljs-number">0</span>;
+}
+
+<span class="hljs-selector-class">.component</span> <span class="hljs-selector-tag">p</span> {
+  <span class="hljs-attribute">padding-left</span>: <span class="hljs-number">1.5rem</span>;
+  <span class="hljs-attribute">padding-right</span>: <span class="hljs-number">1.5rem</span>;
+  <span class="hljs-attribute">margin</span>: <span class="hljs-number">1.5rem</span> <span class="hljs-number">0</span>;
+}
+
+<span class="hljs-selector-class">.component--small</span> <span class="hljs-selector-class">.component__header</span> {
+  <span class="hljs-attribute">font-size</span>: <span class="hljs-number">1em</span>;
+}
+</code></pre>
+<p>Since we’re only changing the header’s <code>font-size</code>s at <code>1200px</code>, we can safely size every property in <code>rem</code> (with the exception of the header’s <code>padding-top</code> and <code>padding-bottom</code> properties)</p>
+<pre><code class="lang-scss"><span class="hljs-selector-class">.component</span> {
+  <span class="hljs-attribute">background</span>: white;
+  <span class="hljs-attribute">border</span>: <span class="hljs-number">2px</span> solid <span class="hljs-number">#7F7CFF</span>;
+}
+
+<span class="hljs-selector-class">.component__header</span> {
+  <span class="hljs-attribute">font-size</span>: <span class="hljs-number">2rem</span>; <span class="hljs-comment">/* Sized in rem instead */</span>
+  <span class="hljs-attribute">padding</span>: <span class="hljs-number">0.5em</span> <span class="hljs-number">1.5rem</span>; <span class="hljs-comment">/* Sized in rem instead */</span>
+  <span class="hljs-attribute">background</span>: <span class="hljs-number">#7F7CFF</span>;
+}
+
+<span class="hljs-selector-class">.component</span> <span class="hljs-selector-tag">p</span> {
+  <span class="hljs-attribute">padding-left</span>: <span class="hljs-number">1.5rem</span>; <span class="hljs-comment">/* Sized in rem instead */</span>
+  <span class="hljs-attribute">padding-right</span>: <span class="hljs-number">1.5rem</span>; <span class="hljs-comment">/* Sized in rem instead */</span>
+  <span class="hljs-attribute">margin</span>: <span class="hljs-number">1.5rem</span> <span class="hljs-number">0</span>; <span class="hljs-comment">/* Sized in rem instead */</span>
+}
+
+<span class="hljs-selector-class">.component--small</span> <span class="hljs-selector-class">.component__header</span> {
+  <span class="hljs-attribute">font-size</span>: <span class="hljs-number">1rem</span>; <span class="hljs-comment">/* Sized in rem instead */</span>
+}
+</code></pre>
+<p>You can then change the header’s <code>font-size</code> at different viewports by simply adding a media query on them: </p>
+<pre><code class="lang-scss">.component__header {
+  font-size: <span class="hljs-number">2</span><span class="hljs-comment">rem;</span>
+  @media (min-width: <span class="hljs-number">1200</span>px) {
+    font-size: <span class="hljs-number">3</span><span class="hljs-comment">rem</span>
+  }
+}
+
+.component--small .component__header {
+  font-size: <span class="hljs-number">1</span><span class="hljs-comment">rem;</span>
+  @media (min-width: <span class="hljs-number">1200</span>px) {
+    font-size: <span class="hljs-number">1</span>.<span class="hljs-number">5</span><span class="hljs-comment">rem</span>
+  }
+}
+</code></pre>
+<figure>
+  <img src="http://zellwk.com/images/2016/rem-vs-em/case2.gif" alt="Case 2">
+</figure>
+
+<p>Tada! Notice how only the header <code>font-size</code> changes as we resize the browser now? That’s how you build for case 2 :)</p>
+<p>One more thing. </p>
+<p>Since it’s a best practice to use only a handful of typography sizes, <strong>I often find abstract the <code>font-size</code> property away from the component</strong>. This way, it becomes <strong>easy to ensure that your typography remains consistent across all components.</strong></p>
+<pre><code class="lang-scss">h2 { 
+  font-size: <span class="hljs-number">2</span><span class="hljs-comment">rem;</span>
+  @media (min-width: <span class="hljs-number">1200</span>px) {
+    font-size: <span class="hljs-number">3</span><span class="hljs-comment">rem</span>
+  } 
+}
+
+h3 { 
+  font-size: <span class="hljs-number">1</span><span class="hljs-comment">rem; </span>
+  @media (min-width: <span class="hljs-number">1200</span>px) {
+    font-size: <span class="hljs-number">1</span>.<span class="hljs-number">5</span><span class="hljs-comment">rem</span>
+  }
+}
+
+.component__header { @extend h2; }
+.component--small .component__header { @extend h3; }
+</code></pre>
+<p>That’s it for case 2! Here’s a Codepen for you to play with: </p>
+<div><iframe id="cp_embed_rxbJMQ" src="http://codepen.io/zellwk/embed/rxbJMQ?height=400&amp;theme-id=7929&amp;slug-hash=rxbJMQ&amp;default-tab=result&amp;user=zellwk" scrolling="no" frameborder="0" height="400" allowtransparency="true" allowfullscreen="true" name="CodePen Embed" title="CodePen Embed" class="cp_embed_iframe "></iframe></div>
+
+<p>Here’s a question you’ll probably ask, so I thought I’ll answer it first: <strong>Which method should you use</strong>? </p>
+<p>I’ll say it depends on your design. </p>
+<p>Personally, I find myself working with Case 2 more often than Case 1 since I prefer abstracting away typography into a file of it’s own. </p>
+<h2 id="wrapping-up">Wrapping Up</h2>
+<p>So, should you use <code>rem</code> or <code>em</code>? I think that’s not the right question to ask. Both <code>rem</code> and <code>em</code> has their strengths and weaknesses, and they can be used together to help you make simple, modular components! </p>
+<p>On to you now! What’s your take on this debate? I’d love to hear what you think in the comments below! :)</p>
+
