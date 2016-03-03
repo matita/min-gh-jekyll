@@ -1,0 +1,223 @@
+---
+title: "How to Deploy Software"
+description: "Things Zach Holman said."
+link: "https://zachholman.com/posts/deploying-software"
+saved: "2016-03-03 10:10:59"
+---
+
+      <h3>Organize with branches</h3>
+
+      <p> A lot of the organizational problems surrounding deployment stems from
+      a lack of communication between the person deploying new code and the rest
+      of the people who work on the app with her. You want everyone to know the
+      full scope of changes you're pushing, and you want to avoid stepping on
+      anyone else's toes while you do it. </p>
+
+      <p> There's a few interesting behaviors that can be used to help with
+      this, and they all depend on the simplest unit of deployment: the branch.
+      </p>
+
+      <h4>Code branches</h4>
+
+      <p> By "branch", I mean a branch in Git, or Mercurial, or whatever you
+      happen to be using for version control. Cut a branch early, work on it,
+      and push it up to your preferred code host (GitLab, Bitbucket, etc).</p>
+
+      <p> You should also be using pull requests, merge requests, or other code
+      review to keep track of discussion on the code you're introducing.
+      Deployments need to be collaborative, and using code review is a big part
+      of that. We'll touch on pull requests in a bit more detail later in this
+      piece.</p>
+
+      <h4>Code Review</h4>
+
+      <p>The topic of code review is long, complicated, and pretty specific to
+      your organization and your risk profile. I think there's a couple
+      important areas common to all organizations to consider, though:</p>
+
+      <ul>
+        <li>
+          <p><strong>Your branch is your responsibility</strong>. The companies
+          I've seen who have tended to be more successful have all had this idea
+          that the ultimate responsibility of the code that gets deployed falls
+          upon the person or people who wrote that code. They don't throw code
+          over the wall to some special person with deploy powers or testing
+          powers and then get up and go to lunch. Those people certainly should
+          be involved in the process of code review, but the most important part
+          of all of this is that <em>you are responsible for your code</em>. If
+          it breaks, you fix it… not your poor ops team. So don't break it.</p>
+        </li>
+
+        <li>
+          <p><strong>Start reviews early and often</strong>. You don't need to
+          finish a branch before you can request comments on it. If you can open
+          a code review with imaginary code to gauge interest in the interface,
+          for example, those twenty minutes spent doing that and getting told
+          "no, let's not do this" is far preferable than blowing two weeks on
+          that full implementation instead. </p>
+        </li>
+
+        <li>
+          <p><strong>Someone needs to review</strong>. How you do this can
+          depend on the organization, but certainly getting another pair of eyes
+          on code can be really helpful. For more structured companies, you
+          might want to explicitly assign people to the review and demand they
+          review it before it goes out. For less structured companies, you could
+          <a href="https://github.com/blog/1121-introducing-team-mentions">mention
+          different teams</a> to see who's most readily available to help you
+          out. In either end of the spectrum, you're setting expectations that
+          someone needs to lend you a hand before storming off and deploying
+          code solo. </p>
+        </li>
+      </ul>
+
+      <h4>Branch and deploy pacing</h4>
+
+      <p>There's an old joke that's been passed around from time to time about
+      code review. Whenever you open a code review on a branch with six lines of
+      code, you're more likely to get a lot of teammates dropping in and picking
+      apart those six lines left and right. But when you push a branch that
+      you've been working on for weeks, you'll usually just get people
+      commenting with a quick <em>👍🏼 looks good to me!</em></p>
+
+      <p>Basically, developers are usually just a bunch of goddamn lazy trolls.</p>
+
+      <p>You can use that to your advantage, though: build software using quick,
+      tiny branches and pull requests. Make them small enough to where it's easy
+      for someone to drop in and review your pull in a couple minutes or less.
+      If you build massive branches, it will take a massive amount of time for
+      someone else to review your work, and that leads to a general slow-down
+      with the pace of development.</p>
+
+      <p>Confused at how to make everything so small? This is where those
+      feature flags from earlier come into play. When my team of three rebuilt
+      GitHub Issues in 2014, we had shipped probably hundreds of tiny pull
+      requests to production behind a feature flag that only we could see. We
+      deployed a lot of partially-built components before they were "perfect".
+      It made it a lot easier to review code as it was going out, and it make it
+      quicker to build and see the new product in a real-world environment.</p>
+
+      <p>You want to deploy quickly and often. A team of ten could probably
+      deploy at least 7-15 branches a day without too much fretting. Again, the
+      smaller the diff, the more boring, straightforward, and stress-free your
+      deploys become.</p>
+
+      <h4>Branch deploys</h4>
+
+      <p>When you're ready to deploy your new code, you should always deploy
+      your branch before merging. Always.</p>
+
+      <p>View your entire repository as a record of fact. Whatever you have on
+      your master branch (or <a href="https://twitter.com/_tessr/status/701921001332822016">whatever
+      you've changed your default branch</a> to be) should be noted as being the
+      absolute reflection of what is on production. In other words, you can
+      always be sure that your master branch is "good" and is a known state
+      where the software isn't breaking.</p>
+
+      <p>Branches are the question. If you merge your branch first into master
+      and then deploy master, you no longer have an easy way to determining what
+      your good, known state is without doing an icky rollback in version
+      control. It's not necessarily rocket science to do, but if you deploy
+      something that breaks the site, the last thing you want to do is have to
+      think about <em>anything</em>. You just want an easy out.</p>
+
+      <p>This is why it's important that your deploy tooling allows you to
+      deploy your branch to production first. Once you're sure that your
+      performance hasn't suffered, there's no stability issues, and your feature
+      is working as intended, then you can merge it. The whole point of having
+      this process is not for when things work, it's when things <em>don't</em>
+      work. And when things don't work, the solution is boring, straightforward,
+      and stress-free: you redeploy master. That's it. You're back to your known
+      "good" state.</p>
+
+
+      <h4>Auto-deploys</h4>
+
+      <p>Part of all that is to have a stronger idea of what your "known state"
+      is. The easiest way of doing that is to have a simple rule that's never
+      broken:</p>
+
+      <blockquote>
+        Unless you're testing a branch, whatever is deployed to production is
+        always reflected by the master branch.
+      </blockquote>
+
+      <p>The easiest way I've seen to handle this is to just always auto-deploy
+      the master branch if it's changed. It's a pretty simple ruleset to
+      remember, and it encourages people to make branches for all but the most
+      risk-free commits. </p>
+
+      <p>There's a number of features in tooling that will help you do this. If
+      you're on a platform like Heroku, they might have an option that lets you
+      <a href="https://devcenter.heroku.com/articles/github-integration#automatic-deploys">automatically
+      deploy</a> new versions on specific branches. CI providers like Travis CI
+      also will allow <a href="https://docs.travis-ci.com/user/deployment/">auto
+      deploys</a> on build success. And self-hosted tools like <a href="https://github.com/atmos/heaven">Heaven</a> and <a href="https://github.com/atmos/hubot-deploy">hubot-deploy</a> — tools we'll
+      talk about in greater detail in the next section — will help you manage
+      this as well.</p>
+
+      <p>Auto-deploys are also helpful when you do merge the branch you're
+      working on into master. Your tooling should pick up a new revision and
+      deploy the site again. Even though the content of the software isn't
+      changing (you're effectively redeploying the same codebase), the SHA-1
+      does change, which makes it more explicit as to what the current known
+      state of production is (which again, just reaffirms that the master branch
+      is the known state).</p>
+
+
+      <h4>Blue-green deploys</h4>
+
+      <p>Martin Fowler has pushed this idea of blue-green deployment since his
+      <a href="http://martinfowler.com/bliki/BlueGreenDeployment.html">2010
+      article</a> (which is definitely worth a read). In it, Fowler talks about
+      the concept of using two identical production environments, which he calls
+      "blue" and "green". Blue might be the "live" production environment, and
+      green might be the idle production environment. You can then deploy to
+      green, verify that everything is working as intended, and make a seamless
+      cutover from blue to green. Production gains the new code without a lot of
+      risk.</p>
+
+      <blockquote>
+        One of the challenges with automating deployment is the cut-over itself,
+        taking software from the final stage of testing to live production.
+      </blockquote>
+
+      <p>This is a pretty powerful idea, and it's become even more powerful with
+      the growing popularity of virtualization, containers, and generally having
+      environments that can be easily thrown away and forgotten. Instead of
+      having a simple blue/green deployment, you can spin up production
+      environments for basically everything in the visual light spectrum.</p>
+
+      <p>There's a multitude of reasons behind doing this, from having disaster
+      recovery available to having additional time to test critical features
+      before users see them, but my favorite is the additional ability to play
+      with new code.</p>
+
+      <p>Playing with new code ends up being pretty important in the product
+      development cycle. Certainly a lot of problems should be caught earlier in
+      code review or through automated testing, but if you're trying to do real
+      product work, it's sometimes hard to predict how something will feel until
+      you've tried it out for an extended period of time with real data. This is
+      why blue-green deploys in production are more important than having a
+      simple staging server whose data might be stale or completely
+      fabricated.</p>
+
+      <p>What's more, if you have a specific environment that you've spun up
+      with your code deployed to it, you can start bringing different
+      stakeholders on board earlier in the process. Not everyone has the
+      technical chops to pull your code down on their machine and spin your code
+      up locally — and nor should they! If you can show your new live screen to
+      someone in the billing department, for example, they can give you some
+      realistic feedback on it prior to it going out live to the whole
+      company. That can catch a ton of bugs and problems early on.</p>
+
+      <img src="https://zachholman.com/images/posts/deploying-heroku-pipelines.png" alt="Heroku Pipelines">
+
+      <p>Whether or not you use Heroku, <a href="https://blog.heroku.com/archives/2015/5/19/heroku_review_apps_beta">take
+      a look</a> at how they've been building out their concept of "Review Apps"
+      in their ecosystem: apps get deployed straight from a pull request and can
+      be immediately played with in the real world instead of just being viewed
+      through screenshots or long-winded "this is what it might work like in the
+      future" paragraphs. Get more people involved early before you have a
+      chance to inconvenience them with bad product later on.</p>
+    
