@@ -1,0 +1,98 @@
+---
+title: "[m.imgur.com] page load performance · Issue #1 · perfs/audits"
+description: ":rocket: Performance audits for the web: sites, webapps, JS frameworks and libraries."
+link: "https://github.com/perfs/audits/issues/1"
+saved: "2016-03-11 15:15:58"
+---
+
+          <h4 align="center"> <img class="emoji" title=":horse_racing:" alt=":horse_racing:" src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f3c7.png" height="20" width="20" align="absmiddle">  m.imgur.com page load perf <img class="emoji" title=":horse_racing:" alt=":horse_racing:" src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f3c7.png" height="20" width="20" align="absmiddle"> </h4>
+
+<hr>
+
+<h3>
+<strong>TL;</strong><strong>DR</strong>
+</h3>
+
+<p>While server-side rendering is critical to get a fast first meaningful paint on <br>
+single page apps, JS can still undermine the user experience advantages of <br>
+server-side rendering.</p>
+
+<p>By disabling javascript on m.imgur.com, the time from navigation→ the paint of <br>
+the primary image is decreased by more than 50% from around 7 seconds to 3 <br>
+seconds (on a nexus 5 - 3g connection).</p>
+
+<hr>
+
+<h4>What:</h4>
+
+<p>m.imgur.com recently rolled out a new version of the site moving from a backbone <br>
+app to a serverside rendered React app. </p>
+
+<p>Per usual I was looking at the latest Nicolas Cage gifs when I noticed that the <br>
+page seemed to feel sluggish when first loaded, preventing me from being able to <br>
+scroll down to see the comments or even see the complete image for almost 2 <br>
+seconds. Now I don't know about you but 2 seconds between me and Cage is simply <br>
+unacceptable. </p>
+
+<p><a href="https://camo.githubusercontent.com/ac62414a46642081bb4f475044a8ccc1f927dca4/68747470733a2f2f6d656469612e67697068792e636f6d2f6d656469612f31305533416371793444637875452f67697068792e676966" target="_blank"><img src="https://camo.githubusercontent.com/ac62414a46642081bb4f475044a8ccc1f927dca4/68747470733a2f2f6d656469612e67697068792e636f6d2f6d656469612f31305533416371793444637875452f67697068792e676966" alt="" data-canonical-src="https://media.giphy.com/media/10U3Acqy4DcxuE/giphy.gif"></a></p>
+
+<hr>
+
+<p>Looking at a <a href="https://developer.chrome.com/devtools/docs/timeline">timeline recording</a> of loading an <br>
+image on imgur on my phone (Nexus 5) the problem is made quite clear.</p>
+
+<p><a href="https://cloud.githubusercontent.com/assets/883126/13607446/0938518c-e505-11e5-9542-a73d8096a4a3.png" target="_blank"><img src="https://cloud.githubusercontent.com/assets/883126/13607446/0938518c-e505-11e5-9542-a73d8096a4a3.png" alt="image"></a></p>
+
+<p>Because the page is rendered serverside, the image starts to download right away, and gets progressively rendered and displayed to the user. However, the image appears to stop loading at around 3 seconds, which directly lines up with when a whole bunch of JavaScript starts to execute. </p>
+
+<p><a href="https://cloud.githubusercontent.com/assets/883126/13607465/1d8382d8-e505-11e5-9428-ba95a293bbd8.png" target="_blank"><img src="https://cloud.githubusercontent.com/assets/883126/13607465/1d8382d8-e505-11e5-9428-ba95a293bbd8.png" alt="image"></a></p>
+
+<p>The fun thing about all of this JavaScript executing is that it is locking up <br>
+the main thread in the browser, thus preventing the image from being painted to <br>
+the screen until the JS work is all done. As an experiment I loaded the page <br>
+with JavaScript disabled just to see the performance difference and was not <br>
+surprised to see the page take well under ½ as long to finish displaying the <br>
+complete image with 0 user facing jank.</p>
+
+<h4>The Why:</h4>
+
+<p>When we look at the first long frame and sort the javascript activity by bottom <br>
+up we see that the browser is spending almost 40% of the time in two methods <br>
+called o and then two anonymous functions…<br><br>
+<a href="https://cloud.githubusercontent.com/assets/883126/13607470/244c6bc0-e505-11e5-8b44-1a4514377708.png" target="_blank"><img src="https://cloud.githubusercontent.com/assets/883126/13607470/244c6bc0-e505-11e5-8b44-1a4514377708.png" alt="image"></a></p>
+
+<p>Looking close at the logic in those methods we see a familiar face:</p>
+
+<p><a href="https://cloud.githubusercontent.com/assets/883126/13607480/2dae6542-e505-11e5-806f-4d1e90fa526d.png" target="_blank"><img src="https://cloud.githubusercontent.com/assets/883126/13607480/2dae6542-e505-11e5-806f-4d1e90fa526d.png" alt="image"></a></p>
+
+<p>It is the browserify module loading logic, this is the exact same problem that <a href="https://twitter.com/samccone/status/705434235151069184">we ran into on <br>
+tumblr.com.</a> </p>
+
+<p>The next most relevant bit of logic is all contained in the React mount logic; <br>
+there may be some slight optimizations to be had here, but it is far away from <br>
+being the biggest offender. </p>
+
+<p><a href="https://cloud.githubusercontent.com/assets/883126/13607485/35784c84-e505-11e5-872d-6b758e2a29c6.png" target="_blank"><img src="https://cloud.githubusercontent.com/assets/883126/13607485/35784c84-e505-11e5-872d-6b758e2a29c6.png" alt="image"></a></p>
+
+<h4><strong>The "Fix":</strong></h4>
+
+<p>The interesting story around imgur is how by moving to a server side rendered <br>
+site, you would think that the performance gains would be immense. However, the <br>
+time spent in the javascript bootup phase is causing a negative user experience, <br>
+due to the JS execution blocking the main thread, and thus blocking image <br>
+rendering. This problem, while almost undetectable on a macbook pro or modern <br>
+computer, is painfully obvious when you test the site on a mobile phone on a <br>
+non-wifi internet connection. There are several ways to fix this issue, all of <br>
+which do not require an overwhelming amount of work.</p>
+
+<ol>
+<li>Defer the JavaScript execution until the image onload event</li>
+<li>Use a tool like rollup or Nolan Lawson's new rollupify 
+<a href="https://github.com/nolanlawson/rollupify/commits?author=nolanlawson">https://github.com/nolanlawson/rollupify/</a> 
+to drop the overhead (40% of the JS time) of browserify </li>
+<li>Break up any block of script that takes over 100ms. Potentially use a 
+scheduling API like 
+<a href="https://developers.google.com/web/updates/2015/08/using-requestidlecallback?hl=en">requestIdleCallback</a>. 
+<a href="https://twitter.com/igrigorik/status/706890158323269633">https://twitter.com/igrigorik/status/706890158323269633</a> </li>
+</ol>
+      
