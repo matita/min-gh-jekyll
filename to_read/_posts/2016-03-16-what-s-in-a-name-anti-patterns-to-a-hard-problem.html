@@ -1,0 +1,156 @@
+---
+title: "What's in a Name? Anti-Patterns to a Hard Problem"
+description: "If you wish to make an apple pie from scratch, you must first invent the universe. —Carl Sagan We name and name and name. And name. Naming is notoriously difficult, but it’s not like we’re starting from scratch every time. We have habits, conventions, and a personal style. Often we don’t give a name much …"
+link: "http://www.sitepoint.com/whats-in-a-name-anti-patterns-to-a-hard-problem/"
+saved: "2016-03-16 14:39:00"
+---
+
+    <p><img src="http://dab1nmslvvntp.cloudfront.net/wp-content/uploads/2016/03/1457883508Fotolia_77444031_Subscription_Monthly_M.jpg" alt="hildren's names written on a brick wall" width="1681" height="1130" class="alignnone size-full wp-image-126583"></p>
+<blockquote>
+<p>If you wish to make an apple pie from scratch, you must first invent the universe. —Carl Sagan</p>
+</blockquote>
+<p>We name and name and name. And name. Naming is notoriously difficult, but it’s not like we’re starting from scratch every time. We have habits, conventions, and a personal style.</p>
+<p>Often we don’t give a name much thought, and we still do a reasonable job of it. Of course, sometimes our first idea is terrible.</p>
+<p>There is no formula for choosing a name. In some situations our habits are no good. Our strategies—unspoken or not—fall short. Naming is fraught with ambiguity. A good name answers important questions. What does it contain? Why does it exist? Why is it important? What does it mean? How would I use it? What role does it play? But it can hardly answer all the important questions at once. A bad name is confusing or unhelpful. It misinforms and misleads.</p>
+<p>There are some common strategies that harm more than they help. Recognizing an anti-pattern makes it easier to choose a better strategy. A better strategy tends to lead to a better name.</p>
+<blockquote>
+<p>An anti-pattern is a common response to a recurring problem that is usually ineffective and risks being highly counterproductive. —Wikipedia</p>
+</blockquote>
+<p>As with all things naming, an anti-pattern isn’t always the wrong choice. The usual admonitions apply: “usually”, “probably”, “maybe”, “use your judgement”, etc., etc.</p>
+<h2>Underlying Types and Data Structures</h2>
+<p>If you see a name that encodes an underlying type, such as <code class=" language-ruby">word_string</code> or <code class=" language-ruby">new_hash</code>, there’s almost always a better name waiting in the wings.</p>
+<p>Type information is just not that compelling. It doesn’t answer any of the important questions. In most situations it’s irrelevant. The type is an implementation detail, and implementation details can change without fundamentally changing the solution.</p>
+<pre class=" language-ruby"><code class=" language-ruby"><span class="token keyword">def</span> <span class="token function">anagrams</span><span class="token punctuation">(</span>string<span class="token punctuation">,</span> string_array<span class="token punctuation">)</span>
+  string_array<span class="token punctuation">.</span><span class="token keyword">each</span> <span class="token keyword">do</span> <span class="token operator">|</span>str<span class="token operator">|</span>
+    str <span class="token operator">!</span><span class="token operator">=</span> string <span class="token operator">&amp;&amp;</span> same_alphagram<span class="token operator">?</span><span class="token punctuation">(</span>string<span class="token punctuation">,</span> str<span class="token punctuation">)</span>
+  <span class="token keyword">end</span>
+<span class="token keyword">end</span>
+</code></pre>
+<p>This code is simple. The names are correct but unhelpful.</p>
+<p>One question you can ask yourself when faced with a bland collection of datatypes is:</p>
+<blockquote>
+<p>What does it contain?</p>
+</blockquote>
+<p>In the case of anagrams, it contains words.</p>
+<pre class=" language-ruby"><code class=" language-ruby"><span class="token keyword">def</span> <span class="token function">anagrams</span><span class="token punctuation">(</span>word1<span class="token punctuation">,</span> words<span class="token punctuation">)</span>
+  words<span class="token punctuation">.</span><span class="token keyword">each</span> <span class="token keyword">do</span> <span class="token operator">|</span>word2<span class="token operator">|</span>
+    word1 <span class="token operator">!</span><span class="token operator">=</span> word2 <span class="token operator">&amp;&amp;</span> same_alphagram<span class="token operator">?</span><span class="token punctuation">(</span>word1<span class="token punctuation">,</span> word2<span class="token punctuation">)</span>
+  <span class="token keyword">end</span>
+<span class="token keyword">end</span>
+</code></pre>
+<p>Now we have a different problem. We’re wording the words so that we can word. There’s no meaningful distinction between <code class=" language-ruby">words</code>, <code class=" language-ruby">word1</code>, and <code class=" language-ruby">word2</code>. We need to say something about how the words relate to each other in the context of detecting anagrams.</p>
+<blockquote>
+<p>The original word or phrase is known as the <em>subject</em> of the anagram. —Wikipedia</p>
+</blockquote>
+<p>So <code class=" language-ruby">word1</code> is <em>subject</em>. The <code class=" language-ruby">words</code> that we’re looping through may or may not be anagrams. They’re <code class=" language-ruby">potential_anagrams</code>, but it’s a bit annoying to repeat <code class=" language-ruby">anagram</code> in the name. Another word for a potential match is a <code class=" language-ruby">candidate</code>.</p>
+<pre class=" language-ruby"><code class=" language-ruby"><span class="token keyword">def</span> <span class="token function">anagrams</span><span class="token punctuation">(</span>subject<span class="token punctuation">,</span> candidates<span class="token punctuation">)</span>
+  candidates<span class="token punctuation">.</span><span class="token keyword">each</span> <span class="token keyword">do</span> <span class="token operator">|</span>candidate<span class="token operator">|</span>
+    subject <span class="token operator">!</span><span class="token operator">=</span> candidate <span class="token operator">&amp;&amp;</span> same_alphagram<span class="token operator">?</span><span class="token punctuation">(</span>subject<span class="token punctuation">,</span> candidate<span class="token punctuation">)</span>
+  <span class="token keyword">end</span>
+<span class="token keyword">end</span>
+</code></pre>
+<p>When computing Scrabble scores we run into the same thing.</p>
+<pre class=" language-ruby"><code class=" language-ruby"><span class="token keyword">def</span> <span class="token function">compute_score</span><span class="token punctuation">(</span>chars<span class="token punctuation">)</span>
+  chars<span class="token punctuation">.</span><span class="token function">inject</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span> <span class="token punctuation">{</span><span class="token operator">|</span>num<span class="token punctuation">,</span> char<span class="token operator">|</span>
+    num <span class="token operator">+</span> char_to_num<span class="token punctuation">[</span>char<span class="token punctuation">]</span>
+  <span class="token punctuation">}</span>
+<span class="token keyword">end</span>
+</code></pre>
+<p>Again, ask yourself what the variables contain, this time in the context of a game of Scrabble. The <em>num</em> is the thing we’re computing, the score. The <em>char</em> is a letter or tile. The hash of characters to numbers contains the point value for each tile.</p>
+<pre class=" language-ruby"><code class=" language-ruby"><span class="token keyword">def</span> <span class="token function">compute_score</span><span class="token punctuation">(</span>tiles<span class="token punctuation">)</span>
+  tiles<span class="token punctuation">.</span><span class="token function">inject</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span> <span class="token punctuation">{</span><span class="token operator">|</span>score<span class="token punctuation">,</span> tile<span class="token operator">|</span>
+    score <span class="token operator">+</span> points<span class="token punctuation">[</span>tile<span class="token punctuation">]</span>
+  <span class="token punctuation">}</span>
+<span class="token keyword">end</span>
+</code></pre>
+<p>Using the data type in the name is not always an anti-pattern.</p>
+<p>When the scope is small it can be redundant to give a variable a more expressive name. The context already answers the important questions about it. There’s no reason to bloat the code with extra descriptions. Just use the type, such as <code class=" language-ruby">s</code> for a string, or <code class=" language-ruby">i</code> for an int.</p>
+<p>Sometimes the name of the data structure helps clarify important details. A <code class=" language-ruby">queue</code> is a concept that is familiar to programmers. The name <code class=" language-ruby">jobs</code> might communicate your intent. But maybe not. If the FIFO (first in, first out) aspect is crucial, then <code class=" language-ruby">job_queue</code> might be better. It expresses what the thing contains, as well as how to use it.</p>
+<h2>Structural</h2>
+<p>Another common strategy is to name things for their role in the program. It’s the input or the output. It’s the recurring phrase or the middle sentence. It’s a memo or sum or result.</p>
+<p>Here’s some code that counts differences, a simplification of an algorithm known as the <a href="https://en.wikipedia.org/wiki/Hamming_distance">Hamming Distance</a>.</p>
+<pre class=" language-ruby"><code class=" language-ruby"><span class="token keyword">def</span> <span class="token keyword">self</span><span class="token punctuation">.</span><span class="token function">compute</span><span class="token punctuation">(</span>first<span class="token punctuation">,</span> second<span class="token punctuation">)</span>
+  first<span class="token punctuation">.</span>length<span class="token punctuation">.</span>times<span class="token punctuation">.</span>count <span class="token punctuation">{</span> <span class="token operator">|</span>i<span class="token operator">|</span>
+    first<span class="token punctuation">[</span>i<span class="token punctuation">]</span> <span class="token operator">!</span><span class="token operator">=</span> second<span class="token punctuation">[</span>i<span class="token punctuation">]</span>
+  <span class="token punctuation">}</span>
+<span class="token keyword">end</span>
+</code></pre>
+<p>The algorithm is expressive enough, but the names <code class=" language-ruby">first</code> and <code class=" language-ruby">second</code> seem pretty arbitrary. They’re the first and second parameters, but does the order even matter? It’s unclear. And <code class=" language-ruby">first</code> and <code class=" language-ruby">second</code> what?</p>
+<p>First and second DNA strand. Duh.</p>
+<p>It turns out, order doesn’t matter. We only care how many mutations there are between two similar strands.</p>
+<p>The name <code class=" language-ruby">strand</code> answers the question of what it is. A simple suffix to differentiate between the two is enough. We don’t need to tell more of a story than that. We could use <code class=" language-ruby"><span class="token constant">A</span></code> and <code class=" language-ruby"><span class="token constant">B</span></code>, which don’t emphasize order quite as much as <code class=" language-ruby"><span class="token number">1</span></code> and <code class=" language-ruby"><span class="token number">2</span></code>.</p>
+<pre class=" language-ruby"><code class=" language-ruby"><span class="token keyword">def</span> <span class="token keyword">self</span><span class="token punctuation">.</span><span class="token function">compute</span><span class="token punctuation">(</span>strandA<span class="token punctuation">,</span> strandB<span class="token punctuation">)</span>
+  strandA<span class="token punctuation">.</span>length<span class="token punctuation">.</span>times<span class="token punctuation">.</span>count <span class="token punctuation">{</span> <span class="token operator">|</span>i<span class="token operator">|</span>
+    strandA<span class="token punctuation">[</span>i<span class="token punctuation">]</span> <span class="token operator">!</span><span class="token operator">=</span> strandB<span class="token punctuation">[</span>i<span class="token punctuation">]</span>
+  <span class="token punctuation">}</span>
+<span class="token keyword">end</span>
+</code></pre>
+<p>Here’s the Scrabble scoring method from earlier, with structural names.</p>
+<pre class=" language-ruby"><code class=" language-ruby"><span class="token keyword">def</span> <span class="token function">compute_score</span><span class="token punctuation">(</span>input<span class="token punctuation">)</span>
+  input<span class="token punctuation">.</span><span class="token function">inject</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span> <span class="token punctuation">{</span><span class="token operator">|</span>sum<span class="token punctuation">,</span> x<span class="token operator">|</span>
+    sum <span class="token operator">+</span> lookup<span class="token punctuation">[</span>x<span class="token punctuation">]</span>
+  <span class="token punctuation">}</span>
+<span class="token keyword">end</span>
+</code></pre>
+<p>The interesting thing about <em>input</em> isn’t that it happens to get passed to the method as an argument. The interesting bit is <em>what it contains</em>, which in this case is Scrabble tiles. Likewise, the <code class=" language-ruby">sum</code> isn’t any old sum, it’s someone’s score. It’s an undeniable fact that we’re looking something up, but <code class=" language-ruby">lookup</code> explains nothing essential. The question is <em>what are you looking up</em>? Points. There’s drama here if you look for it.</p>
+<h2>Idea Fragment</h2>
+<p>This is an alluring trap in Ruby, and once you see it you can’t unsee it. It’s everywhere.</p>
+<p>The reason it’s so seductive is that it leads to many small methods.</p>
+<blockquote>
+<p>“Wait, what?”</p>
+</blockquote>
+<p>Yeah, sorry. It’s not that small methods are bad. It’s that everything is a trade-off. It turns out there are more important things than SLOC (source lines of code). Who knew?</p>
+<p>Here’s a method from some code for scheduling meetups:</p>
+<pre class=" language-ruby"><code class=" language-ruby"><span class="token keyword">def</span> <span class="token function">prev_or_next_day</span><span class="token punctuation">(</span>date<span class="token punctuation">,</span> date_type<span class="token punctuation">)</span>
+  date_type <span class="token operator">==</span> <span class="token symbol">:last</span> <span class="token operator">?</span> date<span class="token punctuation">.</span>prev_day <span class="token punctuation">:</span> date<span class="token punctuation">.</span>next_day
+<span class="token keyword">end</span>
+</code></pre>
+<p>The name of the method repeats the conditional that it contains.</p>
+<p>There’s no good name for this, because the method doesn’t isolate an entire idea. It takes a small sliver of an idea and sticks it in a method. When each method represents a fragment of a concept, the solution becomes incomprehensible. You can fit all the individual pieces in your head, but they don’t form a coherent picture.</p>
+<p>The solution here is to inline it back to where it came from along with all the other shards of ideas that are in arbitrarily defined methods throughout the code. Then—once everything is in the same place—you’re more likely to find and name the whole idea.</p>
+<h2>Implementation Fragment</h2>
+<p>Sometimes the method isolates the complete thought, but the method name misses the mark.</p>
+<p>Some code to generate the lyrics to <em>The 99 Bottles of Beer</em> song had this method in it.</p>
+<pre class=" language-ruby"><code class=" language-ruby"><span class="token keyword">def</span> <span class="token function">bottle_or_bottles</span><span class="token punctuation">(</span>quantity<span class="token punctuation">)</span>
+  <span class="token keyword">if</span> quantity <span class="token operator">==</span> <span class="token number">1</span>
+    <span class="token string">"bottle"</span>
+  <span class="token keyword">else</span>
+    <span class="token string">"bottles"</span>
+  <span class="token keyword">end</span>
+<span class="token keyword">end</span>
+</code></pre>
+<p>(The above is taken from an <a href="http://99bottlesbook.com/">upcoming book</a> on using this song to study OOP. Full disclosure, I am one of the collaborators of the book.)</p>
+<p>This, too, repeats the conditional. Bottle and bottles are two different instances of a single concept. Other fragments of that same concept might be “growler” or “keg” or “six-pack”.</p>
+<pre class=" language-ruby"><code class=" language-ruby"><span class="token keyword">def</span> <span class="token function">container</span><span class="token punctuation">(</span>quantity<span class="token punctuation">)</span>
+  <span class="token keyword">if</span> quantity <span class="token operator">==</span> <span class="token number">1</span>
+    <span class="token string">"bottle"</span>
+  <span class="token keyword">else</span>
+    <span class="token string">"bottles"</span>
+  <span class="token keyword">end</span>
+<span class="token keyword">end</span>
+</code></pre>
+<p>A good name doesn’t join the implementation in the weeds. It lifts its eyes a bit and sees a bigger picture.</p>
+<p>Here’s a method found in code to generate the lyrics to the song that goes “I know an old lady who swallowed a fly”.</p>
+<pre class=" language-ruby"><code class=" language-ruby"><span class="token keyword">def</span> swallowed
+  <span class="token string">"She swallowed the <span class="token interpolation"><span class="token delimiter tag">#{</span>predator<span class="token delimiter tag">}</span></span> to catch the <span class="token interpolation"><span class="token delimiter tag">#{</span>prey<span class="token delimiter tag">}</span></span>."</span>
+<span class="token keyword">end</span>
+</code></pre>
+<p>Predator and prey are great names. They explain what the variables contain, as well as how they’re related to each other. But <code class=" language-ruby">swallowed</code> doesn’t help the reader much.</p>
+<p>The author took a small piece of the implementation, and echoed it for the name.</p>
+<p>A method should name an idea, not a random little piece of an idea. The song is about a little old lady who inexplicably swallows a fly. She then compounds the problem by swallowing larger and larger creatures. This method has isolated the part of the song that tries to explain <em>why</em> someone would do such a thing. It explains the <em>reasoning</em> behind her choices. Her <em>motivation</em>.</p>
+<pre class=" language-ruby"><code class=" language-ruby"><span class="token keyword">def</span> <span class="token function">motivation</span><span class="token punctuation">(</span>predator<span class="token punctuation">,</span> prey<span class="token punctuation">)</span>
+  <span class="token string">"She swallowed the <span class="token interpolation"><span class="token delimiter tag">#{</span>predator<span class="token delimiter tag">}</span></span> to catch the <span class="token interpolation"><span class="token delimiter tag">#{</span>prey<span class="token delimiter tag">}</span></span>."</span>
+<span class="token keyword">end</span>
+</code></pre>
+<h2>Conclusion</h2>
+<p>Each example was problematic in a different way, but the strategy to fix them was similar. The first step was to describe the problem in English. The programming terms might end up being important later. For now, just find the words from that domain.</p>
+<p>Scrabble has points and scores and tiles.</p>
+<p>Anagrams are about words. But not just words. Words that relate to each other in a specific way. A subject and candidates.</p>
+<div class="ArticleBox u-inline"><h3 class="ArticleBox_header t-bg">
+                    <span class="ArticleBox_icon fa fa-pencil"></span> More from this author
+                 </h3><div class="ArticleBox_content"><ul class="ArticleBox_list t-list"><li><a href="http://www.sitepoint.com/improve-the-smell-of-your-code-with-microrefactorings/?utm_source=sitepoint&amp;utm_medium=relatedinline&amp;utm_term=ruby&amp;utm_campaign=relatedauthor">Improve the Smell of Your Code with Microrefactorings</a></li><li><a href="http://www.sitepoint.com/syntax-taste-refactoring-conditionals/?utm_source=sitepoint&amp;utm_medium=relatedinline&amp;utm_term=ruby&amp;utm_campaign=relatedauthor">The Syntax of Taste: Refactoring Conditionals</a></li></ul></div></div>
+<p>The Hamming distance between two DNA strands is not any old sum, it’s a count of mutations.</p>
+<p>Any song can have a first line and a last line. Many songs will have recurring sentences. There’s a difference between a song about drinking beer and one about swallowing critters. Those differences matter.</p>
+<p>Make meaningful distinctions. Remove gratuitous or unnecessary details.</p>
+<p>In short, tell a good story.</p>
+  
