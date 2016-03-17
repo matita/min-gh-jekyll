@@ -1,0 +1,233 @@
+---
+title: "8 Tips to Write CSS You Won't Hate"
+description: "null"
+link: "http://taha-sh.com/blog/8-tips-to-write-css-you-wont-hate"
+saved: "2016-03-17 14:16:32"
+---
+
+            <p>We have to admit it. Most of us don't like their CSS code!</p>
+<p>When you start a new project, you feel very excited and you say “Ok, this time
+I'm gonna make my CSS as clear and maintainable as I can.” However, most of the
+time — as the project grows — we start feeling unhappy about it. It's so messy,
+unorganized, and hard to change.</p>
+<p>Before I start, I have to say that I'm not the most experienced one at writing
+CSS. However, over the years I started to learn and look for the best ways and
+techniques that make my CSS, at the very least, easy to change.</p>
+<h1>1. Use a preprocessor</h1>
+<p>I can't imagine these days anyone writing their CSS “purely” — without a
+preprocessor! In simple words, CSS preprocessors are those tools that add the
+things that should've been in CSS in the first place.</p>
+<p>I can't imagine writing my CSS without using <em>variables, mixins</em> or without
+nesting my selectors to where they belong. There are countless reasons why you
+should use a preprocessor — those are just a few of them (search for more).</p>
+<p>So, it's most likely you're using one (and I assume that, because the rest of
+the tips depend on this). However, if you're not yet, I encourage you to check
+out the available tools and choose the one you like (they are very easy to
+learn). For me, I like using <a href="http://stylus-lang.com/">stylus</a>.</p>
+<h1>2. Organize your CSS</h1>
+<p>Nothing is better than knowing where to find the CSS styling rule you're looking
+for. When you organize your CSS in a good way, you'll get the power of jumping
+to what you want in a second or two!</p>
+<p>By organizing I mean to separate your CSS into files. Each file containing the
+styling for only one thing (element, or multiple related elements).</p>
+<p>For example, I organize my CSS into four classes (not CSS classes!):</p>
+<ol>
+<li><strong>Bootstrapping:</strong> the basic styling for basic elements specifically for my
+site (typography, lists, links,...) — you can think of them as normalization.</li>
+<li><strong>Components:</strong> components are those elements I use in multiple places in my
+project. Not always, because I sometimes find myself defining a component that I
+only use once, but it feels like a component!</li>
+<li><strong>Layout:</strong> here I put the styling for my website's basic layout, such as:
+<em>header, footer, sidebar, main section, etc</em>.</li>
+<li><strong>Utilities:</strong> these are reusable styling that I can use on multiple
+elements. We'll talk about it later in this post.</li>
+</ol>
+<p>The way I organize these files is by putting them in the respective directory.
+So, I would have a directory named <em>components</em>, and another one named <em>layout</em>,
+and so on.</p>
+<p>After that I start importing them in my main <em>app.styl</em> file. Here's an excerpt
+from my blog's source code:</p>
+<pre><code class="language-css hljs"><span class="hljs-comment">/** Bootstrapping */</span>
+@<span class="hljs-keyword">import</span> <span class="hljs-string">'vendor/Normalize'</span>
+@import <span class="hljs-string">'Mixins'</span>
+@import <span class="hljs-string">'Colors'</span>
+@import <span class="hljs-string">'Typography'</span>
+@import <span class="hljs-string">'Links'</span>
+@import <span class="hljs-string">'Lists'</span>
+@import <span class="hljs-string">'Overrides'</span>
+
+/** Component */
+@import <span class="hljs-string">'Components/Button'</span>
+@import <span class="hljs-string">'Components/Widget'</span>
+// …
+
+/** Layout */
+@import <span class="hljs-string">'Layout/General'</span>
+@import <span class="hljs-string">'Layout/Header'</span>
+@import <span class="hljs-string">'Layout/Navigation'</span>
+// …
+
+/** Utilities */
+@import <span class="hljs-string">'Utilities/Overlay'</span>
+</code></pre>
+<h1>3. Write Mixins</h1>
+<p>You can't imagine how much time mixins can save you. Once you know how to write
+them, you'll find many uses for them.</p>
+<p>In case you don't know what a mixin is, it's like a function that you call with
+parameters, but it doesn't return anything. Instead, it spits out everything you
+define in it — after it evaluates the conditions and the like (if there's any).</p>
+<p>For example, I like to define a mixin to help me styling the three states of an
+element all at once. Those states are: <em>hover, active, and focus</em>. So, I usually
+call it <code>haf</code>.</p>
+<p>Here's how it looks like (I'm using stylus here):</p>
+<pre><code class="language- css hljs"><span class="hljs-selector-tag">haf</span>(<span class="hljs-selector-tag">element</span>, <span class="hljs-selector-tag">includeSelf</span>=<span class="hljs-selector-tag">false</span>)
+  <span class="hljs-selector-tag">if</span> <span class="hljs-selector-tag">includeSelf</span>
+    <span>{</span>element}, <span>{</span>element}<span class="hljs-selector-pseudo">:hover</span>, <span>{</span>element}<span class="hljs-selector-pseudo">:active</span>, <span>{</span>element}<span class="hljs-selector-pseudo">:focus</span>
+      <span>{</span>block}
+  <span class="hljs-selector-tag">else</span>
+    <span>{</span>element}<span class="hljs-selector-pseudo">:hover</span>, <span>{</span>element}<span class="hljs-selector-pseudo">:active</span>, <span>{</span>element}<span class="hljs-selector-pseudo">:focus</span>
+      <span>{</span>block}
+</code></pre>
+<p>This means from now on, I can write this:</p>
+<pre><code class="language- css hljs"><span class="hljs-selector-class">.Button</span>
+  <span class="hljs-selector-tag">background</span>: <span class="hljs-selector-tag">red</span>
+    
+    +<span class="hljs-selector-tag">haf</span>('&amp;')
+      <span class="hljs-selector-tag">background</span>: <span class="hljs-selector-tag">blue</span>
+</code></pre>
+<p>Instead of this:</p>
+<pre><code class="language- css hljs"><span class="hljs-selector-class">.Button</span>
+  <span class="hljs-selector-tag">background</span>: <span class="hljs-selector-tag">red</span>
+    
+    &amp;<span class="hljs-selector-pseudo">:hover</span>, &amp;<span class="hljs-selector-pseudo">:active</span>, &amp;<span class="hljs-selector-pseudo">:focus</span>
+      <span class="hljs-selector-tag">background</span>: <span class="hljs-selector-tag">blue</span>
+</code></pre>
+<p>Although for some people it's not a big deal, I think it saves a little bit of
+time and makes your code cleaner in the long run.</p>
+<h1>4. Only one level deep — use BEM</h1>
+<p>Have you ever found yourself forced to use <code>!important</code> to apply some styling on
+your elements? It doesn't feel good, does it?</p>
+<p>This is because you're adding weight to your CSS selectors. By weight I mean,
+you precede your selector with other selectors (i.e. parent elements).</p>
+<p>For instance, let's say you're building a <a href="http://taha-sh.com/blog/how-to-create-a-reusable-modal-box-in-laravel-vuejs">modal box
+component</a>.
+And its layout looks something like this:</p>
+<pre><code class="language- html hljs xml"><span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"modal"</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"container"</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"header"</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">h1</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"title"</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">h1</span>&gt;</span>
+        <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"content"</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"footer"</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+    <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+</code></pre>
+<p>Let's say now you want to style the title in the header. How would you do it?
+The traditional way is to do something similar to this:</p>
+<pre><code class="language- css hljs"><span class="hljs-selector-class">.modal</span> <span class="hljs-selector-class">.container</span> <span class="hljs-selector-class">.header</span> <span class="hljs-selector-class">.title</span> <span>{</span>
+  // Your styling goes here
+}
+</code></pre>
+<p>But this is not good; you're adding more weight to your selector. This means, if
+you try to override it later in another place, you'll have to specify the whole
+selector, or you'll have to use <code>!important</code>.</p>
+<p>In case you're wondering why you would override the styling in other places,
+think of using this modal inside another div with class <code>.foo</code>, and you want it
+to look differently than the one without the <code>.foo</code> div.</p>
+<p>In this case you'll need to specify the whole selector like this:</p>
+<pre><code class="language- css hljs"><span class="hljs-selector-class">.foo</span> <span class="hljs-selector-class">.modal</span> <span class="hljs-selector-class">.container</span> <span class="hljs-selector-class">.header</span> <span class="hljs-selector-class">.title</span>
+</code></pre>
+<p>Too much weight!</p>
+<h2>What's the solution?</h2>
+<p>So, we talked about the problem, let's see how to solve it.</p>
+<p>Actually, there's nothing too special you need to do about it other than
+following some naming convention.</p>
+<p>The best naming convention I've been using so far is called BEM
+(Block-Element-Modifier). If you're not familiar with it, check out this
+css-tricks blog post: <a href="https://css-tricks.com/bem-101/">“BEM 101”</a>.</p>
+<p>After you start using BEM, you'll start noticing a huge improvement in your CSS,
+and <em>writing one-level deep selectors</em> is one of them.</p>
+<h1>5. Use Flexbox instead of frameworks</h1>
+<p>I have to say it: “Flexbox is the best thing ever happened to the CSS language
+so far!”</p>
+<p>It's been a while since the release of Flexbox, and yet very few people use it
+in their projects. You can't imagine how easy Flexbox can make your life.</p>
+<p>I can't say what you can do with Flexbox in this short section, but I can assure
+you that once you know how to use it, you'll be able to style your layout in any
+way you can think of in a very short time — and without using any hacks.</p>
+<p>The only problem with it, though, is that some people find it a little bit hard
+to learn; luckily, it's no longer the case with the <em>awesome</em> screen casts made
+by <a href="https://twitter.com/wesbos">Wes Bos</a>. You can find them at
+<a href="http://flexbox.io/">flexbox.io</a>.</p>
+<p>So, you now know how much I love Flexbox, but what about CSS frameworks? My
+answer is they are very good, but only for prototyping.</p>
+<p>I used to use bootstrap in all of my projects. However, I never felt very happy
+seeing my html bloated with tons of <code>md-col-3</code> and other classes. Not just that,
+but I also faced many situations where I couldn't style something the way I
+exactly wanted.</p>
+<p>All those problems and more disappeared when I started using Flexbox and writing
+the CSS for my layout by myself.</p>
+<h1>6. Define your colors</h1>
+<p>It's normal to have a number of primary colors for every website you build. The
+problem some people have with colors is they find some difficulty changing them.</p>
+<p>I've been in many situations where my client requests to change some color 3 or
+4 times; I can do it in 1 second!</p>
+<p>The good thing is that it's very simple to do!</p>
+<p>Just define your colors using CSS variables — your preprocessor helps you with
+that. I usually do it in the bootstrapping section (which we talked about
+earlier).</p>
+<p>So, basically, I create a file called <em>colors.styl</em> and put in it almost all the
+colors I use in the website.</p>
+<p>And I usually divide the file into sections, like this:</p>
+<pre><code class="language- css hljs"><span class="hljs-comment">/* Primary Colors */</span>
+$<span class="hljs-selector-tag">dark</span> = <span class="hljs-selector-id">#081444</span>
+$<span class="hljs-selector-tag">light</span> = <span class="hljs-selector-id">#0064a3</span>
+$<span class="hljs-selector-tag">white</span> = <span class="hljs-selector-tag">white</span>
+
+<span class="hljs-comment">/* Layout */</span>
+$<span class="hljs-selector-tag">bg_color</span> = <span class="hljs-selector-id">#ffffff</span>
+$<span class="hljs-selector-tag">light_gray</span> = <span class="hljs-selector-id">#f0f0f0</span>
+$<span class="hljs-selector-tag">gray</span> = <span class="hljs-selector-id">#C0C0C0</span>
+$<span class="hljs-selector-tag">dark_white</span> = <span class="hljs-selector-id">#fafafa</span>
+$<span class="hljs-selector-tag">red</span> = <span class="hljs-selector-id">#ee3333</span>
+
+<span class="hljs-comment">/* Typography */</span>
+$<span class="hljs-selector-tag">black</span> = <span class="hljs-selector-tag">rgba</span>(0, 0, 0, 0<span class="hljs-selector-class">.8</span>)
+$<span class="hljs-selector-tag">dark_gray</span> = <span class="hljs-selector-tag">rgba</span>(0, 0, 0, 0<span class="hljs-selector-class">.4</span>)
+$<span class="hljs-selector-tag">selection_color</span> = <span class="hljs-selector-tag">rgba</span>(0, 100, 163, 0<span class="hljs-selector-class">.6</span>)
+</code></pre>
+<p>Another thing I find useful doing is to define the colors with their names. For
+example, if I'm sure that I'll use the <em>red</em> color, I define a color called
+<code>$red</code>. That color shouldn't be pure red; it could be a variation of the color.</p>
+<h1>7. Define your own utilities</h1>
+<p>Utility classes are those classes you define once and use on multiple elements.
+An example of this is a class that floats an element to the left or right. Or
+maybe a class that adds some shadow to an element.</p>
+<p>It's usually pretty useful to prefix your utility classes with something like
+<code>“u-”</code> just to be able to distinguish it later.</p>
+<p>Although they are very useful, you should be careful not to overuse them. If you
+overuse them, you'll end up building your own CSS framework! Which you don't
+want to do, because we already have tons of these — don't reinvent the wheel!</p>
+<h1>8. Dedicate a file for overrides</h1>
+<p>In some situations, you'll find yourself in a need to change some styling for a
+library you're using.</p>
+<p>In those cases, it's okay to use <code>!important</code>.</p>
+<p>But to make things even easier, I find it so helpful to dedicate a whole file
+(or multiple files) for overrides.</p>
+<p>So for example, let's say you're using a library for syntax highlighting. And,
+you want to change something you don't like. Or probably you want to change a
+color so it matches your website's theme.</p>
+<p>Either you create a file and call it <em>overrides.styl</em>, or a directory called
+<em>overrides</em> and put in it a file for each library you want to change.</p>
+<p>Then, you'll start doing your changes either by matching their selector weight,
+or by using <code>!important</code>.</p>
+<p>With that, you'll have a clear place for all your overrides instead of mixing
+things up.</p>
+<h1>In closing</h1>
+<p>Those were my 8 tips on writing clean, maintainable CSS. You may not like them
+all. So, choose the ones you find useful to you and feel free to change them to
+your taste.</p>
+<p>What are yours? Do you have some tips that you find useful? We'll be very glad
+if you share them with us in the comments.</p>
+
+        
