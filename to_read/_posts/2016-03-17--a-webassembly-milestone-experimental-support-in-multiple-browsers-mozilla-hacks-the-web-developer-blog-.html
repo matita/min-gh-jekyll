@@ -1,0 +1,60 @@
+---
+title: "  A WebAssembly Milestone: Experimental Support in Multiple Browsers ★
+        Mozilla Hacks – the Web developer blog  "
+description: "null"
+link: "https://hacks.mozilla.org/2016/03/a-webassembly-milestone/"
+saved: "2016-03-17 14:18:19"
+---
+
+    <p><em>WebAssembly</em> is an emerging standard whose goal is to define a safe, portable, size- and load-time efficient binary compiler target which offers near-native performance—a virtual CPU for the Web. WebAssembly is being developed in a <a href="https://www.w3.org/community/webassembly/" target="_blank">W3C Community Group</a> (CG) whose <a href="https://www.w3.org/community/webassembly/participants" target="_blank">members</a> include Mozilla, Microsoft, Google and Apple.</p>
+<p>I’m excited to announce that WebAssembly has reached an important milestone: <strong>there are now <a href="http://v8project.blogspot.com/2016/03/experimental-support-for-webassembly.html" target="_blank">multiple</a>, <a href="http://blogs.windows.com/msedgedev/2016/03/15/previewing-webassembly-experiments" target="_blank">interoperable</a>, experimental browser implementations</strong>. We still have a lot of work left on the standard implementation before shipping, but this is a good occasion to present our progress so far, talk about what’s coming next, and invite feedback.</p>
+<h2>Why WebAssembly?</h2>
+<p>The low-level <a href="http://asmjs.org/" target="_blank">asm.js</a> subset of JavaScript has demonstrated not only that it’s possible for browsers to achieve safe, sandboxed, near-native computational performance, but that there’s tremendous demand for this kind of capability on the Web. Thanks to the <a href="http://emscripten.org/" target="_blank">Emscripten</a> compiler, we’ve seen asm.js used for a diverse and growing array of applications, including mapping, cryptography, compression, games, CAD, image editing, and facial recognition.</p>
+<p>The WebAssembly CG formed <a href="https://blog.mozilla.org/luke/2015/06/17/webassembly/" target="_blank">last year</a> to take the Web the next step further, with a standardized binary format whose storage size and decoding times could be optimized beyond what is possible with JavaScript. Additionally, by being a new standard, WebAssembly is able to evolve to accommodate low-level features independently of the evolution of JavaScript.</p>
+<p>At the same time, we knew it was important for WebAssembly to be “of the Web:” it had to access existing Web APIs and integrate tightly with JavaScript by, e.g., allowing calls between WebAssembly and JavaScript. Unlike classic plugin models, this will allow WebAssembly to be more easily integrated into JavaScript applications and libraries, just as asm.js has been able to do.</p>
+<p>Finally, we’ve been able to draw on our years<sup><a href="https://hacks.mozilla.org/2011/06/doom-on-the-web/" target="_blank">1</a>,<a href="https://hacks.mozilla.org/2011/08/speak-js-text-to-speech-on-the-web/" target="_blank">2</a>,<a href="https://hacks.mozilla.org/2012/04/porting-me-my-shadow-to-the-web-c-to-javascriptcanvas-via-emscripten/" target="_blank">3</a>,<a href="https://hacks.mozilla.org/2013/03/webrtc-data-channels-for-great-multiplayer/" target="_blank">4</a>,<a href="https://hacks.mozilla.org/2013/12/monster-madness-creating-games-on-the-web-with-emscripten/" target="_blank">5</a>,<a href="https://hacks.mozilla.org/2013/12/gap-between-asm-js-and-native-performance-gets-even-narrower-with-float32-optimizations/" target="_blank">6</a>,<a href="https://hacks.mozilla.org/2014/11/porting-to-emscripten/" target="_blank">7</a></sup> of experience with Emscripten and asm.js to guide and focus the initial design of WebAssembly. And crucially, <a href="https://hacks.mozilla.org/2015/03/asm-speedups-everywhere/" target="_blank">with the great performance of asm.js code</a> on modern browsers, the creation of <a href="https://remysharp.com/2010/10/08/what-is-a-polyfill" target="_blank">polyfills</a> will allow developers to begin using WebAssembly even before native implementations have reached saturation in the browser market.</p>
+<h2>Progress</h2>
+<p>Fast forward to today, and the CG has already made a remarkable amount of progress. Within the <a href="http://github.com/webassembly/" target="_blank">WebAssembly GitHub organization</a>, the group has produced:</p>
+<ul>
+<li>a <a href="https://github.com/webassembly/design" target="_blank">description and rationale</a> of the initial feature set and planned future features;</li>
+<li>a <a href="https://github.com/WebAssembly/spec/tree/master/ml-proto" target="_blank">specification and reference interpreter</a>;</li>
+<li>13,000 lines of tests used to validate both the spec interpreter and browsers;</li>
+<li>a first draft of the <a href="https://github.com/WebAssembly/design/blob/master/BinaryEncoding.md#module-structure" target="_blank">binary format</a>.</li>
+</ul>
+<p>What’s more, engineers on four browser engines have implemented prototype WebAssembly implementations<sup><a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1188259" target="_blank">1</a>,<a href="https://github.com/WebAssembly/v8-native-prototype" target="_blank">2</a>,<a href="https://github.com/Microsoft/ChakraCore/pull/63" target="_blank">3</a>,<a href="https://bugs.webkit.org/show_bug.cgi?id=146064" target="_blank">4</a></sup>. Within Firefox, we refactored our existing asm.js optimization pipeline to use WebAssembly’s binary format as the representation of asm.js code sent from the main parsing thread to the background compiler threads.</p>
+<p>This change ended up significantly improving asm.js parallel compilation performance by moving two costly steps, MIR and code generation, off the sequential critical path. With this refactored pipeline, native WebAssembly decoding only requires the addition of a small new frontend to validate the untrusted bytes:</p>
+<p><a href="https://2r4s9p1yi1fa2jd7j43zph8r-wpengine.netdna-ssl.com/files/2016/03/asm-compile-diagram.png" target="_blank"><img class="aligncenter" src="https://2r4s9p1yi1fa2jd7j43zph8r-wpengine.netdna-ssl.com/files/2016/03/asm-compile-diagram.png" alt="asm.js and WebAssembly compilation pipeline" width="879" height="175"></a></p>
+<p>For definitions of these terms and more background on JS and asm.js compilation, see <a href="https://blog.mozilla.org/luke/2014/01/14/asm-js-aot-compilation-and-startup-performance/#jit" target="_blank">this</a> previous blog post.</p>
+<h2>Experimenting with WebAssembly</h2>
+<p>With all these pieces in place, it’s now possible to build WebAssembly demos that run on multiple experimental implementations. We do mean “experimental”: both the binary format and JS bindings for WebAssembly will likely change incompatibly over the next months until the first edition is stabilized. And we don’t expect implementations to be mature enough for stress tests or benchmarking for some time yet. Rather, the importance of this milestone is getting all the browsers on the same page so we can continue to iterate in sync.</p>
+<p>With all that said, it’s gratifying for us to see a <a href="http://webassembly.github.io/demo" target="_blank">real, working demo</a> that will run in multiple browsers:</p>
+<div>
+<a href="http://webassembly.github.io/demo" target="_blank" rel="attachment wp-att-29809"><img class="alignleft wp-image-29809 size-full" src="https://2r4s9p1yi1fa2jd7j43zph8r-wpengine.netdna-ssl.com/files/2016/03/AngryBots-2.png" alt="Screenshot of AngryBots" width="160" height="120"></a>
+</div>
+<p>This particular demo actually has some nostalgic value: AngryBots is a Unity tutorial project which was used as a smoke test while bringing up Unity’s WebGL export. Good memories! :)</p>
+<p>To run the demo, download a <a href="https://nightly.mozilla.org/" target="_blank">Nightly</a> build, open <code>about:config</code> and set <code>javascript.options.wasm</code> to <code>true</code>.</p>
+<h2>Path To Release</h2>
+<p>So what’s next? There’s more to do before we have a stable, shippable first edition. In the CG, some big remaining tasks are:</p>
+<ul>
+<li><b>Define the <a href="https://github.com/WebAssembly/design/blob/master/TextFormat.md#official-text-format" target="_blank">official WebAssembly text format</a>.</b></li>
+<li><b>Further reduce binary format size.</b> While the current binary format is 42% smaller than asm.js uncompressed (12% smaller after gzip), we know from <a href="https://github.com/WebAssembly/design/blob/master/FAQ.md#can-the-polyfill-really-be-efficient" target="_blank">previous prototype binary format work</a> that further significant size reductions are available.</li>
+<li><b>Iterate on the WebAssembly JavaScript API.</b> Currently the experimental builds define a single new synchronous function, <code>Wasm.instantiateModule</code>, that does both compilation and instantiation. There are tentative plans to break these steps apart and provide both synchronous and asynchronous functions that produce a <a href="https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API/Structured_clone_algorithm" target="_blank">structured-cloneable</a> code object. This gives developers more control over both compilation and machine-code caching than current <a href="https://blog.mozilla.org/luke/2014/01/14/asm-js-aot-compilation-and-startup-performance#caching" target="_blank">implicit machine-code caching for asm.js</a> in Firefox.</li>
+<li><b>Create more approachable documentation for compiler writers, tool authors, hackers, and students.</b></li>
+<li><b>Add a bunch more tests to the test suite.</b></li>
+</ul>
+<p>In Firefox we’re also planning to:</p>
+<ul>
+<li><b>Add WebAssembly support to browser devtools, including both the debugger and profiler</b>. Fortunately, the JavaScript, Developer Tools and Firebug teams worked together to move tools over to a new, abstract, unit-testable <a href="https://developer.mozilla.org/en-US/docs/Tools/Debugger-API" target="_blank">Debugger API</a> which we’ll be implementing for WebAssembly code. In fact, work has already <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1254893" target="_blank">begun</a> which is why, if you open the Debugger tab for the above demo, you can already see a placeholder text format being generated for the binary code (which will, of course, switch over to the official text format when it’s ready).</li>
+<li><b>Further reduce cold load time.</b> Measuring AngryBots compile time on a 16×2.4Ghz core Linux desktop, WebAssembly reduces compile time by about 52%. That’s a good start and leverages the fact that WebAssembly decoding is currently about 10× faster than asm.js parsing, but cold load time can be significantly further reduced by working on the other parts of the compilation pipeline.</li>
+<li><b>Finish adding the full set of WebAssembly operators and import the test suite.</b></li>
+</ul>
+<h2>Full Speed Ahead</h2>
+<p>The progress on WebAssembly so far has been exhilarating. I continue to be impressed and appreciative of the collaborative atmosphere of the whole WebAssembly Community Group. If you want to learn more, the <a href="http://webassembly.github.io/" target="_blank">GitHub org page</a> is a good starting point. Happy hacking!</p>    <section class="about">
+                                <h2 class="about__header">About
+                          <a class="url" href="https://hacks.mozilla.org/author/lwagnermozilla-com/">
+                Luke Wagner              </a>
+                      </h2>
+                      <p>Luke Wagner is a research engineer and hacks on WebAssembly and asm.js in Mozilla's JavaScript engine.</p>
+                                <p><a class="url" href="https://hacks.mozilla.org/author/lwagnermozilla-com/">More articles by Luke Wagner…</a></p>
+                  </section>
+  
