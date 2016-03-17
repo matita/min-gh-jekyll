@@ -1,0 +1,60 @@
+---
+title: "7 Reasons NOT to Use a Static Site Generator"
+description: "A static site can have benefits, but don't presume they apply to every project! Craig discusses issues arising from use of a generator."
+link: "http://www.sitepoint.com/7-reasons-not-use-static-site-generator/"
+saved: "2016-03-17 14:17:54"
+---
+
+    <div class="article_series-box"><h4><a href="http://www.sitepoint.com/series/static-site-generators/" class="series-9928" title="Static Site Generators">Static Site Generators</a></h4><ul class="serieslist-ul"><li class="serieslist-li"><a href="http://www.sitepoint.com/7-reasons-use-static-site-generator/" title="7 Reasons to Use a Static Site Generator">7 Reasons to Use a Static Site Generator</a></li><li class="serieslist-li-current">7 Reasons NOT to Use a Static Site Generator</li></ul></div><p>In my <a href="http://www.sitepoint.com/7-reasons-use-static-site-generator/">previous article</a> we discussed reasons why you could benefit from using a static site generator. To recap:</p>
+<ul>
+<li>A <strong>static site</strong> is a collection of pages contained in basic HTML files. You could hand-write these in a text editor, but managing assets and repeated elements such as navigation can become problematic.</li>
+<li>A <strong>content management system</strong> (CMS) stores page content in a database and provides facilities to edit and apply themes. Management becomes easier at the expense of flexibility, performance, server requirements, security and backups.</li>
+<li>A <strong>static site generator</strong> (SSG) is a compromise between using a hand-coded static site and a full CMS. You generate an HTML-only website using raw data (such as Markdown files) and templates. The resulting build is transferred to your live server.</li>
+</ul>
+<p><img src="http://dab1nmslvvntp.cloudfront.net/wp-content/uploads/2016/03/1458095227static-no.jpg" alt="static site generators" width="1000" height="567" class="aligncenter size-full wp-image-126775"></p>
+<div class="ArticleBox u-inline"><h3 class="ArticleBox_header t-bg">
+                    <span class="ArticleBox_icon fa fa-pencil"></span> More from this author
+                 </h3><div class="ArticleBox_content"><ul class="ArticleBox_list t-list"><li><a href="http://www.sitepoint.com/7-reasons-use-static-site-generator/?utm_source=sitepoint&amp;utm_medium=relatedinline&amp;utm_term=web&amp;utm_campaign=relatedauthor">7 Reasons to Use a Static Site Generator</a></li><li><a href="http://www.sitepoint.com/browser-trends-march-2016-operating-system-surprises/?utm_source=sitepoint&amp;utm_medium=relatedinline&amp;utm_term=web&amp;utm_campaign=relatedauthor">Browser Trends March 2016: Operating System Surprises</a></li></ul></div></div>
+<p>Popular static site generators include <a href="http://jekyllrb.com/">Jekyll</a>, <a href="http://blog.getpelican.com/">Pelican</a>, <a href="http://gohugo.io/">Hugo</a> and <a href="http://www.metalsmith.io/">Metalsmith</a> — see <a href="http://www.staticgen.com/">StaticGen</a> for many more options.</p>
+<p>SSGs appear to offer the benefits of both CMS and static worlds, but they will not be suitable for every project …</p>
+<h2>1. You’re On Your Own</h2>
+<p>You won’t get far using a static site generator without some development expertise. The process is more difficult than using a CMS, there are fewer reference resources, and you could struggle to find pre-built plugins and templates.</p>
+<p>Contrast that with WordPress. A non-technical user may require installation assistance but, once done, they can edit a site and install one of the many thousands of themes and plugins available. They may not have the best bespoke website, but they’re running with minimal intervention.</p>
+<h2>2. Choice Paralysis</h2>
+<p>There are many <a href="http://www.staticgen.com/">static site generators</a>, but even the most popular tools are used by a tiny proportion of the web community. You’ll need time to research, investigate and evaluate the options. The undisputed champion is <a href="http://jekyllrb.com/">Jekyll</a> but, while you don’t necessarily require Ruby expertise, it will help if you’ve used the language before.</p>
+<p>There are many CMSs, but there’s one obvious choice: <em>WordPress</em>. It powers more than one in every four websites, so help is abundant. Again, it will help if you have some PHP experience, but even a non-developer can create a reasonable website using off-the-shelf themes and plugins.</p>
+<h2>3. The Initial Setup Time</h2>
+<p>Creating your first static site will take time. You’ll need to learn the build process, and much of the template code will need to be developed. Deployment scripts may also be necessary.</p>
+<p>Developing a custom CMS theme can also be complicated, but pre-built templates are available and assistance is easier to find. File deployment is rarely required following the initial installation.</p>
+<h2>4. No Administration Interface</h2>
+<p>Clients may be cautious when faced with a CMS interface. Asking them to create and edit a set of Markdown files may terrify many. You can make the process easier. For example:</p>
+<ol>
+<li>allow them to use their existing CMS, or</li>
+<li>provide simpler workflows such as editing Dropbox files in <a href="https://stackedit.io/">StackEdit</a>.</li>
+</ol>
+<p>But this will further impact your initial development time.</p>
+<h2>5. Website Consistency</h2>
+<p>Static sites are flexible: anything contained within source Markdown files can be rendered as page content. Users may be able to include scripts, widgets or numerous undesired items.</p>
+<p>A CMS constrains the user, because content is normally bound to a database with specific fields. Control panels prompt the user so it’s obvious they must enter a title, body content, excerpt etc. Even if the user enters something in an unexpected field, it won’t appear on the website unless it’s implemented within the theme template.</p>
+<h2>6. Managing Large Sites</h2>
+<p>Consider a website with thousands of pages, regular publications, real-time breaking news and dozens of authors in multiple locations. SitePoint is a great example. It would be possible to manage content using a static site generator, but:</p>
+<ul>
+<li>content editing and publishing is more awkward. Editors may require access to the Git repo or shared folders rather than a simple web or app interface.</li>
+<li>real-time updates would be delayed because the site must be rebuilt, tested and deployed</li>
+<li>build times could increase rapidly and deployment would become cumbersome.</li>
+</ul>
+<p>Static site generators are perhaps best suited to sites containing no more than a few hundred pages with a couple of new posts every week. Automated build and deploy processes will be required, and you may reach a point where a CMS becomes a more practical option.</p>
+<h2>7. Sites with Server-side Functionality</h2>
+<p>A true static site cannot offer interactive facilities such as user logins, form filling, search or discussion forums. There are some client-side options such as <a href="http://lunrjs.com/">lunr.js search</a> and <a href="https://publishers.disqus.com/">Disqus commenting</a>, but your choices will be more limited.</p>
+<p>There are solutions such as using a build step which generates a static site containing necessary <code class=" language-undefined">&lt;?php ... ?&gt;</code> code blocks. This should pre-render HTML where possible, e.g. navigation, includes, partials, etc. to ensure pages are more efficient and require less effort from the PHP processor. Unfortunately, you’re increasing the build complexity, and it may be of little benefit to some frameworks.</p>
+<h2>Is a Static Site Right For You?</h2>
+<p>Before making any decision, examine:</p>
+<ul>
+<li>your project requirements, size, complexity, etc.</li>
+<li>your userbase</li>
+<li>your team’s development skills, and</li>
+<li>the hosting and/or deployment factors.</li>
+</ul>
+<p>The vast majority of websites rarely exceed a few dozen pages, receive infrequent updates and depend on a developer to make those changes. A CMS is often overkill, and static site generation could ease development and reduce costs. However, persuading your client to abandon their CMS administration panels could be a tougher task …</p>
+<p>Coming soon: <em>How to Create a Static Site With Metalsmith</em>.</p>
+  
