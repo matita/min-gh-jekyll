@@ -1,0 +1,265 @@
+---
+title: " Service Workers: Save your User's Data using the Save-Data Header | Dean Hume "
+description: "null"
+link: "http://www.deanhume.com/Home/BlogPost/service-workers--save-your-users-data-using-the-save-data-header/10139"
+saved: "2016-03-18 09:39:41"
+---
+<p> </p><p>I was recently travelling abroad when I urgently needed to get some information from the website of my airline. I was on a sketchy 2G connection that took forever to load the page, and eventually I ended up giving up completely. I was also paying a fortune for this daily service from my mobile provider back home! If you've ever been desperate to get some information from a website and have a dodgy mobile connection, you'll know how frustrating it can be. </p>
+
+<p>Throughout the world, 4G network coverage is rapidly accelerating, but we still have a long way to go. 3G networks were only launched in late 2007 in countries such as Bangladesh, Brazil, China, India, Nigeria, Pakistan and Russia — where almost <a href="https://gsmaintelligence.com/research/2014/12/mobile-broadband-reach-expanding-globally/453/">50% of the global population is located</a>. While mobile coverage is growing, it's crazy to think that a <a href="http://blog.jana.com/2015/05/21/the-data-trap-affordable-smartphones-expensive-data/">500MB data plan can cost around 17 hours worth of minimum wage work in India</a>.</p>
+
+<p>Fortunately, browser vendors such as Google Chrome, Opera and Yandex have realised the pain that many users face. With the latest versions of these browsers (including Chrome 49), users will have an option that allows them to "<em>opt-in</em>" to a feature that will save them data. By enabling this feature, the browser will add a new header to each HTTP request. As developers, it's our chance to look out for this header and return the appropriate content in order to save our users data. For example, if a user has opted-in to save data, you could return lighter images, smaller videos or even different markup. It's a simple concept, but very effective!</p>
+
+<p>In this article, I am going to show you how to enable the <a href="https://developers.google.com/web/updates/2016/02/save-data?hl=en">Save-Data feature in Google Chrome</a>, and how you can detect and return a "light" version of your web application using Service Workers.</p>
+
+<h2>Enabling the Save-Data Feature</h2>
+
+<p>Whether you are on a desktop or mobile device, enabling this feature is a relatively straightforward process. As a desktop user, you can enable this feature using the <a href="https://chrome.google.com/webstore/detail/data-saver-beta/pfmgfdlgomnbgkofeojodiodmgpgmkac">Data-Saver Extension</a> in Google Chrome. If you are on a mobile device, you can enable this under <strong>Settings -&gt; Bandwidth -&gt; Data Saver</strong>. Once the setting is enabled, each HTTP request to the server will include the Save-Data header.  If you view this using your developer tools, it might look a little something like the image below.</p>
+
+<p><img src="http://a43d55f6a02c4be185ce-9cfa4cf7c673a59966ad8296f4c88804.r44.cf3.rackcdn.com/Service-Worker-Save-Data/save-data-header-chrome.jpg" alt="Chrome Data Saver"></p>
+
+<p>Now that you've enabled the Save-Data header, we can detect and return the appropriate content.</p>
+
+<h2>Detecting the Save-Data Header</h2>
+
+<p>Once the Save-Data feature has been enabled, there are a few different routes that you can choose to return data to the user. Because each HTTP request will go to the server, you could decide to serve different content based on the the Save-Data header directly from server-side code. If you preferred to do this on the network level, you could even determine the best content to serve by using your <a href="https://cbonte.github.io/haproxy-dconv/configuration-1.5.html#7">load balancer</a> to detect the Save-Data header.  If you are using <a href="https://developers.google.com/speed/pagespeed/module/">PageSpeed for Apache or Nginx</a> to optimize your pages you can automatically <a href="https://github.com/pagespeed/mod_pagespeed/issues/1258">enable data savings</a> for your users.</p>
+
+<p>However, with just a few lines of JavaScript and using the power of Service Workers, you could easily intercept the HTTP requests and serve <em>lighter</em> content accordingly. As a web developer with no access to the server configuration, this is a perfect option. If you aren't familiar with Service Workers, I thoroughly recommend checking out this <a href="https://github.com/slightlyoff/ServiceWorker">Github repo</a> for more information. I've also previously <a href="http://deanhume.com/Home/Tagged/Service%20Workers">blogged about Service Workers</a> on this site!</p>
+
+<p>Service Workers allow you to intercept outgoing HTTP requests, inspect them and act on this information. Using the <a href="http://deanhume.com/home/blogpost/a-basic-guide-to-the-fetch-api/10129">Fetch API</a>, you can easily implement a solution to detect the Save-Data header and serve <em>lighter</em> content. </p>
+
+<p>Let's get started by creating a JavaScript file called service-worker.js and adding the code below to it.</p>
+
+<link rel="stylesheet" href="https://assets-cdn.github.com/assets/gist-embed-7346e9a735aaeeacede51d1efaad6208f95d9edbc222155878bfddc2da28fa87.css"><div id="gist32367055" class="gist">
+    <div class="gist-file">
+      <div class="gist-data">
+        <div class="js-gist-file-update-container js-task-list-container file-box">
+  <div id="file-save-data-header-js" class="file">
+    
+
+  <div itemprop="text" class="blob-wrapper data type-javascript">
+      <table class="highlight tab-size js-file-line-container" data-tab-size="8">
+      <tbody><tr>
+        <td id="file-save-data-header-js-L1" class="blob-num js-line-number" data-line-number="1"></td>
+        <td id="file-save-data-header-js-LC1" class="blob-code blob-code-inner js-file-line"><span class="pl-s"><span class="pl-pds">"</span>use strict<span class="pl-pds">"</span></span>;</td>
+      </tr>
+      <tr>
+        <td id="file-save-data-header-js-L2" class="blob-num js-line-number" data-line-number="2"></td>
+        <td id="file-save-data-header-js-LC2" class="blob-code blob-code-inner js-file-line">
+</td>
+      </tr>
+      <tr>
+        <td id="file-save-data-header-js-L3" class="blob-num js-line-number" data-line-number="3"></td>
+        <td id="file-save-data-header-js-LC3" class="blob-code blob-code-inner js-file-line"><span class="pl-v">this</span>.<span class="pl-en">addEventListener</span>(<span class="pl-s"><span class="pl-pds">'</span>fetch<span class="pl-pds">'</span></span>, <span class="pl-smi">event</span> <span class="pl-k">=&gt;</span> {</td>
+      </tr>
+      <tr>
+        <td id="file-save-data-header-js-L4" class="blob-num js-line-number" data-line-number="4"></td>
+        <td id="file-save-data-header-js-LC4" class="blob-code blob-code-inner js-file-line">
+</td>
+      </tr>
+      <tr>
+        <td id="file-save-data-header-js-L5" class="blob-num js-line-number" data-line-number="5"></td>
+        <td id="file-save-data-header-js-LC5" class="blob-code blob-code-inner js-file-line"><span class="pl-c">// Save Data support</span></td>
+      </tr>
+      <tr>
+        <td id="file-save-data-header-js-L6" class="blob-num js-line-number" data-line-number="6"></td>
+        <td id="file-save-data-header-js-LC6" class="blob-code blob-code-inner js-file-line"><span class="pl-k">if</span>(<span class="pl-c1">event</span>.<span class="pl-smi">request</span>.<span class="pl-c1">headers</span>.<span class="pl-en">get</span>(<span class="pl-s"><span class="pl-pds">'</span>save-data<span class="pl-pds">'</span></span>)){</td>
+      </tr>
+      <tr>
+        <td id="file-save-data-header-js-L7" class="blob-num js-line-number" data-line-number="7"></td>
+        <td id="file-save-data-header-js-LC7" class="blob-code blob-code-inner js-file-line">    <span class="pl-c">//Return smaller images</span></td>
+      </tr>
+      <tr>
+        <td id="file-save-data-header-js-L8" class="blob-num js-line-number" data-line-number="8"></td>
+        <td id="file-save-data-header-js-LC8" class="blob-code blob-code-inner js-file-line">    <span class="pl-k">if</span> (<span class="pl-sr"><span class="pl-pds">/</span><span class="pl-cce">\.</span>jpg<span class="pl-k">$</span><span class="pl-k">|</span><span class="pl-c1">.</span>gif<span class="pl-k">$</span><span class="pl-k">|</span><span class="pl-c1">.</span>png<span class="pl-k">$</span><span class="pl-pds">/</span></span>.<span class="pl-c1">test</span>(<span class="pl-c1">event</span>.<span class="pl-smi">request</span>.<span class="pl-smi">url</span>)) {</td>
+      </tr>
+      <tr>
+        <td id="file-save-data-header-js-L9" class="blob-num js-line-number" data-line-number="9"></td>
+        <td id="file-save-data-header-js-LC9" class="blob-code blob-code-inner js-file-line">
+</td>
+      </tr>
+      <tr>
+        <td id="file-save-data-header-js-L10" class="blob-num js-line-number" data-line-number="10"></td>
+        <td id="file-save-data-header-js-LC10" class="blob-code blob-code-inner js-file-line">      <span class="pl-k">let</span> saveDataUrl <span class="pl-k">=</span> <span class="pl-c1">event</span>.<span class="pl-smi">request</span>.<span class="pl-smi">url</span>.<span class="pl-c1">substr</span>(<span class="pl-c1">0</span>, <span class="pl-c1">event</span>.<span class="pl-smi">request</span>.<span class="pl-smi">url</span>.<span class="pl-c1">lastIndexOf</span>(<span class="pl-s"><span class="pl-pds">"</span>.<span class="pl-pds">"</span></span>)) <span class="pl-k">+</span> <span class="pl-s"><span class="pl-pds">'</span>-savedata<span class="pl-pds">'</span></span> <span class="pl-k">+</span> <span class="pl-c1">event</span>.<span class="pl-smi">request</span>.<span class="pl-smi">url</span>.<span class="pl-c1">substr</span>(<span class="pl-c1">event</span>.<span class="pl-smi">request</span>.<span class="pl-smi">url</span>.<span class="pl-c1">lastIndexOf</span>(<span class="pl-s"><span class="pl-pds">"</span>.<span class="pl-pds">"</span></span>), <span class="pl-c1">event</span>.<span class="pl-smi">request</span>.<span class="pl-smi">url</span>.<span class="pl-c1">length</span> <span class="pl-k">-</span> <span class="pl-c1">1</span>);</td>
+      </tr>
+      <tr>
+        <td id="file-save-data-header-js-L11" class="blob-num js-line-number" data-line-number="11"></td>
+        <td id="file-save-data-header-js-LC11" class="blob-code blob-code-inner js-file-line">
+</td>
+      </tr>
+      <tr>
+        <td id="file-save-data-header-js-L12" class="blob-num js-line-number" data-line-number="12"></td>
+        <td id="file-save-data-header-js-LC12" class="blob-code blob-code-inner js-file-line">      <span class="pl-c1">event</span>.<span class="pl-en">respondWith</span>(</td>
+      </tr>
+      <tr>
+        <td id="file-save-data-header-js-L13" class="blob-num js-line-number" data-line-number="13"></td>
+        <td id="file-save-data-header-js-LC13" class="blob-code blob-code-inner js-file-line">        <span class="pl-en">fetch</span>(saveDataUrl, {</td>
+      </tr>
+      <tr>
+        <td id="file-save-data-header-js-L14" class="blob-num js-line-number" data-line-number="14"></td>
+        <td id="file-save-data-header-js-LC14" class="blob-code blob-code-inner js-file-line">          mode<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>no-cors<span class="pl-pds">'</span></span></td>
+      </tr>
+      <tr>
+        <td id="file-save-data-header-js-L15" class="blob-num js-line-number" data-line-number="15"></td>
+        <td id="file-save-data-header-js-LC15" class="blob-code blob-code-inner js-file-line">        })</td>
+      </tr>
+      <tr>
+        <td id="file-save-data-header-js-L16" class="blob-num js-line-number" data-line-number="16"></td>
+        <td id="file-save-data-header-js-LC16" class="blob-code blob-code-inner js-file-line">      );</td>
+      </tr>
+      <tr>
+        <td id="file-save-data-header-js-L17" class="blob-num js-line-number" data-line-number="17"></td>
+        <td id="file-save-data-header-js-LC17" class="blob-code blob-code-inner js-file-line">    }</td>
+      </tr>
+      <tr>
+        <td id="file-save-data-header-js-L18" class="blob-num js-line-number" data-line-number="18"></td>
+        <td id="file-save-data-header-js-LC18" class="blob-code blob-code-inner js-file-line">
+</td>
+      </tr>
+      <tr>
+        <td id="file-save-data-header-js-L19" class="blob-num js-line-number" data-line-number="19"></td>
+        <td id="file-save-data-header-js-LC19" class="blob-code blob-code-inner js-file-line">    <span class="pl-c">// We want to save data, so restrict icons and fonts too</span></td>
+      </tr>
+      <tr>
+        <td id="file-save-data-header-js-L20" class="blob-num js-line-number" data-line-number="20"></td>
+        <td id="file-save-data-header-js-LC20" class="blob-code blob-code-inner js-file-line">    <span class="pl-k">if</span> (<span class="pl-c1">event</span>.<span class="pl-smi">request</span>.<span class="pl-smi">url</span>.<span class="pl-en">includes</span>(<span class="pl-s"><span class="pl-pds">'</span>fonts.googleapis.com<span class="pl-pds">'</span></span>)) {</td>
+      </tr>
+      <tr>
+        <td id="file-save-data-header-js-L21" class="blob-num js-line-number" data-line-number="21"></td>
+        <td id="file-save-data-header-js-LC21" class="blob-code blob-code-inner js-file-line">        <span class="pl-c">// return nothing</span></td>
+      </tr>
+      <tr>
+        <td id="file-save-data-header-js-L22" class="blob-num js-line-number" data-line-number="22"></td>
+        <td id="file-save-data-header-js-LC22" class="blob-code blob-code-inner js-file-line">        <span class="pl-c1">event</span>.<span class="pl-en">respondWith</span>(<span class="pl-k">new</span> <span class="pl-en">Response</span>(<span class="pl-s"><span class="pl-pds">'</span><span class="pl-pds">'</span></span>, {status<span class="pl-k">:</span> <span class="pl-c1">408</span>, statusText<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>Ignore fonts to save data.<span class="pl-pds">'</span></span> }));</td>
+      </tr>
+      <tr>
+        <td id="file-save-data-header-js-L23" class="blob-num js-line-number" data-line-number="23"></td>
+        <td id="file-save-data-header-js-LC23" class="blob-code blob-code-inner js-file-line">    }</td>
+      </tr>
+      <tr>
+        <td id="file-save-data-header-js-L24" class="blob-num js-line-number" data-line-number="24"></td>
+        <td id="file-save-data-header-js-LC24" class="blob-code blob-code-inner js-file-line">  }</td>
+      </tr>
+      <tr>
+        <td id="file-save-data-header-js-L25" class="blob-num js-line-number" data-line-number="25"></td>
+        <td id="file-save-data-header-js-LC25" class="blob-code blob-code-inner js-file-line">
+</td>
+      </tr>
+      <tr>
+        <td id="file-save-data-header-js-L26" class="blob-num js-line-number" data-line-number="26"></td>
+        <td id="file-save-data-header-js-LC26" class="blob-code blob-code-inner js-file-line">});</td>
+      </tr>
+</tbody></table>
+
+  </div>
+
+  </div>
+  
+</div>
+
+      </div>
+      
+    </div>
+</div>
+
+
+<p>Let's analyse the code above and break it down step-by-step. </p>
+
+<p>In the first few lines, I am adding an event listener to listen out for any <a href="http://deanhume.com/home/blogpost/a-basic-guide-to-the-fetch-api/10129">fetch events</a> that take place. For each request that takes place, I am checking to see if the Save-Data header has been enabled. </p>
+
+<p>If the header has been enabled, I then check to see if the current HTTP request is for a image of type JPEG, GIF or PNG. If I know that the current HTTP request is for an image, I can then determine the best content to return based on the HTTP headers that are passed through. If the current request is for an image, I am then appending "-savedata" onto the name of the file. For example, if the file name was "<em>hero-image.png</em>", it will now become "<em>hero-image-savedata.png</em>". I then keep a copy of a really low resolution image on the server and it gets returned in the HTTP response. </p>
+
+<p>I am currently using this code on the <a href="https://www.buildingstartupteams.com/">buildingstartupteams.com</a> site and returning low quality images back to the user. </p>
+
+<p><img src="http://a43d55f6a02c4be185ce-9cfa4cf7c673a59966ad8296f4c88804.r44.cf3.rackcdn.com/Service-Worker-Save-Data/save-data-header.jpg" alt="Save-data website"></p>
+
+<p>Eeew....the images don't look great! Okay fair enough, but remember that we want to get content back to the user in the lightest possible way. Using this technique, the user will have saved 975 KB in images which is a huge saving! You can tweak the content you return however you feel because using this Save-Data header puts the control in your hands.</p>
+
+<p>Let's take this even further. If your website is using Web Fonts and the user has enabled the Save-Data feature, you might want to ignore any HTTP requests for Web Fonts.  In the code above (around line 20), I am checking if the current HTTP request is for fonts from Google and then returning an empty HTTP 408 response.</p>
+
+<p>Before you start using this code, you will want register the Service Worker in your HTML. The code below references the <em>service-worker.js</em> file that we created earlier.</p>
+
+<link rel="stylesheet" href="https://assets-cdn.github.com/assets/gist-embed-7346e9a735aaeeacede51d1efaad6208f95d9edbc222155878bfddc2da28fa87.css"><div id="gist27375720" class="gist">
+    <div class="gist-file">
+      <div class="gist-data">
+        <div class="js-gist-file-update-container js-task-list-container file-box">
+  <div id="file-service-worker-register-js" class="file">
+    
+
+  <div itemprop="text" class="blob-wrapper data type-javascript">
+      <table class="highlight tab-size js-file-line-container" data-tab-size="8">
+      <tbody><tr>
+        <td id="file-service-worker-register-js-L1" class="blob-num js-line-number" data-line-number="1"></td>
+        <td id="file-service-worker-register-js-LC1" class="blob-code blob-code-inner js-file-line"><span class="pl-k">&lt;</span>script<span class="pl-k">&gt;</span></td>
+      </tr>
+      <tr>
+        <td id="file-service-worker-register-js-L2" class="blob-num js-line-number" data-line-number="2"></td>
+        <td id="file-service-worker-register-js-LC2" class="blob-code blob-code-inner js-file-line"><span class="pl-c">// Register the service worker</span></td>
+      </tr>
+      <tr>
+        <td id="file-service-worker-register-js-L3" class="blob-num js-line-number" data-line-number="3"></td>
+        <td id="file-service-worker-register-js-LC3" class="blob-code blob-code-inner js-file-line"><span class="pl-k">if</span> (<span class="pl-s"><span class="pl-pds">'</span>serviceWorker<span class="pl-pds">'</span></span> <span class="pl-k">in</span> <span class="pl-c1">navigator</span>) {</td>
+      </tr>
+      <tr>
+        <td id="file-service-worker-register-js-L4" class="blob-num js-line-number" data-line-number="4"></td>
+        <td id="file-service-worker-register-js-LC4" class="blob-code blob-code-inner js-file-line">	<span class="pl-c1">navigator</span>.<span class="pl-smi">serviceWorker</span>.<span class="pl-en">register</span>(<span class="pl-s"><span class="pl-pds">'</span>/service-worker.js<span class="pl-pds">'</span></span>).<span class="pl-en">then</span>(<span class="pl-k">function</span>(<span class="pl-smi">registration</span>) {</td>
+      </tr>
+      <tr>
+        <td id="file-service-worker-register-js-L5" class="blob-num js-line-number" data-line-number="5"></td>
+        <td id="file-service-worker-register-js-LC5" class="blob-code blob-code-inner js-file-line">    <span class="pl-c">// Registration was successful</span></td>
+      </tr>
+      <tr>
+        <td id="file-service-worker-register-js-L6" class="blob-num js-line-number" data-line-number="6"></td>
+        <td id="file-service-worker-register-js-LC6" class="blob-code blob-code-inner js-file-line">    <span class="pl-en">console</span>.<span class="pl-c1">log</span>(<span class="pl-s"><span class="pl-pds">'</span>ServiceWorker registration successful with scope: <span class="pl-pds">'</span></span>, <span class="pl-smi">registration</span>.<span class="pl-c1">scope</span>);</td>
+      </tr>
+      <tr>
+        <td id="file-service-worker-register-js-L7" class="blob-num js-line-number" data-line-number="7"></td>
+        <td id="file-service-worker-register-js-LC7" class="blob-code blob-code-inner js-file-line">}).<span class="pl-en">catch</span>(<span class="pl-k">function</span>(<span class="pl-smi">err</span>) {</td>
+      </tr>
+      <tr>
+        <td id="file-service-worker-register-js-L8" class="blob-num js-line-number" data-line-number="8"></td>
+        <td id="file-service-worker-register-js-LC8" class="blob-code blob-code-inner js-file-line">    <span class="pl-c">// registration failed :(</span></td>
+      </tr>
+      <tr>
+        <td id="file-service-worker-register-js-L9" class="blob-num js-line-number" data-line-number="9"></td>
+        <td id="file-service-worker-register-js-LC9" class="blob-code blob-code-inner js-file-line">    	<span class="pl-en">console</span>.<span class="pl-c1">log</span>(<span class="pl-s"><span class="pl-pds">'</span>ServiceWorker registration failed: <span class="pl-pds">'</span></span>, err);</td>
+      </tr>
+      <tr>
+        <td id="file-service-worker-register-js-L10" class="blob-num js-line-number" data-line-number="10"></td>
+        <td id="file-service-worker-register-js-LC10" class="blob-code blob-code-inner js-file-line">    });</td>
+      </tr>
+      <tr>
+        <td id="file-service-worker-register-js-L11" class="blob-num js-line-number" data-line-number="11"></td>
+        <td id="file-service-worker-register-js-LC11" class="blob-code blob-code-inner js-file-line">}</td>
+      </tr>
+      <tr>
+        <td id="file-service-worker-register-js-L12" class="blob-num js-line-number" data-line-number="12"></td>
+        <td id="file-service-worker-register-js-LC12" class="blob-code blob-code-inner js-file-line"><span class="pl-k">&lt;</span><span class="pl-k">/</span>script<span class="pl-k">&gt;</span></td>
+      </tr>
+</tbody></table>
+
+  </div>
+
+  </div>
+  
+</div>
+
+      </div>
+      
+    </div>
+</div>
+
+
+<p>That's it! Using the example above, you can detect if a user has opted-in to save data and return the appropriate content. The power is in your hands!</p>
+
+<h2>Summary</h2>
+
+<p>The Save-Data header is a brilliant feature that opens a lot of possibilities for us as developers. In this article, I ran through an example that uses Service Workers which does unfortunately mean that it will be limited to newer browsers, but it is an easy way to start providing your users with lightweight content and little fuss. </p>
+
+<p>As web developers, we are ultimately responsible for the experience that our users receive when visiting our sites - this includes the cost of loading and downloading all resources! </p>
+
+<h2>Further Reading</h2>
+
+<p>If you'd like to find out more about the Save-Data header, I recommend checking out this article entitled <a href="https://developers.google.com/web/updates/2016/02/save-data?hl=en">Delivering Fast and Light Applications with Save-Data</a> by Ilya Grigorik. Happy experimenting!</p>
+ <p></p><br><br><br><br><br><br><br><h2>Comments</h2>  <p><strong> hotjs - 3/12/2016 </strong><br> hotJS - a new website that will give you the latest and best resources on the web
+https://www.hotjs.net/ </p>    <div id="Comments"></div><hr><p id="toggle">Add your comment</p><div id="contact-wrapper"></div> 
