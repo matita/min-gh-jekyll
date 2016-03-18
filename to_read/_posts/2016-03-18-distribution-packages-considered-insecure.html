@@ -1,0 +1,139 @@
+---
+title: "Distribution packages considered insecure"
+description: "If you ever have run a Linux-based operating system you are probably aware of the way that software is usually distributed on them: Using a software reposito..."
+link: "https://statuscode.ch/2016/02/distribution-packages-considered-insecure/"
+saved: "2016-03-18 10:42:11"
+---
+
+<p>If you ever have run a Linux-based operating system you are probably aware of the way that software is usually distributed on them: Using a software repository.</p>
+<p>Repositories are great for numerous reasons. Want to install an application on <a href="https://www.debian.org/">Debian</a>? Easy. Just execute <code>apt-get install ffmpeg</code> and ffmpeg has been installed. Updating? A quick <code>apt-get update</code> plus <code>apt-get upgrade</code> and all is done.</p>
+<p>As you can clearly see using a repository gives you the great advantage of making it easy for you to update and install applications.</p>
+<h2 id="the-responsibilities-of-packagers">The responsibilities of packagers</h2>
+<p>One needs to be aware of the fact that software repositories are not automagically maintained. There are people out there (“packagers”) whose responsibility it is:</p>
+<ol>
+<li>Keep the software updated, especially considering security patches.</li>
+<li>Package new releases.</li>
+</ol>
+<p>So you’re basically moving the responsibility of this task to another entity. And this a good thing to do. Time is sparse and precious, so outsourcing tasks like these is often a sensible thing to do.</p>
+<p>Furthermore Linux on the server would probably never have received the kind of traction it has nowadays if packages would not be there.</p>
+<h2 id="the-hidden-dark-side-of-software-repositories">The hidden dark side of software repositories</h2>
+<p>This certainly sounds all like great stuff. So using packages directly from your distribution just sounds like the right thing to do. Right?</p>
+<p>The truth is a little bit more complex though. First of all, you need to completely trust your packagers. This does not only apply to the risk that they could hide malicious code in the packages, it goes much further. These are the people that timely need to react in case a vulnerability in an application is found to publish an update.</p>
+<p>Let’s talk a little bit more about packagers. In case of distributions such as Debian these is mainly done by benevolent people in their spare time. This certainly is a nice gesture of them.</p>
+<p>But can you really be sure that people that do this stuff as an hobby can deliver this in the quality that you expect and require? Let’s be honest here, probably not.
+While it is a great thing that they donate their time it is very unlikely that they will always have time to update the packages they maintain in a timely manner. Furthermore, life goes on, people marry, get children or die. If there is no contingency plan for such plans then there is a really big problem just waiting to happen.</p>
+<p>Right now, this is exactly what is happening. I have <a href="http://www.pcworld.com/article/2845072/ubuntu-owncloud-and-a-hidden-dark-side-of-linux-software-repositories.html">been pointing out this problem already 1.5 years ago</a> and it’s finally time to recall that.</p>
+<h2 id="what-is-wrong-with-the-packaging-model">What is wrong with the packaging model</h2>
+<p>First of all: This is not intended as a flame. Its sole intent is to make people aware of the massive security problems existent in packaging choices such as done by Debian.
+Distribution packages are not always the best solution and can sometimes even expose you to critical vulnerabilities. Taking <em>you</em> and <em>your data</em> at risk.</p>
+<p>Let’s take a short glimpse at how Debian handles packaging. They have <a href="https://web.archive.org/web/20160207223455/https://www.debian.org/security/faq#oldversion">a policy stating</a> that only security relevant changes should be backported and not the absolute version (emphasis mine):</p>
+<blockquote>
+<p>Q: Why are you fiddling with an old version of that package?</p>
+<p>The most important guideline when making a new package that fixes a security problem is to make as few changes as possible. Our users and developers are relying on the exact behaviour of a release once it is made, so any change we make can possibly break someone’s system. […]
+This means that <strong>moving to a new upstream version is not a good solution, instead the relevant changes should be backported</strong>. […]</p>
+</blockquote>
+<p>What backporting basically means is the packager randomly decides that they take any version of a software and freeze the version to that. Only single security patches are backported.</p>
+<p>Of course, <a href="http://blog.jospoortvliet.com/2016/01/virtual-machine-zip-files-and.html">you will miss out from many bug fixes</a> but apparently in the eyes of some people stable software is defined by it’s ancient age. So much that for example <a href="https://github.com/owncloud/core/issues/22313">this critical bug in ownCloud</a> never received any backport, resulting in potential data loss.</p>
+<p>So we’re now having multiple home-made problems here:</p>
+<ol>
+<li>Packagers need to go through the source code and find all relevant security patches.</li>
+<li>Packagers need to actually be aware of the fact that a security problem has been fixed.</li>
+</ol>
+<p>Just missing one security patch means taking user data at risk. And this is exactly what is happening. Let’s just take a look <a href="https://web.archive.org/web/20160205220041/https://security-tracker.debian.org/tracker/source-package/phpmyadmin">at one example</a>:</p>
+<p><img src="https://statuscode.ch/assets/posts/2016/02/distribution-packages-considered-insecure/phpmyadmin.png" alt="Open vulnerabilities in Debians version of phpMyAdmin"></p>
+<p>Yikes! You’re seeing it right! The phpMyAdmin version shipped by Debian is totally insecure on any stable release. So there are probably <a href="https://web.archive.org/web/20160207224902/https://qa.debian.org/popcon.php?package=phpmyadmin">over 20.000 servers</a> out there using an inherently insecure version of phpMyAdmin.</p>
+<p>What is even more a shame: <strong>Debian has a tool to track open security vulnerabilities in software and nobody is giving a fuck</strong>. That should immediately point out to anybody that there is a gigantic problem and all alarm bells should ring.</p>
+<h2 id="just-the-tip-of-the-iceberg">Just the tip of the iceberg</h2>
+<p>And this problem is inherent. If phpMyAdmin sounds like a too obscure example, <a href="https://web.archive.org/web/20160207231640/https://security-tracker.debian.org/tracker/source-package/wordpress">let’s try Wordpress</a>:</p>
+<p><img src="https://statuscode.ch/assets/posts/2016/02/distribution-packages-considered-insecure/wordpress.png" alt="Open vulnerabilities in Debians version of Wordpress"></p>
+<p>I have spent some minutes on other packages within the “<a href="https://web.archive.org/web/20160207225626/https://packages.debian.org/jessie/web/">web</a>” category of the packaging system and I’m still more than shocked. Since there are over 1.000 different packages in there I limited myself to some famous software plus the ones that I believed were interesting. And note that this is just the result of some minutes, now think about the time that a real adversary could spend on this…</p>
+<table class="pure-table pure-table-horizontal pure-table-striped">
+<thead>
+<tr>
+<th>Package</th>
+<th>Last upstream release date</th>
+<th>Last Debian release date</th>
+<th>Insecure because of</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="http://web.archive.org/web/20160207233448/https://packages.debian.org/jessie/web/adminer">adminer</a></td>
+<td><a href="https://web.archive.org/web/20160207233154/http://metadata.ftp-master.debian.org/changelogs/main/a/adminer/adminer_3.3.3-1_changelog">2016-02-06</a></td>
+<td><a href="https://web.archive.org/web/20160207233154/http://metadata.ftp-master.debian.org/changelogs/main/a/adminer/adminer_3.3.3-1_changelog">2012-02-06</a></td>
+<td>Multiple critical vulnerabilities <a href="https://web.archive.org/save/https://github.com/vrana/adminer/blob/master/changes.txt">according to the changelog</a>.</td>
+</tr>
+<tr>
+<td><a href="https://web.archive.org/web/20160207234545/https://packages.debian.org/jessie/ckeditor">ckeditor</a></td>
+<td><a href="http://web.archive.org/web/20160207234652/http://ckeditor.com/whatsnew">2016-02-04</a></td>
+<td><a href="http://web.archive.org/web/20160207234732/http://metadata.ftp-master.debian.org/changelogs/main/c/ckeditor/ckeditor_4.4.4+dfsg1-3_changelog">2014-11-10</a></td>
+<td>Missing at least one <a href="https://web.archive.org/web/20160207234832/http://ckeditor.com/blog/CKEditor-4.4.6-Released">security patch from 4.4.6</a></td>
+</tr>
+<tr>
+<td><a href="http://web.archive.org/web/20160207234947/https://packages.debian.org/jessie/collabtive">collabtive</a></td>
+<td><a href="http://web.archive.org/web/20160207235036/http://collabtive.o-dyn.de/">2015-03-13</a></td>
+<td><a href="http://web.archive.org/web/20160207235103/http://metadata.ftp-master.debian.org/changelogs/main/c/collabtive/collabtive_2.0+dfsg-5_changelog">2014-10-21</a></td>
+<td>Multiple missing security related changes <a href="https://web.archive.org/web/20160207235446/https://github.com/philippK-de/Collabtive/blob/master/changelog.txt">according to the changelog</a>. No proper vulnerability tracking upstream.</td>
+</tr>
+<tr>
+<td><a href="https://web.archive.org/web/20160207235832/https://packages.debian.org/jessie/dolibarr">dolibarr</a></td>
+<td><a href="http://web.archive.org/save/http://sourceforge.net/projects/dolibarr/files/Dolibarr%20ERP-CRM/3.5.8/">2016-01-31</a></td>
+<td><a href="http://web.archive.org/web/20160207235956/http://metadata.ftp-master.debian.org/changelogs/main/d/dolibarr/dolibarr_3.5.5+dfsg1-1_changelog">2014-12-05</a></td>
+<td><a href="http://web.archive.org/web/20160208000129/https://github.com/Dolibarr/dolibarr/blob/develop/ChangeLog">Changelog</a> lists a ton of issues such as multiple SQL injections.</td>
+</tr>
+<tr>
+<td><a href="http://web.archive.org/web/20160208000311/https://packages.debian.org/jessie/dotclear">dotclear</a></td>
+<td><a href="http://web.archive.org/web/20151208115605/http://dotclear.org/blog/post/2015/10/25/Dotclear-2.8.2">2015-10-25</a></td>
+<td><a href="http://web.archive.org/web/20160208000631/http://metadata.ftp-master.debian.org/changelogs/main/d/dotclear/dotclear_2.6.4+dfsg-1_changelog">2014-08-20</a></td>
+<td>Multiple security vulnerabilities such as XSS as <a href="http://web.archive.org/web/20160208000537/https://bitbucket.org/dotclear/dotclear/src/54da6965988edcf37fcbd993102a2747cf3c9164/CHANGELOG?fileviewer=file-view-default">per the changelog</a>.</td>
+</tr>
+<tr>
+<td><a href="https://web.archive.org/web/20160208000945/http://metadata.ftp-master.debian.org/changelogs/main/d/drupal7/drupal7_7.32-1+deb8u5_changelog">drupal</a></td>
+<td><a href="http://web.archive.org/web/20160208001036/https://api.drupal.org/api/drupal/CHANGELOG.txt/7">2016-02-03</a></td>
+<td><a href="https://web.archive.org/web/20160208000945/http://metadata.ftp-master.debian.org/changelogs/main/d/drupal7/drupal7_7.32-1+deb8u5_changelog">2015-08-20</a></td>
+<td>Missing the security patch for <a href="http://web.archive.org/web/20160125105244/https://www.drupal.org/SA-CORE-2015-004">SA-CORE-2015-004</a>.</td>
+</tr>
+<tr>
+<td><a href="http://web.archive.org/web/20160208001330/https://packages.debian.org/jessie/elasticsearch">elasticsearch</a></td>
+<td><a href="http://web.archive.org/web/20160208001436/https://wwTw.elastic.co/downloads/past-releases">2016-02-02</a></td>
+<td><a href="http://web.archive.org/web/20160208001457/http://metadata.ftp-master.debian.org/changelogs/main/e/elasticsearch/elasticsearch_1.0.3+dfsg-5+deb8u1_changelog">2015-04-27</a></td>
+<td>Vulnerable to <a href="http://web.archive.org/web/20160208001631/https://www.elastic.co/community/security">CVE-2015-4165, CVE-2015-5377 and CVE-2015-5531</a>.</td>
+</tr>
+<tr>
+<td><a href="http://web.archive.org/web/20160208001736/https://packages.debian.org/jessie/web/glpi">glpi</a></td>
+<td><a href="https://web.archive.org/web/20160208001855/http://www.glpi-project.org/spip.php?page=annonce&amp;id_breve=353&amp;lang=en">2015-12-01</a></td>
+<td><a href="https://web.archive.org/web/20160208001928/http://metadata.ftp-master.debian.org/changelogs/main/g/glpi/glpi_0.84.8+dfsg.1-1_changelog">2014-10-18</a></td>
+<td>Release with security patches has been <a href="https://web.archive.org/web/20160208002117/http://www.glpi-project.org/spip.php?page=annonce&amp;id_breve=338&amp;lang=en&amp;debut_autres_breves=">released in April 2015</a>.</td>
+</tr>
+<tr>
+<td><a href="http://web.archive.org/web/20160208002225/https://packages.debian.org/jessie/gosa">gosa</a></td>
+<td>Upstream does not release updates anymore.</td>
+<td><a href="http://web.archive.org/web/20160208002436/http://metadata.ftp-master.debian.org/changelogs/main/g/gosa/gosa_2.7.4+reloaded2-1+deb8u1_changelog">2015-07-24</a></td>
+<td><a href="https://oss.gonicus.de/labs/gosa/changeset/21280">Publicly known code injections.</a></td>
+</tr>
+<tr>
+<td><a href="http://web.archive.org/web/20160212181910/https://packages.debian.org/jessie/ldap-account-manager">ldap-account-manager</a></td>
+<td><a href="http://web.archive.org/web/20160212182554/https://www.ldap-account-manager.org/lamcms/node/283">2015-12-15</a></td>
+<td><a href="http://web.archive.org/web/20160212182735/http://metadata.ftp-master.debian.org/changelogs/main/l/ldap-account-manager/ldap-account-manager_4.7.1-1_changelog">2014-10-05</a></td>
+<td>Multiple security related issues <a href="http://web.archive.org/web/20160212182851/https://www.ldap-account-manager.org/lamcms/changelog">pointed out in the changelog.</a></td>
+</tr>
+<tr>
+<td><a href="http://web.archive.org/web/20160212183153/https://packages.debian.org/jessie/mediawiki">mediawiki</a></td>
+<td>-</td>
+<td>-</td>
+<td>Takes Debian <a href="http://web.archive.org/web/20160212183215/http://metadata.ftp-master.debian.org/changelogs/main/m/mediawiki/mediawiki_1.19.20+dfsg-2.3_changelog">one week to backport</a> security patches.</td>
+</tr>
+<tr>
+<td>node-* packages</td>
+<td>-</td>
+<td>-</td>
+<td>Consider yourself pwned and reinstall your machine. After this never use Debian packages like this again. Nearly all of them are insecure versions. Just compare <a href="https://nodesecurity.io/advisories">https://nodesecurity.io/advisories</a> with what Debian has in the packaging system…</td>
+</tr>
+</tbody>
+</table>
+<p><br></p>
+<p>And that’s where I stopped. Well, not quite true, the actual list is way longer but entering this into the Markdown format was just pain and I guess you understood the problem already. Just try it yourself, spend some minutes going through the Debian packages and you will pretty certainly find some that endanger your whole system.</p>
+<p>Note again: <strong>This is web software</strong>, it’s often <strong>exposed to the general public</strong> and thus <strong>having the latest security updates is critical for your security</strong>. A single mistake here can take all your data at risk.</p>
+<h2 id="call-for-action">Call for action</h2>
+<p>Distributions and application authors really need to come together and work on pushing easy solutions to collaborate. <a href="https://build.opensuse.org/">openSUSE Build Service</a> is already a nice start for collaboration. But to be honest, probably for some applications packages are not the best solution. Did you know that for example <a href="https://codex.wordpress.org/Configuring_Automatic_Background_Updates">Wordpress comes with automatic updates</a> and <a href="https://doc.owncloud.org/server/8.1/admin_manual/maintenance/manual_upgrade.html">updating ownCloud is just replacing single files on the server</a>?</p>
+<p>Rolling release distributions like OpenSuse Tumbleweed or Arch Linux are in my opinion really required to gain more traction to make the overall Linux ecosystem more secure. And before somebody brings it up: <a href="http://www.banyanops.com/blog/analyzing-docker-hub/">Containers will probably not save you either.</a></p>
