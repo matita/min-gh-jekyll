@@ -1,0 +1,253 @@
+---
+title: "Guide To Installing Node.js On A Raspberry Pi | ThisDaveJ"
+description: "In this guide, we're going to get Node up and running on a Raspberry Pi. This tutorial is useful for anyone wanting to get Rasbian installed on a RasPi."
+link: "http://thisdavej.com/beginners-guide-to-installing-node-js-on-a-raspberry-pi/"
+saved: "2016-03-18 15:04:32"
+---
+
+				
+		<!-- .entry-header -->
+		
+		<div class="entry-content">
+			<p><img class="size-full wp-image-141 alignright" src="http://thisdavej.com/wp-content/uploads/2016/02/LTM-logo.png" alt="Learning through Making (LTM) logo" width="97" height="90"></p>
+<p>In this second installment of our LTM (Learning through Making) series of Node.js tutorials, we’re going to get Node up and running on a Raspberry Pi 2 or Pi 3. With the Raspberry Pi 3, you won’t need to buy a separate USB Wi-Fi adapter. I’m focusing on the Raspberry Pi 2/Pi 3 rather than older versions such as the Raspberry Pi B+ since these are the latest models at the time of this writing. &nbsp;The Raspberry Pi 2, for example, sports a 900MHz quad-core ARMv7 chip with 1 GB of RAM versus the Model B+’s 700 MHz single-core ARMv6 chip with 512 MB RAM. While Node can run on the model B+, we will be happier campers with this extra computing power available to us! Let’s get started.</p>
+<p>This tutorial is useful for anyone wishing to successfully install&nbsp;a Raspberry Pi 2/Pi 3 system, even if they are not interested in Node.js since the Node.js installation&nbsp;happens&nbsp;in the&nbsp;final steps of the tutorial. &nbsp;But, why would you not want to install Node.js? <img src="http://thisdavej.com/wp-includes/images/smilies/simple-smile.png" alt=":)" class="wp-smiley"><span id="more-146"></span></p>
+<h3 id="hardware-needed"><img class="size-full wp-image-344 alignright" src="http://thisdavej.com/wp-content/uploads/2016/02/raspiPhotoHome.jpeg" alt="Raspberry Pi" width="100" height="54">Hardware Needed</h3>
+<p>If you don’t currently own&nbsp;a Raspberry Pi, the easiest way to get started is to buy a starter kit such as this one on Amazon:</p>
+<ul>
+<li><a href="http://www.amazon.com/gp/product/B01C6Q2GSY/ref=as_li_tl?ie=UTF8&amp;camp=1789&amp;creative=9325&amp;creativeASIN=B01C6Q2GSY&amp;linkCode=as2&amp;tag=thisdavej-20&amp;linkId=VRAGHJ2RQIMQQTVG">CanaKit Raspberry Pi 3 Complete Starter Kit – 32 GB Edition</a>&nbsp;(Note: my affiliate info&nbsp;is included on Amazon links so you can, if you desire, support these tutorials while paying nothing extra.)</li>
+</ul>
+<p>We’ll&nbsp;need the following items to get rolling:</p>
+<ul>
+<li>Raspberry Pi <strong>2 </strong>or Pi <strong>3</strong>&nbsp;– Model B &nbsp;(these are the official names for the Raspberry Pi 2 and Pi 3. &nbsp;Don’t let the “B” confuse you since there is also an older Raspberry Pi – Model B which is now effectively the “Raspberry Pi 1 – Model B”.)</li>
+<li>MicroSD card (I recommend a class 10 card that is 16 GB or higher. &nbsp;I like this <a href="http://www.amazon.com/gp/product/B00IVPU786/ref=as_li_tl?ie=UTF8&amp;camp=1789&amp;creative=9325&amp;creativeASIN=B00IVPU786&amp;linkCode=as2&amp;tag=thisdavej-20&amp;linkId=CXW5WB6NJTW2VVAE">Samsung 32GB Class 10 microSD card</a>.)</li>
+<li>MicroSD to SD memory card adapter (so you can use the SD card reader on&nbsp;your laptop/desktop to write to the microSD card. &nbsp;Many microSD card vendors include this SD adapter with the purchase as shown here.)<br>
+<img class="alignnone size-full wp-image-152" src="http://thisdavej.com/wp-content/uploads/2016/02/SD-card-adapter.jpg" alt="SD card adapter" width="212" height="150"></li>
+<li>Micro USB power supply (2.5A or greater recommended) to power the RasPi.</li>
+<li>(RasPi 2 only)&nbsp;USB WiFi adapter (or Ethernet cable if preferred. &nbsp;I have tested this <a href="http://www.amazon.com/gp/product/B003MTTJOY/ref=as_li_tl?ie=UTF8&amp;camp=1789&amp;creative=9325&amp;creativeASIN=B003MTTJOY&amp;linkCode=as2&amp;tag=thisdavej-20&amp;linkId=RZGOFLPTQIH5ASNB">Edimax USB WiFi adapter</a> on Raspbian and it works great out of the box. &nbsp;There’s a reason this is a best seller on Amazon.) &nbsp;This is not needed for the RasPi 3 since it includes built-in Wi-Fi.</li>
+<li>Windows laptop/desktop (Linux or Mac works great too, but this tutorial is geared more toward Windows machines so some readers&nbsp;will need to adapt)</li>
+<li>HDMI monitor/USB keyboard/mouse (You can borrow these from another system temporarily and then run your RasPi in a headless mode as I will explain later.)</li>
+</ul>
+<p>Once you have gathered the needed hardware, we are ready to&nbsp;bring our RasPi machine to life!</p>
+<h3 id="creat">Write Raspbian Image to SD Card</h3>
+<p>We will be running Raspbian which is a free operating system based on Debian Linux and optimized for the RasPi. &nbsp;Here we go:</p>
+<ul>
+<li>Download the latest Raspbian image from <a href="https://www.raspberrypi.org/downloads/raspbian/">https://www.raspberrypi.org/downloads/raspbian/</a>. &nbsp;Be sure to download the full version rather than the “lite version. &nbsp;The download is about 1.5 GB so it may take some time to download depending on the speed of your Internet connection.</li>
+<li>The download will arrive as a .zip file&nbsp;and will need to be unzipped into an&nbsp;.img file so it is ready to be written to the microSD card.</li>
+<li>Insert the microSD card into the SD adapter as shown in the Samsung sample picture above.</li>
+<li>Insert the SD adapter in the SD card reader on your laptop/desktop. &nbsp;Make sure it is seated well in the connection.</li>
+<li>Launch Windows Explorer and verify that the SD card registers as a drive on your system. &nbsp;Make a note of the drive letter as you will need it soon.</li>
+<li>Download and install&nbsp;<a href="https://sourceforge.net/projects/win32diskimager/">Win32 Disk Imager</a>.</li>
+<li>Launch Win32 Disk Imager. The interface will look like this:<br>
+<img class="alignnone size-full wp-image-155" src="http://thisdavej.com/wp-content/uploads/2016/02/Win32DiskImager.png" alt="Win32DiskImager" width="407" height="207" srcset="http://thisdavej.com/wp-content/uploads/2016/02/Win32DiskImager-300x153.png 300w, http://thisdavej.com/wp-content/uploads/2016/02/Win32DiskImager.png 407w" sizes="(max-width: 407px) 100vw, 407px"></li>
+<li>Navigate to the Raspbian&nbsp;image (.img file) that you downloaded.</li>
+<li>Specify the target device location of the SD card. &nbsp;The target device is the “F” drive in the screenshot above, but yours may be different.<br>
+<span>WARNING</span>: Be sure you choose the right target device or you will write the image to another drive on your system and this will not be good.</li>
+<li>Click the <em>Write</em> button to write the image to the SD card.</li>
+<li>Side note: the Win32 Disk Imager is a great tool for backing up SD cards too. &nbsp;When you have completed this tutorial, you could create an image (.img file)&nbsp;of your pristine RasPi for writing back to the microSD card for use later if you mess something up and want to roll back to the pristine image.</li>
+<li>After the image is written to the SD card, click on the&nbsp;<em>Safely Remove Hardware</em> icon in the notification area at the far right of the Windows taskbar.</li>
+<li>Remove the SD adapter from your laptop/desktop, and remove the microSD card from the SD adapter.</li>
+</ul>
+<h3>Prep the hardware</h3>
+<p>The <a href="http://techbrickcafe.blogspot.com/2015/10/raspberry-pi-2-model-b-single-board.html" target="_blank">Tech Brick Café</a> has a nice overview picture of the various parts of the RasPi 2&nbsp;<a href="http://1.bp.blogspot.com/-v9M2cZM4BJo/Vi4l_fie0sI/AAAAAAAAAAw/9aa1y3-hhVQ/s400/Raspberry_pi_2_2.PNG" target="_blank">here</a>&nbsp;(RasPi 3 looks very similar) that may help you in this section. &nbsp;Let’s get this little SBC (single board computer) ready to boot!&nbsp;Here are the steps:</p>
+<ul>
+<li>Insert the microSD card into the RasPi. &nbsp;(Turn the RasPi upside down. &nbsp;The microSD card slot is located on the side opposite of the USB ports. &nbsp;This <a href="https://www.youtube.com/watch?v=PCcXa4UFeLg" target="_blank">short video</a> explains the process well.)</li>
+<li>Connect the USB keyboard and mouse</li>
+<li>Connect the HDMI cable</li>
+<li>Connect the USB Wi-Fi adapter (or Ethernet connection if you are not using Wi-Fi) &nbsp;This step is not necessary if you are using a Raspberry Pi 3 which has on-board Wi-Fi.</li>
+<li>Connect the power supply (You will see the RasPi lights come on and power up.)</li>
+<li>You should now see Raspbian booting on the screen. &nbsp;Hooray!</li>
+</ul>
+<h3>Configure the RasPi</h3>
+<p>We first need to make a few changes to the RasPi to for the purpose of optimization and personalizing it for our use. &nbsp;To get started, launch a terminal session by clicking on the icon shown here:</p>
+<p><img class="alignnone size-full wp-image-158" src="http://thisdavej.com/wp-content/uploads/2016/02/terminal.png" alt="launch terminal" width="400" height="242" srcset="http://thisdavej.com/wp-content/uploads/2016/02/terminal-300x182.png 300w, http://thisdavej.com/wp-content/uploads/2016/02/terminal.png 400w" sizes="(max-width: 400px) 100vw, 400px"></p>
+<p>Next, run the following command from the terminal session:</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="shell">$ sudo raspi-config</pre><div class="EnlighterJSWrapper godzillaEnlighterJSWrapper"><ul class="godzillaEnlighterJS EnlighterJS"><li class=" odd"><span class="">$ sudo raspi-config</span></li></ul><pre>$ sudo raspi-config</pre></div>
+<p>This will launch the following screen:<br>
+<img class="alignnone size-full wp-image-176" src="http://thisdavej.com/wp-content/uploads/2016/02/raspiConfig.png" alt="raspi-config screen" width="660" height="429" srcset="http://thisdavej.com/wp-content/uploads/2016/02/raspiConfig-300x195.png 300w, http://thisdavej.com/wp-content/uploads/2016/02/raspiConfig.png 660w" sizes="(max-width: 660px) 100vw, 660px"></p>
+<p>At this screen, we will configure our RasPi. &nbsp;To navigate, there are a few keyboard shortcuts we&nbsp;need to know:</p>
+<ul>
+<li>Arrow keys – used to go up and down to select menu items.</li>
+<li>Enter key – used to select and drill further into the menu</li>
+<li>Tab key – used to break out of the menu. &nbsp;In the screen above, the tab key will take you to the bottom two menu options so you can, for example, arrow to the right and select &lt;Finish&gt;.</li>
+<li>Spacebar – used to toggle radio button selections on and off.</li>
+</ul>
+<p>Who needs a mouse when you have a keyboard? &nbsp;<img src="http://thisdavej.com/wp-includes/images/smilies/simple-smile.png" alt=":)" class="wp-smiley"> &nbsp;Let’s start configuring!</p>
+<ul>
+<li>Expand Filesystem – click Enter to select and drill into the <em>Expand Filesystem</em> option. &nbsp;This ensures that all of the SD card storage is available to Raspbian.</li>
+<li>(Optional) Change User Password – from a security perspective, it’s a good idea to change the default password. &nbsp;Just make sure you don’t forget it. <img draggable="false" class="emoji" alt="😉" src="https://s.w.org/images/core/emoji/72x72/1f609.png"></li>
+</ul>
+<h4>Internationalization Options</h4>
+<p>The Raspberry Pi is the&nbsp;brilliant brainchild from our friends in the UK. &nbsp;If you are not from the UK, some of the keys on your keyboard may not work as expected. &nbsp;Here are the changes I made to make my RasPi feel at home in San Diego:</p>
+<p>First, arrow down to <em>Internationalization Options</em> and hit Enter.</p>
+<p>Change locale – hit Enter (the screen will momentarily blip to black before returning to Raspi-config.)</p>
+<ul>
+<li>Arrow down to “en_US.UTF-8 UTF-8”.</li>
+<li>Press the spacebar to put a * in the brackets [*].</li>
+<li>Hit the tab key and then&nbsp;hit the Enter key to select &lt;Ok&gt;.</li>
+<li>(Another screen appears.) Select “en_US.UTF8” as the default locale.</li>
+<li>Hit the tab key and then hit the enter key to select &lt;Ok&gt;.</li>
+<li>(The system will generate the new locales and then bring you back to the main menu.)</li>
+</ul>
+<p>Arrow back down to <em>Internationalization Options</em> and hit Enter.</p>
+<p>Change Timezone – hit Enter</p>
+<ul>
+<li>Select your geographic area. &nbsp;(US, in my case)</li>
+<li>Select your specific time zone.</li>
+<li>Hit the tab key and then hit the enter key to select &lt;Ok&gt;.</li>
+</ul>
+<p>Arrow back down to <em>Internationalization Options</em> and hit Enter.</p>
+<p>Change Keyboard Layout&nbsp;– hit Enter</p>
+<ul>
+<li>Change keyboard if needed. &nbsp;Here’s the changes I made:</li>
+<li>Select Generic 105 keyboard (international) and hit enter</li>
+<li>Select Other</li>
+<li>Select English (US)</li>
+<li>Key to function as AltGr (I chose the default for the keyboard layout.)</li>
+<li>Compose key – No compose key</li>
+<li>Use control-alt-backspace to terminate an X Server: no</li>
+</ul>
+<p>After completing those steps, you will be brought back to the main menu. &nbsp;We only have a couple of configuration options left to complete.</p>
+<p>Arrow down to Advanced Options and hit Enter. Make the following changes as you see fit:</p>
+<ul>
+<li>Hostname – if you prefer less typing, you can change the host name from “raspberrypi” to something shorter such as “raspi”.</li>
+<li>SSH – you can choose to enable SSH access so that you can remote into your RasPi using an SSH client such as <a href="http://www.putty.org/">Putty </a>&nbsp;or Bitvise&nbsp;– in addition to remoting in through the Windows Remote Desktop (explained below). &nbsp;SSH provides remote terminal access, but does not provide a GUI interface by itself.</li>
+</ul>
+<p>Once you are back to the main menu (as shown in our raspi-config screenshot above), you can hit the Tab key, arrow right to select the &lt;Finish&gt; option, and click enter. &nbsp;The RasPi will then let you know that it needs to reboot to activate the changes you made. &nbsp;Reboot it now.</p>
+<h3>Configure Wi-Fi</h3>
+<p>After the RasPi reboots, we are ready to&nbsp;get Wi-Fi up and running to get on the network.</p>
+<ul>
+<li>Click on the network icon in the top right of the screen as shown in the screenshot.<br>
+<img class="alignnone size-full wp-image-156" src="http://thisdavej.com/wp-content/uploads/2016/02/wifi.png" alt="wifi setup" width="400" height="236" srcset="http://thisdavej.com/wp-content/uploads/2016/02/wifi-300x177.png 300w, http://thisdavej.com/wp-content/uploads/2016/02/wifi.png 400w" sizes="(max-width: 400px) 100vw, 400px"></li>
+<li>From here, select your&nbsp;network SSID (Wi-Fi network).</li>
+<li>You will be prompted for your pre shared key (Wi-Fi) network password. &nbsp;Enter it and select <em>OK</em>.</li>
+<li>Wait for the&nbsp;icon to&nbsp;transform from a network icon to the Wi-Fi icon shown in the screenshot above. &nbsp;From this point, you should be connected to your Wi-Fi network.</li>
+<li>Test your Wi-Fi network connection by launching the Terminal once again.<br>
+<img class="alignnone size-full wp-image-158" src="http://thisdavej.com/wp-content/uploads/2016/02/terminal.png" alt="launch terminal" width="400" height="242" srcset="http://thisdavej.com/wp-content/uploads/2016/02/terminal-300x182.png 300w, http://thisdavej.com/wp-content/uploads/2016/02/terminal.png 400w" sizes="(max-width: 400px) 100vw, 400px"></li>
+<li>From the terminal, issue a ping command to verify your network connection is working:
+<pre class="EnlighterJSRAW" data-enlighter-language="shell">$ ping google.com</pre><div class="EnlighterJSWrapper godzillaEnlighterJSWrapper"><ul class="godzillaEnlighterJS EnlighterJS"><li class=" odd"><span class="">$ ping google.com</span></li></ul><pre>$ ping google.com</pre></div>
+</li>
+</ul>
+<p>We’re now ready to move on and ensure our system is up to date with security patches</p>
+<h3>Apply Raspbian Updates</h3>
+<p>We will first run the apt-get “update” command. &nbsp;This command will not actually update any software on the system, but will download the latest package lists from the software repositories so that Rasbian will be aware of all new software available along with dependencies. &nbsp;Issue the following&nbsp;command at the “$” prompt:</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="shell">$ sudo apt-get update</pre><div class="EnlighterJSWrapper godzillaEnlighterJSWrapper"><ul class="godzillaEnlighterJS EnlighterJS"><li class=" odd"><span class="">$ sudo apt-get update</span></li></ul><pre>$ sudo apt-get update</pre></div>
+<p>Next, run the following command to upgrade any packages installed on your system that need upgrades:</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="shell">$ sudo apt-get dist-upgrade</pre><div class="EnlighterJSWrapper godzillaEnlighterJSWrapper"><ul class="godzillaEnlighterJS EnlighterJS"><li class=" odd"><span class="">$ sudo apt-get dist-upgrade</span></li></ul><pre>$ sudo apt-get dist-upgrade</pre></div>
+<p>This is important to keep your RasPi&nbsp;system&nbsp;synchronized with security updates, etc. These two commands should be&nbsp;issued together and run periodically.</p>
+<h3>Prepare Remote Desktop</h3>
+<p>We want to run the RasPi remotely through Windows rather than having to tie up a dedicated HDMI monitor and USB keyboard/mouse. &nbsp;Let’s do that now:</p>
+<ul>
+<li>Issue the following command to install the xrdp software so that we can connect to our RasPi remotely from our laptop/desktop without requiring a second monitor/keyboard/mouse:
+<pre class="EnlighterJSRAW" data-enlighter-language="shell">$ sudo apt-get -y install xrdp</pre><div class="EnlighterJSWrapper godzillaEnlighterJSWrapper"><ul class="godzillaEnlighterJS EnlighterJS"><li class=" odd"><span class="">$ sudo apt-get -y install xrdp</span></li></ul><pre>$ sudo apt-get -y install xrdp</pre></div>
+<p>The “-y” option will automatically answer yes to the default questions which is what we want in this context.</p></li>
+<li>Next, we need to install the samba&nbsp;package&nbsp;so we will be able to access the RasPi by its host name from Windows machines on the network rather than by it’s IP address which can change since the RasPi receives its IP address via DHCP:
+<pre class="EnlighterJSRAW" data-enlighter-language="shell">$ sudo apt-get -y install samba</pre><div class="EnlighterJSWrapper godzillaEnlighterJSWrapper"><ul class="godzillaEnlighterJS EnlighterJS"><li class=" odd"><span class="">$ sudo apt-get -y install samba</span></li></ul><pre>$ sudo apt-get -y install samba</pre></div>
+</li>
+<li>After this installation completes, you should be able to ping the RasPi Hostname (configured in raspi-config above) from a Windows machine:
+<pre class="EnlighterJSRAW" data-enlighter-language="shell">C:\&gt; ping raspi</pre><div class="EnlighterJSWrapper godzillaEnlighterJSWrapper"><ul class="godzillaEnlighterJS EnlighterJS"><li class=" odd"><span class="">C:\&gt; ping raspi</span></li></ul><pre>C:\&gt; ping raspi</pre></div>
+</li>
+<li>You are now ready to launch a remote desktop connection!</li>
+<li>From your&nbsp;Windows machine, hit the <em>Windows</em> key, and type “Remote Desktop Connection” to bring up the Remote Desktop program. &nbsp;Click it in to invoke it.</li>
+<li>Type the host name of your RasPi (“raspi” in my case) in the <em>Computer</em>&nbsp;textbox and click&nbsp;the <em>Connect</em> button.<br>
+<img class="alignnone size-full wp-image-172" src="http://thisdavej.com/wp-content/uploads/2016/02/rdp.png" alt="Windows Remote Desktop" width="345" height="402"></li>
+<li>You will then be prompted with the xrdp login screen:<br>
+<img class="alignnone size-full wp-image-174" src="http://thisdavej.com/wp-content/uploads/2016/02/xrdpLogin.png" alt="xrdpLogin" width="424" height="238" srcset="http://thisdavej.com/wp-content/uploads/2016/02/xrdpLogin-300x168.png 300w, http://thisdavej.com/wp-content/uploads/2016/02/xrdpLogin.png 424w" sizes="(max-width: 424px) 100vw, 424px"></li>
+<li>Enter your credentials and log into the RasPi.
+<ul>
+<li>username: pi</li>
+<li>password: raspberry (unless you changed it in the raspi-config configuration step above.</li>
+</ul>
+</li>
+</ul>
+<p>Amazing! &nbsp;We are connected remotely to the RasPi and we no longer need the dedicated HDMI monitor and USB keyboard/mouse.&nbsp;Let’s go ahead and shut down the RasPi for a minute so we can free up our monitor and keyboard/mouse:</p>
+<ul>
+<li>Click the <em>Menu</em> button in the top left corner of the screen and select <em>Shutdown</em>.</li>
+<li>Click <em>OK</em> to shut down the machine.</li>
+<li>Wait a minute for the RasPi to fully power down.</li>
+<li>Unplug the power cable, HDMI cable, and the USB keyboard and mouse.</li>
+<li>Plug the power cable back in and the RasPi should be on its way back up without all of those extra cables!</li>
+<li>After giving the RasPi a minute or so to boot, connect to it once again using the Windows Remote Desktop program.</li>
+</ul>
+<h3>Create Windows File Share on the RasPi (Optional)</h3>
+<p>We can create a Windows file share on the RasPi so that we can copy files from our Windows machine directly onto the RasPi. &nbsp;This can come in handy in many contexts. &nbsp;Here’s how we do it:</p>
+<ul>
+<li>Launch a terminal session.</li>
+<li>Create a directory called “share” in your home directory as follows:
+<pre class="EnlighterJSRAW" data-enlighter-language="shell">$ mkdir ~/share</pre><div class="EnlighterJSWrapper godzillaEnlighterJSWrapper"><ul class="godzillaEnlighterJS EnlighterJS"><li class=" odd"><span class="">$ mkdir ~/share</span></li></ul><pre>$ mkdir ~/share</pre></div>
+</li>
+<li>Issue the following command to launch the Leafpad editor.
+<pre class="EnlighterJSRAW" data-enlighter-language="shell">$ sudo leafpad /etc/samba/smb.conf &amp;</pre><div class="EnlighterJSWrapper godzillaEnlighterJSWrapper"><ul class="godzillaEnlighterJS EnlighterJS"><li class=" odd"><span class="">$ sudo leafpad /etc/samba/smb.conf &amp;</span></li></ul><pre>$ sudo leafpad /etc/samba/smb.conf &amp;</pre></div>
+</li>
+<li>We could have also used the console-based “nano” editor, but Leafpad provides a GUI which is more suitable for beginners. &nbsp;The ampersand on the end of the command launches Leafpad as a background process so we are returned to a shell prompt in the terminal. &nbsp;Also, the smb.conf is part of the Samba package we installed early and this is why it exists on our system.</li>
+<li>&nbsp;Scroll down to the very bottom of the smb.conf configuration file and add the following:
+<pre class="EnlighterJSRAW" data-enlighter-language="ini">[PiShare]
+ comment=Raspi Share
+ path=/home/pi/share
+ browseable=Yes
+ writeable=Yes
+ only guest=No
+ create mask=0777
+ directory mask=0777
+ public=no</pre><div class="EnlighterJSWrapper godzillaEnlighterJSWrapper"><ul class="godzillaEnlighterJS EnlighterJS"><li class=" odd"><span class="kw4">[PiShare]</span><span class=""></span></li><li class=" even"><span class=""></span><span class="kw1"> comment=</span><span class="">Raspi Share</span></li><li class=" odd"><span class=""></span><span class="kw1"> path=</span><span class="">/home/pi/share</span></li><li class=" even"><span class=""></span><span class="kw1"> browseable=</span><span class="kw2">Yes</span><span class=""></span></li><li class=" odd"><span class=""></span><span class="kw1"> writeable=</span><span class="kw2">Yes</span><span class=""></span></li><li class=" even"><span class=""> only guest=</span><span class="kw2">No</span><span class=""></span></li><li class=" odd"><span class=""> create mask=</span><span class="nu0">0777</span><span class=""></span></li><li class=" even"><span class=""> directory mask=</span><span class="nu0">0777</span><span class=""></span></li><li class=" odd"><span class=""></span><span class="kw1"> public=</span><span class="kw2">no</span></li></ul><pre>[PiShare]
+ comment=Raspi Share
+ path=/home/pi/share
+ browseable=Yes
+ writeable=Yes
+ only guest=No
+ create mask=0777
+ directory mask=0777
+ public=no</pre></div>
+</li>
+<li>&nbsp;Save the changes to the smb.conf configuration file and exit the Leafpad editor. &nbsp;(Raspbian will automagically restart the SMB (Samba) services based on the changes you made to the configuration file.)</li>
+<li>Back in a terminal session, we need to create an SMB (Samba) user so we can connect securely from Windows. &nbsp;We will create a user named “pi”, but this will be an SMB (Windows user) rather than the Rasbian “pi” user. Here’s how we do it:
+<pre class="EnlighterJSRAW" data-enlighter-language="shell">$ sudo smbpasswd -a pi</pre><div class="EnlighterJSWrapper godzillaEnlighterJSWrapper"><ul class="godzillaEnlighterJS EnlighterJS"><li class=" odd"><span class="">$ sudo smbpasswd -a pi</span></li></ul><pre>$ sudo smbpasswd -a pi</pre></div>
+<p>You will be prompted to enter and re-enter a password. &nbsp;Document this password somewhere for future reference.</p></li>
+</ul>
+<p>We are ready to connect to our newly created RasPi file share from Windows!</p>
+<ul>
+<li>Back on your Windows machine, type the Windows key and “R” (Win-R) to launch a run box for typing in commands.</li>
+<li>Enter two backslashes followed by the name of your RasPi machine (i.e. your Hostname) and hit enter. &nbsp;For example:
+<pre class="EnlighterJSRAW" data-enlighter-language="shell">\\raspi</pre><div class="EnlighterJSWrapper godzillaEnlighterJSWrapper"><ul class="godzillaEnlighterJS EnlighterJS"><li class=" odd"><span class="">\\raspi</span></li></ul><pre>\\raspi</pre></div>
+</li>
+<li>When prompted for credentials, enter the following:
+<ul>
+<li>Username: The format to enter here in Windows parlance is the domain\username. &nbsp;For us, our domain will be our RasPi hostname and our user name will be “pi”. &nbsp;Therefore, we will enter: raspi\pi<br>
+If your Hostname is not raspi, you will obviously enter that instead.</li>
+<li>Password: (enter the password you created with the smbpasswd command above)</li>
+</ul>
+</li>
+<li>Voilà! &nbsp;We should now be connected. &nbsp;You can test the file share&nbsp;by creating a text file on the Windows side and verifying that it shows up in the <em>/home/pi/share</em> directory on the RasPi side.</li>
+</ul>
+<h3>Install Node.js</h3>
+<p>You now have an amazing general purpose Raspberry Pi system that can be used for a variety of tasks and inter-operates well in&nbsp;the Windows world (it even looks like a Windows machine to the other Windows machines!) – and can play nicely&nbsp;in the Mac and Linux world too. &nbsp;Let’s go ahead and install Node.js so we will be ready to do some fun projects in the future. &nbsp;Here are the steps:</p>
+<p>Our friends at NodeSource host and maintain some excellent Node.js binary distributions. &nbsp;We will leverage a command they have written to add another package repository to our RasPi so that we will be able to “apt-get install” a modern version of Node.js from their repository. &nbsp;This is beneficial since the Debian/Raspbian versions may not always be up to date. &nbsp;By adding the NodeSource repository, we will also be able to receive updates rather than just installing a standalone (.deb) file version of Node that cannot be updated easily. &nbsp;Here we go in the final stretch:</p>
+<p>Let’s go for an installation of the latest version of Node at the time of this writing which is Node 5.X.</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="shell">$ curl -sL https://deb.nodesource.com/setup_5.x | sudo -E bash -</pre><div class="EnlighterJSWrapper godzillaEnlighterJSWrapper"><ul class="godzillaEnlighterJS EnlighterJS"><li class=" odd"><span class="">$ curl -sL https://deb.nodesource.com/setup_5.x | sudo -E bash -</span></li></ul><pre>$ curl -sL https://deb.nodesource.com/setup_5.x | sudo -E bash -</pre></div>
+<p>The previous command updates our package repository to include the NodeSource packages. &nbsp;Now, let’s install Node.js!</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="shell">$ sudo apt-get install -y nodejs</pre><div class="EnlighterJSWrapper godzillaEnlighterJSWrapper"><ul class="godzillaEnlighterJS EnlighterJS"><li class=" odd"><span class="">$ sudo apt-get install -y nodejs</span></li></ul><pre>$ sudo apt-get install -y nodejs</pre></div>
+<p>We can then test and see what version of Node we are running and launch the Node REPL as we discussed in the&nbsp;<a href="http://thisdavej.com/learning-through-making-getting-started-with-node-js/">previous article</a> as a quick test to confirm the installation was successful.</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="shell">$ node -v
+v5.6.0
+$ node
+&gt; 1 + 3
+4
+&gt; # We can hit Ctrl-C twice to exit the REPL and get back to the bash (shell) prompt.</pre><div class="EnlighterJSWrapper godzillaEnlighterJSWrapper"><ul class="godzillaEnlighterJS EnlighterJS"><li class=" odd"><span class="">$ node -v</span></li><li class=" even"><span class="">v5.6.0</span></li><li class=" odd"><span class="">$ node</span></li><li class=" even"><span class="">&gt; 1 + 3</span></li><li class=" odd"><span class="">4</span></li><li class=" even"><span class="">&gt;</span><span class="co1"> # We can hit Ctrl-C twice to exit the REPL and get back to the bash (shell) prompt.</span></li></ul><pre>$ node -v
+v5.6.0
+$ node
+&gt; 1 + 3
+4
+&gt; # We can hit Ctrl-C twice to exit the REPL and get back to the bash (shell) prompt.</pre></div>
+<h3>Next time</h3>
+<p>In a future post,&nbsp;we will leverage the goodness of the npm (Node Package Manager) community and build a simple, but highly functional Web server without any code. &nbsp;This can be accomplished using the Raspberry Pi system you just created here or on a Windows/Linux/Mac machine as I outlined in a&nbsp;<a href="http://thisdavej.com/learning-through-making-getting-started-with-node-js/">previous article</a>. &nbsp;Hope to see you then!</p>
+<p><a href="https://twitter.com/thisDaveJ">Follow</a> Dave Johnson on Twitter to stay up to date on the latest tutorials and tech articles.</p>
+<h4>Related Articles</h4>
+<p><a href="http://thisdavej.com/learning-through-making-getting-started-with-node-js/">Learning through Making – Getting Started with Node.js<br>
+</a><a href="http://thisdavej.com/create-a-web-server-in-node-without-any-code/">Create a Web Server in Node without any Code<br>
+</a><a href="http://thisdavej.com/make-your-raspberry-pi-web-server-available-on-the-internet-with-node-js/">Make Your Raspberry Pi Web Server Available on the Internet with Node.js</a></p>
+<!-- Simple Share Buttons Adder (6.1.5) simplesharebuttons.com --><div class="ssba ssba-wrap"><div>Share<a data-site="" class="ssba_twitter_share" href="http://twitter.com/share?url=http://thisdavej.com/beginners-guide-to-installing-node-js-on-a-raspberry-pi/&amp;text=Beginner%E2%80%99s+Guide+to+Installing+Node.js+on+a+Raspberry+Pi+" target="_blank"><img src="http://thisdavej.com/wp-content/plugins/simple-share-buttons-adder/buttons/somacro/twitter.png" title="Twitter" class="ssba ssba-img" alt="Tweet about this on Twitter"></a><a data-site="" class="ssba_facebook_share" href="http://www.facebook.com/sharer.php?u=http://thisdavej.com/beginners-guide-to-installing-node-js-on-a-raspberry-pi/" target="_blank"><img src="http://thisdavej.com/wp-content/plugins/simple-share-buttons-adder/buttons/somacro/facebook.png" title="Facebook" class="ssba ssba-img" alt="Share on Facebook"></a><a data-site="" class="ssba_google_share" href="https://plus.google.com/share?url=http://thisdavej.com/beginners-guide-to-installing-node-js-on-a-raspberry-pi/" target="_blank"><img src="http://thisdavej.com/wp-content/plugins/simple-share-buttons-adder/buttons/somacro/google.png" title="Google+" class="ssba ssba-img" alt="Share on Google+"></a><a data-site="linkedin" class="ssba_linkedin_share ssba_share_link" href="http://www.linkedin.com/shareArticle?mini=true&amp;url=http://thisdavej.com/beginners-guide-to-installing-node-js-on-a-raspberry-pi/" target="_blank"><img src="http://thisdavej.com/wp-content/plugins/simple-share-buttons-adder/buttons/somacro/linkedin.png" title="LinkedIn" class="ssba ssba-img" alt="Share on LinkedIn"></a><a data-site="reddit" class="ssba_reddit_share" href="http://reddit.com/submit?url=http://thisdavej.com/beginners-guide-to-installing-node-js-on-a-raspberry-pi/&amp;title=Beginner%E2%80%99s%20Guide%20to%20Installing%20Node.js%20on%20a%20Raspberry%20Pi" target="_blank"><img src="http://thisdavej.com/wp-content/plugins/simple-share-buttons-adder/buttons/somacro/reddit.png" title="Reddit" class="ssba ssba-img" alt="Share on Reddit"></a><a data-site="email" class="ssba_email_share" href="mailto:?subject=Beginner%26%238217;s%20Guide%20to%20Installing%20Node.js%20on%20a%20Raspberry%20Pi&amp;body=%20http://thisdavej.com/beginners-guide-to-installing-node-js-on-a-raspberry-pi/"><img src="http://thisdavej.com/wp-content/plugins/simple-share-buttons-adder/buttons/somacro/email.png" title="Email" class="ssba ssba-img" alt="Email this to someone"></a></div></div>		</div>
+		
+				
+		<!-- .entry-footer -->
+		
+			
