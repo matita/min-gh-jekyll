@@ -1,0 +1,55 @@
+---
+title: "Trellisheets: How we spin up CSS for Trello sites with ease."
+description: "Writing and code from the engineering team behind Trello."
+link: "http://tech.trello.com/trellisheets-how-we-spin-up-css-for-trello-sites-with-ease/"
+saved: "2016-03-18 14:29:45"
+---
+
+      <p>We’ve talked about our CSS a lot in the past. We did a <a href="https://blog.trello.com/refining-the-way-we-structure-our-css-at-trello/">State of the Trello CSS</a> and published a <a href="https://blog.trello.com/heres-the-official-trello-css-guide/">guide for writing CSS</a>. We’ve wrapped up everything we’ve learned into <a href="https://github.com/trello/trellisheets">Trellisheets</a>, a public repo for all things CSS at Trello.</p>
+
+<p>What’s in the project?</p>
+
+<ul>
+<li>Our core CSS files. We use these on multiple sites to give them that special Trello-y look and feel.</li>
+<li>Our styleguide for writing styles so our CSS doesn’t turn into noodles.</li>
+<li>Scripts and packages for building CSS.</li>
+<li>Real-world HTML examples and a simple server for testing locally.</li>
+</ul>
+
+<p>It’s open source so you can check out the code for yourself. If you’re looking for a deep dive, read on!</p>
+
+<h2>Core CSS</h2>
+
+<p>We want to keep our CSS small, modular, and visually consistent across sites. With that in mind, our CSS is broken up into a few core files, which you can see in <a href="https://github.com/trello/trellisheets/tree/master/src"><code>/src</code></a>.</p>
+
+<p>We use this core CSS for almost all our sites, from our marketing pages to <a href="https://developers.trello.com/">developers.trello.com</a> to this very site you’re looking at now. Because we’re using the same CSS, all the sites will look and feel Trello-y from the get go. They’ll have similar font sizes, line heights, headers, layouts, and the like. We’ll make a few tweaks per site, but we’re most of the way there.</p>
+
+<p>Because the files are modular and plug-and-play, our overall CSS size stays small. If we don’t use a component on a project, we just don’t copy it over. For example, tech.trello.com is pretty simple and doesn’t include many components. The core CSS is only about 4kb compressed. The core CSS that powers larger landing pages like <a href="https://trello.com/business-class">Business Class</a> is still only about 6.5kb compressed.</p>
+
+<p>The other benefit is that our CSS is super portable. It can be used with any kind of backend or templating tool out there. We’ve used it with jekyll, angular, underscore templates, and mustache. It will be ready for whatever we use next, which, if I had my way, would be holograms.</p>
+
+<h2>Styleguide</h2>
+
+<p>CSS can be written in millions of different ways, many of which are bad. The cascading nature of CSS makes it easy to write in ways that are hard to read and maintain. So, naturally, the project includes our <a href="https://github.com/trello/trellisheets/blob/master/styleguide.md">styleguide</a>. Having a styleguide means that contributors can write and edit CSS in a clean and maintainable way. Everyone has the same starting point and expectation of what the styles should look like.</p>
+
+<p>I won’t dig into the specifics of the styleguide (it’s a quick read!), but I think every project should have one. It doesn’t have to be ours, of course. Check out the <a href="https://github.com/trello/trellisheets/blob/master/styleguide.md#9-further-reading">Further Reading</a> section for some inspiration.</p>
+
+<h2>Tooling</h2>
+
+<p>We use a few tools for building our CSS including <a href="http://lesscss.org/">LESS</a>, <a href="http://gulpjs.com/">Gulp</a>, and <a href="https://github.com/postcss/autoprefixer">autoprefixer</a>. These let us break up our files sensibly with imports, use variables for brand colors, and write standards-based, browser-prefix-free CSS. These provide just enough tooling, structure, and preprocessing power for us. Too much more and things start to turn back into noodles.</p>
+
+<p>The <code>package.json</code> includes all the npm packages we use and the <code>gulpfile</code> is the script for building them. All we need to do is copy them over to the new project, make a couple tweaks, and we’re done. The <code>readme</code> includes all you need to know about that process. Documentation, ya’ll.</p>
+
+<h2>Examples and Testing</h2>
+
+<p>The project has some example HTML pages with a variety of forms, buttons, layouts and the like. We include a simple server that lets you test these pages out locally. You get some real-world examples of what the components look like and how to structure your markup. When adding or editing components, it’s easy to test changes before they get committed.</p>
+
+<p>The local server helps us test stuff that goes into Trellisheets core, but it isn’t something you’ll bring to other projects. You’ll serve stuff your own way.</p>
+
+<hr>
+
+<p>I hope you dig it! The project has been very valuable for us and I hope it’s valuable for you, too. If you’ve been deciding if you need something similar, we give it two thumbs up. But we wrote it, so of course we would say that.</p>
+
+<p>Code speaks louder than words. Go check out <a href="https://github.com/trello/trellisheets">Trellisheets</a>!</p>
+
+    
