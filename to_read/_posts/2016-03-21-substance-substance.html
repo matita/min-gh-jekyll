@@ -1,0 +1,281 @@
+---
+title: "substance/substance"
+description: "substance - A JavaScript library for web-based content editing."
+link: "https://github.com/substance/substance"
+saved: "2016-03-21 15:03:49"
+---
+<h1><a id="user-content-substance-" class="anchor" href="https://github.com/substance/substance?utm_source=SitePoint&amp;utm_medium=email&amp;utm_campaign=Versioning#substance-" aria-hidden="true"><svg aria-hidden="true" class="octicon octicon-link" height="16" role="img" version="1.1" viewBox="0 0 16 16" width="16"><path d="M4 9h1v1h-1c-1.5 0-3-1.69-3-3.5s1.55-3.5 3-3.5h4c1.45 0 3 1.69 3 3.5 0 1.41-0.91 2.72-2 3.25v-1.16c0.58-0.45 1-1.27 1-2.09 0-1.28-1.02-2.5-2-2.5H4c-0.98 0-2 1.22-2 2.5s1 2.5 2 2.5z m9-3h-1v1h1c1 0 2 1.22 2 2.5s-1.02 2.5-2 2.5H9c-0.98 0-2-1.22-2-2.5 0-0.83 0.42-1.64 1-2.09v-1.16c-1.09 0.53-2 1.84-2 3.25 0 1.81 1.55 3.5 3 3.5h4c1.45 0 3-1.69 3-3.5s-1.5-3.5-3-3.5z"></path></svg></a>Substance <a href="https://travis-ci.org/substance/substance"><img src="https://camo.githubusercontent.com/ec9d903c0910f277ed64fc5ad4dc550ee29be537/68747470733a2f2f7472617669732d63692e6f72672f7375627374616e63652f7375627374616e63652e7376673f6272616e63683d6d6173746572" alt="Build Status" data-canonical-src="https://travis-ci.org/substance/substance.svg?branch=master"></a></h1>
+
+<p>Substance is a JavaScript library for web-based content editing. It provides building blocks for realizing custom text editors and web-based publishing systems.</p>
+
+<p>Read the <a href="https://medium.com/@_mql/build-your-own-editor-with-substance-7790eb600109">introduction post</a>, check the <a href="http://substance.io/">project website</a>, the <a href="https://github.com/substance/examples">examples</a> and the <a href="http://substance.io/docs">API documentation</a>.</p>
+
+<p><em>Substance Beta 4 introduces support for realtime collaboration. While still under development, you can already check out and run our full-stack collaborative <a href="https://github.com/substance/notepad">Notepad</a> application.</em></p>
+
+<h2><a id="user-content-features" class="anchor" href="https://github.com/substance/substance?utm_source=SitePoint&amp;utm_medium=email&amp;utm_campaign=Versioning#features" aria-hidden="true"><svg aria-hidden="true" class="octicon octicon-link" height="16" role="img" version="1.1" viewBox="0 0 16 16" width="16"><path d="M4 9h1v1h-1c-1.5 0-3-1.69-3-3.5s1.55-3.5 3-3.5h4c1.45 0 3 1.69 3 3.5 0 1.41-0.91 2.72-2 3.25v-1.16c0.58-0.45 1-1.27 1-2.09 0-1.28-1.02-2.5-2-2.5H4c-0.98 0-2 1.22-2 2.5s1 2.5 2 2.5z m9-3h-1v1h1c1 0 2 1.22 2 2.5s-1.02 2.5-2 2.5H9c-0.98 0-2-1.22-2-2.5 0-0.83 0.42-1.64 1-2.09v-1.16c-1.09 0.53-2 1.84-2 3.25 0 1.81 1.55 3.5 3 3.5h4c1.45 0 3-1.69 3-3.5s-1.5-3.5-3-3.5z"></path></svg></a>Features</h2>
+
+<table><thead>
+<tr>
+<th>Features</th>
+<th align="center">State</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>Custom document schemas</td>
+<td align="center">✓</td>
+</tr>
+<tr>
+<td>Custom converters (XML, HTML, etc.)</td>
+<td align="center">✓</td>
+</tr>
+<tr>
+<td>Custom HTML Rendering</td>
+<td align="center">✓</td>
+</tr>
+<tr>
+<td>Annotations that can span over multiple nodes</td>
+<td align="center">✓</td>
+</tr>
+<tr>
+<td>Annotations can hold information (e.g. a comment)</td>
+<td align="center">✓</td>
+</tr>
+<tr>
+<td>Incremental document updates (undoable operations)</td>
+<td align="center">✓</td>
+</tr>
+<tr>
+<td>Transformations for document manipulation</td>
+<td align="center">✓</td>
+</tr>
+<tr>
+<td>Custom editing toolbars</td>
+<td align="center">✓</td>
+</tr>
+<tr>
+<td>Commands for controlling the editor</td>
+<td align="center">✓</td>
+</tr>
+<tr>
+<td>I18N support</td>
+<td align="center">✓</td>
+</tr>
+<tr>
+<td>Realtime collaboration</td>
+<td align="center">Beta 4</td>
+</tr>
+<tr>
+<td>Persistence API for documents</td>
+<td align="center">Beta 4</td>
+</tr>
+<tr>
+<td>Key bindings</td>
+<td align="center">Beta 5</td>
+</tr>
+<tr>
+<td>Full Unicode support</td>
+<td align="center">Beta 5</td>
+</tr>
+<tr>
+<td>Plugins</td>
+<td align="center">Beta 5</td>
+</tr>
+<tr>
+<td></td>
+<td align="center"></td>
+</tr>
+<tr>
+<td><strong>UI Components</strong></td>
+<td align="center"></td>
+</tr>
+<tr>
+<td>TextPropertyEditor for editing annotated text</td>
+<td align="center">✓</td>
+</tr>
+<tr>
+<td>ContainerEditor for in-flow-editing</td>
+<td align="center">✓</td>
+</tr>
+<tr>
+<td>Scrollable ContentPanel with Support for highlights</td>
+<td align="center">✓</td>
+</tr>
+<tr>
+<td>Customizable Toolbar</td>
+<td align="center">✓</td>
+</tr>
+<tr>
+<td>ScrollPane with interactive visual Scrollbar</td>
+<td align="center">✓</td>
+</tr>
+<tr>
+<td>Interactive TOCPanel</td>
+<td align="center">✓</td>
+</tr>
+<tr>
+<td></td>
+<td align="center"></td>
+</tr>
+<tr>
+<td><strong>Predefined content types</strong></td>
+<td align="center"></td>
+</tr>
+<tr>
+<td>Paragraph</td>
+<td align="center">✓</td>
+</tr>
+<tr>
+<td>Heading</td>
+<td align="center">✓</td>
+</tr>
+<tr>
+<td>Blockquote</td>
+<td align="center">✓</td>
+</tr>
+<tr>
+<td>Codeblock</td>
+<td align="center">✓</td>
+</tr>
+<tr>
+<td>Image</td>
+<td align="center">✓</td>
+</tr>
+<tr>
+<td>Embed (image, video, tweet etc.)</td>
+<td align="center">✓</td>
+</tr>
+<tr>
+<td>List</td>
+<td align="center">Beta 4</td>
+</tr>
+<tr>
+<td>Table</td>
+<td align="center">Beta 4</td>
+</tr>
+<tr>
+<td></td>
+<td align="center"></td>
+</tr>
+<tr>
+<td><strong>Predefined annotation types</strong></td>
+<td align="center"></td>
+</tr>
+<tr>
+<td>Strong</td>
+<td align="center">✓</td>
+</tr>
+<tr>
+<td>Emphasis</td>
+<td align="center">✓</td>
+</tr>
+<tr>
+<td>Link</td>
+<td align="center">✓</td>
+</tr>
+<tr>
+<td>Subscript</td>
+<td align="center">✓</td>
+</tr>
+<tr>
+<td>Superscript</td>
+<td align="center">✓</td>
+</tr>
+<tr>
+<td>Code</td>
+<td align="center">✓</td>
+</tr>
+<tr>
+<td>Comment</td>
+<td align="center">Beta 4</td>
+</tr>
+<tr>
+<td></td>
+<td align="center"></td>
+</tr>
+<tr>
+<td><strong>Platform support</strong></td>
+<td align="center"></td>
+</tr>
+<tr>
+<td>Mozilla Firefox (&gt;=42)</td>
+<td align="center">✓</td>
+</tr>
+<tr>
+<td>Apple Safari (&gt;=9)</td>
+<td align="center">✓</td>
+</tr>
+<tr>
+<td>Google Chrome (&gt;=47)</td>
+<td align="center">✓</td>
+</tr>
+<tr>
+<td>Microsoft Edge</td>
+<td align="center">✓</td>
+</tr>
+<tr>
+<td>Mobile Safari (iOS)</td>
+<td align="center">Beta 5</td>
+</tr>
+<tr>
+<td>Mobile Chrome (Android)</td>
+<td align="center">Beta 5</td>
+</tr>
+</tbody></table>
+
+<h2><a id="user-content-development" class="anchor" href="https://github.com/substance/substance?utm_source=SitePoint&amp;utm_medium=email&amp;utm_campaign=Versioning#development" aria-hidden="true"><svg aria-hidden="true" class="octicon octicon-link" height="16" role="img" version="1.1" viewBox="0 0 16 16" width="16"><path d="M4 9h1v1h-1c-1.5 0-3-1.69-3-3.5s1.55-3.5 3-3.5h4c1.45 0 3 1.69 3 3.5 0 1.41-0.91 2.72-2 3.25v-1.16c0.58-0.45 1-1.27 1-2.09 0-1.28-1.02-2.5-2-2.5H4c-0.98 0-2 1.22-2 2.5s1 2.5 2 2.5z m9-3h-1v1h1c1 0 2 1.22 2 2.5s-1.02 2.5-2 2.5H9c-0.98 0-2-1.22-2-2.5 0-0.83 0.42-1.64 1-2.09v-1.16c-1.09 0.53-2 1.84-2 3.25 0 1.81 1.55 3.5 3 3.5h4c1.45 0 3-1.69 3-3.5s-1.5-3.5-3-3.5z"></path></svg></a>Development</h2>
+
+<p>Install the dev dependencies.</p>
+
+<pre><code>npm install
+</code></pre>
+
+<p>Run the dev server.</p>
+
+<pre><code>npm start
+</code></pre>
+
+<p>Navigate to <code>http://localhost:4201/docs</code> for the docs and <code>http://localhost:4201/test</code> for the test suite.</p>
+
+<p>To run the test-suite headless</p>
+
+<pre><code>$ npm test
+</code></pre>
+
+<p>To bundle the docs into a distribution:</p>
+
+<pre><code>$ npm run doc
+</code></pre>
+
+<h2><a id="user-content-roadmap" class="anchor" href="https://github.com/substance/substance?utm_source=SitePoint&amp;utm_medium=email&amp;utm_campaign=Versioning#roadmap" aria-hidden="true"><svg aria-hidden="true" class="octicon octicon-link" height="16" role="img" version="1.1" viewBox="0 0 16 16" width="16"><path d="M4 9h1v1h-1c-1.5 0-3-1.69-3-3.5s1.55-3.5 3-3.5h4c1.45 0 3 1.69 3 3.5 0 1.41-0.91 2.72-2 3.25v-1.16c0.58-0.45 1-1.27 1-2.09 0-1.28-1.02-2.5-2-2.5H4c-0.98 0-2 1.22-2 2.5s1 2.5 2 2.5z m9-3h-1v1h1c1 0 2 1.22 2 2.5s-1.02 2.5-2 2.5H9c-0.98 0-2-1.22-2-2.5 0-0.83 0.42-1.64 1-2.09v-1.16c-1.09 0.53-2 1.84-2 3.25 0 1.81 1.55 3.5 3 3.5h4c1.45 0 3-1.69 3-3.5s-1.5-3.5-3-3.5z"></path></svg></a>Roadmap</h2>
+
+<h3><a id="user-content-beta-4" class="anchor" href="https://github.com/substance/substance?utm_source=SitePoint&amp;utm_medium=email&amp;utm_campaign=Versioning#beta-4" aria-hidden="true"><svg aria-hidden="true" class="octicon octicon-link" height="16" role="img" version="1.1" viewBox="0 0 16 16" width="16"><path d="M4 9h1v1h-1c-1.5 0-3-1.69-3-3.5s1.55-3.5 3-3.5h4c1.45 0 3 1.69 3 3.5 0 1.41-0.91 2.72-2 3.25v-1.16c0.58-0.45 1-1.27 1-2.09 0-1.28-1.02-2.5-2-2.5H4c-0.98 0-2 1.22-2 2.5s1 2.5 2 2.5z m9-3h-1v1h1c1 0 2 1.22 2 2.5s-1.02 2.5-2 2.5H9c-0.98 0-2-1.22-2-2.5 0-0.83 0.42-1.64 1-2.09v-1.16c-1.09 0.53-2 1.84-2 3.25 0 1.81 1.55 3.5 3 3.5h4c1.45 0 3-1.69 3-3.5s-1.5-3.5-3-3.5z"></path></svg></a>Beta 4</h3>
+
+<p><em>ETA: March 2016</em></p>
+
+<ul>
+<li>Realtime collaboration</li>
+<li>Persistence API for documents</li>
+<li>Table node</li>
+<li>Editing of lists</li>
+<li>Improved stability, documentation and tests</li>
+<li>Full-stack platform example</li>
+</ul>
+
+<h3><a id="user-content-beta-5" class="anchor" href="https://github.com/substance/substance?utm_source=SitePoint&amp;utm_medium=email&amp;utm_campaign=Versioning#beta-5" aria-hidden="true"><svg aria-hidden="true" class="octicon octicon-link" height="16" role="img" version="1.1" viewBox="0 0 16 16" width="16"><path d="M4 9h1v1h-1c-1.5 0-3-1.69-3-3.5s1.55-3.5 3-3.5h4c1.45 0 3 1.69 3 3.5 0 1.41-0.91 2.72-2 3.25v-1.16c0.58-0.45 1-1.27 1-2.09 0-1.28-1.02-2.5-2-2.5H4c-0.98 0-2 1.22-2 2.5s1 2.5 2 2.5z m9-3h-1v1h1c1 0 2 1.22 2 2.5s-1.02 2.5-2 2.5H9c-0.98 0-2-1.22-2-2.5 0-0.83 0.42-1.64 1-2.09v-1.16c-1.09 0.53-2 1.84-2 3.25 0 1.81 1.55 3.5 3 3.5h4c1.45 0 3-1.69 3-3.5s-1.5-3.5-3-3.5z"></path></svg></a>Beta 5</h3>
+
+<ul>
+<li>Key bindings</li>
+<li>Plugins</li>
+<li>Improved Unicode support</li>
+<li>Mobile support</li>
+<li>Automatically generated performance report</li>
+<li>Modules for server-side integration</li>
+</ul>
+
+<h3><a id="user-content-10-final" class="anchor" href="https://github.com/substance/substance?utm_source=SitePoint&amp;utm_medium=email&amp;utm_campaign=Versioning#10-final" aria-hidden="true"><svg aria-hidden="true" class="octicon octicon-link" height="16" role="img" version="1.1" viewBox="0 0 16 16" width="16"><path d="M4 9h1v1h-1c-1.5 0-3-1.69-3-3.5s1.55-3.5 3-3.5h4c1.45 0 3 1.69 3 3.5 0 1.41-0.91 2.72-2 3.25v-1.16c0.58-0.45 1-1.27 1-2.09 0-1.28-1.02-2.5-2-2.5H4c-0.98 0-2 1.22-2 2.5s1 2.5 2 2.5z m9-3h-1v1h1c1 0 2 1.22 2 2.5s-1.02 2.5-2 2.5H9c-0.98 0-2-1.22-2-2.5 0-0.83 0.42-1.64 1-2.09v-1.16c-1.09 0.53-2 1.84-2 3.25 0 1.81 1.55 3.5 3 3.5h4c1.45 0 3-1.69 3-3.5s-1.5-3.5-3-3.5z"></path></svg></a>1.0 Final</h3>
+
+<ul>
+<li>Complete documentation</li>
+<li>Full test coverage</li>
+<li>Final versions of API's</li>
+</ul>
