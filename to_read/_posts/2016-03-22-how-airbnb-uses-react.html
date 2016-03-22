@@ -1,0 +1,139 @@
+---
+title: "How Airbnb Uses React"
+description: "null"
+link: "http://devnacho.com/2016/03/20/how-airbnb-uses-react/"
+saved: "2016-03-22 14:16:58"
+---
+
+          <div class="title">
+            <div class="date">
+              Mar 20, 2016
+              <br>
+              —
+            </div>
+            <h1>How Airbnb Uses React</h1>
+          </div>
+          <p><img src="http://devnacho.com/images/airbnb-react.png">
+          React is used by a number of well-known companies with large applications that
+          cater to millions of users, and their code base is being constantly changed by
+          engineers.</p>
+          
+          <p>A wide range of articles show how to create simple apps like ToDo lists with
+          React, but there aren’t many that show how React is used in production.</p>
+          
+          <p>This is why I’ve been working on a series of interview articles that will show
+          how React is used in large apps.</p>
+          
+          <p>In my first article, I had the honor of asking a couple of questions to <a href="https://github.com/lelandrichardson">Leland
+          Richardson</a>, Software Engineer at Airbnb,
+          and the main contributor to their React
+          Testing Library <a href="https://github.com/airbnb/lelandricharson">Enzyme</a>. Read on to
+          find out why they chose React, how they use
+          it, and what challenges they have encountered in the process.</p>
+          
+          <p></p>
+          
+          <p><strong>How many people on your team work with React code?</strong></p>
+          
+          <p><em>“I would guess there are roughly 50-60 engineers at Airbnb that would interact
+          with React on a regular basis. Probably a few more on an irregular basis.”</em></p>
+          
+          <p><strong>How do you get new developers to use your React app?</strong></p>
+          
+          <p><em>“ 1. Airbnb has a 3 week ‘bootcamp”’process for new hires. This involves a lot
+          of different things, but among them is taking on (relatively) simple tasks and
+          submitting PRs to the code base for review, as well as several presentations
+          regarding our front-end infrastructure.</em></p>
+          
+          <p><em>2. There are a number of employee-led classes that are held internally on a
+          regular basis, that both new and tenured engineers choose to attend.</em></p>
+          
+          <p><em>3. Slack is often used as an ‘internal stack overflow.’ Lots of people are readily
+          willing to help when questions come up, and chat history is indexed and searchable,
+          which is surprisingly helpful.</em></p>
+          
+          <p><em>4. Airbnb has a healthy culture of code review, which is also a great way to learn
+          new things, as well as level up as an engineer.”</em></p>
+          
+          <p><strong>In your opinion, what are the biggest advantages of using React?</strong></p>
+          
+          <p><em>"Reusability/portability: React components are extremely reusable</em></p>
+          
+          <p><em>Refactorability: React tends to make your code very easy to refactor and iterate on.”</em></p>
+          
+          <p><strong>What are the biggest disadvantages/difficulties of using React?</strong></p>
+          
+          <p><em>“Many people who are new to React and the ‘React Ecosystem’ really struggle with
+          some of the concepts of state management in the context of a React app. Depending on
+          one’s background, it can be a very different way of thinking, and this is where I see
+          the most issues coming from.”</em></p>
+          
+          <p><strong>How do you manage the state of your app? Any flux/redux library?</strong></p>
+          
+          <p><em>“We use <a href="https://github.com/goatslacker/alt">alt</a>, which was developed internally. We
+          may consider using redux in the near future.”</em></p>
+          
+          <p><strong>Do you use Relay/GraphQL, Relay or something similar to get the data from your backend?</strong></p>
+          
+          <p><em>“Not at this time. We may end up taking some ideas from GraphQL/Relay and applying them
+          to our own internal API Infrastructure, though.”</em></p>
+          
+          <p><strong>Which JS syntax do you use? ES6?</strong></p>
+          
+          <p><em>“ES6. All new JavaScript code in our code base conforms to our <a href="https://github.com/airbnb/javascript">style guide</a>.”</em></p>
+          
+          <p><strong>How do you test your React App?</strong></p>
+          
+          <p><em>“Primarily, we use the following libraries:</em></p>
+          
+          <p><em>- Mocha: test runner</em></p>
+          
+          <p><em>- Chai: assertion</em></p>
+          
+          <p><em>- <a href="https://github.com/airbnb/enzyme">Enzyme</a>: React testing library.”</em></p>
+          
+          <p><strong>Which JS Bundler do you use?</strong></p>
+          
+          <p><em>“We use an internally built asset bundler, which uses Browserify internally.”</em></p>
+          
+          <p><strong>Do you use any particular coding tool that the rest of the community might find interesting?</strong></p>
+          
+          <p><em>“We have many linting rules that apply to our infrastructure internally,
+          and that help prevent common mistakes. They don’t apply to the community,
+          but I think everyone should learn how to write linting rules. They are
+          quite useful.</em></p>
+          
+          <p><em>There are some tools (such as our build tool) that we would like to open
+          source, but nothing else that I can say at this time.”</em></p>
+          
+          <p><strong>How do you manage Styles?</strong></p>
+          
+          <p><em>“Right now we use SCSS to compile CSS, so pretty much just ‘good old regular CSS.’
+          We are investigating whether or not there is a component-based style solution
+          that makes sense for us.”</em></p>
+          
+          <p><strong>Do you enforce type with things like Flow or Typescript?</strong></p>
+          
+          <p><em>“Not at this time.”</em></p>
+          
+          <p><strong>Which library you use for routing?</strong></p>
+          
+          <p><em>“We have several internal apps and sections of the site that use react-router.
+          However, most of our app does not use any JavaScript-based router.”</em></p>
+          
+          <p><strong>Do you use, or plan to use React Native?</strong></p>
+          
+          <p><em>“We are currently exploring using React Native for some features on our main App.
+          We have used it in other places, but never on anything public.”</em></p>
+          
+          <p>Airbnb is far from the only large application that uses React. In our next post in this series, we’ll chat with a top developer from another successful company, who will be providing his insights and experience with this technology. Stay tuned!</p>
+          <div class="mailing-list">
+            <div class="row">
+              <!-- Begin MailChimp Signup Form -->
+              <div id="mc_embed_signup">
+                
+              </div>
+              <!-- End mc_embed_signup -->
+            </div>
+          </div>
+        
