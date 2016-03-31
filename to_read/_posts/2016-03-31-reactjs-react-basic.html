@@ -1,0 +1,277 @@
+---
+title: "reactjs/react-basic"
+description: "react-basic - A description of the conceptual model of React without implementation burden."
+link: "https://github.com/reactjs/react-basic"
+saved: "2016-03-31 17:47:58"
+---
+<h1><a id="user-content-react---basic-theoretical-concepts" class="anchor" href="https://github.com/reactjs/react-basic?utm_source=SitePoint&amp;utm_medium=email&amp;utm_campaign=Versioning#react---basic-theoretical-concepts" aria-hidden="true"><svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path d="M4 9h1v1h-1c-1.5 0-3-1.69-3-3.5s1.55-3.5 3-3.5h4c1.45 0 3 1.69 3 3.5 0 1.41-0.91 2.72-2 3.25v-1.16c0.58-0.45 1-1.27 1-2.09 0-1.28-1.02-2.5-2-2.5H4c-0.98 0-2 1.22-2 2.5s1 2.5 2 2.5z m9-3h-1v1h1c1 0 2 1.22 2 2.5s-1.02 2.5-2 2.5H9c-0.98 0-2-1.22-2-2.5 0-0.83 0.42-1.64 1-2.09v-1.16c-1.09 0.53-2 1.84-2 3.25 0 1.81 1.55 3.5 3 3.5h4c1.45 0 3-1.69 3-3.5s-1.5-3.5-3-3.5z"></path></svg></a>React - Basic Theoretical Concepts</h1>
+
+<p>This document is my attempt to formally explain my mental model of React. The intention is to describe this in terms of deductive reasoning that lead us to this design.</p>
+
+<p>There may certainly be some premises that are debatable and the actual design of this example may have bugs and gaps. This is just the beginning of formalizing it. Feel free to send a pull request if you have a better idea of how to formalize it. The progression from simple -&gt; complex should make sense along the way without too many library details shining through.</p>
+
+<p>The actual implementation of React.js is full of pragmatic solutions, incremental steps, algorithmic optimizations, legacy code, debug tooling and things you need to make it actually useful. Those things are more fleeting, can change over time if it is valuable enough and have high enough priority. The actual implementation is much more difficult to reason about.</p>
+
+<p>I like to have a simpler mental model that I can ground myself in.</p>
+
+<h2><a id="user-content-transformation" class="anchor" href="https://github.com/reactjs/react-basic?utm_source=SitePoint&amp;utm_medium=email&amp;utm_campaign=Versioning#transformation" aria-hidden="true"><svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path d="M4 9h1v1h-1c-1.5 0-3-1.69-3-3.5s1.55-3.5 3-3.5h4c1.45 0 3 1.69 3 3.5 0 1.41-0.91 2.72-2 3.25v-1.16c0.58-0.45 1-1.27 1-2.09 0-1.28-1.02-2.5-2-2.5H4c-0.98 0-2 1.22-2 2.5s1 2.5 2 2.5z m9-3h-1v1h1c1 0 2 1.22 2 2.5s-1.02 2.5-2 2.5H9c-0.98 0-2-1.22-2-2.5 0-0.83 0.42-1.64 1-2.09v-1.16c-1.09 0.53-2 1.84-2 3.25 0 1.81 1.55 3.5 3 3.5h4c1.45 0 3-1.69 3-3.5s-1.5-3.5-3-3.5z"></path></svg></a>Transformation</h2>
+
+<p>The core premise for React is that UIs are simply a projection of data into a different form of data. The same input gives the same output. A simple pure function.</p>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-k">function</span> <span class="pl-en">NameBox</span>(<span class="pl-smi">name</span>) {
+  <span class="pl-k">return</span> { fontWeight<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>bold<span class="pl-pds">'</span></span>, labelContent<span class="pl-k">:</span> name };
+}</pre></div>
+
+<pre><code>'Sebastian Markbåge' -&gt;
+{ fontWeight: 'bold', labelContent: 'Sebastian Markbåge' };
+</code></pre>
+
+<h2><a id="user-content-abstraction" class="anchor" href="https://github.com/reactjs/react-basic?utm_source=SitePoint&amp;utm_medium=email&amp;utm_campaign=Versioning#abstraction" aria-hidden="true"><svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path d="M4 9h1v1h-1c-1.5 0-3-1.69-3-3.5s1.55-3.5 3-3.5h4c1.45 0 3 1.69 3 3.5 0 1.41-0.91 2.72-2 3.25v-1.16c0.58-0.45 1-1.27 1-2.09 0-1.28-1.02-2.5-2-2.5H4c-0.98 0-2 1.22-2 2.5s1 2.5 2 2.5z m9-3h-1v1h1c1 0 2 1.22 2 2.5s-1.02 2.5-2 2.5H9c-0.98 0-2-1.22-2-2.5 0-0.83 0.42-1.64 1-2.09v-1.16c-1.09 0.53-2 1.84-2 3.25 0 1.81 1.55 3.5 3 3.5h4c1.45 0 3-1.69 3-3.5s-1.5-3.5-3-3.5z"></path></svg></a>Abstraction</h2>
+
+<p>You can't fit a complex UI in a single function though. It is important that UIs can be abstracted into reusable pieces that don't leak their implementation details. Such as calling one function from another.</p>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-k">function</span> <span class="pl-en">FancyUserBox</span>(<span class="pl-smi">user</span>) {
+  <span class="pl-k">return</span> {
+    borderStyle<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>1px solid blue<span class="pl-pds">'</span></span>,
+    childContent<span class="pl-k">:</span> [
+      <span class="pl-s"><span class="pl-pds">'</span>Name: <span class="pl-pds">'</span></span>,
+      <span class="pl-en">NameBox</span>(<span class="pl-smi">user</span>.<span class="pl-smi">firstName</span> <span class="pl-k">+</span> <span class="pl-s"><span class="pl-pds">'</span> <span class="pl-pds">'</span></span> <span class="pl-k">+</span> <span class="pl-smi">user</span>.<span class="pl-smi">lastName</span>)
+    ]
+  };
+}</pre></div>
+
+<pre><code>{ firstName: 'Sebastian', lastName: 'Markbåge' } -&gt;
+{
+  borderStyle: '1px solid blue',
+  childContent: [
+    'Name: ',
+    { fontWeight: 'bold', labelContent: 'Sebastian Markbåge' }
+  ]
+};
+</code></pre>
+
+<h2><a id="user-content-composition" class="anchor" href="https://github.com/reactjs/react-basic?utm_source=SitePoint&amp;utm_medium=email&amp;utm_campaign=Versioning#composition" aria-hidden="true"><svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path d="M4 9h1v1h-1c-1.5 0-3-1.69-3-3.5s1.55-3.5 3-3.5h4c1.45 0 3 1.69 3 3.5 0 1.41-0.91 2.72-2 3.25v-1.16c0.58-0.45 1-1.27 1-2.09 0-1.28-1.02-2.5-2-2.5H4c-0.98 0-2 1.22-2 2.5s1 2.5 2 2.5z m9-3h-1v1h1c1 0 2 1.22 2 2.5s-1.02 2.5-2 2.5H9c-0.98 0-2-1.22-2-2.5 0-0.83 0.42-1.64 1-2.09v-1.16c-1.09 0.53-2 1.84-2 3.25 0 1.81 1.55 3.5 3 3.5h4c1.45 0 3-1.69 3-3.5s-1.5-3.5-3-3.5z"></path></svg></a>Composition</h2>
+
+<p>To achieve truly reusable features, it is not enough to simply reuse leaves and build new containers for them. You also need to be able to build abstractions from the containers that <em>compose</em> other abstractions. The way I think about "composition" is that they're combining two or more different abstractions into a new one.</p>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-k">function</span> <span class="pl-en">FancyBox</span>(<span class="pl-smi">children</span>) {
+  <span class="pl-k">return</span> {
+    borderStyle<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>1px solid blue<span class="pl-pds">'</span></span>,
+    children<span class="pl-k">:</span> children
+  };
+}
+
+<span class="pl-k">function</span> <span class="pl-en">UserBox</span>(<span class="pl-smi">user</span>) {
+  <span class="pl-k">return</span> <span class="pl-en">FancyBox</span>([
+    <span class="pl-s"><span class="pl-pds">'</span>Name: <span class="pl-pds">'</span></span>,
+    <span class="pl-en">NameBox</span>(<span class="pl-smi">user</span>.<span class="pl-smi">firstName</span> <span class="pl-k">+</span> <span class="pl-s"><span class="pl-pds">'</span> <span class="pl-pds">'</span></span> <span class="pl-k">+</span> <span class="pl-smi">user</span>.<span class="pl-smi">lastName</span>)
+  ]);
+}</pre></div>
+
+<h2><a id="user-content-state" class="anchor" href="https://github.com/reactjs/react-basic?utm_source=SitePoint&amp;utm_medium=email&amp;utm_campaign=Versioning#state" aria-hidden="true"><svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path d="M4 9h1v1h-1c-1.5 0-3-1.69-3-3.5s1.55-3.5 3-3.5h4c1.45 0 3 1.69 3 3.5 0 1.41-0.91 2.72-2 3.25v-1.16c0.58-0.45 1-1.27 1-2.09 0-1.28-1.02-2.5-2-2.5H4c-0.98 0-2 1.22-2 2.5s1 2.5 2 2.5z m9-3h-1v1h1c1 0 2 1.22 2 2.5s-1.02 2.5-2 2.5H9c-0.98 0-2-1.22-2-2.5 0-0.83 0.42-1.64 1-2.09v-1.16c-1.09 0.53-2 1.84-2 3.25 0 1.81 1.55 3.5 3 3.5h4c1.45 0 3-1.69 3-3.5s-1.5-3.5-3-3.5z"></path></svg></a>State</h2>
+
+<p>A UI is NOT simply a replication of server / business logic state. There is actually a lot of state that is specific to an exact projection and not others. For example, if you start typing in a text field. That may or may not be replicated to other tabs or to your mobile device. Scroll position is a typical example that you almost never want to replicate across multiple projections.</p>
+
+<p>We tend to prefer our data model to be immutable. We thread functions through that can update state as a single atom at the top.</p>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-k">function</span> <span class="pl-en">FancyNameBox</span>(<span class="pl-smi">user</span>, <span class="pl-smi">likes</span>, <span class="pl-smi">onClick</span>) {
+  <span class="pl-k">return</span> <span class="pl-en">FancyBox</span>([
+    <span class="pl-s"><span class="pl-pds">'</span>Name: <span class="pl-pds">'</span></span>, <span class="pl-en">NameBox</span>(<span class="pl-smi">user</span>.<span class="pl-smi">firstName</span> <span class="pl-k">+</span> <span class="pl-s"><span class="pl-pds">'</span> <span class="pl-pds">'</span></span> <span class="pl-k">+</span> <span class="pl-smi">user</span>.<span class="pl-smi">lastName</span>),
+    <span class="pl-s"><span class="pl-pds">'</span>Likes: <span class="pl-pds">'</span></span>, <span class="pl-en">LikeBox</span>(likes),
+    <span class="pl-en">LikeButton</span>(onClick)
+  ]);
+}
+
+<span class="pl-c">// Implementation Details</span>
+
+<span class="pl-k">var</span> likes <span class="pl-k">=</span> <span class="pl-c1">0</span>;
+<span class="pl-k">function</span> <span class="pl-en">addOneMoreLike</span>() {
+  likes<span class="pl-k">++</span>;
+  <span class="pl-en">rerender</span>();
+}
+
+<span class="pl-c">// Init</span>
+
+<span class="pl-en">FancyNameBox</span>(
+  { firstName<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>Sebastian<span class="pl-pds">'</span></span>, lastName<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>Markbåge<span class="pl-pds">'</span></span> },
+  likes,
+  addOneMoreLike
+);</pre></div>
+
+<p><em>NOTE: These examples use side-effects to update state. My actual mental model of this is that they return the next version of state during an "update" pass. It was simpler to explain without that but we'll want to change these examples in the future.</em></p>
+
+<h2><a id="user-content-memoization" class="anchor" href="https://github.com/reactjs/react-basic?utm_source=SitePoint&amp;utm_medium=email&amp;utm_campaign=Versioning#memoization" aria-hidden="true"><svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path d="M4 9h1v1h-1c-1.5 0-3-1.69-3-3.5s1.55-3.5 3-3.5h4c1.45 0 3 1.69 3 3.5 0 1.41-0.91 2.72-2 3.25v-1.16c0.58-0.45 1-1.27 1-2.09 0-1.28-1.02-2.5-2-2.5H4c-0.98 0-2 1.22-2 2.5s1 2.5 2 2.5z m9-3h-1v1h1c1 0 2 1.22 2 2.5s-1.02 2.5-2 2.5H9c-0.98 0-2-1.22-2-2.5 0-0.83 0.42-1.64 1-2.09v-1.16c-1.09 0.53-2 1.84-2 3.25 0 1.81 1.55 3.5 3 3.5h4c1.45 0 3-1.69 3-3.5s-1.5-3.5-3-3.5z"></path></svg></a>Memoization</h2>
+
+<p>Calling the same function over and over again is wasteful if we know that the function is pure. We can create a memoized version of a function that keeps track of the last argument and last result. That way we don't have to reexecute it if we keep using the same value.</p>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-k">function</span> <span class="pl-en">memoize</span>(<span class="pl-smi">fn</span>) {
+  <span class="pl-k">var</span> cachedArg;
+  <span class="pl-k">var</span> cachedResult;
+  <span class="pl-k">return</span> <span class="pl-k">function</span>(<span class="pl-smi">arg</span>) {
+    <span class="pl-k">if</span> (cachedArg <span class="pl-k">===</span> arg) {
+      <span class="pl-k">return</span> cachedResult;
+    }
+    cachedArg <span class="pl-k">=</span> arg;
+    cachedResult <span class="pl-k">=</span> <span class="pl-en">fn</span>(arg);
+    <span class="pl-k">return</span> cachedResult;
+  };
+}
+
+<span class="pl-k">var</span> MemoizedNameBox <span class="pl-k">=</span> <span class="pl-en">memoize</span>(NameBox);
+
+<span class="pl-k">function</span> <span class="pl-en">NameAndAgeBox</span>(<span class="pl-smi">user</span>, <span class="pl-smi">currentTime</span>) {
+  <span class="pl-k">return</span> <span class="pl-en">FancyBox</span>([
+    <span class="pl-s"><span class="pl-pds">'</span>Name: <span class="pl-pds">'</span></span>,
+    <span class="pl-en">MemoizedNameBox</span>(<span class="pl-smi">user</span>.<span class="pl-smi">firstName</span> <span class="pl-k">+</span> <span class="pl-s"><span class="pl-pds">'</span> <span class="pl-pds">'</span></span> <span class="pl-k">+</span> <span class="pl-smi">user</span>.<span class="pl-smi">lastName</span>),
+    <span class="pl-s"><span class="pl-pds">'</span>Age in milliseconds: <span class="pl-pds">'</span></span>,
+    currentTime <span class="pl-k">-</span> <span class="pl-smi">user</span>.<span class="pl-smi">dateOfBirth</span>
+  ]);
+}</pre></div>
+
+<h2><a id="user-content-lists" class="anchor" href="https://github.com/reactjs/react-basic?utm_source=SitePoint&amp;utm_medium=email&amp;utm_campaign=Versioning#lists" aria-hidden="true"><svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path d="M4 9h1v1h-1c-1.5 0-3-1.69-3-3.5s1.55-3.5 3-3.5h4c1.45 0 3 1.69 3 3.5 0 1.41-0.91 2.72-2 3.25v-1.16c0.58-0.45 1-1.27 1-2.09 0-1.28-1.02-2.5-2-2.5H4c-0.98 0-2 1.22-2 2.5s1 2.5 2 2.5z m9-3h-1v1h1c1 0 2 1.22 2 2.5s-1.02 2.5-2 2.5H9c-0.98 0-2-1.22-2-2.5 0-0.83 0.42-1.64 1-2.09v-1.16c-1.09 0.53-2 1.84-2 3.25 0 1.81 1.55 3.5 3 3.5h4c1.45 0 3-1.69 3-3.5s-1.5-3.5-3-3.5z"></path></svg></a>Lists</h2>
+
+<p>Most UIs are some form of lists that then produce multiple different values for each item in the list. This creates a natural hierarchy.</p>
+
+<p>To manage the state for each item in a list we can create a Map that holds the state for a particular item.</p>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-k">function</span> <span class="pl-en">UserList</span>(<span class="pl-smi">users</span>, <span class="pl-smi">likesPerUser</span>, <span class="pl-smi">updateUserLikes</span>) {
+  <span class="pl-k">return</span> <span class="pl-smi">users</span>.<span class="pl-en">map</span>(<span class="pl-smi">user</span> <span class="pl-k">=&gt;</span> <span class="pl-en">FancyNameBox</span>(
+    user,
+    <span class="pl-smi">likesPerUser</span>.<span class="pl-en">get</span>(<span class="pl-smi">user</span>.<span class="pl-c1">id</span>),
+    () <span class="pl-k">=&gt;</span> <span class="pl-en">updateUserLikes</span>(<span class="pl-smi">user</span>.<span class="pl-c1">id</span>, <span class="pl-smi">likesPerUser</span>.<span class="pl-en">get</span>(<span class="pl-smi">user</span>.<span class="pl-c1">id</span>) <span class="pl-k">+</span> <span class="pl-c1">1</span>)
+  ));
+}
+
+<span class="pl-k">var</span> likesPerUser <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-en">Map</span>();
+<span class="pl-k">function</span> <span class="pl-en">updateUserLikes</span>(<span class="pl-smi">id</span>, <span class="pl-smi">likeCount</span>) {
+  <span class="pl-smi">likesPerUser</span>.<span class="pl-en">set</span>(id, likeCount);
+  <span class="pl-en">rerender</span>();
+}
+
+<span class="pl-en">UserList</span>(<span class="pl-smi">data</span>.<span class="pl-smi">users</span>, likesPerUser, updateUserLikes);</pre></div>
+
+<p><em>NOTE: We now have multiple different arguments passed to FancyNameBox. That breaks our memoization because we can only remember one value at a time. More on that below.</em></p>
+
+<h2><a id="user-content-continuations" class="anchor" href="https://github.com/reactjs/react-basic?utm_source=SitePoint&amp;utm_medium=email&amp;utm_campaign=Versioning#continuations" aria-hidden="true"><svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path d="M4 9h1v1h-1c-1.5 0-3-1.69-3-3.5s1.55-3.5 3-3.5h4c1.45 0 3 1.69 3 3.5 0 1.41-0.91 2.72-2 3.25v-1.16c0.58-0.45 1-1.27 1-2.09 0-1.28-1.02-2.5-2-2.5H4c-0.98 0-2 1.22-2 2.5s1 2.5 2 2.5z m9-3h-1v1h1c1 0 2 1.22 2 2.5s-1.02 2.5-2 2.5H9c-0.98 0-2-1.22-2-2.5 0-0.83 0.42-1.64 1-2.09v-1.16c-1.09 0.53-2 1.84-2 3.25 0 1.81 1.55 3.5 3 3.5h4c1.45 0 3-1.69 3-3.5s-1.5-3.5-3-3.5z"></path></svg></a>Continuations</h2>
+
+<p>Unfortunately, since there are so many lists of lists all over the place in UIs, it becomes quite a lot of boilerplate to manage that explicitly.</p>
+
+<p>We can move some of this boilerplate out of our critical business logic by deferring execution of a function. For example, by using "currying" (<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/bind"><code>bind</code></a> in JavaScript). Then we pass the state through from outside our core functions that are now free of boilerplate.</p>
+
+<p>This isn't reducing boilerplate but is at least moving it out of the critical business logic.</p>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-k">function</span> <span class="pl-en">FancyUserList</span>(<span class="pl-smi">users</span>) {
+  <span class="pl-k">return</span> <span class="pl-en">FancyBox</span>(
+    <span class="pl-smi">UserList</span>.<span class="pl-en">bind</span>(<span class="pl-c1">null</span>, users)
+  );
+}
+
+<span class="pl-k">const</span> <span class="pl-c1">box</span> <span class="pl-k">=</span> <span class="pl-en">FancyUserList</span>(<span class="pl-smi">data</span>.<span class="pl-smi">users</span>);
+<span class="pl-k">const</span> <span class="pl-c1">resolvedChildren</span> <span class="pl-k">=</span> <span class="pl-smi">box</span>.<span class="pl-en">children</span>(likesPerUser, updateUserLikes);
+<span class="pl-k">const</span> <span class="pl-c1">resolvedBox</span> <span class="pl-k">=</span> {
+  <span class="pl-k">...</span>box,
+  children<span class="pl-k">:</span> resolvedChildren
+};</pre></div>
+
+<h2><a id="user-content-state-map" class="anchor" href="https://github.com/reactjs/react-basic?utm_source=SitePoint&amp;utm_medium=email&amp;utm_campaign=Versioning#state-map" aria-hidden="true"><svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path d="M4 9h1v1h-1c-1.5 0-3-1.69-3-3.5s1.55-3.5 3-3.5h4c1.45 0 3 1.69 3 3.5 0 1.41-0.91 2.72-2 3.25v-1.16c0.58-0.45 1-1.27 1-2.09 0-1.28-1.02-2.5-2-2.5H4c-0.98 0-2 1.22-2 2.5s1 2.5 2 2.5z m9-3h-1v1h1c1 0 2 1.22 2 2.5s-1.02 2.5-2 2.5H9c-0.98 0-2-1.22-2-2.5 0-0.83 0.42-1.64 1-2.09v-1.16c-1.09 0.53-2 1.84-2 3.25 0 1.81 1.55 3.5 3 3.5h4c1.45 0 3-1.69 3-3.5s-1.5-3.5-3-3.5z"></path></svg></a>State Map</h2>
+
+<p>We know from earlier that once we see repeated patterns we can use composition to avoid reimplementing the same pattern over and over again. We can move the logic of extracting and passing state to a low-level function that we reuse a lot.</p>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-k">function</span> <span class="pl-en">FancyBoxWithState</span>(
+  <span class="pl-smi">children</span>,
+  <span class="pl-smi">stateMap</span>,
+  <span class="pl-smi">updateState</span>
+) {
+  <span class="pl-k">return</span> <span class="pl-en">FancyBox</span>(
+    <span class="pl-smi">children</span>.<span class="pl-en">map</span>(<span class="pl-smi">child</span> <span class="pl-k">=&gt;</span> <span class="pl-smi">child</span>.<span class="pl-en">continuation</span>(
+      <span class="pl-smi">stateMap</span>.<span class="pl-en">get</span>(<span class="pl-smi">child</span>.<span class="pl-smi">key</span>),
+      updateState
+    ))
+  );
+}
+
+<span class="pl-k">function</span> <span class="pl-en">UserList</span>(<span class="pl-smi">users</span>) {
+  <span class="pl-k">return</span> <span class="pl-smi">users</span>.<span class="pl-en">map</span>(<span class="pl-smi">user</span> <span class="pl-k">=&gt;</span> {
+    continuation<span class="pl-k">:</span> <span class="pl-smi">FancyNameBox</span>.<span class="pl-en">bind</span>(<span class="pl-c1">null</span>, user),
+    key<span class="pl-k">:</span> <span class="pl-smi">user</span>.<span class="pl-c1">id</span>
+  });
+}
+
+<span class="pl-k">function</span> <span class="pl-en">FancyUserList</span>(<span class="pl-smi">users</span>) {
+  <span class="pl-k">return</span> <span class="pl-smi">FancyBoxWithState</span>.<span class="pl-en">bind</span>(<span class="pl-c1">null</span>,
+    <span class="pl-en">UserList</span>(users)
+  );
+}
+
+<span class="pl-k">const</span> <span class="pl-c1">continuation</span> <span class="pl-k">=</span> <span class="pl-en">FancyUserList</span>(<span class="pl-smi">data</span>.<span class="pl-smi">users</span>);
+<span class="pl-en">continuation</span>(likesPerUser, updateUserLikes);</pre></div>
+
+<h2><a id="user-content-memoization-map" class="anchor" href="https://github.com/reactjs/react-basic?utm_source=SitePoint&amp;utm_medium=email&amp;utm_campaign=Versioning#memoization-map" aria-hidden="true"><svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path d="M4 9h1v1h-1c-1.5 0-3-1.69-3-3.5s1.55-3.5 3-3.5h4c1.45 0 3 1.69 3 3.5 0 1.41-0.91 2.72-2 3.25v-1.16c0.58-0.45 1-1.27 1-2.09 0-1.28-1.02-2.5-2-2.5H4c-0.98 0-2 1.22-2 2.5s1 2.5 2 2.5z m9-3h-1v1h1c1 0 2 1.22 2 2.5s-1.02 2.5-2 2.5H9c-0.98 0-2-1.22-2-2.5 0-0.83 0.42-1.64 1-2.09v-1.16c-1.09 0.53-2 1.84-2 3.25 0 1.81 1.55 3.5 3 3.5h4c1.45 0 3-1.69 3-3.5s-1.5-3.5-3-3.5z"></path></svg></a>Memoization Map</h2>
+
+<p>Once we want to memoize multiple items in a list memoization becomes much harder. You have to figure out some complex caching algorithm that balances memory usage with frequency.</p>
+
+<p>Luckily, UIs tend to be fairly stable in the same position. The same position in the tree gets the same value every time. This tree turns out to be a really useful strategy for memoization.</p>
+
+<p>We can use the same trick we used for state and pass a memoization cache through the composable function.</p>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-k">function</span> <span class="pl-en">memoize</span>(<span class="pl-smi">fn</span>) {
+  <span class="pl-k">return</span> <span class="pl-k">function</span>(<span class="pl-smi">arg</span>, <span class="pl-smi">memoizationCache</span>) {
+    <span class="pl-k">if</span> (<span class="pl-smi">memoizationCache</span>.<span class="pl-smi">arg</span> <span class="pl-k">===</span> arg) {
+      <span class="pl-k">return</span> <span class="pl-smi">memoizationCache</span>.<span class="pl-smi">result</span>;
+    }
+    <span class="pl-k">const</span> <span class="pl-c1">result</span> <span class="pl-k">=</span> <span class="pl-en">fn</span>(arg);
+    <span class="pl-smi">memoizationCache</span>.<span class="pl-smi">arg</span> <span class="pl-k">=</span> arg;
+    <span class="pl-smi">memoizationCache</span>.<span class="pl-smi">result</span> <span class="pl-k">=</span> result;
+    <span class="pl-k">return</span> result;
+  };
+}
+
+<span class="pl-k">function</span> <span class="pl-en">FancyBoxWithState</span>(
+  <span class="pl-smi">children</span>,
+  <span class="pl-smi">stateMap</span>,
+  <span class="pl-smi">updateState</span>,
+  <span class="pl-smi">memoizationCache</span>
+) {
+  <span class="pl-k">return</span> <span class="pl-en">FancyBox</span>(
+    <span class="pl-smi">children</span>.<span class="pl-en">map</span>(<span class="pl-smi">child</span> <span class="pl-k">=&gt;</span> <span class="pl-smi">child</span>.<span class="pl-en">continuation</span>(
+      <span class="pl-smi">stateMap</span>.<span class="pl-en">get</span>(<span class="pl-smi">child</span>.<span class="pl-smi">key</span>),
+      updateState,
+      <span class="pl-smi">memoizationCache</span>.<span class="pl-en">get</span>(<span class="pl-smi">child</span>.<span class="pl-smi">key</span>)
+    ))
+  );
+}
+
+<span class="pl-k">const</span> <span class="pl-c1">MemoizedFancyNameBox</span> <span class="pl-k">=</span> <span class="pl-en">memoize</span>(FancyNameBox);</pre></div>
+
+<h2><a id="user-content-algebraic-effects" class="anchor" href="https://github.com/reactjs/react-basic?utm_source=SitePoint&amp;utm_medium=email&amp;utm_campaign=Versioning#algebraic-effects" aria-hidden="true"><svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path d="M4 9h1v1h-1c-1.5 0-3-1.69-3-3.5s1.55-3.5 3-3.5h4c1.45 0 3 1.69 3 3.5 0 1.41-0.91 2.72-2 3.25v-1.16c0.58-0.45 1-1.27 1-2.09 0-1.28-1.02-2.5-2-2.5H4c-0.98 0-2 1.22-2 2.5s1 2.5 2 2.5z m9-3h-1v1h1c1 0 2 1.22 2 2.5s-1.02 2.5-2 2.5H9c-0.98 0-2-1.22-2-2.5 0-0.83 0.42-1.64 1-2.09v-1.16c-1.09 0.53-2 1.84-2 3.25 0 1.81 1.55 3.5 3 3.5h4c1.45 0 3-1.69 3-3.5s-1.5-3.5-3-3.5z"></path></svg></a>Algebraic Effects</h2>
+
+<p>It turns out that it is kind of a PITA to pass every little value you might need through several levels of abstractions. It is kind of nice to sometimes have a shortcut to pass things between two abstractions without involving the intermediates. In React we call this "context".</p>
+
+<p>Sometimes the data dependencies don't neatly follow the abstraction tree. For example, in layout algorithms you need to know something about the size of your children before you can completely fulfill their position.</p>
+
+<p>Now, this example is a bit "out there". I'll use <a href="http://math.andrej.com/eff/">Algebraic Effects</a> as <a href="https://esdiscuss.org/topic/one-shot-delimited-continuations-with-effect-handlers">proposed for ECMAScript</a>. If you're familiar with functional programming, they're avoiding the intermediate ceremony imposed by monads.</p>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-k">function</span> <span class="pl-en">ThemeBorderColorRequest</span>() { }
+
+<span class="pl-k">function</span> <span class="pl-en">FancyBox</span>(<span class="pl-smi">children</span>) {
+  <span class="pl-k">const</span> <span class="pl-c1">color</span> <span class="pl-k">=</span> raise <span class="pl-k">new</span> <span class="pl-en">ThemeBorderColorRequest</span>();
+  <span class="pl-k">return</span> {
+    borderWidth<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>1px<span class="pl-pds">'</span></span>,
+    borderColor<span class="pl-k">:</span> color,
+    children<span class="pl-k">:</span> children
+  };
+}
+
+<span class="pl-k">function</span> <span class="pl-en">BlueTheme</span>(<span class="pl-smi">children</span>) {
+  <span class="pl-k">return</span> <span class="pl-k">try</span> {
+    <span class="pl-en">children</span>();
+  } <span class="pl-k">catch</span> effect ThemeBorderColorRequest <span class="pl-k">-</span><span class="pl-k">&gt;</span> [, continuation] {
+    <span class="pl-k">return</span> <span class="pl-en">continuation</span>(<span class="pl-s"><span class="pl-pds">'</span>blue<span class="pl-pds">'</span></span>);
+  }
+}
+
+<span class="pl-k">function</span> <span class="pl-en">App</span>(<span class="pl-smi">data</span>) {
+  <span class="pl-k">return</span> <span class="pl-en">BlueTheme</span>(
+    <span class="pl-smi">FancyUserList</span>.<span class="pl-en">bind</span>(<span class="pl-c1">null</span>, <span class="pl-smi">data</span>.<span class="pl-smi">users</span>)
+  );
+}</pre></div>
