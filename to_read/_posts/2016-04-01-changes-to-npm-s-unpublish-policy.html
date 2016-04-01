@@ -1,0 +1,99 @@
+---
+title: "changes to npm’s unpublish policy"
+description: "changes to npm’s unpublish policy"
+link: "http://blog.npmjs.org/post/141905368000/changes-to-npms-unpublish-policy"
+saved: "2016-04-01 11:03:05"
+---
+<p>One of Node.js’ core strengths is the community’s trust in npm’s registry. As it’s grown, the registry has filled with packages that are more and more interconnected.</p>
+
+<p>A byproduct of being so interdependent is that a single actor can wreak significant havoc across the ecosystem. If a publisher unpublishes a package that others depend upon, this breaks every downstream project that depends upon it, possibly thousands of projects.</p>
+
+<p><a href="http://blog.npmjs.org/post/141577284765/kik-left-pad-and-npm">Last Tuesday’s events</a> revealed that this danger isn’t just hypothetical, and it’s one for which we already should have been prepared. It’s our mission to help the community succeed, and by failing to protect the community, we didn’t uphold that mission.</p>
+
+<p>We’re sorry.</p>
+
+<p>This week, we’ve seen a lot of discussion about why <code>unpublish</code> exists at all. Similar discussions happen within npm, Inc. There are important and legitmate reasons for the feature, so we have no intention of removing it, but now we’re significantly changing how <code>unpublish</code> behaves and the policies that surround it.</p>
+
+<p>These changes, which incorporate helpful feedback from a lot of community members, are intended to ensure that events like Tuesday’s don’t happen again.</p>
+
+<h2>Our new policy</h2>
+
+<p>Going forward, if you try to unpublish a given <code>package@version</code>:</p>
+
+<ul><li><p>If the version is less than 24 hours old, you can unpublish it. The
+package will be completely removed from the registry. No new
+packages can be published using the same name and version.</p></li>
+<li><p>If the version is older than 24 hours, then the unpublish will fail, with a message to contact support@npmjs.com.</p></li>
+<li><p>If you contact support, they will check to see if removing that version of your package would break any other installs. If so, we will not remove it. You’ll either have to transfer ownership of the package or reach out to the owners of dependent packages to change their dependency.</p></li>
+<li><p>If every version of a package is removed, it will be replaced with a <a href="http://t.umblr.com/redirect?z=https%3A%2F%2Fgithub.com%2Fnpm%2Fsecurity-holder&amp;t=MjVlMGRkNTJlM2MzMGY4ZGRjZGU1NDQyZjVlZmQ0Mjc4NDUzNzM1MixvM1ZuY0c4SQ%3D%3D">security placeholder package</a>, so that the formerly used name will not be susceptible to malicious squatting.</p></li>
+<li><p>If another member of the community wishes to publish a package with the same name as a security placeholder, they’ll need to contact <code>support@npmjs.com</code>. &nbsp;npm will determine whether to grant this request. (Generally, we will.)</p></li>
+</ul><h2>Examples</h2>
+
+<p>This can be a bit difficult to understand in the abstract. Let’s walk
+through some examples.</p>
+
+<ol><li><p>Brenna is a maintainer of a popular package named “supertools”. Supertools has 3 published versions: <code>0.0.1</code>, <code>0.3.0</code>, and <code>0.3.1</code>. Many packages depend on all the versions of supertools, and, across all versions, supertools gets around 2 million downloads a month.</p>
+
+<p>Brenna does a huge refactor and publishes <code>1.0.0</code>. An hour later, she realizes that there is a huge vulnerability in the project and needs to unpublish. Version <code>1.0.0</code> is less than 24 hours old. Brenna is able to unpublish version <code>1.0.0</code>.</p>
+
+<p>Embarrassed, Brenna wants to unpublish the whole package. However, because the other versions of supertools are older than 24 hours Brenna has to contact support@npmjs.com to continue to unpublish. After discussing the matter, Brenna opts instead to transfer ownership of the package to Sarah.</p></li>
+<li><p>Supreet is the maintainer of a package named “fab-framework-plugin”, which has 2 published versions: <code>0.0.1</code> and <code>1.0.0</code>. fab-framework-plugin gets around 5,000 downloads monthly across both versions, but most packages depend on it via <code>^1.0.0</code>.</p>
+
+<p>Supreet realizes that there are several serious bugs in <code>1.0.0</code> and would like to completely unpublish the version. He attempts to unpublish and is prompted to talk to support@npmjs.com because the <code>1.0.0</code> version of his package is older than 24 hours. Instead, Supreet publishes a new version with bug fixes, <code>1.0.1</code>.</p>
+
+<p>Because all dependents are satisfied by <code>1.0.1</code>, support agrees to grant Supreet’s request to delete <code>1.0.0</code>.</p></li>
+<li><p>Tef works for Super Private Company, which has several private
+&nbsp; packages it use to implement static analysis on Node.js packages.</p>
+
+<p>Working late one night, Tef accidentally publicly publishes a private package called “@super-private-company/secrets”. Immediately noting his mistake, Tef unpublishes secrets. Because secrets was only up for a few minutes — well within the 24 window for unrestricted unpublishes — Tef is able to successfully unpublish.</p>
+
+<p>Because Tef is a responsible developer aware of security best-practices, Tef realizes that the contents of <code>secrets</code> have been effectively disclosed, and spends the rest of the evening resetting passwords and apologizing to his coworkers.</p></li>
+<li><p>Charlotte is the maintainer of a package called “superfoo”. superfoo is a framework on which no packages depend. However, the consultancy Cool Kids Club has been using it to develop their applications for years. These applications are private, and not published to the registry, so they don’t count as packages that depend on superfoo.</p>
+
+<p>Charlotte burns out on open source and decides to unpublish all of their packages, including superfoo. Even though there are no published dependents on superfoo, superfoo is older than 24 hours, and therefore Charlotte must contact support@npmjs.com to unpublish it.</p>
+
+<p>After Charlotte contacts support, insisting on the removal of superfoo, npm <a href="http://t.umblr.com/redirect?z=https%3A%2F%2Fdocs.npmjs.com%2Fcli%2Fdeprecate&amp;t=ZDFmM2YzM2NhNGYyODkzMmIyM2NhZDQ5NzU0NmJmZWRlODUyNDcyZixvM1ZuY0c4SQ%3D%3D">deprecates</a> superfoo with a message that it is no longer supported. Whenever it is installed, a notice is displayed to the installer.</p>
+
+<p>Cool Kids Club sees this notice and republishes superfoo as “coolfoo”. Cool Kids Club software now depends on “coolfoo” and therefore does not break.</p></li>
+</ol><h2>Changes to come</h2>
+
+<p>This policy is a first step towards balancing the rights of individual publishers with npm’s responsibility to maintain the social cohesion of the open source community.</p>
+
+<p>The policy still relies on human beings making human decisions with their human brains. It’s a fairly clear policy, but there is “meat in the machine”, and that means it will eventually reach scaling problems as our community continues to grow.</p>
+
+<p>In the future, we may extend this policy (including both the human and automated portions) to take into account such metrics as download activity, dependency checking, and other measures of how essential a package is to the community.</p>
+
+<h2>Moving forward</h2>
+
+<p>In balancing individual and community needs, we’re extremely cognizant that developers feel a sense of ownership over their code. Being able to remove it is a part of that ownership.</p>
+
+<p>However, npm exists to facilitate a productive community. That means
+we must balance individual ownership with collective benefit.</p>
+
+<p>That tension is at the very core of open source. No package ecosystem
+can survive without the ability to share and distribute code. That’s
+why, when you publish a package to the registry, you agree to our
+<a href="http://t.umblr.com/redirect?z=https%3A%2F%2Fgithub.com%2Fnpm%2Fpolicies%2Fblob%2Fmaster%2Fopen-source-terms.md&amp;t=MGQ5MDZhZGM0MzA1NWQ4OThkZGEwYWViNTgwOTYwY2FlZDBlMjBlMCxvM1ZuY0c4SQ%3D%3D">Terms of Service</a>. The key lines are:</p>
+
+<blockquote>
+  <p>Your Content belongs to you. You decide whether and how to license it. But at a minimum, you license npm to provide Your Content to users of npm Services when you share Your Content. That special license allows npm to copy, publish, and analyze Your Content, and to share its analyses with others. npm may run computer code in Your Content to analyze it, but npm’s special license alone does not give npm the right to run code for its functionality in npm products or services.</p>
+  
+  <p>When Your Content is removed from the Website or the Public Registry, whether by you or npm, npm’s special license ends when the last copy disappears from npm’s backups, caches, and other systems. Other licenses, such as open source licenses, may continue after Your
+  Content is removed. Those licenses may give others, or npm itself, the right to share Your Content with npm Services again.</p>
+</blockquote>
+
+<p>These lines are the result of a clarification that we asked our lawyer to make for the purposes of making this policy as understandable as possible. You can see that in <a href="http://t.umblr.com/redirect?z=https%3A%2F%2Fgithub.com%2Fnpm%2Fpolicies%2Fpull%2F43%2F&amp;t=ODk2NGQ4YWU4MzQ3NWVjYzc4ODA1Y2UzZjQ3YTdmMjNlZDA5MmEzMCxvM1ZuY0c4SQ%3D%3D">this PR</a>.</p>
+
+<p>We don’t try to hide our policies; in fact, we encourage you to review their full list of changes and updates, linked from every <a href="http://t.umblr.com/redirect?z=https%3A%2F%2Fwww.npmjs.com%2Fpolicies&amp;t=MjkxZGRjNDE3MjAyMjVhOTcyMWEyNjQwODVkNjdiODBkZTY0NWNiOSxvM1ZuY0c4SQ%3D%3D">policy page</a>.</p>
+
+<p>We acknowledge that there are cases where you are justified in wanting to remove your code, and also that removing packages can cause harm to other users. That’s exactly why we are working so hard on this issue.</p>
+
+<p>This new policy is just the first of many steps we’ll be taking. We’ll be depending on you to help us consider edge cases, make tough
+choices, and continue building a robust ecosystem where we can all
+build amazing things.</p>
+
+<p>You probably have questions about this policy change, and maybe you have a perspective you’d like to share, too.</p>
+
+<p>We appreciate your feedback, even when we can’t respond to all of it. Your participation in this ecosystem is the core of its greatness. Please keep commenting and contributing: you are an important part of this community!</p>
+
+<p>Please post comments and questions <a href="http://t.umblr.com/redirect?z=https%3A%2F%2Fgithub.com%2Fnpm%2Fpolicies%2Fissues%2F44&amp;t=ODkxYmY1NjUwM2M5NWNmZjk4NWIwNDQ5MDA0YTFjMjY4N2QzN2FkYSxvM1ZuY0c4SQ%3D%3D">here</a>. We’ve moved to a Github issue for improved moderation.</p>
