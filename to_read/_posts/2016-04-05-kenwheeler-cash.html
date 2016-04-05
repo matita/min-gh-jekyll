@@ -1,0 +1,490 @@
+---
+title: "kenwheeler/cash"
+description: "cash - An absurdly small jQuery alternative for modern browsers"
+link: "https://github.com/kenwheeler/cash"
+saved: "2016-04-05 15:31:20"
+---
+<p><a href="https://camo.githubusercontent.com/eba25644504fbe9e7fc0e5910a1ea1a7af0073b1/68747470733a2f2f7472617669732d63692e6f72672f6b656e776865656c65722f636173682e7376673f6272616e63683d6d6173746572" target="_blank"><img src="https://camo.githubusercontent.com/eba25644504fbe9e7fc0e5910a1ea1a7af0073b1/68747470733a2f2f7472617669732d63692e6f72672f6b656e776865656c65722f636173682e7376673f6272616e63683d6d6173746572" alt="https://travis-ci.org/kenwheeler/cash.svg?branch=master" data-canonical-src="https://travis-ci.org/kenwheeler/cash.svg?branch=master"></a></p>
+
+<h1><a id="user-content-cash" class="anchor" href="https://github.com/kenwheeler/cash?utm_source=SitePoint&amp;utm_medium=email&amp;utm_campaign=Versioning#cash" aria-hidden="true"><svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path d="M4 9h1v1h-1c-1.5 0-3-1.69-3-3.5s1.55-3.5 3-3.5h4c1.45 0 3 1.69 3 3.5 0 1.41-0.91 2.72-2 3.25v-1.16c0.58-0.45 1-1.27 1-2.09 0-1.28-1.02-2.5-2-2.5H4c-0.98 0-2 1.22-2 2.5s1 2.5 2 2.5z m9-3h-1v1h1c1 0 2 1.22 2 2.5s-1.02 2.5-2 2.5H9c-0.98 0-2-1.22-2-2.5 0-0.83 0.42-1.64 1-2.09v-1.16c-1.09 0.53-2 1.84-2 3.25 0 1.81 1.55 3.5 3 3.5h4c1.45 0 3-1.69 3-3.5s-1.5-3.5-3-3.5z"></path></svg></a>Cash</h1>
+
+<p><em>An absurdly small jQuery alternative for modern browsers</em></p>
+
+<p>Cash is a small library for modern browsers that provides jQuery style syntax
+to wrap modern Vanilla JS features. It allows developers to use the jQuery
+syntax they already know, and utilizes modern browser features to minimize the
+codebase. 100% feature parity with jQuery isn't a goal, but cash comes helpfully
+close, covering most day to day use cases.</p>
+
+<hr>
+
+<h2><a id="user-content-usage" class="anchor" href="https://github.com/kenwheeler/cash?utm_source=SitePoint&amp;utm_medium=email&amp;utm_campaign=Versioning#usage" aria-hidden="true"><svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path d="M4 9h1v1h-1c-1.5 0-3-1.69-3-3.5s1.55-3.5 3-3.5h4c1.45 0 3 1.69 3 3.5 0 1.41-0.91 2.72-2 3.25v-1.16c0.58-0.45 1-1.27 1-2.09 0-1.28-1.02-2.5-2-2.5H4c-0.98 0-2 1.22-2 2.5s1 2.5 2 2.5z m9-3h-1v1h1c1 0 2 1.22 2 2.5s-1.02 2.5-2 2.5H9c-0.98 0-2-1.22-2-2.5 0-0.83 0.42-1.64 1-2.09v-1.16c-1.09 0.53-2 1.84-2 3.25 0 1.81 1.55 3.5 3 3.5h4c1.45 0 3-1.69 3-3.5s-1.5-3.5-3-3.5z"></path></svg></a>Usage</h2>
+
+<p>Add cash to your project via the jsDelivr CDN, and use cash to manipulate the DOM!</p>
+
+<div class="highlight highlight-text-html-basic"><pre>&lt;<span class="pl-ent">script</span> <span class="pl-e">src</span>=<span class="pl-s"><span class="pl-pds">"</span>https://cdn.jsdelivr.net/cash/1.0.0/cash.min.js<span class="pl-pds">"</span></span>&gt;&lt;/<span class="pl-ent">script</span>&gt;
+<span class="pl-s1">&lt;<span class="pl-ent">script</span>&gt;</span>
+<span class="pl-s1"><span class="pl-en">$</span>(<span class="pl-k">function</span>(){</span>
+<span class="pl-s1"></span>
+<span class="pl-s1">  <span class="pl-en">$</span>(<span class="pl-s"><span class="pl-pds">'</span>html<span class="pl-pds">'</span></span>).<span class="pl-en">addClass</span>(<span class="pl-s"><span class="pl-pds">'</span>dom-loaded<span class="pl-pds">'</span></span>);</span>
+<span class="pl-s1"></span>
+<span class="pl-s1">  <span class="pl-en">$</span>(<span class="pl-s"><span class="pl-pds">'</span>&lt;footer&gt;Appended with cash&lt;/footer&gt;<span class="pl-pds">'</span></span>).<span class="pl-en">appendTo</span>(<span class="pl-c1">document</span>.<span class="pl-c1">body</span>);</span>
+<span class="pl-s1"></span>
+<span class="pl-s1">});</span>
+<span class="pl-s1">&lt;/<span class="pl-ent">script</span>&gt;</span></pre></div>
+
+<hr>
+
+<h2><a id="user-content-documentation" class="anchor" href="https://github.com/kenwheeler/cash?utm_source=SitePoint&amp;utm_medium=email&amp;utm_campaign=Versioning#documentation" aria-hidden="true"><svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path d="M4 9h1v1h-1c-1.5 0-3-1.69-3-3.5s1.55-3.5 3-3.5h4c1.45 0 3 1.69 3 3.5 0 1.41-0.91 2.72-2 3.25v-1.16c0.58-0.45 1-1.27 1-2.09 0-1.28-1.02-2.5-2-2.5H4c-0.98 0-2 1.22-2 2.5s1 2.5 2 2.5z m9-3h-1v1h1c1 0 2 1.22 2 2.5s-1.02 2.5-2 2.5H9c-0.98 0-2-1.22-2-2.5 0-0.83 0.42-1.64 1-2.09v-1.16c-1.09 0.53-2 1.84-2 3.25 0 1.81 1.55 3.5 3 3.5h4c1.45 0 3-1.69 3-3.5s-1.5-3.5-3-3.5z"></path></svg></a>Documentation</h2>
+
+<h4><a id="" class="anchor" href="https://github.com/kenwheeler/cash?utm_source=SitePoint&amp;utm_medium=email&amp;utm_campaign=Versioning#" aria-hidden="true"><svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path d="M4 9h1v1h-1c-1.5 0-3-1.69-3-3.5s1.55-3.5 3-3.5h4c1.45 0 3 1.69 3 3.5 0 1.41-0.91 2.72-2 3.25v-1.16c0.58-0.45 1-1.27 1-2.09 0-1.28-1.02-2.5-2-2.5H4c-0.98 0-2 1.22-2 2.5s1 2.5 2 2.5z m9-3h-1v1h1c1 0 2 1.22 2 2.5s-1.02 2.5-2 2.5H9c-0.98 0-2-1.22-2-2.5 0-0.83 0.42-1.64 1-2.09v-1.16c-1.09 0.53-2 1.84-2 3.25 0 1.81 1.55 3.5 3 3.5h4c1.45 0 3-1.69 3-3.5s-1.5-3.5-3-3.5z"></path></svg></a>$()</h4>
+
+<p>This is the main selector method for cash. It returns an actionable collection
+of nodes. If a function is provided, the function will be run once the DOM is ready.</p>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-en">$</span>(selector,[context]) <span class="pl-c">// =&gt; collection</span>
+<span class="pl-en">$</span>(node) <span class="pl-c">// =&gt; collection</span>
+<span class="pl-en">$</span>(nodeList) <span class="pl-c">// =&gt; collection</span>
+<span class="pl-en">$</span>(htmlString) <span class="pl-c">// =&gt; collection</span>
+<span class="pl-en">$</span>(collection) <span class="pl-c">// =&gt; self</span>
+<span class="pl-en">$</span>(<span class="pl-k">function</span>) <span class="pl-c">// =&gt; document ready callback</span></pre></div>
+
+<hr>
+
+<h2><a id="user-content-collection-methods" class="anchor" href="https://github.com/kenwheeler/cash?utm_source=SitePoint&amp;utm_medium=email&amp;utm_campaign=Versioning#collection-methods" aria-hidden="true"><svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path d="M4 9h1v1h-1c-1.5 0-3-1.69-3-3.5s1.55-3.5 3-3.5h4c1.45 0 3 1.69 3 3.5 0 1.41-0.91 2.72-2 3.25v-1.16c0.58-0.45 1-1.27 1-2.09 0-1.28-1.02-2.5-2-2.5H4c-0.98 0-2 1.22-2 2.5s1 2.5 2 2.5z m9-3h-1v1h1c1 0 2 1.22 2 2.5s-1.02 2.5-2 2.5H9c-0.98 0-2-1.22-2-2.5 0-0.83 0.42-1.64 1-2.09v-1.16c-1.09 0.53-2 1.84-2 3.25 0 1.81 1.55 3.5 3 3.5h4c1.45 0 3-1.69 3-3.5s-1.5-3.5-3-3.5z"></path></svg></a>Collection Methods</h2>
+
+<h4><a id="user-content-fn" class="anchor" href="https://github.com/kenwheeler/cash?utm_source=SitePoint&amp;utm_medium=email&amp;utm_campaign=Versioning#fn" aria-hidden="true"><svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path d="M4 9h1v1h-1c-1.5 0-3-1.69-3-3.5s1.55-3.5 3-3.5h4c1.45 0 3 1.69 3 3.5 0 1.41-0.91 2.72-2 3.25v-1.16c0.58-0.45 1-1.27 1-2.09 0-1.28-1.02-2.5-2-2.5H4c-0.98 0-2 1.22-2 2.5s1 2.5 2 2.5z m9-3h-1v1h1c1 0 2 1.22 2 2.5s-1.02 2.5-2 2.5H9c-0.98 0-2-1.22-2-2.5 0-0.83 0.42-1.64 1-2.09v-1.16c-1.09 0.53-2 1.84-2 3.25 0 1.81 1.55 3.5 3 3.5h4c1.45 0 3-1.69 3-3.5s-1.5-3.5-3-3.5z"></path></svg></a>$.fn</h4>
+
+<p>The main prototype. Adding properties and methods will add it to all collections.</p>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-smi">$</span>.<span class="pl-smi">fn</span> <span class="pl-c">// =&gt; cash.prototype</span></pre></div>
+
+<h4><a id="user-content-fnadd" class="anchor" href="https://github.com/kenwheeler/cash?utm_source=SitePoint&amp;utm_medium=email&amp;utm_campaign=Versioning#fnadd" aria-hidden="true"><svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path d="M4 9h1v1h-1c-1.5 0-3-1.69-3-3.5s1.55-3.5 3-3.5h4c1.45 0 3 1.69 3 3.5 0 1.41-0.91 2.72-2 3.25v-1.16c0.58-0.45 1-1.27 1-2.09 0-1.28-1.02-2.5-2-2.5H4c-0.98 0-2 1.22-2 2.5s1 2.5 2 2.5z m9-3h-1v1h1c1 0 2 1.22 2 2.5s-1.02 2.5-2 2.5H9c-0.98 0-2-1.22-2-2.5 0-0.83 0.42-1.64 1-2.09v-1.16c-1.09 0.53-2 1.84-2 3.25 0 1.81 1.55 3.5 3 3.5h4c1.45 0 3-1.69 3-3.5s-1.5-3.5-3-3.5z"></path></svg></a>$.fn.add()</h4>
+
+<p>Returns a new collection with the element(s) added to the end.</p>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-en">$</span>(element).<span class="pl-c1">add</span>(element) <span class="pl-c">// =&gt; collection</span>
+<span class="pl-en">$</span>(element).<span class="pl-c1">add</span>(selector) <span class="pl-c">// =&gt; collection</span>
+<span class="pl-en">$</span>(element).<span class="pl-c1">add</span>(collection) <span class="pl-c">// =&gt; collection</span></pre></div>
+
+<h4><a id="user-content-fnaddclass" class="anchor" href="https://github.com/kenwheeler/cash?utm_source=SitePoint&amp;utm_medium=email&amp;utm_campaign=Versioning#fnaddclass" aria-hidden="true"><svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path d="M4 9h1v1h-1c-1.5 0-3-1.69-3-3.5s1.55-3.5 3-3.5h4c1.45 0 3 1.69 3 3.5 0 1.41-0.91 2.72-2 3.25v-1.16c0.58-0.45 1-1.27 1-2.09 0-1.28-1.02-2.5-2-2.5H4c-0.98 0-2 1.22-2 2.5s1 2.5 2 2.5z m9-3h-1v1h1c1 0 2 1.22 2 2.5s-1.02 2.5-2 2.5H9c-0.98 0-2-1.22-2-2.5 0-0.83 0.42-1.64 1-2.09v-1.16c-1.09 0.53-2 1.84-2 3.25 0 1.81 1.55 3.5 3 3.5h4c1.45 0 3-1.69 3-3.5s-1.5-3.5-3-3.5z"></path></svg></a>$.fn.addClass()</h4>
+
+<p>Adds the className argument to collection elements.</p>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-en">$</span>(element).<span class="pl-en">addClass</span>(className) <span class="pl-c">// =&gt; collection</span></pre></div>
+
+<h4><a id="user-content-fnafter" class="anchor" href="https://github.com/kenwheeler/cash?utm_source=SitePoint&amp;utm_medium=email&amp;utm_campaign=Versioning#fnafter" aria-hidden="true"><svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path d="M4 9h1v1h-1c-1.5 0-3-1.69-3-3.5s1.55-3.5 3-3.5h4c1.45 0 3 1.69 3 3.5 0 1.41-0.91 2.72-2 3.25v-1.16c0.58-0.45 1-1.27 1-2.09 0-1.28-1.02-2.5-2-2.5H4c-0.98 0-2 1.22-2 2.5s1 2.5 2 2.5z m9-3h-1v1h1c1 0 2 1.22 2 2.5s-1.02 2.5-2 2.5H9c-0.98 0-2-1.22-2-2.5 0-0.83 0.42-1.64 1-2.09v-1.16c-1.09 0.53-2 1.84-2 3.25 0 1.81 1.55 3.5 3 3.5h4c1.45 0 3-1.69 3-3.5s-1.5-3.5-3-3.5z"></path></svg></a>$.fn.after()</h4>
+
+<p>Inserts content or elements after the collection.</p>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-en">$</span>(element).<span class="pl-en">after</span>(element) <span class="pl-c">// =&gt; collection</span>
+<span class="pl-en">$</span>(element).<span class="pl-en">after</span>(htmlString) <span class="pl-c">// =&gt; collection</span></pre></div>
+
+<h4><a id="user-content-fnappend" class="anchor" href="https://github.com/kenwheeler/cash?utm_source=SitePoint&amp;utm_medium=email&amp;utm_campaign=Versioning#fnappend" aria-hidden="true"><svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path d="M4 9h1v1h-1c-1.5 0-3-1.69-3-3.5s1.55-3.5 3-3.5h4c1.45 0 3 1.69 3 3.5 0 1.41-0.91 2.72-2 3.25v-1.16c0.58-0.45 1-1.27 1-2.09 0-1.28-1.02-2.5-2-2.5H4c-0.98 0-2 1.22-2 2.5s1 2.5 2 2.5z m9-3h-1v1h1c1 0 2 1.22 2 2.5s-1.02 2.5-2 2.5H9c-0.98 0-2-1.22-2-2.5 0-0.83 0.42-1.64 1-2.09v-1.16c-1.09 0.53-2 1.84-2 3.25 0 1.81 1.55 3.5 3 3.5h4c1.45 0 3-1.69 3-3.5s-1.5-3.5-3-3.5z"></path></svg></a>$.fn.append()</h4>
+
+<p>Appends the target element to the each element in the collection.</p>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-en">$</span>(element).<span class="pl-en">append</span>(element) <span class="pl-c">// =&gt; collection</span></pre></div>
+
+<h4><a id="user-content-fnappendto" class="anchor" href="https://github.com/kenwheeler/cash?utm_source=SitePoint&amp;utm_medium=email&amp;utm_campaign=Versioning#fnappendto" aria-hidden="true"><svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path d="M4 9h1v1h-1c-1.5 0-3-1.69-3-3.5s1.55-3.5 3-3.5h4c1.45 0 3 1.69 3 3.5 0 1.41-0.91 2.72-2 3.25v-1.16c0.58-0.45 1-1.27 1-2.09 0-1.28-1.02-2.5-2-2.5H4c-0.98 0-2 1.22-2 2.5s1 2.5 2 2.5z m9-3h-1v1h1c1 0 2 1.22 2 2.5s-1.02 2.5-2 2.5H9c-0.98 0-2-1.22-2-2.5 0-0.83 0.42-1.64 1-2.09v-1.16c-1.09 0.53-2 1.84-2 3.25 0 1.81 1.55 3.5 3 3.5h4c1.45 0 3-1.69 3-3.5s-1.5-3.5-3-3.5z"></path></svg></a>$.fn.appendTo()</h4>
+
+<p>Adds the elements in a collection to the target element(s).</p>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-en">$</span>(element).<span class="pl-en">appendTo</span>(element) <span class="pl-c">// =&gt; collection</span></pre></div>
+
+<h4><a id="user-content-fnattr" class="anchor" href="https://github.com/kenwheeler/cash?utm_source=SitePoint&amp;utm_medium=email&amp;utm_campaign=Versioning#fnattr" aria-hidden="true"><svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path d="M4 9h1v1h-1c-1.5 0-3-1.69-3-3.5s1.55-3.5 3-3.5h4c1.45 0 3 1.69 3 3.5 0 1.41-0.91 2.72-2 3.25v-1.16c0.58-0.45 1-1.27 1-2.09 0-1.28-1.02-2.5-2-2.5H4c-0.98 0-2 1.22-2 2.5s1 2.5 2 2.5z m9-3h-1v1h1c1 0 2 1.22 2 2.5s-1.02 2.5-2 2.5H9c-0.98 0-2-1.22-2-2.5 0-0.83 0.42-1.64 1-2.09v-1.16c-1.09 0.53-2 1.84-2 3.25 0 1.81 1.55 3.5 3 3.5h4c1.45 0 3-1.69 3-3.5s-1.5-3.5-3-3.5z"></path></svg></a>$.fn.attr()</h4>
+
+<p>Without attrValue, returns the attribute value of the first element in the
+collection. With attrValue, sets the attribute value of each element of the
+collection.</p>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-en">$</span>(element).<span class="pl-en">attr</span>(attrName) <span class="pl-c">// =&gt; AttributeValue</span>
+<span class="pl-en">$</span>(element).<span class="pl-en">attr</span>(attrName, attrValue) <span class="pl-c">// =&gt; collection</span></pre></div>
+
+<h4><a id="user-content-fnbefore" class="anchor" href="https://github.com/kenwheeler/cash?utm_source=SitePoint&amp;utm_medium=email&amp;utm_campaign=Versioning#fnbefore" aria-hidden="true"><svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path d="M4 9h1v1h-1c-1.5 0-3-1.69-3-3.5s1.55-3.5 3-3.5h4c1.45 0 3 1.69 3 3.5 0 1.41-0.91 2.72-2 3.25v-1.16c0.58-0.45 1-1.27 1-2.09 0-1.28-1.02-2.5-2-2.5H4c-0.98 0-2 1.22-2 2.5s1 2.5 2 2.5z m9-3h-1v1h1c1 0 2 1.22 2 2.5s-1.02 2.5-2 2.5H9c-0.98 0-2-1.22-2-2.5 0-0.83 0.42-1.64 1-2.09v-1.16c-1.09 0.53-2 1.84-2 3.25 0 1.81 1.55 3.5 3 3.5h4c1.45 0 3-1.69 3-3.5s-1.5-3.5-3-3.5z"></path></svg></a>$.fn.before()</h4>
+
+<p>Inserts content or elements before the collection.</p>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-en">$</span>(element).<span class="pl-en">before</span>(element) <span class="pl-c">// =&gt; collection</span>
+<span class="pl-en">$</span>(element).<span class="pl-en">before</span>(htmlString) <span class="pl-c">// =&gt; collection</span></pre></div>
+
+<h4><a id="user-content-fnchildren" class="anchor" href="https://github.com/kenwheeler/cash?utm_source=SitePoint&amp;utm_medium=email&amp;utm_campaign=Versioning#fnchildren" aria-hidden="true"><svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path d="M4 9h1v1h-1c-1.5 0-3-1.69-3-3.5s1.55-3.5 3-3.5h4c1.45 0 3 1.69 3 3.5 0 1.41-0.91 2.72-2 3.25v-1.16c0.58-0.45 1-1.27 1-2.09 0-1.28-1.02-2.5-2-2.5H4c-0.98 0-2 1.22-2 2.5s1 2.5 2 2.5z m9-3h-1v1h1c1 0 2 1.22 2 2.5s-1.02 2.5-2 2.5H9c-0.98 0-2-1.22-2-2.5 0-0.83 0.42-1.64 1-2.09v-1.16c-1.09 0.53-2 1.84-2 3.25 0 1.81 1.55 3.5 3 3.5h4c1.45 0 3-1.69 3-3.5s-1.5-3.5-3-3.5z"></path></svg></a>$.fn.children()</h4>
+
+<p>Without a selector specified, returns a collection of child elements. With a
+selector, returns child elements that match the selector.</p>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-en">$</span>(element).<span class="pl-en">children</span>() <span class="pl-c">// =&gt; collection</span>
+<span class="pl-en">$</span>(element).<span class="pl-en">children</span>(selector) <span class="pl-c">// =&gt; collection</span></pre></div>
+
+<h4><a id="user-content-fnclosest" class="anchor" href="https://github.com/kenwheeler/cash?utm_source=SitePoint&amp;utm_medium=email&amp;utm_campaign=Versioning#fnclosest" aria-hidden="true"><svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path d="M4 9h1v1h-1c-1.5 0-3-1.69-3-3.5s1.55-3.5 3-3.5h4c1.45 0 3 1.69 3 3.5 0 1.41-0.91 2.72-2 3.25v-1.16c0.58-0.45 1-1.27 1-2.09 0-1.28-1.02-2.5-2-2.5H4c-0.98 0-2 1.22-2 2.5s1 2.5 2 2.5z m9-3h-1v1h1c1 0 2 1.22 2 2.5s-1.02 2.5-2 2.5H9c-0.98 0-2-1.22-2-2.5 0-0.83 0.42-1.64 1-2.09v-1.16c-1.09 0.53-2 1.84-2 3.25 0 1.81 1.55 3.5 3 3.5h4c1.45 0 3-1.69 3-3.5s-1.5-3.5-3-3.5z"></path></svg></a>$.fn.closest()</h4>
+
+<p>Returns the closest matching selector up the DOM tree.</p>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-en">$</span>(element).<span class="pl-en">closest</span>() <span class="pl-c">// =&gt; collection</span>
+<span class="pl-en">$</span>(element).<span class="pl-en">closest</span>(selector) <span class="pl-c">// =&gt; collection</span></pre></div>
+
+<h4><a id="user-content-fnclone" class="anchor" href="https://github.com/kenwheeler/cash?utm_source=SitePoint&amp;utm_medium=email&amp;utm_campaign=Versioning#fnclone" aria-hidden="true"><svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path d="M4 9h1v1h-1c-1.5 0-3-1.69-3-3.5s1.55-3.5 3-3.5h4c1.45 0 3 1.69 3 3.5 0 1.41-0.91 2.72-2 3.25v-1.16c0.58-0.45 1-1.27 1-2.09 0-1.28-1.02-2.5-2-2.5H4c-0.98 0-2 1.22-2 2.5s1 2.5 2 2.5z m9-3h-1v1h1c1 0 2 1.22 2 2.5s-1.02 2.5-2 2.5H9c-0.98 0-2-1.22-2-2.5 0-0.83 0.42-1.64 1-2.09v-1.16c-1.09 0.53-2 1.84-2 3.25 0 1.81 1.55 3.5 3 3.5h4c1.45 0 3-1.69 3-3.5s-1.5-3.5-3-3.5z"></path></svg></a>$.fn.clone()</h4>
+
+<p>Returns a clone of the collection.</p>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-en">$</span>(element).<span class="pl-en">clone</span>() <span class="pl-c">// =&gt; collection</span></pre></div>
+
+<h4><a id="user-content-fncss" class="anchor" href="https://github.com/kenwheeler/cash?utm_source=SitePoint&amp;utm_medium=email&amp;utm_campaign=Versioning#fncss" aria-hidden="true"><svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path d="M4 9h1v1h-1c-1.5 0-3-1.69-3-3.5s1.55-3.5 3-3.5h4c1.45 0 3 1.69 3 3.5 0 1.41-0.91 2.72-2 3.25v-1.16c0.58-0.45 1-1.27 1-2.09 0-1.28-1.02-2.5-2-2.5H4c-0.98 0-2 1.22-2 2.5s1 2.5 2 2.5z m9-3h-1v1h1c1 0 2 1.22 2 2.5s-1.02 2.5-2 2.5H9c-0.98 0-2-1.22-2-2.5 0-0.83 0.42-1.64 1-2.09v-1.16c-1.09 0.53-2 1.84-2 3.25 0 1.81 1.55 3.5 3 3.5h4c1.45 0 3-1.69 3-3.5s-1.5-3.5-3-3.5z"></path></svg></a>$.fn.css()</h4>
+
+<p>Returns a CSS property value when just property is supplied. Sets a CSS property
+when property and value are supplied, and set multiple properties when an object
+is supplied. Properties will be autoprefixed if needed for the user's browser.</p>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-en">$</span>(element).<span class="pl-en">css</span>(property) <span class="pl-c">// =&gt; value</span>
+<span class="pl-en">$</span>(element).<span class="pl-en">css</span>(property, value) <span class="pl-c">// =&gt; collection</span>
+<span class="pl-en">$</span>(element).<span class="pl-en">css</span>(object) <span class="pl-c">// =&gt; collection</span></pre></div>
+
+<h4><a id="user-content-fndata" class="anchor" href="https://github.com/kenwheeler/cash?utm_source=SitePoint&amp;utm_medium=email&amp;utm_campaign=Versioning#fndata" aria-hidden="true"><svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path d="M4 9h1v1h-1c-1.5 0-3-1.69-3-3.5s1.55-3.5 3-3.5h4c1.45 0 3 1.69 3 3.5 0 1.41-0.91 2.72-2 3.25v-1.16c0.58-0.45 1-1.27 1-2.09 0-1.28-1.02-2.5-2-2.5H4c-0.98 0-2 1.22-2 2.5s1 2.5 2 2.5z m9-3h-1v1h1c1 0 2 1.22 2 2.5s-1.02 2.5-2 2.5H9c-0.98 0-2-1.22-2-2.5 0-0.83 0.42-1.64 1-2.09v-1.16c-1.09 0.53-2 1.84-2 3.25 0 1.81 1.55 3.5 3 3.5h4c1.45 0 3-1.69 3-3.5s-1.5-3.5-3-3.5z"></path></svg></a>$.fn.data()</h4>
+
+<p>Link some data (string, object, array, etc.) to an element when both key and value are supplied.
+If only a key is supplied, returns the linked data and falls back to data attribute value if no data is already linked.</p>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-en">$</span>(element).<span class="pl-c1">data</span>(key) <span class="pl-c">// =&gt; value</span>
+<span class="pl-en">$</span>(element).<span class="pl-c1">data</span>(key, value) <span class="pl-c">// =&gt; collection</span></pre></div>
+
+<h4><a id="user-content-fneach" class="anchor" href="https://github.com/kenwheeler/cash?utm_source=SitePoint&amp;utm_medium=email&amp;utm_campaign=Versioning#fneach" aria-hidden="true"><svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path d="M4 9h1v1h-1c-1.5 0-3-1.69-3-3.5s1.55-3.5 3-3.5h4c1.45 0 3 1.69 3 3.5 0 1.41-0.91 2.72-2 3.25v-1.16c0.58-0.45 1-1.27 1-2.09 0-1.28-1.02-2.5-2-2.5H4c-0.98 0-2 1.22-2 2.5s1 2.5 2 2.5z m9-3h-1v1h1c1 0 2 1.22 2 2.5s-1.02 2.5-2 2.5H9c-0.98 0-2-1.22-2-2.5 0-0.83 0.42-1.64 1-2.09v-1.16c-1.09 0.53-2 1.84-2 3.25 0 1.81 1.55 3.5 3 3.5h4c1.45 0 3-1.69 3-3.5s-1.5-3.5-3-3.5z"></path></svg></a>$.fn.each()</h4>
+
+<p>Iterates over a collection with callback(value, index, array).</p>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-en">$</span>(element).<span class="pl-en">each</span>(callback) <span class="pl-c">// =&gt; collection</span></pre></div>
+
+<h4><a id="user-content-fnempty" class="anchor" href="https://github.com/kenwheeler/cash?utm_source=SitePoint&amp;utm_medium=email&amp;utm_campaign=Versioning#fnempty" aria-hidden="true"><svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path d="M4 9h1v1h-1c-1.5 0-3-1.69-3-3.5s1.55-3.5 3-3.5h4c1.45 0 3 1.69 3 3.5 0 1.41-0.91 2.72-2 3.25v-1.16c0.58-0.45 1-1.27 1-2.09 0-1.28-1.02-2.5-2-2.5H4c-0.98 0-2 1.22-2 2.5s1 2.5 2 2.5z m9-3h-1v1h1c1 0 2 1.22 2 2.5s-1.02 2.5-2 2.5H9c-0.98 0-2-1.22-2-2.5 0-0.83 0.42-1.64 1-2.09v-1.16c-1.09 0.53-2 1.84-2 3.25 0 1.81 1.55 3.5 3 3.5h4c1.45 0 3-1.69 3-3.5s-1.5-3.5-3-3.5z"></path></svg></a>$.fn.empty()</h4>
+
+<p>Empties an elements interior markup.</p>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-en">$</span>(element).<span class="pl-en">empty</span>() <span class="pl-c">// =&gt; collection</span></pre></div>
+
+<h4><a id="user-content-fneq" class="anchor" href="https://github.com/kenwheeler/cash?utm_source=SitePoint&amp;utm_medium=email&amp;utm_campaign=Versioning#fneq" aria-hidden="true"><svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path d="M4 9h1v1h-1c-1.5 0-3-1.69-3-3.5s1.55-3.5 3-3.5h4c1.45 0 3 1.69 3 3.5 0 1.41-0.91 2.72-2 3.25v-1.16c0.58-0.45 1-1.27 1-2.09 0-1.28-1.02-2.5-2-2.5H4c-0.98 0-2 1.22-2 2.5s1 2.5 2 2.5z m9-3h-1v1h1c1 0 2 1.22 2 2.5s-1.02 2.5-2 2.5H9c-0.98 0-2-1.22-2-2.5 0-0.83 0.42-1.64 1-2.09v-1.16c-1.09 0.53-2 1.84-2 3.25 0 1.81 1.55 3.5 3 3.5h4c1.45 0 3-1.69 3-3.5s-1.5-3.5-3-3.5z"></path></svg></a>$.fn.eq()</h4>
+
+<p>Returns a collection with the element at index.</p>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-en">$</span>(element).<span class="pl-en">eq</span>(index) <span class="pl-c">// =&gt; collection</span></pre></div>
+
+<h4><a id="user-content-fnextend" class="anchor" href="https://github.com/kenwheeler/cash?utm_source=SitePoint&amp;utm_medium=email&amp;utm_campaign=Versioning#fnextend" aria-hidden="true"><svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path d="M4 9h1v1h-1c-1.5 0-3-1.69-3-3.5s1.55-3.5 3-3.5h4c1.45 0 3 1.69 3 3.5 0 1.41-0.91 2.72-2 3.25v-1.16c0.58-0.45 1-1.27 1-2.09 0-1.28-1.02-2.5-2-2.5H4c-0.98 0-2 1.22-2 2.5s1 2.5 2 2.5z m9-3h-1v1h1c1 0 2 1.22 2 2.5s-1.02 2.5-2 2.5H9c-0.98 0-2-1.22-2-2.5 0-0.83 0.42-1.64 1-2.09v-1.16c-1.09 0.53-2 1.84-2 3.25 0 1.81 1.55 3.5 3 3.5h4c1.45 0 3-1.69 3-3.5s-1.5-3.5-3-3.5z"></path></svg></a>$.fn.extend()</h4>
+
+<p>Adds properties to the cash collection prototype.</p>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-smi">$</span>.<span class="pl-smi">fn</span>.<span class="pl-en">extend</span>(source) <span class="pl-c">// =&gt; object</span></pre></div>
+
+<h4><a id="user-content-fnfilter" class="anchor" href="https://github.com/kenwheeler/cash?utm_source=SitePoint&amp;utm_medium=email&amp;utm_campaign=Versioning#fnfilter" aria-hidden="true"><svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path d="M4 9h1v1h-1c-1.5 0-3-1.69-3-3.5s1.55-3.5 3-3.5h4c1.45 0 3 1.69 3 3.5 0 1.41-0.91 2.72-2 3.25v-1.16c0.58-0.45 1-1.27 1-2.09 0-1.28-1.02-2.5-2-2.5H4c-0.98 0-2 1.22-2 2.5s1 2.5 2 2.5z m9-3h-1v1h1c1 0 2 1.22 2 2.5s-1.02 2.5-2 2.5H9c-0.98 0-2-1.22-2-2.5 0-0.83 0.42-1.64 1-2.09v-1.16c-1.09 0.53-2 1.84-2 3.25 0 1.81 1.55 3.5 3 3.5h4c1.45 0 3-1.69 3-3.5s-1.5-3.5-3-3.5z"></path></svg></a>$.fn.filter()</h4>
+
+<p>Returns the collection that results from applying the filter method.</p>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-en">$</span>(element).<span class="pl-en">filter</span>(<span class="pl-k">function</span>) <span class="pl-c">// =&gt; collection</span></pre></div>
+
+<h4><a id="user-content-fnfind" class="anchor" href="https://github.com/kenwheeler/cash?utm_source=SitePoint&amp;utm_medium=email&amp;utm_campaign=Versioning#fnfind" aria-hidden="true"><svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path d="M4 9h1v1h-1c-1.5 0-3-1.69-3-3.5s1.55-3.5 3-3.5h4c1.45 0 3 1.69 3 3.5 0 1.41-0.91 2.72-2 3.25v-1.16c0.58-0.45 1-1.27 1-2.09 0-1.28-1.02-2.5-2-2.5H4c-0.98 0-2 1.22-2 2.5s1 2.5 2 2.5z m9-3h-1v1h1c1 0 2 1.22 2 2.5s-1.02 2.5-2 2.5H9c-0.98 0-2-1.22-2-2.5 0-0.83 0.42-1.64 1-2.09v-1.16c-1.09 0.53-2 1.84-2 3.25 0 1.81 1.55 3.5 3 3.5h4c1.45 0 3-1.69 3-3.5s-1.5-3.5-3-3.5z"></path></svg></a>$.fn.find()</h4>
+
+<p>Returns selector match descendants from the first element in the collection.</p>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-en">$</span>(element).<span class="pl-c1">find</span>(selector) <span class="pl-c">// =&gt; collection</span></pre></div>
+
+<h4><a id="user-content-fnfirst" class="anchor" href="https://github.com/kenwheeler/cash?utm_source=SitePoint&amp;utm_medium=email&amp;utm_campaign=Versioning#fnfirst" aria-hidden="true"><svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path d="M4 9h1v1h-1c-1.5 0-3-1.69-3-3.5s1.55-3.5 3-3.5h4c1.45 0 3 1.69 3 3.5 0 1.41-0.91 2.72-2 3.25v-1.16c0.58-0.45 1-1.27 1-2.09 0-1.28-1.02-2.5-2-2.5H4c-0.98 0-2 1.22-2 2.5s1 2.5 2 2.5z m9-3h-1v1h1c1 0 2 1.22 2 2.5s-1.02 2.5-2 2.5H9c-0.98 0-2-1.22-2-2.5 0-0.83 0.42-1.64 1-2.09v-1.16c-1.09 0.53-2 1.84-2 3.25 0 1.81 1.55 3.5 3 3.5h4c1.45 0 3-1.69 3-3.5s-1.5-3.5-3-3.5z"></path></svg></a>$.fn.first()</h4>
+
+<p>Returns the first element in the collection.</p>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-en">$</span>(element).<span class="pl-en">first</span>() <span class="pl-c">// =&gt; collection</span></pre></div>
+
+<h4><a id="user-content-fnget" class="anchor" href="https://github.com/kenwheeler/cash?utm_source=SitePoint&amp;utm_medium=email&amp;utm_campaign=Versioning#fnget" aria-hidden="true"><svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path d="M4 9h1v1h-1c-1.5 0-3-1.69-3-3.5s1.55-3.5 3-3.5h4c1.45 0 3 1.69 3 3.5 0 1.41-0.91 2.72-2 3.25v-1.16c0.58-0.45 1-1.27 1-2.09 0-1.28-1.02-2.5-2-2.5H4c-0.98 0-2 1.22-2 2.5s1 2.5 2 2.5z m9-3h-1v1h1c1 0 2 1.22 2 2.5s-1.02 2.5-2 2.5H9c-0.98 0-2-1.22-2-2.5 0-0.83 0.42-1.64 1-2.09v-1.16c-1.09 0.53-2 1.84-2 3.25 0 1.81 1.55 3.5 3 3.5h4c1.45 0 3-1.69 3-3.5s-1.5-3.5-3-3.5z"></path></svg></a>$.fn.get()</h4>
+
+<p>Returns the element at the index.</p>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-en">$</span>(element).<span class="pl-en">get</span>(index) <span class="pl-c">// =&gt; domNode</span></pre></div>
+
+<h4><a id="user-content-fnhas" class="anchor" href="https://github.com/kenwheeler/cash?utm_source=SitePoint&amp;utm_medium=email&amp;utm_campaign=Versioning#fnhas" aria-hidden="true"><svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path d="M4 9h1v1h-1c-1.5 0-3-1.69-3-3.5s1.55-3.5 3-3.5h4c1.45 0 3 1.69 3 3.5 0 1.41-0.91 2.72-2 3.25v-1.16c0.58-0.45 1-1.27 1-2.09 0-1.28-1.02-2.5-2-2.5H4c-0.98 0-2 1.22-2 2.5s1 2.5 2 2.5z m9-3h-1v1h1c1 0 2 1.22 2 2.5s-1.02 2.5-2 2.5H9c-0.98 0-2-1.22-2-2.5 0-0.83 0.42-1.64 1-2.09v-1.16c-1.09 0.53-2 1.84-2 3.25 0 1.81 1.55 3.5 3 3.5h4c1.45 0 3-1.69 3-3.5s-1.5-3.5-3-3.5z"></path></svg></a>$.fn.has()</h4>
+
+<p>Returns boolean result of the selector argument against the collection.</p>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-en">$</span>(element).<span class="pl-en">has</span>(selector) <span class="pl-c">// =&gt; boolean</span></pre></div>
+
+<h4><a id="user-content-fnhasclass" class="anchor" href="https://github.com/kenwheeler/cash?utm_source=SitePoint&amp;utm_medium=email&amp;utm_campaign=Versioning#fnhasclass" aria-hidden="true"><svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path d="M4 9h1v1h-1c-1.5 0-3-1.69-3-3.5s1.55-3.5 3-3.5h4c1.45 0 3 1.69 3 3.5 0 1.41-0.91 2.72-2 3.25v-1.16c0.58-0.45 1-1.27 1-2.09 0-1.28-1.02-2.5-2-2.5H4c-0.98 0-2 1.22-2 2.5s1 2.5 2 2.5z m9-3h-1v1h1c1 0 2 1.22 2 2.5s-1.02 2.5-2 2.5H9c-0.98 0-2-1.22-2-2.5 0-0.83 0.42-1.64 1-2.09v-1.16c-1.09 0.53-2 1.84-2 3.25 0 1.81 1.55 3.5 3 3.5h4c1.45 0 3-1.69 3-3.5s-1.5-3.5-3-3.5z"></path></svg></a>$.fn.hasClass()</h4>
+
+<p>Returns the boolean result of checking if the first element in the collection
+has the className attribute.</p>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-en">$</span>(element).<span class="pl-en">hasClass</span>(className) <span class="pl-c">// =&gt; boolean</span></pre></div>
+
+<h4><a id="user-content-fnheight" class="anchor" href="https://github.com/kenwheeler/cash?utm_source=SitePoint&amp;utm_medium=email&amp;utm_campaign=Versioning#fnheight" aria-hidden="true"><svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path d="M4 9h1v1h-1c-1.5 0-3-1.69-3-3.5s1.55-3.5 3-3.5h4c1.45 0 3 1.69 3 3.5 0 1.41-0.91 2.72-2 3.25v-1.16c0.58-0.45 1-1.27 1-2.09 0-1.28-1.02-2.5-2-2.5H4c-0.98 0-2 1.22-2 2.5s1 2.5 2 2.5z m9-3h-1v1h1c1 0 2 1.22 2 2.5s-1.02 2.5-2 2.5H9c-0.98 0-2-1.22-2-2.5 0-0.83 0.42-1.64 1-2.09v-1.16c-1.09 0.53-2 1.84-2 3.25 0 1.81 1.55 3.5 3 3.5h4c1.45 0 3-1.69 3-3.5s-1.5-3.5-3-3.5z"></path></svg></a>$.fn.height()</h4>
+
+<p>Returns the height of the element.</p>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-en">$</span>(element).<span class="pl-c1">height</span>() <span class="pl-c">// =&gt; Integer</span></pre></div>
+
+<h4><a id="user-content-fnhtml" class="anchor" href="https://github.com/kenwheeler/cash?utm_source=SitePoint&amp;utm_medium=email&amp;utm_campaign=Versioning#fnhtml" aria-hidden="true"><svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path d="M4 9h1v1h-1c-1.5 0-3-1.69-3-3.5s1.55-3.5 3-3.5h4c1.45 0 3 1.69 3 3.5 0 1.41-0.91 2.72-2 3.25v-1.16c0.58-0.45 1-1.27 1-2.09 0-1.28-1.02-2.5-2-2.5H4c-0.98 0-2 1.22-2 2.5s1 2.5 2 2.5z m9-3h-1v1h1c1 0 2 1.22 2 2.5s-1.02 2.5-2 2.5H9c-0.98 0-2-1.22-2-2.5 0-0.83 0.42-1.64 1-2.09v-1.16c-1.09 0.53-2 1.84-2 3.25 0 1.81 1.55 3.5 3 3.5h4c1.45 0 3-1.69 3-3.5s-1.5-3.5-3-3.5z"></path></svg></a>$.fn.html()</h4>
+
+<p>Returns the HTML text of the first element in the collection, sets the HTML if
+provided.</p>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-en">$</span>(element).<span class="pl-en">html</span>() <span class="pl-c">// =&gt; HTML Text</span>
+<span class="pl-en">$</span>(element).<span class="pl-en">html</span>(<span class="pl-c1">HTML</span>) <span class="pl-c">// =&gt; HTML Text</span></pre></div>
+
+<h4><a id="user-content-fnindex" class="anchor" href="https://github.com/kenwheeler/cash?utm_source=SitePoint&amp;utm_medium=email&amp;utm_campaign=Versioning#fnindex" aria-hidden="true"><svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path d="M4 9h1v1h-1c-1.5 0-3-1.69-3-3.5s1.55-3.5 3-3.5h4c1.45 0 3 1.69 3 3.5 0 1.41-0.91 2.72-2 3.25v-1.16c0.58-0.45 1-1.27 1-2.09 0-1.28-1.02-2.5-2-2.5H4c-0.98 0-2 1.22-2 2.5s1 2.5 2 2.5z m9-3h-1v1h1c1 0 2 1.22 2 2.5s-1.02 2.5-2 2.5H9c-0.98 0-2-1.22-2-2.5 0-0.83 0.42-1.64 1-2.09v-1.16c-1.09 0.53-2 1.84-2 3.25 0 1.81 1.55 3.5 3 3.5h4c1.45 0 3-1.69 3-3.5s-1.5-3.5-3-3.5z"></path></svg></a>$.fn.index()</h4>
+
+<p>Returns the index of the element in its parent if an element or selector isn't
+provided. Returns index within element or selector if it is.</p>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-en">$</span>(element).<span class="pl-c1">index</span>() <span class="pl-c">// =&gt; Integer</span>
+<span class="pl-en">$</span>(element).<span class="pl-c1">index</span>(element) <span class="pl-c">// =&gt; Integer</span></pre></div>
+
+<h4><a id="user-content-fninnerheight" class="anchor" href="https://github.com/kenwheeler/cash?utm_source=SitePoint&amp;utm_medium=email&amp;utm_campaign=Versioning#fninnerheight" aria-hidden="true"><svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path d="M4 9h1v1h-1c-1.5 0-3-1.69-3-3.5s1.55-3.5 3-3.5h4c1.45 0 3 1.69 3 3.5 0 1.41-0.91 2.72-2 3.25v-1.16c0.58-0.45 1-1.27 1-2.09 0-1.28-1.02-2.5-2-2.5H4c-0.98 0-2 1.22-2 2.5s1 2.5 2 2.5z m9-3h-1v1h1c1 0 2 1.22 2 2.5s-1.02 2.5-2 2.5H9c-0.98 0-2-1.22-2-2.5 0-0.83 0.42-1.64 1-2.09v-1.16c-1.09 0.53-2 1.84-2 3.25 0 1.81 1.55 3.5 3 3.5h4c1.45 0 3-1.69 3-3.5s-1.5-3.5-3-3.5z"></path></svg></a>$.fn.innerHeight()</h4>
+
+<p>Returns the height of the element + padding.</p>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-en">$</span>(element).<span class="pl-c1">innerHeight</span>() <span class="pl-c">// =&gt; Integer</span></pre></div>
+
+<h4><a id="user-content-fninnerwidth" class="anchor" href="https://github.com/kenwheeler/cash?utm_source=SitePoint&amp;utm_medium=email&amp;utm_campaign=Versioning#fninnerwidth" aria-hidden="true"><svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path d="M4 9h1v1h-1c-1.5 0-3-1.69-3-3.5s1.55-3.5 3-3.5h4c1.45 0 3 1.69 3 3.5 0 1.41-0.91 2.72-2 3.25v-1.16c0.58-0.45 1-1.27 1-2.09 0-1.28-1.02-2.5-2-2.5H4c-0.98 0-2 1.22-2 2.5s1 2.5 2 2.5z m9-3h-1v1h1c1 0 2 1.22 2 2.5s-1.02 2.5-2 2.5H9c-0.98 0-2-1.22-2-2.5 0-0.83 0.42-1.64 1-2.09v-1.16c-1.09 0.53-2 1.84-2 3.25 0 1.81 1.55 3.5 3 3.5h4c1.45 0 3-1.69 3-3.5s-1.5-3.5-3-3.5z"></path></svg></a>$.fn.innerWidth()</h4>
+
+<p>Returns the width of the element + padding.</p>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-en">$</span>(element).<span class="pl-c1">innerWidth</span>() <span class="pl-c">// =&gt; Integer</span></pre></div>
+
+<h4><a id="user-content-fninsertafter" class="anchor" href="https://github.com/kenwheeler/cash?utm_source=SitePoint&amp;utm_medium=email&amp;utm_campaign=Versioning#fninsertafter" aria-hidden="true"><svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path d="M4 9h1v1h-1c-1.5 0-3-1.69-3-3.5s1.55-3.5 3-3.5h4c1.45 0 3 1.69 3 3.5 0 1.41-0.91 2.72-2 3.25v-1.16c0.58-0.45 1-1.27 1-2.09 0-1.28-1.02-2.5-2-2.5H4c-0.98 0-2 1.22-2 2.5s1 2.5 2 2.5z m9-3h-1v1h1c1 0 2 1.22 2 2.5s-1.02 2.5-2 2.5H9c-0.98 0-2-1.22-2-2.5 0-0.83 0.42-1.64 1-2.09v-1.16c-1.09 0.53-2 1.84-2 3.25 0 1.81 1.55 3.5 3 3.5h4c1.45 0 3-1.69 3-3.5s-1.5-3.5-3-3.5z"></path></svg></a>$.fn.insertAfter()</h4>
+
+<p>Inserts collection after specified element.</p>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-en">$</span>(element).<span class="pl-en">insertAfter</span>(element) <span class="pl-c">// =&gt; collection</span></pre></div>
+
+<h4><a id="user-content-fninsertbefore" class="anchor" href="https://github.com/kenwheeler/cash?utm_source=SitePoint&amp;utm_medium=email&amp;utm_campaign=Versioning#fninsertbefore" aria-hidden="true"><svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path d="M4 9h1v1h-1c-1.5 0-3-1.69-3-3.5s1.55-3.5 3-3.5h4c1.45 0 3 1.69 3 3.5 0 1.41-0.91 2.72-2 3.25v-1.16c0.58-0.45 1-1.27 1-2.09 0-1.28-1.02-2.5-2-2.5H4c-0.98 0-2 1.22-2 2.5s1 2.5 2 2.5z m9-3h-1v1h1c1 0 2 1.22 2 2.5s-1.02 2.5-2 2.5H9c-0.98 0-2-1.22-2-2.5 0-0.83 0.42-1.64 1-2.09v-1.16c-1.09 0.53-2 1.84-2 3.25 0 1.81 1.55 3.5 3 3.5h4c1.45 0 3-1.69 3-3.5s-1.5-3.5-3-3.5z"></path></svg></a>$.fn.insertBefore()</h4>
+
+<p>Inserts collection before specified element.</p>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-en">$</span>(element).<span class="pl-c1">insertBefore</span>(element) <span class="pl-c">// =&gt; collection</span></pre></div>
+
+<h4><a id="user-content-fnis" class="anchor" href="https://github.com/kenwheeler/cash?utm_source=SitePoint&amp;utm_medium=email&amp;utm_campaign=Versioning#fnis" aria-hidden="true"><svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path d="M4 9h1v1h-1c-1.5 0-3-1.69-3-3.5s1.55-3.5 3-3.5h4c1.45 0 3 1.69 3 3.5 0 1.41-0.91 2.72-2 3.25v-1.16c0.58-0.45 1-1.27 1-2.09 0-1.28-1.02-2.5-2-2.5H4c-0.98 0-2 1.22-2 2.5s1 2.5 2 2.5z m9-3h-1v1h1c1 0 2 1.22 2 2.5s-1.02 2.5-2 2.5H9c-0.98 0-2-1.22-2-2.5 0-0.83 0.42-1.64 1-2.09v-1.16c-1.09 0.53-2 1.84-2 3.25 0 1.81 1.55 3.5 3 3.5h4c1.45 0 3-1.69 3-3.5s-1.5-3.5-3-3.5z"></path></svg></a>$.fn.is()</h4>
+
+<p>Returns whether the provided selector, element or collection matches any element in the collection.</p>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-en">$</span>(element).<span class="pl-en">is</span>(selector) <span class="pl-c">// =&gt; boolean</span></pre></div>
+
+<h4><a id="user-content-fnlast" class="anchor" href="https://github.com/kenwheeler/cash?utm_source=SitePoint&amp;utm_medium=email&amp;utm_campaign=Versioning#fnlast" aria-hidden="true"><svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path d="M4 9h1v1h-1c-1.5 0-3-1.69-3-3.5s1.55-3.5 3-3.5h4c1.45 0 3 1.69 3 3.5 0 1.41-0.91 2.72-2 3.25v-1.16c0.58-0.45 1-1.27 1-2.09 0-1.28-1.02-2.5-2-2.5H4c-0.98 0-2 1.22-2 2.5s1 2.5 2 2.5z m9-3h-1v1h1c1 0 2 1.22 2 2.5s-1.02 2.5-2 2.5H9c-0.98 0-2-1.22-2-2.5 0-0.83 0.42-1.64 1-2.09v-1.16c-1.09 0.53-2 1.84-2 3.25 0 1.81 1.55 3.5 3 3.5h4c1.45 0 3-1.69 3-3.5s-1.5-3.5-3-3.5z"></path></svg></a>$.fn.last()</h4>
+
+<p>Returns last element in the collection.</p>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-en">$</span>(element).<span class="pl-en">last</span>() <span class="pl-c">// =&gt; collection</span></pre></div>
+
+<h4><a id="user-content-fnnext" class="anchor" href="https://github.com/kenwheeler/cash?utm_source=SitePoint&amp;utm_medium=email&amp;utm_campaign=Versioning#fnnext" aria-hidden="true"><svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path d="M4 9h1v1h-1c-1.5 0-3-1.69-3-3.5s1.55-3.5 3-3.5h4c1.45 0 3 1.69 3 3.5 0 1.41-0.91 2.72-2 3.25v-1.16c0.58-0.45 1-1.27 1-2.09 0-1.28-1.02-2.5-2-2.5H4c-0.98 0-2 1.22-2 2.5s1 2.5 2 2.5z m9-3h-1v1h1c1 0 2 1.22 2 2.5s-1.02 2.5-2 2.5H9c-0.98 0-2-1.22-2-2.5 0-0.83 0.42-1.64 1-2.09v-1.16c-1.09 0.53-2 1.84-2 3.25 0 1.81 1.55 3.5 3 3.5h4c1.45 0 3-1.69 3-3.5s-1.5-3.5-3-3.5z"></path></svg></a>$.fn.next()</h4>
+
+<p>Returns next sibling.</p>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-en">$</span>(element).<span class="pl-c1">next</span>() <span class="pl-c">// =&gt; collection</span></pre></div>
+
+<h4><a id="user-content-fnnot" class="anchor" href="https://github.com/kenwheeler/cash?utm_source=SitePoint&amp;utm_medium=email&amp;utm_campaign=Versioning#fnnot" aria-hidden="true"><svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path d="M4 9h1v1h-1c-1.5 0-3-1.69-3-3.5s1.55-3.5 3-3.5h4c1.45 0 3 1.69 3 3.5 0 1.41-0.91 2.72-2 3.25v-1.16c0.58-0.45 1-1.27 1-2.09 0-1.28-1.02-2.5-2-2.5H4c-0.98 0-2 1.22-2 2.5s1 2.5 2 2.5z m9-3h-1v1h1c1 0 2 1.22 2 2.5s-1.02 2.5-2 2.5H9c-0.98 0-2-1.22-2-2.5 0-0.83 0.42-1.64 1-2.09v-1.16c-1.09 0.53-2 1.84-2 3.25 0 1.81 1.55 3.5 3 3.5h4c1.45 0 3-1.69 3-3.5s-1.5-3.5-3-3.5z"></path></svg></a>$.fn.not()</h4>
+
+<p>Filters collection by false match on selector.</p>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-en">$</span>(element).<span class="pl-en">not</span>(selector) <span class="pl-c">// =&gt; collection</span></pre></div>
+
+<h4><a id="user-content-fnoff" class="anchor" href="https://github.com/kenwheeler/cash?utm_source=SitePoint&amp;utm_medium=email&amp;utm_campaign=Versioning#fnoff" aria-hidden="true"><svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path d="M4 9h1v1h-1c-1.5 0-3-1.69-3-3.5s1.55-3.5 3-3.5h4c1.45 0 3 1.69 3 3.5 0 1.41-0.91 2.72-2 3.25v-1.16c0.58-0.45 1-1.27 1-2.09 0-1.28-1.02-2.5-2-2.5H4c-0.98 0-2 1.22-2 2.5s1 2.5 2 2.5z m9-3h-1v1h1c1 0 2 1.22 2 2.5s-1.02 2.5-2 2.5H9c-0.98 0-2-1.22-2-2.5 0-0.83 0.42-1.64 1-2.09v-1.16c-1.09 0.53-2 1.84-2 3.25 0 1.81 1.55 3.5 3 3.5h4c1.45 0 3-1.69 3-3.5s-1.5-3.5-3-3.5z"></path></svg></a>$.fn.off()</h4>
+
+<p>Removes event listener from collection elements.</p>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-en">$</span>(element).<span class="pl-en">off</span>(eventName,eventHandler) <span class="pl-c">// =&gt; collection</span></pre></div>
+
+<h4><a id="user-content-fnon" class="anchor" href="https://github.com/kenwheeler/cash?utm_source=SitePoint&amp;utm_medium=email&amp;utm_campaign=Versioning#fnon" aria-hidden="true"><svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path d="M4 9h1v1h-1c-1.5 0-3-1.69-3-3.5s1.55-3.5 3-3.5h4c1.45 0 3 1.69 3 3.5 0 1.41-0.91 2.72-2 3.25v-1.16c0.58-0.45 1-1.27 1-2.09 0-1.28-1.02-2.5-2-2.5H4c-0.98 0-2 1.22-2 2.5s1 2.5 2 2.5z m9-3h-1v1h1c1 0 2 1.22 2 2.5s-1.02 2.5-2 2.5H9c-0.98 0-2-1.22-2-2.5 0-0.83 0.42-1.64 1-2.09v-1.16c-1.09 0.53-2 1.84-2 3.25 0 1.81 1.55 3.5 3 3.5h4c1.45 0 3-1.69 3-3.5s-1.5-3.5-3-3.5z"></path></svg></a>$.fn.on()</h4>
+
+<p>Adds event listener to collection elements. Event is delegated if delegate is
+supplied.</p>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-en">$</span>(element).<span class="pl-en">on</span>(eventName, eventHandler) <span class="pl-c">// =&gt; collection</span>
+<span class="pl-en">$</span>(element).<span class="pl-en">on</span>(eventName, delegate, eventHandler) <span class="pl-c">// =&gt; collection</span></pre></div>
+
+<h4><a id="user-content-fnone" class="anchor" href="https://github.com/kenwheeler/cash?utm_source=SitePoint&amp;utm_medium=email&amp;utm_campaign=Versioning#fnone" aria-hidden="true"><svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path d="M4 9h1v1h-1c-1.5 0-3-1.69-3-3.5s1.55-3.5 3-3.5h4c1.45 0 3 1.69 3 3.5 0 1.41-0.91 2.72-2 3.25v-1.16c0.58-0.45 1-1.27 1-2.09 0-1.28-1.02-2.5-2-2.5H4c-0.98 0-2 1.22-2 2.5s1 2.5 2 2.5z m9-3h-1v1h1c1 0 2 1.22 2 2.5s-1.02 2.5-2 2.5H9c-0.98 0-2-1.22-2-2.5 0-0.83 0.42-1.64 1-2.09v-1.16c-1.09 0.53-2 1.84-2 3.25 0 1.81 1.55 3.5 3 3.5h4c1.45 0 3-1.69 3-3.5s-1.5-3.5-3-3.5z"></path></svg></a>$.fn.one()</h4>
+
+<p>Adds event listener to collection elements that only triggers once for each element.
+Event is delegated if delegate is supplied.</p>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-en">$</span>(element).<span class="pl-en">one</span>(eventName, eventHandler) <span class="pl-c">// =&gt; collection</span>
+<span class="pl-en">$</span>(element).<span class="pl-en">one</span>(eventName, delegate, eventHandler) <span class="pl-c">// =&gt; collection</span></pre></div>
+
+<h4><a id="user-content-fnouterheight" class="anchor" href="https://github.com/kenwheeler/cash?utm_source=SitePoint&amp;utm_medium=email&amp;utm_campaign=Versioning#fnouterheight" aria-hidden="true"><svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path d="M4 9h1v1h-1c-1.5 0-3-1.69-3-3.5s1.55-3.5 3-3.5h4c1.45 0 3 1.69 3 3.5 0 1.41-0.91 2.72-2 3.25v-1.16c0.58-0.45 1-1.27 1-2.09 0-1.28-1.02-2.5-2-2.5H4c-0.98 0-2 1.22-2 2.5s1 2.5 2 2.5z m9-3h-1v1h1c1 0 2 1.22 2 2.5s-1.02 2.5-2 2.5H9c-0.98 0-2-1.22-2-2.5 0-0.83 0.42-1.64 1-2.09v-1.16c-1.09 0.53-2 1.84-2 3.25 0 1.81 1.55 3.5 3 3.5h4c1.45 0 3-1.69 3-3.5s-1.5-3.5-3-3.5z"></path></svg></a>$.fn.outerHeight()</h4>
+
+<p>Returns the outer height of the element. Includes margins if margin is set to true.</p>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-en">$</span>(element).<span class="pl-c1">outerHeight</span>() <span class="pl-c">// =&gt; Integer</span>
+<span class="pl-en">$</span>(element).<span class="pl-c1">outerHeight</span>(includeMargin) <span class="pl-c">// =&gt; Integer</span></pre></div>
+
+<h4><a id="user-content-fnouterwidth" class="anchor" href="https://github.com/kenwheeler/cash?utm_source=SitePoint&amp;utm_medium=email&amp;utm_campaign=Versioning#fnouterwidth" aria-hidden="true"><svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path d="M4 9h1v1h-1c-1.5 0-3-1.69-3-3.5s1.55-3.5 3-3.5h4c1.45 0 3 1.69 3 3.5 0 1.41-0.91 2.72-2 3.25v-1.16c0.58-0.45 1-1.27 1-2.09 0-1.28-1.02-2.5-2-2.5H4c-0.98 0-2 1.22-2 2.5s1 2.5 2 2.5z m9-3h-1v1h1c1 0 2 1.22 2 2.5s-1.02 2.5-2 2.5H9c-0.98 0-2-1.22-2-2.5 0-0.83 0.42-1.64 1-2.09v-1.16c-1.09 0.53-2 1.84-2 3.25 0 1.81 1.55 3.5 3 3.5h4c1.45 0 3-1.69 3-3.5s-1.5-3.5-3-3.5z"></path></svg></a>$.fn.outerWidth()</h4>
+
+<p>Returns the outer width of the element. Includes margins if margin is set to true.</p>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-en">$</span>(element).<span class="pl-c1">outerWidth</span>() <span class="pl-c">// =&gt; Integer</span>
+<span class="pl-en">$</span>(element).<span class="pl-c1">outerWidth</span>(includeMargin) <span class="pl-c">// =&gt; Integer</span></pre></div>
+
+<h4><a id="user-content-fnparent" class="anchor" href="https://github.com/kenwheeler/cash?utm_source=SitePoint&amp;utm_medium=email&amp;utm_campaign=Versioning#fnparent" aria-hidden="true"><svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path d="M4 9h1v1h-1c-1.5 0-3-1.69-3-3.5s1.55-3.5 3-3.5h4c1.45 0 3 1.69 3 3.5 0 1.41-0.91 2.72-2 3.25v-1.16c0.58-0.45 1-1.27 1-2.09 0-1.28-1.02-2.5-2-2.5H4c-0.98 0-2 1.22-2 2.5s1 2.5 2 2.5z m9-3h-1v1h1c1 0 2 1.22 2 2.5s-1.02 2.5-2 2.5H9c-0.98 0-2-1.22-2-2.5 0-0.83 0.42-1.64 1-2.09v-1.16c-1.09 0.53-2 1.84-2 3.25 0 1.81 1.55 3.5 3 3.5h4c1.45 0 3-1.69 3-3.5s-1.5-3.5-3-3.5z"></path></svg></a>$.fn.parent()</h4>
+
+<p>Returns parent element.</p>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-en">$</span>(element).<span class="pl-c1">parent</span>() <span class="pl-c">// =&gt; collection</span></pre></div>
+
+<h4><a id="user-content-fnparents" class="anchor" href="https://github.com/kenwheeler/cash?utm_source=SitePoint&amp;utm_medium=email&amp;utm_campaign=Versioning#fnparents" aria-hidden="true"><svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path d="M4 9h1v1h-1c-1.5 0-3-1.69-3-3.5s1.55-3.5 3-3.5h4c1.45 0 3 1.69 3 3.5 0 1.41-0.91 2.72-2 3.25v-1.16c0.58-0.45 1-1.27 1-2.09 0-1.28-1.02-2.5-2-2.5H4c-0.98 0-2 1.22-2 2.5s1 2.5 2 2.5z m9-3h-1v1h1c1 0 2 1.22 2 2.5s-1.02 2.5-2 2.5H9c-0.98 0-2-1.22-2-2.5 0-0.83 0.42-1.64 1-2.09v-1.16c-1.09 0.53-2 1.84-2 3.25 0 1.81 1.55 3.5 3 3.5h4c1.45 0 3-1.69 3-3.5s-1.5-3.5-3-3.5z"></path></svg></a>$.fn.parents()</h4>
+
+<p>Returns collection of elements who are parents of element. Optionally filtering by selector.</p>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-en">$</span>(element).<span class="pl-en">parents</span>() <span class="pl-c">// =&gt; collection</span>
+<span class="pl-en">$</span>(element).<span class="pl-en">parents</span>(selector) <span class="pl-c">// =&gt; collection</span></pre></div>
+
+<h4><a id="user-content-fnprepend" class="anchor" href="https://github.com/kenwheeler/cash?utm_source=SitePoint&amp;utm_medium=email&amp;utm_campaign=Versioning#fnprepend" aria-hidden="true"><svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path d="M4 9h1v1h-1c-1.5 0-3-1.69-3-3.5s1.55-3.5 3-3.5h4c1.45 0 3 1.69 3 3.5 0 1.41-0.91 2.72-2 3.25v-1.16c0.58-0.45 1-1.27 1-2.09 0-1.28-1.02-2.5-2-2.5H4c-0.98 0-2 1.22-2 2.5s1 2.5 2 2.5z m9-3h-1v1h1c1 0 2 1.22 2 2.5s-1.02 2.5-2 2.5H9c-0.98 0-2-1.22-2-2.5 0-0.83 0.42-1.64 1-2.09v-1.16c-1.09 0.53-2 1.84-2 3.25 0 1.81 1.55 3.5 3 3.5h4c1.45 0 3-1.69 3-3.5s-1.5-3.5-3-3.5z"></path></svg></a>$.fn.prepend()</h4>
+
+<p>Prepends element to the each element in collection.</p>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-en">$</span>(element).<span class="pl-en">prepend</span>(element) <span class="pl-c">// =&gt; collection</span></pre></div>
+
+<h4><a id="user-content-fnprependto" class="anchor" href="https://github.com/kenwheeler/cash?utm_source=SitePoint&amp;utm_medium=email&amp;utm_campaign=Versioning#fnprependto" aria-hidden="true"><svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path d="M4 9h1v1h-1c-1.5 0-3-1.69-3-3.5s1.55-3.5 3-3.5h4c1.45 0 3 1.69 3 3.5 0 1.41-0.91 2.72-2 3.25v-1.16c0.58-0.45 1-1.27 1-2.09 0-1.28-1.02-2.5-2-2.5H4c-0.98 0-2 1.22-2 2.5s1 2.5 2 2.5z m9-3h-1v1h1c1 0 2 1.22 2 2.5s-1.02 2.5-2 2.5H9c-0.98 0-2-1.22-2-2.5 0-0.83 0.42-1.64 1-2.09v-1.16c-1.09 0.53-2 1.84-2 3.25 0 1.81 1.55 3.5 3 3.5h4c1.45 0 3-1.69 3-3.5s-1.5-3.5-3-3.5z"></path></svg></a>$.fn.prependTo()</h4>
+
+<p>Prepends elements in a collection to the target element(s).</p>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-en">$</span>(element).<span class="pl-en">prependTo</span>(element) <span class="pl-c">// =&gt; collection</span></pre></div>
+
+<h4><a id="user-content-fnprev" class="anchor" href="https://github.com/kenwheeler/cash?utm_source=SitePoint&amp;utm_medium=email&amp;utm_campaign=Versioning#fnprev" aria-hidden="true"><svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path d="M4 9h1v1h-1c-1.5 0-3-1.69-3-3.5s1.55-3.5 3-3.5h4c1.45 0 3 1.69 3 3.5 0 1.41-0.91 2.72-2 3.25v-1.16c0.58-0.45 1-1.27 1-2.09 0-1.28-1.02-2.5-2-2.5H4c-0.98 0-2 1.22-2 2.5s1 2.5 2 2.5z m9-3h-1v1h1c1 0 2 1.22 2 2.5s-1.02 2.5-2 2.5H9c-0.98 0-2-1.22-2-2.5 0-0.83 0.42-1.64 1-2.09v-1.16c-1.09 0.53-2 1.84-2 3.25 0 1.81 1.55 3.5 3 3.5h4c1.45 0 3-1.69 3-3.5s-1.5-3.5-3-3.5z"></path></svg></a>$.fn.prev()</h4>
+
+<p>Returns the previous adjacent element.</p>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-en">$</span>(element).<span class="pl-en">prev</span>() <span class="pl-c">// =&gt; collection</span></pre></div>
+
+<h4><a id="user-content-fnprop" class="anchor" href="https://github.com/kenwheeler/cash?utm_source=SitePoint&amp;utm_medium=email&amp;utm_campaign=Versioning#fnprop" aria-hidden="true"><svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path d="M4 9h1v1h-1c-1.5 0-3-1.69-3-3.5s1.55-3.5 3-3.5h4c1.45 0 3 1.69 3 3.5 0 1.41-0.91 2.72-2 3.25v-1.16c0.58-0.45 1-1.27 1-2.09 0-1.28-1.02-2.5-2-2.5H4c-0.98 0-2 1.22-2 2.5s1 2.5 2 2.5z m9-3h-1v1h1c1 0 2 1.22 2 2.5s-1.02 2.5-2 2.5H9c-0.98 0-2-1.22-2-2.5 0-0.83 0.42-1.64 1-2.09v-1.16c-1.09 0.53-2 1.84-2 3.25 0 1.81 1.55 3.5 3 3.5h4c1.45 0 3-1.69 3-3.5s-1.5-3.5-3-3.5z"></path></svg></a>$.fn.prop()</h4>
+
+<p>Returns property value.</p>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-en">$</span>(element).<span class="pl-en">prop</span>(property) <span class="pl-c">// =&gt; Property value</span></pre></div>
+
+<h4><a id="user-content-fnready" class="anchor" href="https://github.com/kenwheeler/cash?utm_source=SitePoint&amp;utm_medium=email&amp;utm_campaign=Versioning#fnready" aria-hidden="true"><svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path d="M4 9h1v1h-1c-1.5 0-3-1.69-3-3.5s1.55-3.5 3-3.5h4c1.45 0 3 1.69 3 3.5 0 1.41-0.91 2.72-2 3.25v-1.16c0.58-0.45 1-1.27 1-2.09 0-1.28-1.02-2.5-2-2.5H4c-0.98 0-2 1.22-2 2.5s1 2.5 2 2.5z m9-3h-1v1h1c1 0 2 1.22 2 2.5s-1.02 2.5-2 2.5H9c-0.98 0-2-1.22-2-2.5 0-0.83 0.42-1.64 1-2.09v-1.16c-1.09 0.53-2 1.84-2 3.25 0 1.81 1.55 3.5 3 3.5h4c1.45 0 3-1.69 3-3.5s-1.5-3.5-3-3.5z"></path></svg></a>$.fn.ready()</h4>
+
+<p>Calls callback method on DOMContentLoaded.</p>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-en">$</span>(<span class="pl-c1">document</span>).<span class="pl-en">ready</span>(callback) <span class="pl-c">// =&gt; collection/span</span></pre></div>
+
+<h4><a id="user-content-fnremove" class="anchor" href="https://github.com/kenwheeler/cash?utm_source=SitePoint&amp;utm_medium=email&amp;utm_campaign=Versioning#fnremove" aria-hidden="true"><svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path d="M4 9h1v1h-1c-1.5 0-3-1.69-3-3.5s1.55-3.5 3-3.5h4c1.45 0 3 1.69 3 3.5 0 1.41-0.91 2.72-2 3.25v-1.16c0.58-0.45 1-1.27 1-2.09 0-1.28-1.02-2.5-2-2.5H4c-0.98 0-2 1.22-2 2.5s1 2.5 2 2.5z m9-3h-1v1h1c1 0 2 1.22 2 2.5s-1.02 2.5-2 2.5H9c-0.98 0-2-1.22-2-2.5 0-0.83 0.42-1.64 1-2.09v-1.16c-1.09 0.53-2 1.84-2 3.25 0 1.81 1.55 3.5 3 3.5h4c1.45 0 3-1.69 3-3.5s-1.5-3.5-3-3.5z"></path></svg></a>$.fn.remove()</h4>
+
+<p>Removes collection elements from the DOM.</p>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-en">$</span>(element).<span class="pl-en">remove</span>() <span class="pl-c">// =&gt; collection</span></pre></div>
+
+<h4><a id="user-content-fnremoveattr" class="anchor" href="https://github.com/kenwheeler/cash?utm_source=SitePoint&amp;utm_medium=email&amp;utm_campaign=Versioning#fnremoveattr" aria-hidden="true"><svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path d="M4 9h1v1h-1c-1.5 0-3-1.69-3-3.5s1.55-3.5 3-3.5h4c1.45 0 3 1.69 3 3.5 0 1.41-0.91 2.72-2 3.25v-1.16c0.58-0.45 1-1.27 1-2.09 0-1.28-1.02-2.5-2-2.5H4c-0.98 0-2 1.22-2 2.5s1 2.5 2 2.5z m9-3h-1v1h1c1 0 2 1.22 2 2.5s-1.02 2.5-2 2.5H9c-0.98 0-2-1.22-2-2.5 0-0.83 0.42-1.64 1-2.09v-1.16c-1.09 0.53-2 1.84-2 3.25 0 1.81 1.55 3.5 3 3.5h4c1.45 0 3-1.69 3-3.5s-1.5-3.5-3-3.5z"></path></svg></a>$.fn.removeAttr()</h4>
+
+<p>Removes attribute from collection elements.</p>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-en">$</span>(element).<span class="pl-en">removeAttr</span>(attrName) <span class="pl-c">// =&gt; collection</span></pre></div>
+
+<h4><a id="user-content-fnremoveclass" class="anchor" href="https://github.com/kenwheeler/cash?utm_source=SitePoint&amp;utm_medium=email&amp;utm_campaign=Versioning#fnremoveclass" aria-hidden="true"><svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path d="M4 9h1v1h-1c-1.5 0-3-1.69-3-3.5s1.55-3.5 3-3.5h4c1.45 0 3 1.69 3 3.5 0 1.41-0.91 2.72-2 3.25v-1.16c0.58-0.45 1-1.27 1-2.09 0-1.28-1.02-2.5-2-2.5H4c-0.98 0-2 1.22-2 2.5s1 2.5 2 2.5z m9-3h-1v1h1c1 0 2 1.22 2 2.5s-1.02 2.5-2 2.5H9c-0.98 0-2-1.22-2-2.5 0-0.83 0.42-1.64 1-2.09v-1.16c-1.09 0.53-2 1.84-2 3.25 0 1.81 1.55 3.5 3 3.5h4c1.45 0 3-1.69 3-3.5s-1.5-3.5-3-3.5z"></path></svg></a>$.fn.removeClass()</h4>
+
+<p>Removes className from collection elements. Accepts space-separated classNames
+for removing multiple classes.</p>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-en">$</span>(element).<span class="pl-en">removeClass</span>(className) <span class="pl-c">// =&gt; collection</span></pre></div>
+
+<h4><a id="user-content-fnremovedata" class="anchor" href="https://github.com/kenwheeler/cash?utm_source=SitePoint&amp;utm_medium=email&amp;utm_campaign=Versioning#fnremovedata" aria-hidden="true"><svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path d="M4 9h1v1h-1c-1.5 0-3-1.69-3-3.5s1.55-3.5 3-3.5h4c1.45 0 3 1.69 3 3.5 0 1.41-0.91 2.72-2 3.25v-1.16c0.58-0.45 1-1.27 1-2.09 0-1.28-1.02-2.5-2-2.5H4c-0.98 0-2 1.22-2 2.5s1 2.5 2 2.5z m9-3h-1v1h1c1 0 2 1.22 2 2.5s-1.02 2.5-2 2.5H9c-0.98 0-2-1.22-2-2.5 0-0.83 0.42-1.64 1-2.09v-1.16c-1.09 0.53-2 1.84-2 3.25 0 1.81 1.55 3.5 3 3.5h4c1.45 0 3-1.69 3-3.5s-1.5-3.5-3-3.5z"></path></svg></a>$.fn.removeData()</h4>
+
+<p>Removes linked data and data-attributes from collection elements.</p>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-en">$</span>(element).<span class="pl-en">removeData</span>(name) <span class="pl-c">// =&gt; collection</span></pre></div>
+
+<h4><a id="user-content-fnserialize" class="anchor" href="https://github.com/kenwheeler/cash?utm_source=SitePoint&amp;utm_medium=email&amp;utm_campaign=Versioning#fnserialize" aria-hidden="true"><svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path d="M4 9h1v1h-1c-1.5 0-3-1.69-3-3.5s1.55-3.5 3-3.5h4c1.45 0 3 1.69 3 3.5 0 1.41-0.91 2.72-2 3.25v-1.16c0.58-0.45 1-1.27 1-2.09 0-1.28-1.02-2.5-2-2.5H4c-0.98 0-2 1.22-2 2.5s1 2.5 2 2.5z m9-3h-1v1h1c1 0 2 1.22 2 2.5s-1.02 2.5-2 2.5H9c-0.98 0-2-1.22-2-2.5 0-0.83 0.42-1.64 1-2.09v-1.16c-1.09 0.53-2 1.84-2 3.25 0 1.81 1.55 3.5 3 3.5h4c1.45 0 3-1.69 3-3.5s-1.5-3.5-3-3.5z"></path></svg></a>$.fn.serialize</h4>
+
+<p>When called on a form, serializes and returns form data.</p>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-en">$</span>(form).<span class="pl-en">serialize</span>() <span class="pl-c">// =&gt; String</span></pre></div>
+
+<h4><a id="user-content-fnsiblings" class="anchor" href="https://github.com/kenwheeler/cash?utm_source=SitePoint&amp;utm_medium=email&amp;utm_campaign=Versioning#fnsiblings" aria-hidden="true"><svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path d="M4 9h1v1h-1c-1.5 0-3-1.69-3-3.5s1.55-3.5 3-3.5h4c1.45 0 3 1.69 3 3.5 0 1.41-0.91 2.72-2 3.25v-1.16c0.58-0.45 1-1.27 1-2.09 0-1.28-1.02-2.5-2-2.5H4c-0.98 0-2 1.22-2 2.5s1 2.5 2 2.5z m9-3h-1v1h1c1 0 2 1.22 2 2.5s-1.02 2.5-2 2.5H9c-0.98 0-2-1.22-2-2.5 0-0.83 0.42-1.64 1-2.09v-1.16c-1.09 0.53-2 1.84-2 3.25 0 1.81 1.55 3.5 3 3.5h4c1.45 0 3-1.69 3-3.5s-1.5-3.5-3-3.5z"></path></svg></a>$.fn.siblings</h4>
+
+<p>Returns a collection of sibling elements.</p>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-en">$</span>(element).<span class="pl-en">siblings</span>() <span class="pl-c">// =&gt; collection</span></pre></div>
+
+<h4><a id="user-content-fntext" class="anchor" href="https://github.com/kenwheeler/cash?utm_source=SitePoint&amp;utm_medium=email&amp;utm_campaign=Versioning#fntext" aria-hidden="true"><svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path d="M4 9h1v1h-1c-1.5 0-3-1.69-3-3.5s1.55-3.5 3-3.5h4c1.45 0 3 1.69 3 3.5 0 1.41-0.91 2.72-2 3.25v-1.16c0.58-0.45 1-1.27 1-2.09 0-1.28-1.02-2.5-2-2.5H4c-0.98 0-2 1.22-2 2.5s1 2.5 2 2.5z m9-3h-1v1h1c1 0 2 1.22 2 2.5s-1.02 2.5-2 2.5H9c-0.98 0-2-1.22-2-2.5 0-0.83 0.42-1.64 1-2.09v-1.16c-1.09 0.53-2 1.84-2 3.25 0 1.81 1.55 3.5 3 3.5h4c1.45 0 3-1.69 3-3.5s-1.5-3.5-3-3.5z"></path></svg></a>$.fn.text</h4>
+
+<p>Returns the inner text of the first element in the collection, sets the text if
+textContent is provided.</p>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-en">$</span>(element).<span class="pl-c1">text</span>() <span class="pl-c">// =&gt; text</span>
+<span class="pl-en">$</span>(element).<span class="pl-c1">text</span>(textContent) <span class="pl-c">// =&gt; collection</span></pre></div>
+
+<h4><a id="user-content-fntoggleclass" class="anchor" href="https://github.com/kenwheeler/cash?utm_source=SitePoint&amp;utm_medium=email&amp;utm_campaign=Versioning#fntoggleclass" aria-hidden="true"><svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path d="M4 9h1v1h-1c-1.5 0-3-1.69-3-3.5s1.55-3.5 3-3.5h4c1.45 0 3 1.69 3 3.5 0 1.41-0.91 2.72-2 3.25v-1.16c0.58-0.45 1-1.27 1-2.09 0-1.28-1.02-2.5-2-2.5H4c-0.98 0-2 1.22-2 2.5s1 2.5 2 2.5z m9-3h-1v1h1c1 0 2 1.22 2 2.5s-1.02 2.5-2 2.5H9c-0.98 0-2-1.22-2-2.5 0-0.83 0.42-1.64 1-2.09v-1.16c-1.09 0.53-2 1.84-2 3.25 0 1.81 1.55 3.5 3 3.5h4c1.45 0 3-1.69 3-3.5s-1.5-3.5-3-3.5z"></path></svg></a>$.fn.toggleClass</h4>
+
+<p>Adds or removes className from collection elements based on if the element already has the class.
+Accepts space-separated classNames for toggling multiple classes, and an optional <code>force</code> boolean
+to ensure classes are added (<code>true</code>) or removed (<code>false</code>).</p>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-en">$</span>(element).<span class="pl-en">toggleClass</span>(className) <span class="pl-c">// =&gt; collection</span>
+<span class="pl-en">$</span>(element).<span class="pl-en">toggleClass</span>(className,force) <span class="pl-c">// =&gt; collection</span></pre></div>
+
+<h4><a id="user-content-fntrigger" class="anchor" href="https://github.com/kenwheeler/cash?utm_source=SitePoint&amp;utm_medium=email&amp;utm_campaign=Versioning#fntrigger" aria-hidden="true"><svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path d="M4 9h1v1h-1c-1.5 0-3-1.69-3-3.5s1.55-3.5 3-3.5h4c1.45 0 3 1.69 3 3.5 0 1.41-0.91 2.72-2 3.25v-1.16c0.58-0.45 1-1.27 1-2.09 0-1.28-1.02-2.5-2-2.5H4c-0.98 0-2 1.22-2 2.5s1 2.5 2 2.5z m9-3h-1v1h1c1 0 2 1.22 2 2.5s-1.02 2.5-2 2.5H9c-0.98 0-2-1.22-2-2.5 0-0.83 0.42-1.64 1-2.09v-1.16c-1.09 0.53-2 1.84-2 3.25 0 1.81 1.55 3.5 3 3.5h4c1.45 0 3-1.69 3-3.5s-1.5-3.5-3-3.5z"></path></svg></a>$.fn.trigger</h4>
+
+<p>Triggers supplied event on elements in collection.</p>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-en">$</span>(element).<span class="pl-en">trigger</span>(eventName) <span class="pl-c">// =&gt; collection</span></pre></div>
+
+<h4><a id="user-content-fnval" class="anchor" href="https://github.com/kenwheeler/cash?utm_source=SitePoint&amp;utm_medium=email&amp;utm_campaign=Versioning#fnval" aria-hidden="true"><svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path d="M4 9h1v1h-1c-1.5 0-3-1.69-3-3.5s1.55-3.5 3-3.5h4c1.45 0 3 1.69 3 3.5 0 1.41-0.91 2.72-2 3.25v-1.16c0.58-0.45 1-1.27 1-2.09 0-1.28-1.02-2.5-2-2.5H4c-0.98 0-2 1.22-2 2.5s1 2.5 2 2.5z m9-3h-1v1h1c1 0 2 1.22 2 2.5s-1.02 2.5-2 2.5H9c-0.98 0-2-1.22-2-2.5 0-0.83 0.42-1.64 1-2.09v-1.16c-1.09 0.53-2 1.84-2 3.25 0 1.81 1.55 3.5 3 3.5h4c1.45 0 3-1.69 3-3.5s-1.5-3.5-3-3.5z"></path></svg></a>$.fn.val</h4>
+
+<p>Returns an inputs value. If value is supplied, sets all inputs in collection's
+value to the value argument.</p>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-en">$</span>(input).<span class="pl-en">val</span>() <span class="pl-c">// =&gt; value</span>
+<span class="pl-en">$</span>(input).<span class="pl-en">val</span>(value) <span class="pl-c">// =&gt; collection</span></pre></div>
+
+<h4><a id="user-content-fnwidth" class="anchor" href="https://github.com/kenwheeler/cash?utm_source=SitePoint&amp;utm_medium=email&amp;utm_campaign=Versioning#fnwidth" aria-hidden="true"><svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path d="M4 9h1v1h-1c-1.5 0-3-1.69-3-3.5s1.55-3.5 3-3.5h4c1.45 0 3 1.69 3 3.5 0 1.41-0.91 2.72-2 3.25v-1.16c0.58-0.45 1-1.27 1-2.09 0-1.28-1.02-2.5-2-2.5H4c-0.98 0-2 1.22-2 2.5s1 2.5 2 2.5z m9-3h-1v1h1c1 0 2 1.22 2 2.5s-1.02 2.5-2 2.5H9c-0.98 0-2-1.22-2-2.5 0-0.83 0.42-1.64 1-2.09v-1.16c-1.09 0.53-2 1.84-2 3.25 0 1.81 1.55 3.5 3 3.5h4c1.45 0 3-1.69 3-3.5s-1.5-3.5-3-3.5z"></path></svg></a>$.fn.width</h4>
+
+<p>Returns the width of the element.</p>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-en">$</span>(element).<span class="pl-c1">width</span>() <span class="pl-c">// =&gt; number</span></pre></div>
+
+<hr>
+
+<h3><a id="user-content-utilities" class="anchor" href="https://github.com/kenwheeler/cash?utm_source=SitePoint&amp;utm_medium=email&amp;utm_campaign=Versioning#utilities" aria-hidden="true"><svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path d="M4 9h1v1h-1c-1.5 0-3-1.69-3-3.5s1.55-3.5 3-3.5h4c1.45 0 3 1.69 3 3.5 0 1.41-0.91 2.72-2 3.25v-1.16c0.58-0.45 1-1.27 1-2.09 0-1.28-1.02-2.5-2-2.5H4c-0.98 0-2 1.22-2 2.5s1 2.5 2 2.5z m9-3h-1v1h1c1 0 2 1.22 2 2.5s-1.02 2.5-2 2.5H9c-0.98 0-2-1.22-2-2.5 0-0.83 0.42-1.64 1-2.09v-1.16c-1.09 0.53-2 1.84-2 3.25 0 1.81 1.55 3.5 3 3.5h4c1.45 0 3-1.69 3-3.5s-1.5-3.5-3-3.5z"></path></svg></a>Utilities</h3>
+
+<h4><a id="user-content-each" class="anchor" href="https://github.com/kenwheeler/cash?utm_source=SitePoint&amp;utm_medium=email&amp;utm_campaign=Versioning#each" aria-hidden="true"><svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path d="M4 9h1v1h-1c-1.5 0-3-1.69-3-3.5s1.55-3.5 3-3.5h4c1.45 0 3 1.69 3 3.5 0 1.41-0.91 2.72-2 3.25v-1.16c0.58-0.45 1-1.27 1-2.09 0-1.28-1.02-2.5-2-2.5H4c-0.98 0-2 1.22-2 2.5s1 2.5 2 2.5z m9-3h-1v1h1c1 0 2 1.22 2 2.5s-1.02 2.5-2 2.5H9c-0.98 0-2-1.22-2-2.5 0-0.83 0.42-1.64 1-2.09v-1.16c-1.09 0.53-2 1.84-2 3.25 0 1.81 1.55 3.5 3 3.5h4c1.45 0 3-1.69 3-3.5s-1.5-3.5-3-3.5z"></path></svg></a>$.each()</h4>
+
+<p>Iterates through a collection and calls the callback method on each.</p>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-smi">$</span>.<span class="pl-en">each</span>(collection, callback) <span class="pl-c">// =&gt; collection</span></pre></div>
+
+<h4><a id="user-content-extend" class="anchor" href="https://github.com/kenwheeler/cash?utm_source=SitePoint&amp;utm_medium=email&amp;utm_campaign=Versioning#extend" aria-hidden="true"><svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path d="M4 9h1v1h-1c-1.5 0-3-1.69-3-3.5s1.55-3.5 3-3.5h4c1.45 0 3 1.69 3 3.5 0 1.41-0.91 2.72-2 3.25v-1.16c0.58-0.45 1-1.27 1-2.09 0-1.28-1.02-2.5-2-2.5H4c-0.98 0-2 1.22-2 2.5s1 2.5 2 2.5z m9-3h-1v1h1c1 0 2 1.22 2 2.5s-1.02 2.5-2 2.5H9c-0.98 0-2-1.22-2-2.5 0-0.83 0.42-1.64 1-2.09v-1.16c-1.09 0.53-2 1.84-2 3.25 0 1.81 1.55 3.5 3 3.5h4c1.45 0 3-1.69 3-3.5s-1.5-3.5-3-3.5z"></path></svg></a>$.extend()</h4>
+
+<p>Extends target object with properties from the source object. If no target is provided,
+cash itself will be extended.</p>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-smi">$</span>.<span class="pl-en">extend</span>(target,source) <span class="pl-c">// =&gt; object</span></pre></div>
+
+<h4><a id="user-content-matches" class="anchor" href="https://github.com/kenwheeler/cash?utm_source=SitePoint&amp;utm_medium=email&amp;utm_campaign=Versioning#matches" aria-hidden="true"><svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path d="M4 9h1v1h-1c-1.5 0-3-1.69-3-3.5s1.55-3.5 3-3.5h4c1.45 0 3 1.69 3 3.5 0 1.41-0.91 2.72-2 3.25v-1.16c0.58-0.45 1-1.27 1-2.09 0-1.28-1.02-2.5-2-2.5H4c-0.98 0-2 1.22-2 2.5s1 2.5 2 2.5z m9-3h-1v1h1c1 0 2 1.22 2 2.5s-1.02 2.5-2 2.5H9c-0.98 0-2-1.22-2-2.5 0-0.83 0.42-1.64 1-2.09v-1.16c-1.09 0.53-2 1.84-2 3.25 0 1.81 1.55 3.5 3 3.5h4c1.45 0 3-1.69 3-3.5s-1.5-3.5-3-3.5z"></path></svg></a>$.matches()</h4>
+
+<p>Checks a selector against an element, returning a boolean value for match.</p>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-smi">$</span>.<span class="pl-en">matches</span>(element, selector) <span class="pl-c">// =&gt; boolean</span></pre></div>
+
+<h4><a id="user-content-parsehtml" class="anchor" href="https://github.com/kenwheeler/cash?utm_source=SitePoint&amp;utm_medium=email&amp;utm_campaign=Versioning#parsehtml" aria-hidden="true"><svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path d="M4 9h1v1h-1c-1.5 0-3-1.69-3-3.5s1.55-3.5 3-3.5h4c1.45 0 3 1.69 3 3.5 0 1.41-0.91 2.72-2 3.25v-1.16c0.58-0.45 1-1.27 1-2.09 0-1.28-1.02-2.5-2-2.5H4c-0.98 0-2 1.22-2 2.5s1 2.5 2 2.5z m9-3h-1v1h1c1 0 2 1.22 2 2.5s-1.02 2.5-2 2.5H9c-0.98 0-2-1.22-2-2.5 0-0.83 0.42-1.64 1-2.09v-1.16c-1.09 0.53-2 1.84-2 3.25 0 1.81 1.55 3.5 3 3.5h4c1.45 0 3-1.69 3-3.5s-1.5-3.5-3-3.5z"></path></svg></a>$.parseHTML()</h4>
+
+<p>Returns a collection from an HTML string.</p>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-smi">$</span>.<span class="pl-en">parseHTML</span>(htmlString) <span class="pl-c">// =&gt; Collection</span></pre></div>
+
+<hr>
+
+<h3><a id="user-content-type-checking" class="anchor" href="https://github.com/kenwheeler/cash?utm_source=SitePoint&amp;utm_medium=email&amp;utm_campaign=Versioning#type-checking" aria-hidden="true"><svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path d="M4 9h1v1h-1c-1.5 0-3-1.69-3-3.5s1.55-3.5 3-3.5h4c1.45 0 3 1.69 3 3.5 0 1.41-0.91 2.72-2 3.25v-1.16c0.58-0.45 1-1.27 1-2.09 0-1.28-1.02-2.5-2-2.5H4c-0.98 0-2 1.22-2 2.5s1 2.5 2 2.5z m9-3h-1v1h1c1 0 2 1.22 2 2.5s-1.02 2.5-2 2.5H9c-0.98 0-2-1.22-2-2.5 0-0.83 0.42-1.64 1-2.09v-1.16c-1.09 0.53-2 1.84-2 3.25 0 1.81 1.55 3.5 3 3.5h4c1.45 0 3-1.69 3-3.5s-1.5-3.5-3-3.5z"></path></svg></a>Type Checking</h3>
+
+<h4><a id="user-content-isfunction" class="anchor" href="https://github.com/kenwheeler/cash?utm_source=SitePoint&amp;utm_medium=email&amp;utm_campaign=Versioning#isfunction" aria-hidden="true"><svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path d="M4 9h1v1h-1c-1.5 0-3-1.69-3-3.5s1.55-3.5 3-3.5h4c1.45 0 3 1.69 3 3.5 0 1.41-0.91 2.72-2 3.25v-1.16c0.58-0.45 1-1.27 1-2.09 0-1.28-1.02-2.5-2-2.5H4c-0.98 0-2 1.22-2 2.5s1 2.5 2 2.5z m9-3h-1v1h1c1 0 2 1.22 2 2.5s-1.02 2.5-2 2.5H9c-0.98 0-2-1.22-2-2.5 0-0.83 0.42-1.64 1-2.09v-1.16c-1.09 0.53-2 1.84-2 3.25 0 1.81 1.55 3.5 3 3.5h4c1.45 0 3-1.69 3-3.5s-1.5-3.5-3-3.5z"></path></svg></a>$.isFunction()</h4>
+
+<p>Check if the argument is a function.</p>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-k">var</span> <span class="pl-en">func</span> <span class="pl-k">=</span> <span class="pl-k">function</span>(){};
+<span class="pl-smi">$</span>.<span class="pl-en">isFunction</span>(func) <span class="pl-c">// =&gt; true</span></pre></div>
+
+<h4><a id="user-content-isstring" class="anchor" href="https://github.com/kenwheeler/cash?utm_source=SitePoint&amp;utm_medium=email&amp;utm_campaign=Versioning#isstring" aria-hidden="true"><svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path d="M4 9h1v1h-1c-1.5 0-3-1.69-3-3.5s1.55-3.5 3-3.5h4c1.45 0 3 1.69 3 3.5 0 1.41-0.91 2.72-2 3.25v-1.16c0.58-0.45 1-1.27 1-2.09 0-1.28-1.02-2.5-2-2.5H4c-0.98 0-2 1.22-2 2.5s1 2.5 2 2.5z m9-3h-1v1h1c1 0 2 1.22 2 2.5s-1.02 2.5-2 2.5H9c-0.98 0-2-1.22-2-2.5 0-0.83 0.42-1.64 1-2.09v-1.16c-1.09 0.53-2 1.84-2 3.25 0 1.81 1.55 3.5 3 3.5h4c1.45 0 3-1.69 3-3.5s-1.5-3.5-3-3.5z"></path></svg></a>$.isString()</h4>
+
+<p>Check if the argument is a string.</p>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-smi">$</span>.<span class="pl-en">isString</span>(<span class="pl-s"><span class="pl-pds">'</span>hello<span class="pl-pds">'</span></span>) <span class="pl-c">// =&gt; true</span></pre></div>
+
+<h4><a id="user-content-isarray" class="anchor" href="https://github.com/kenwheeler/cash?utm_source=SitePoint&amp;utm_medium=email&amp;utm_campaign=Versioning#isarray" aria-hidden="true"><svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path d="M4 9h1v1h-1c-1.5 0-3-1.69-3-3.5s1.55-3.5 3-3.5h4c1.45 0 3 1.69 3 3.5 0 1.41-0.91 2.72-2 3.25v-1.16c0.58-0.45 1-1.27 1-2.09 0-1.28-1.02-2.5-2-2.5H4c-0.98 0-2 1.22-2 2.5s1 2.5 2 2.5z m9-3h-1v1h1c1 0 2 1.22 2 2.5s-1.02 2.5-2 2.5H9c-0.98 0-2-1.22-2-2.5 0-0.83 0.42-1.64 1-2.09v-1.16c-1.09 0.53-2 1.84-2 3.25 0 1.81 1.55 3.5 3 3.5h4c1.45 0 3-1.69 3-3.5s-1.5-3.5-3-3.5z"></path></svg></a>$.isArray()</h4>
+
+<p>Check if the argument is an array.</p>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-smi">$</span>.<span class="pl-en">isArray</span>([<span class="pl-c1">1</span>,<span class="pl-c1">2</span>,<span class="pl-c1">3</span>]) <span class="pl-c">// =&gt; true</span></pre></div>
+
+<h4><a id="user-content-isnumericn" class="anchor" href="https://github.com/kenwheeler/cash?utm_source=SitePoint&amp;utm_medium=email&amp;utm_campaign=Versioning#isnumericn" aria-hidden="true"><svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path d="M4 9h1v1h-1c-1.5 0-3-1.69-3-3.5s1.55-3.5 3-3.5h4c1.45 0 3 1.69 3 3.5 0 1.41-0.91 2.72-2 3.25v-1.16c0.58-0.45 1-1.27 1-2.09 0-1.28-1.02-2.5-2-2.5H4c-0.98 0-2 1.22-2 2.5s1 2.5 2 2.5z m9-3h-1v1h1c1 0 2 1.22 2 2.5s-1.02 2.5-2 2.5H9c-0.98 0-2-1.22-2-2.5 0-0.83 0.42-1.64 1-2.09v-1.16c-1.09 0.53-2 1.84-2 3.25 0 1.81 1.55 3.5 3 3.5h4c1.45 0 3-1.69 3-3.5s-1.5-3.5-3-3.5z"></path></svg></a>$.isNumeric(n)</h4>
+
+<p>Check if the argument is numeric.</p>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-smi">$</span>.<span class="pl-en">isNumeric</span>(<span class="pl-c1">57</span>) <span class="pl-c">// =&gt; true</span></pre></div>
