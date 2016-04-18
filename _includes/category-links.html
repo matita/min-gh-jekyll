@@ -48,8 +48,8 @@
     {% endif %}
 
 
-    <a class="link post" href="{{ site.baseurl }}{{ page.url }}" data-path="{{ page.path }}" data-category="{{ page.categories[0] }}">
-      <h3 class="link-title">{{ page.title }}</h3>
+    <a class="link post" href="{{ site.baseurl }}{{ page.url }}" data-path="{{ page.path }}" data-category="{{ page.categories[0] }}" style="background-image: url('//www.google.com/s2/favicons?domain={{ page.link }}')">
+      <h3 class="link-title">{{ page.title }}{% unless page.title %}{% assign parts = page.url | split:'/' %}{% assign size = parts.last | size | minus: 11 %}{{ parts.last | slice: 11, size | replace: '-', ' ' | capitalize }}{% endunless %}</h3>
       <p class="link-url">
         <span class="gh-read-time">{% include reading-time.html %}</span>
         &middot;

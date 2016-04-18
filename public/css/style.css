@@ -17,10 +17,13 @@ body {
 .link {
   display: block;
   color: #333;
-  padding: 1em 0;
+  padding-top: 1em;
+  padding-bottom: 1em;
+  padding-left: 42px;
   text-decoration: none;
   margin-top: 0;
   margin-bottom: 0;
+  background: 10px center no-repeat;
 }
 
 .link > :last-child {
