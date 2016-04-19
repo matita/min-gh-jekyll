@@ -1,0 +1,364 @@
+---
+title: "“We will encourage you to develop the three great virtues of a programmer: laziness, impatience, and hubris”"
+description: "null"
+link: "http://raganwald.com/2016/04/15/laziness-is-a-virtue.html"
+saved: "2016-04-18 15:54:49"
+---
+
+
+          
+
+
+
+  
+  
+
+  
+
+  
+    <iframe width="160" height="430" src="https://leanpub.com/javascriptallongesix/embed" frameborder="0" allowtransparency="true"></iframe>
+    
+  
+
+
+
+
+          <h3 id="larry-wall">larry wall</h3>
+
+<p><a href="https://en.wikipedia.org/wiki/Perl_6#/media/File:FOSDEM_2015_Larry_Wall_and_Camelia_the_Perl6_logo.jpg"><img src="http://raganwald.com/assets/images/Larry_Wall_and_Camelia.jpg" alt="Larry Wall and Camelia, the Perl 6 Mascot"></a></p>
+
+<hr>
+
+<h3 id="laziness-and-eagerness">laziness and eagerness</h3>
+
+<p>In computing, “laziness” is a broad term, generally referring to not doing any work unless you need it. Whereas its opposite is “eagerness,” doing as much work as possible in case you need it later.</p>
+
+<p>Consider this JavaScript:</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">function</span> <span class="nx">ifThen</span> <span class="p">(</span><span class="nx">a</span><span class="p">,</span> <span class="nx">b</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">if</span> <span class="p">(</span><span class="nx">a</span><span class="p">)</span> <span class="k">return</span> <span class="nx">b</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="nx">ifThen</span><span class="p">(</span><span class="mi">1</span> <span class="o">===</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">2</span> <span class="o">+</span> <span class="mi">3</span><span class="p">)</span>
+  <span class="c1">//=&gt; undefined</span></code></pre></figure>
+
+<p>Now, here’s the question: Does JavaScript evaluate <code class="highlighter-rouge">2+3</code>? You probably know the answer: Yes it does. When it comes to passing arguments to a function invocation, JavaScript is <em>eager</em>, it evaluates all of the expressions, and it does so whether the value of the expression is used or not.<sup id="fnref:constant"><a href="http://raganwald.com/2016/04/15/laziness-is-a-virtue.html?utm_source=SitePoint&amp;utm_medium=email&amp;utm_campaign=Versioning#fn:constant" class="footnote">1</a></sup></p>
+
+<p>If JavaScript was <em>lazy</em>, it would not evaluate <code class="highlighter-rouge">2+3</code> in the expression <code class="highlighter-rouge">ifThen(1 === 0, 2 + 3)</code>. So is JavaScript an “eager” language? Mostly. But not always! If we write: <code class="highlighter-rouge">1 === 0 ? 2 + 3 : undefined</code>, JavaScript does <em>not</em> evaluate <code class="highlighter-rouge">2+3</code>. Operators like <code class="highlighter-rouge">?:</code> and <code class="highlighter-rouge">&amp;&amp;</code> and <code class="highlighter-rouge">||</code>, along with program control structures like <code class="highlighter-rouge">if</code>, are lazy. You just have to know in your head what is eager and what is lazy.</p>
+
+<p>And if you want something to be lazy that isn’t naturally lazy, you have to work around JavaScript’s eagerness. For example:</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">function</span> <span class="nx">ifThenEvaluate</span> <span class="p">(</span><span class="nx">a</span><span class="p">,</span> <span class="nx">b</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">if</span> <span class="p">(</span><span class="nx">a</span><span class="p">)</span> <span class="k">return</span> <span class="nx">b</span><span class="p">();</span>
+<span class="p">}</span>
+
+<span class="nx">ifThenEvaluate</span><span class="p">(</span><span class="mi">1</span> <span class="o">===</span> <span class="mi">0</span><span class="p">,</span> <span class="p">()</span> <span class="o">=&gt;</span> <span class="mi">2</span> <span class="o">+</span> <span class="mi">3</span><span class="p">)</span>
+  <span class="c1">//=&gt; undefined</span></code></pre></figure>
+
+<p>JavaScript eagerly evaluates <code class="highlighter-rouge">() =&gt; 2 + 3</code>, which is a function. But it doesn’t evaluate the expression in the body of the function until it is invoked. And it is not invoked, so <code class="highlighter-rouge">2+3</code> is not evaluated.</p>
+
+<p>Wrapping expressions in functions to delay evaluation is a longstanding technique in programming. They are colloquially called <a href="https://en.wikipedia.org/wiki/Thunk">thunks</a>, and there are lots of interesting applications for them.</p>
+
+<h3 id="generating-laziness">generating laziness</h3>
+
+<p>The bodies of functions are a kind of lazy thing: They aren’t evaluated until you invoke the function. This is related to <code class="highlighter-rouge">if</code> statements, and every other kind of control flow construct: JavaScript does not evaluate statements unless the code actually encounters the statement.</p>
+
+<p>Consider this code:</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">function</span> <span class="nx">containing</span><span class="p">(</span><span class="nx">value</span><span class="p">,</span> <span class="nx">list</span><span class="p">)</span> <span class="p">{</span>
+  <span class="kd">let</span> <span class="nx">listContainsValue</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+
+  <span class="k">for</span> <span class="p">(</span><span class="kr">const</span> <span class="nx">element</span> <span class="nx">of</span> <span class="nx">list</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nx">element</span> <span class="o">===</span> <span class="nx">value</span><span class="p">)</span> <span class="p">{</span>
+      <span class="nx">listContainsValue</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+
+  <span class="k">return</span> <span class="nx">listContainsValue</span><span class="p">;</span>
+<span class="p">}</span></code></pre></figure>
+
+<p>You are doubtless chuckling at its naïveté. Imagine this list was the numbers from one to a billion–e.g. <code class="highlighter-rouge">[1, 2, 3, ..., 999999998, 999999999, 1000000000]</code>–and we invoke:</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kr">const</span> <span class="nx">billion</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="p">...,</span> <span class="mi">999999998</span><span class="p">,</span> <span class="mi">999999999</span><span class="p">,</span> <span class="mi">1000000000</span><span class="p">];</span>
+
+<span class="nx">containing</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nx">billion</span><span class="p">)</span>
+  <span class="c1">//=&gt; true</span></code></pre></figure>
+
+<p>We get the correct result, but we iterate over every one of our billion numbers first. Awful! Small children and the otherwise febrile know that you can <code class="highlighter-rouge">return</code> from anywhere in a JavaScript function, and the rest of its evaluation is abandoned. So we can write this:</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">function</span> <span class="nx">containing</span><span class="p">(</span><span class="nx">list</span><span class="p">,</span> <span class="nx">value</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">for</span> <span class="p">(</span><span class="kr">const</span> <span class="nx">element</span> <span class="nx">of</span> <span class="nx">list</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nx">element</span> <span class="o">===</span> <span class="nx">value</span><span class="p">)</span> <span class="p">{</span>
+      <span class="k">return</span> <span class="kc">true</span><span class="p">;</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+
+  <span class="k">return</span> <span class="kc">false</span><span class="p">;</span>
+<span class="p">}</span></code></pre></figure>
+
+<p>This version of the function is lazier than the first: It only does the minimum needed to determine whether a particular list contains a particular value.</p>
+
+<p>From <code class="highlighter-rouge">containing</code>, we can make a similar function, <code class="highlighter-rouge">findWith</code>:</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">function</span> <span class="nx">findWith</span><span class="p">(</span><span class="nx">predicate</span><span class="p">,</span> <span class="nx">list</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">for</span> <span class="p">(</span><span class="kr">const</span> <span class="nx">element</span> <span class="nx">of</span> <span class="nx">list</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nx">predicate</span><span class="p">(</span><span class="nx">element</span><span class="p">))</span> <span class="p">{</span>
+      <span class="k">return</span> <span class="nx">element</span><span class="p">;</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+<span class="p">}</span></code></pre></figure>
+
+<p><code class="highlighter-rouge">findWith</code> applies a predicate function to lazily find the first value that evaluates truthily. Unfortunately, while <code class="highlighter-rouge">findWith</code> is lazy, its argument is evaluated eagerly, as we mentioned above. So let’s say we want to find the first number in a list that is greater than <code class="highlighter-rouge">99</code> and is a palindrome:</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">function</span> <span class="nx">isPalindromic</span><span class="p">(</span><span class="nx">number</span><span class="p">)</span> <span class="p">{</span>
+  <span class="kr">const</span> <span class="nx">forwards</span> <span class="o">=</span> <span class="nx">number</span><span class="p">.</span><span class="nx">toString</span><span class="p">();</span>
+  <span class="kr">const</span> <span class="nx">backwards</span> <span class="o">=</span> <span class="nx">forwards</span><span class="p">.</span><span class="nx">split</span><span class="p">(</span><span class="s1">''</span><span class="p">).</span><span class="nx">reverse</span><span class="p">().</span><span class="nx">join</span><span class="p">(</span><span class="s1">''</span><span class="p">);</span>
+
+  <span class="k">return</span> <span class="nx">forwards</span> <span class="o">===</span> <span class="nx">backwards</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="kd">function</span> <span class="nx">gt</span><span class="p">(</span><span class="nx">minimum</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">return</span> <span class="p">(</span><span class="nx">number</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="nx">number</span> <span class="o">&gt;</span> <span class="nx">minimum</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="kd">function</span> <span class="nx">every</span><span class="p">(...</span><span class="nx">predicates</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">return</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">value</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">for</span> <span class="p">(</span><span class="kr">const</span> <span class="nx">predicate</span> <span class="nx">of</span> <span class="nx">predicates</span><span class="p">)</span> <span class="p">{</span>
+      <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">predicate</span><span class="p">(</span><span class="nx">value</span><span class="p">))</span> <span class="k">return</span> <span class="kc">false</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="k">return</span> <span class="kc">true</span><span class="p">;</span>
+  <span class="p">};</span>
+<span class="p">}</span>
+
+<span class="kr">const</span> <span class="nx">billion</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="p">...,</span> <span class="mi">999999998</span><span class="p">,</span> <span class="mi">999999999</span><span class="p">,</span> <span class="mi">1000000000</span><span class="p">];</span>
+
+<span class="nx">findWith</span><span class="p">(</span><span class="nx">every</span><span class="p">(</span><span class="nx">isPalindromic</span><span class="p">,</span> <span class="nx">gt</span><span class="p">(</span><span class="mi">99</span><span class="p">)),</span> <span class="nx">billion</span><span class="p">)</span>
+  <span class="c1">//=&gt; 101</span></code></pre></figure>
+
+<p>It’s the same principle as before, of course, we iterate through our billion numbers and stop as soon as we get to <code class="highlighter-rouge">101</code>, which is greater than <code class="highlighter-rouge">99</code> and palindromic.</p>
+
+<p>But JavaScript eagerly evaluates the arguments to <code class="highlighter-rouge">findWith</code>. So it evaluates <code class="highlighter-rouge">isPalindromic, gt(99))</code> and binds it to <code class="highlighter-rouge">predicate</code>, then it eagerly evaluates <code class="highlighter-rouge">billion</code> and binds it to <code class="highlighter-rouge">list</code>.</p>
+
+<p>Binding one value to another is cheap. But what if we had to <em>generate</em> a billion numbers?</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">function</span> <span class="nx">NumbersUpTo</span><span class="p">(</span><span class="nx">limit</span><span class="p">)</span> <span class="p">{</span>
+  <span class="kr">const</span> <span class="nx">numbers</span> <span class="o">=</span> <span class="p">[];</span>
+  <span class="k">for</span> <span class="p">(</span><span class="kd">let</span> <span class="nx">number</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span> <span class="nx">number</span> <span class="o">&lt;=</span> <span class="nx">limit</span><span class="p">;</span> <span class="o">++</span><span class="nx">number</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">numbers</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="nx">number</span><span class="p">);</span>
+  <span class="p">}</span>
+  <span class="k">return</span> <span class="nx">numbers</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="nx">findWith</span><span class="p">(</span><span class="nx">every</span><span class="p">(</span><span class="nx">isPalindromic</span><span class="p">,</span> <span class="nx">gt</span><span class="p">(</span><span class="mi">99</span><span class="p">)),</span> <span class="nx">NumbersUpTo</span><span class="p">(</span><span class="mi">1000000000</span><span class="p">))</span>
+  <span class="c1">//=&gt; 101</span></code></pre></figure>
+
+<p><code class="highlighter-rouge">NumbersUpTo(1000000000)</code> is eager, so it makes a list of all billion numbers, even though we only need the first <code class="highlighter-rouge">101</code>. This is the problem with laziness: We need to be lazy all the way through a computation.</p>
+
+<p>Luckily, we just finished working with generators<sup id="fnref:lastessay"><a href="http://raganwald.com/2016/04/15/laziness-is-a-virtue.html?utm_source=SitePoint&amp;utm_medium=email&amp;utm_campaign=Versioning#fn:lastessay" class="footnote">2</a></sup> and we know exactly how to make a lazy list of numbers:</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">function</span> <span class="o">*</span> <span class="nx">Numbers</span> <span class="p">()</span> <span class="p">{</span>
+  <span class="kd">let</span> <span class="nx">number</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+  <span class="k">while</span> <span class="p">(</span><span class="kc">true</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">yield</span> <span class="o">++</span><span class="nx">number</span><span class="p">;</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="nx">findWith</span><span class="p">(</span><span class="nx">every</span><span class="p">(</span><span class="nx">isPalindromic</span><span class="p">,</span> <span class="nx">gt</span><span class="p">(</span><span class="mi">99</span><span class="p">)),</span> <span class="nx">Numbers</span><span class="p">())</span>
+  <span class="c1">//=&gt; 101</span></code></pre></figure>
+
+<p>Generators yield values lazily. And <code class="highlighter-rouge">findWith</code> searches lazily, so we can find <code class="highlighter-rouge">101</code> without first generating an infinite array of numbers. JavaScript still evaluates <code class="highlighter-rouge">Numbers()</code> eagerly and binds it to <code class="highlighter-rouge">list</code>, but now it’s binding an iterator, not an array. And the <code class="highlighter-rouge">for (const element of list) { ... }</code> statement lazily takes values from the iterator just as it did from the <code class="highlighter-rouge">billion</code> array.</p>
+
+<h3 id="the-sieve-of-eratosthenes">the sieve of eratosthenes</h3>
+
+<p>Here is the <a href="https://en.wikipedia.org/wiki/Sieve_of_Eratosthenes">Sieve of Eratosthenes</a>, written in eager style:</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">function</span> <span class="nx">compact</span> <span class="p">(</span><span class="nx">list</span><span class="p">)</span> <span class="p">{</span>
+  <span class="kr">const</span> <span class="nx">compacted</span> <span class="o">=</span> <span class="p">[];</span>
+
+  <span class="k">for</span> <span class="p">(</span><span class="kr">const</span> <span class="nx">element</span> <span class="nx">of</span> <span class="nx">list</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nx">element</span> <span class="o">!=</span> <span class="kc">null</span><span class="p">)</span> <span class="p">{</span>
+      <span class="nx">compacted</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="nx">element</span><span class="p">);</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+
+  <span class="k">return</span> <span class="nx">compacted</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="kd">function</span> <span class="nx">PrimesUpTo</span> <span class="p">(</span><span class="nx">limit</span><span class="p">)</span> <span class="p">{</span>
+  <span class="kr">const</span> <span class="nx">numbers</span> <span class="o">=</span> <span class="nx">NumbersUpTo</span><span class="p">(</span><span class="nx">limit</span><span class="p">);</span>
+
+  <span class="nx">numbers</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="kc">undefined</span><span class="p">;</span> <span class="c1">// `1` is not a prime</span>
+  <span class="k">for</span> <span class="p">(</span><span class="kd">let</span> <span class="nx">i</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;=</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">ceil</span><span class="p">(</span><span class="nb">Math</span><span class="p">.</span><span class="nx">sqrt</span><span class="p">(</span><span class="nx">limit</span><span class="p">));</span> <span class="o">++</span><span class="nx">i</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nx">numbers</span><span class="p">[</span><span class="nx">i</span><span class="p">])</span> <span class="p">{</span>
+      <span class="kr">const</span> <span class="nx">prime</span> <span class="o">=</span> <span class="nx">numbers</span><span class="p">[</span><span class="nx">i</span><span class="p">];</span>
+
+      <span class="k">for</span> <span class="p">(</span><span class="kd">let</span> <span class="nx">ii</span> <span class="o">=</span> <span class="nx">i</span> <span class="o">+</span> <span class="nx">prime</span><span class="p">;</span> <span class="nx">ii</span> <span class="o">&lt;</span> <span class="nx">limit</span><span class="p">;</span> <span class="nx">ii</span> <span class="o">+=</span> <span class="nx">prime</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">numbers</span><span class="p">[</span><span class="nx">ii</span><span class="p">]</span> <span class="o">=</span> <span class="kc">undefined</span><span class="p">;</span>
+      <span class="p">}</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+
+  <span class="k">return</span> <span class="nx">compact</span><span class="p">(</span><span class="nx">numbers</span><span class="p">);</span>
+
+<span class="p">}</span>
+
+<span class="nx">PrimesUpTo</span><span class="p">(</span><span class="mi">100</span><span class="p">)</span>
+  <span class="c1">//=&gt; [2,3,5,7,11,13,17,19,23,29,31,37,41,43,47,53,59,61,67,71,73,79,83,89,97]</span></code></pre></figure>
+
+<p>Let’s take a pass at writing the Sieve of Eratosthenes in lazy style. First off, a few handy things we’ve already seen in this blog, and in <a href="https://leanpub.com/javascriptallongesix">JavaScript Allongé</a>:</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">function</span> <span class="o">*</span> <span class="nx">Numbers</span> <span class="p">()</span> <span class="p">{</span>
+  <span class="kd">let</span> <span class="nx">number</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+  <span class="k">while</span> <span class="p">(</span><span class="kc">true</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">yield</span> <span class="o">++</span><span class="nx">number</span><span class="p">;</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="kd">function</span> <span class="o">*</span> <span class="nx">take</span> <span class="p">(</span><span class="nx">numberToTake</span><span class="p">,</span> <span class="nx">iterable</span><span class="p">)</span> <span class="p">{</span>
+  <span class="kr">const</span> <span class="nx">iterator</span> <span class="o">=</span> <span class="nx">iterable</span><span class="p">[</span><span class="nx">Symbol</span><span class="p">.</span><span class="nx">iterator</span><span class="p">]();</span>
+
+  <span class="k">for</span> <span class="p">(</span><span class="kd">let</span> <span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="nx">numberToTake</span><span class="p">;</span> <span class="o">++</span><span class="nx">i</span><span class="p">)</span> <span class="p">{</span>
+    <span class="kr">const</span> <span class="p">{</span> <span class="nx">done</span><span class="p">,</span> <span class="nx">value</span> <span class="p">}</span> <span class="o">=</span> <span class="nx">iterator</span><span class="p">.</span><span class="nx">next</span><span class="p">();</span>
+    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">done</span><span class="p">)</span> <span class="k">yield</span> <span class="nx">value</span><span class="p">;</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="kd">function</span> <span class="o">*</span> <span class="nx">rest</span> <span class="p">(</span><span class="nx">iterable</span><span class="p">)</span> <span class="p">{</span>
+  <span class="kr">const</span> <span class="nx">iterator</span> <span class="o">=</span> <span class="nx">iterable</span><span class="p">[</span><span class="nx">Symbol</span><span class="p">.</span><span class="nx">iterator</span><span class="p">]();</span>
+
+  <span class="nx">iterator</span><span class="p">.</span><span class="nx">next</span><span class="p">();</span>
+  <span class="k">yield</span> <span class="o">*</span> <span class="nx">iterator</span><span class="p">;</span>
+<span class="p">}</span></code></pre></figure>
+
+<p>With those in hand, we can write a generator that maps an iterable to a sequence of values with every <code class="highlighter-rouge">nth</code> element changed to <code class="highlighter-rouge">null</code>:<sup id="fnref:genuine"><a href="http://raganwald.com/2016/04/15/laziness-is-a-virtue.html?utm_source=SitePoint&amp;utm_medium=email&amp;utm_campaign=Versioning#fn:genuine" class="footnote">3</a></sup></p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">function</span> <span class="o">*</span> <span class="nx">nullEveryNth</span> <span class="p">(</span><span class="nx">n</span><span class="p">,</span> <span class="nx">iterable</span><span class="p">)</span> <span class="p">{</span>
+  <span class="kr">const</span> <span class="nx">iterator</span> <span class="o">=</span> <span class="nx">iterable</span><span class="p">[</span><span class="nx">Symbol</span><span class="p">.</span><span class="nx">iterator</span><span class="p">]();</span>
+
+  <span class="k">while</span> <span class="p">(</span><span class="kc">true</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">yield</span> <span class="o">*</span> <span class="nx">take</span><span class="p">(</span><span class="nx">n</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="nx">iterator</span><span class="p">);</span>
+    <span class="kr">const</span> <span class="p">{</span> <span class="nx">done</span><span class="p">,</span> <span class="nx">value</span> <span class="p">}</span> <span class="o">=</span> <span class="nx">iterator</span><span class="p">.</span><span class="nx">next</span><span class="p">();</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nx">done</span><span class="p">)</span> <span class="k">return</span><span class="p">;</span>
+    <span class="k">yield</span> <span class="kc">null</span><span class="p">;</span>
+  <span class="p">}</span>
+<span class="p">}</span></code></pre></figure>
+
+<p>That’s the core of the “sieving” behaviour: take the front element of the list of numbers, call it <code class="highlighter-rouge">n</code>, and sieve every <code class="highlighter-rouge">nth</code> element afterwards.</p>
+
+<p>Now we can apply <code class="highlighter-rouge">nullEveryNth</code> recursively: Take the first unsieved number from the front of the list, sieve its multiples out, and yield the results of sieving what remains:</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">function</span> <span class="o">*</span> <span class="nx">sieve</span> <span class="p">(</span><span class="nx">iterable</span><span class="p">)</span> <span class="p">{</span>
+  <span class="kr">const</span> <span class="nx">iterator</span> <span class="o">=</span> <span class="nx">iterable</span><span class="p">[</span><span class="nx">Symbol</span><span class="p">.</span><span class="nx">iterator</span><span class="p">]();</span>
+  <span class="kd">let</span> <span class="nx">n</span><span class="p">;</span>
+
+  <span class="k">do</span> <span class="p">{</span>
+    <span class="kr">const</span> <span class="p">{</span> <span class="nx">done</span><span class="p">,</span> <span class="nx">value</span> <span class="p">}</span> <span class="o">=</span> <span class="nx">iterator</span><span class="p">.</span><span class="nx">next</span><span class="p">();</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nx">done</span><span class="p">)</span> <span class="k">return</span><span class="p">;</span>
+
+    <span class="nx">n</span> <span class="o">=</span> <span class="nx">value</span>
+    <span class="k">yield</span> <span class="nx">n</span><span class="p">;</span>
+  <span class="p">}</span> <span class="k">while</span> <span class="p">(</span><span class="nx">n</span> <span class="o">==</span> <span class="kc">null</span><span class="p">);</span>
+
+
+  <span class="k">yield</span> <span class="o">*</span> <span class="nx">sieve</span><span class="p">(</span><span class="nx">nullEveryNth</span><span class="p">(</span><span class="nx">n</span><span class="p">,</span> <span class="nx">iterator</span><span class="p">));</span>
+<span class="p">}</span></code></pre></figure>
+
+<p>With <code class="highlighter-rouge">sieve</code> in hand, we can use <code class="highlighter-rouge">Numbers</code> to get a list of numbers from <code class="highlighter-rouge">1</code>, and the <code class="highlighter-rouge">rest</code> operation to give us all but the head… In other words, the numbers from <code class="highlighter-rouge">2</code>. Then we <code class="highlighter-rouge">compact</code> the result to filter out all the <code class="highlighter-rouge">nulls</code>, and what is left are the primes:</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">function</span> <span class="o">*</span> <span class="nx">Primes</span> <span class="p">()</span> <span class="p">{</span>
+  <span class="kr">const</span> <span class="nx">numbersFrom2</span> <span class="o">=</span> <span class="nx">rest</span><span class="p">(</span><span class="nx">Numbers</span><span class="p">());</span>
+
+  <span class="k">yield</span> <span class="o">*</span> <span class="nx">compact</span><span class="p">(</span><span class="nx">sieve</span><span class="p">(</span><span class="nx">numbersFrom2</span><span class="p">));</span>
+<span class="p">}</span></code></pre></figure>
+
+<p>Besides performance, did you spot the full-on bug? Try running it yourself, it won’t work! The problem is that at the last step, we called <code class="highlighter-rouge">compact</code>, and <code class="highlighter-rouge">compact</code> is an eager function, not a lazy one. So we end up trying to build an infinite list of primes before filtering out the nulls.</p>
+
+<p>We need to write a lazy version of <code class="highlighter-rouge">compact</code>:</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">function</span> <span class="o">*</span> <span class="nx">compact</span> <span class="p">(</span><span class="nx">list</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">for</span> <span class="p">(</span><span class="kr">const</span> <span class="nx">element</span> <span class="nx">of</span> <span class="nx">list</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nx">element</span> <span class="o">!=</span> <span class="kc">null</span><span class="p">)</span> <span class="p">{</span>
+      <span class="k">yield</span> <span class="nx">element</span><span class="p">;</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+<span class="p">}</span></code></pre></figure>
+
+<p>And now it works!</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">take</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="nx">Primes</span><span class="p">())</span>
+  <span class="c1">//=&gt;</span>
+    <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">13</span><span class="p">,</span> <span class="mi">17</span><span class="p">,</span> <span class="mi">19</span><span class="p">,</span> <span class="mi">23</span><span class="p">,</span> <span class="mi">29</span><span class="p">,</span> <span class="mi">31</span><span class="p">,</span> <span class="mi">37</span><span class="p">,</span> <span class="mi">41</span><span class="p">,</span> <span class="mi">43</span><span class="p">,</span> <span class="mi">47</span><span class="p">,</span>
+     <span class="mi">53</span><span class="p">,</span> <span class="mi">59</span><span class="p">,</span> <span class="mi">61</span><span class="p">,</span> <span class="mi">67</span><span class="p">,</span> <span class="mi">71</span><span class="p">,</span> <span class="mi">73</span><span class="p">,</span> <span class="mi">79</span><span class="p">,</span> <span class="mi">83</span><span class="p">,</span> <span class="mi">89</span><span class="p">,</span> <span class="mi">97</span><span class="p">,</span> <span class="mi">101</span><span class="p">,</span> <span class="mi">103</span><span class="p">,</span> <span class="mi">107</span><span class="p">,</span>
+     <span class="mi">109</span><span class="p">,</span> <span class="mi">113</span><span class="p">,</span> <span class="mi">127</span><span class="p">,</span> <span class="mi">131</span><span class="p">,</span> <span class="mi">137</span><span class="p">,</span> <span class="mi">139</span><span class="p">,</span> <span class="mi">149</span><span class="p">,</span> <span class="mi">151</span><span class="p">,</span> <span class="mi">157</span><span class="p">,</span> <span class="mi">163</span><span class="p">,</span> <span class="mi">167</span><span class="p">,</span>
+     <span class="mi">173</span><span class="p">,</span> <span class="mi">179</span><span class="p">,</span> <span class="mi">181</span><span class="p">,</span> <span class="mi">191</span><span class="p">,</span> <span class="mi">193</span><span class="p">,</span> <span class="mi">197</span><span class="p">,</span> <span class="mi">199</span><span class="p">,</span> <span class="mi">211</span><span class="p">,</span> <span class="mi">223</span><span class="p">,</span> <span class="mi">227</span><span class="p">,</span> <span class="mi">229</span><span class="p">,</span>
+     <span class="mi">233</span><span class="p">,</span> <span class="mi">239</span><span class="p">,</span> <span class="mi">241</span><span class="p">,</span> <span class="mi">251</span><span class="p">,</span> <span class="mi">257</span><span class="p">,</span> <span class="mi">263</span><span class="p">,</span> <span class="mi">269</span><span class="p">,</span> <span class="mi">271</span><span class="p">,</span> <span class="mi">277</span><span class="p">,</span> <span class="mi">281</span><span class="p">,</span> <span class="mi">283</span><span class="p">,</span>
+     <span class="mi">293</span><span class="p">,</span> <span class="mi">307</span><span class="p">,</span> <span class="mi">311</span><span class="p">,</span> <span class="mi">313</span><span class="p">,</span> <span class="mi">317</span><span class="p">,</span> <span class="mi">331</span><span class="p">,</span> <span class="mi">337</span><span class="p">,</span> <span class="mi">347</span><span class="p">,</span> <span class="mi">349</span><span class="p">,</span> <span class="mi">353</span><span class="p">,</span> <span class="mi">359</span><span class="p">,</span>
+     <span class="mi">367</span><span class="p">,</span> <span class="mi">373</span><span class="p">,</span> <span class="mi">379</span><span class="p">,</span> <span class="mi">383</span><span class="p">,</span> <span class="mi">389</span><span class="p">,</span> <span class="mi">397</span><span class="p">,</span> <span class="mi">401</span><span class="p">,</span> <span class="mi">409</span><span class="p">,</span> <span class="mi">419</span><span class="p">,</span> <span class="mi">421</span><span class="p">,</span> <span class="mi">431</span><span class="p">,</span>
+     <span class="mi">433</span><span class="p">,</span> <span class="mi">439</span><span class="p">,</span> <span class="mi">443</span><span class="p">,</span> <span class="mi">449</span><span class="p">,</span> <span class="mi">457</span><span class="p">,</span> <span class="mi">461</span><span class="p">,</span> <span class="mi">463</span><span class="p">,</span> <span class="mi">467</span><span class="p">,</span> <span class="mi">479</span><span class="p">,</span> <span class="mi">487</span><span class="p">,</span> <span class="mi">491</span><span class="p">,</span>
+     <span class="mi">499</span><span class="p">,</span> <span class="mi">503</span><span class="p">,</span> <span class="mi">509</span><span class="p">,</span> <span class="mi">521</span><span class="p">,</span> <span class="mi">523</span><span class="p">,</span> <span class="mi">541</span><span class="p">]</span></code></pre></figure>
+
+<p>When we write things in lazy style, we need lazy versions of all of our usual operations. For example, here’s an eager implementation of <code class="highlighter-rouge">unique</code>:</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">function</span> <span class="nx">unique</span> <span class="p">(</span><span class="nx">list</span><span class="p">)</span> <span class="p">{</span>
+  <span class="kr">const</span> <span class="nx">orderedValues</span> <span class="o">=</span> <span class="p">[];</span>
+  <span class="kr">const</span> <span class="nx">uniqueValues</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Set</span><span class="p">();</span>
+
+  <span class="k">for</span> <span class="p">(</span><span class="kr">const</span> <span class="nx">element</span> <span class="nx">of</span> <span class="nx">list</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">uniqueValues</span><span class="p">.</span><span class="nx">has</span><span class="p">(</span><span class="nx">element</span><span class="p">))</span> <span class="p">{</span>
+      <span class="nx">uniqueValues</span><span class="p">.</span><span class="nx">add</span><span class="p">(</span><span class="nx">element</span><span class="p">);</span>
+      <span class="nx">orderedValues</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="nx">element</span><span class="p">);</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+  <span class="k">return</span> <span class="nx">orderedValues</span><span class="p">;</span>
+<span class="p">}</span></code></pre></figure>
+
+<p>Naturally, we’d need a lazy implementation if we wanted to find the unique values of lazy iterators:</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">function</span> <span class="o">*</span> <span class="nx">unique</span> <span class="p">(</span><span class="nx">iterable</span><span class="p">)</span> <span class="p">{</span>
+  <span class="kr">const</span> <span class="nx">uniqueValues</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Set</span><span class="p">();</span>
+
+  <span class="k">for</span> <span class="p">(</span><span class="kr">const</span> <span class="nx">element</span> <span class="nx">of</span> <span class="nx">iterable</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">uniqueValues</span><span class="p">.</span><span class="nx">has</span><span class="p">(</span><span class="nx">element</span><span class="p">))</span> <span class="p">{</span>
+      <span class="nx">uniqueValues</span><span class="p">.</span><span class="nx">add</span><span class="p">(</span><span class="nx">element</span><span class="p">);</span>
+      <span class="k">yield</span> <span class="nx">element</span><span class="p">;</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+<span class="p">}</span></code></pre></figure>
+
+<p>And so it goes with all of our existing operations that we use with lists: We need lazy versions we can use with iterables, and we have to use the lazy operations throughout: We can’t mix them.</p>
+
+<h3 id="it-comes-down-to-types">it comes down to types</h3>
+
+<p>This brings us to an unexpected revelation.</p>
+
+<p>Generators and laziness can be wonderful. Exciting things are happening with using generators to emulate synchronized code with asynchronous operations, for example. But as we’ve seen, if we want to write lazy code, we have to be careful to be consistently lazy. If we accidentally mix lazy and eager code, we have problems.</p>
+
+<p>This is a <a href="http://raganwald.com/2015/03/12/symmetry.html">symmetry</a> problem.  And at a deeper level, it exposes a problem with the “duck typing” mindset: There is a general idea that as long as objects handle the correct interface–as long as they respond to the right methods–they are interchangeable.</p>
+
+<p>But this is not always the case. The eager and lazy versions of <code class="highlighter-rouge">compact</code> both quack like ducks that operate on lists, but one is lazy and the other is not. “Duck typing” does not and cannot capture difference between a function that assures laziness and another that assures eagerness.</p>
+
+<p>Many other things work this way, for example escaped and unescaped strings. Or obfuscated and native IDs. To distinguish between things that have the same interfaces, but also have semantic or other contractural differences, we need <em>types</em>.</p>
+
+<p>We need to ensure that our programs work with each of the types, using the correct operations, even if the incorrect operations are also “duck compatible” and appear to work at first glance.</p>
+
+<p>(discuss on <a href="https://news.ycombinator.com/item?id=11516215">hacker news</a>)</p>
+
+<hr>
+
+<h3 id="notes">notes</h3>
+
+<div class="footnotes">
+  <ol>
+    <li id="fn:constant">
+      <p>A few people have pointed out that a <a href="http://c2.com/cgi/wiki?SufficientlySmartCompiler">sufficiently smart compiler</a> can notice that <code class="highlighter-rouge">2+3</code>involves two constants and a fixed operator, and therefore it can be compiled to <code class="highlighter-rouge">5</code> in advance. JavaScript does not <em>necessarily</em> perform this optimization, but if it did, we could substitute something like <code class="highlighter-rouge">x + y</code> and get to the same place in the essay. <a href="http://raganwald.com/2016/04/15/laziness-is-a-virtue.html?utm_source=SitePoint&amp;utm_medium=email&amp;utm_campaign=Versioning#fnref:constant" class="reversefootnote">↩</a></p>
+    </li>
+    <li id="fn:lastessay">
+      <p><a href="http://raganwald.com/2016/03/17/programs-must-be-written-for-people-to-read.html">“Programs must be written for people to read, and only incidentally for machines to execute”</a> <a href="http://raganwald.com/2016/04/15/laziness-is-a-virtue.html?utm_source=SitePoint&amp;utm_medium=email&amp;utm_campaign=Versioning#fnref:lastessay" class="reversefootnote">↩</a></p>
+    </li>
+    <li id="fn:genuine">
+      <p>This is the simplest and most naïve implementation that is recognizably identical to the written description: <em>We start with a table of numbers (e.g., 2, 3, 4, 5, . . . ) and progressively cross off numbers in the table until the only numbers left are primes. Specifically, we begin with the first number, p, in the table, and: 1. Declare p to be prime, and cross off all the multiples of that number in the table, then 2. Find the next number in the table after p that is not yet crossed off and set p to that number; and then repeat from step 1.</em> In <a href="https://www.cs.hmc.edu/~oneill/papers/Sieve-JFP.pdf">The Genuine Sieve of Eratosthenes</a>, Melissa E. O’Neill describes how to write a lazy functional sieve that is much faster than this implementation, although it abstracts away the notion of crossing off multiples from a list. <a href="http://raganwald.com/2016/04/15/laziness-is-a-virtue.html?utm_source=SitePoint&amp;utm_medium=email&amp;utm_campaign=Versioning#fnref:genuine" class="reversefootnote">↩</a></p>
+    </li>
+  </ol>
+</div>
+
+        
