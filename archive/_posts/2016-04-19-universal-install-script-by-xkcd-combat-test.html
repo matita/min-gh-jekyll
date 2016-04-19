@@ -1,0 +1,81 @@
+---
+title: "Universal Install Script by XKCD – Combat test"
+description: "Several days ago, I was gazing at the Universal Install Script comic by Randall Munroe, wondering if he may not have solved all the world’s problems, save for the usual famine, war, poverty, …"
+link: "http://www.ocsmag.com/2016/04/16/universal-install-script-by-xkcd-combat-test/"
+saved: "2016-04-19 15:41:24"
+---
+
+	<!-- .entry-header -->
+
+	<div class="entry-content">
+		<p>Several days ago, I was gazing at the <a href="http://xkcd.com/1654/">Universal Install Script comic</a> by Randall Munroe, wondering if he may not have solved all the world’s problems, save for the usual famine, war, poverty, education, corruption, and so on. But there’s a certain appeal to having THE one script to rule them all, and in BASH-ness bind them. Yes, I was bored, so I thought, let’s try it out.</p>
+<p><span id="more-8343"></span></p>
+<p>This is going to be my attempt to run the Universal Install Script (UIS), not to be confused with the Unwarranted Self-Importance Syndrome, an affliction of many an Internet user, and then modify the script so it works smoothly, elegantly and without errors. Safely too. Let us.</p>
+<h2>The original (sin)</h2>
+<p>As conceived by Randall Munroe, UIS is a series of commands, executed one after another, invoking a bunch of package managers and other associated tools, all in order to help you install whatever is the first argument of your script. Hence $1. In the tooltip, he recommends using the -y flag and redirecting errors to <i>/dev/null</i> to minimize noise. I can agree with the latter, but answering <i>Yes</i> blindly to a whole bunch of system commands is probably not a task for the fainthearted. Oh yes, in the best fashion of those sub-100-IQ TV shows, don’t do this at home!</p>
+<p><a href="http://www.ocsmag.com/wp-content/uploads/2016/04/universal_install_script.png" class="cboxElement"><img class="alignnone size-full wp-image-8344 colorbox-8343" src="http://www.ocsmag.com/wp-content/uploads/2016/04/universal_install_script.png" alt="universal_install_script" width="302" height="340"></a></p>
+<h2>First attempt</h2>
+<p>I decided to use the script without modifications, only addition the STDERR redirection. To wit:</p>
+<pre>#!/bin/bash
+
+pip install "$1" 2&gt;/dev/null
+easy_install "$1" 2&gt;/dev/null
+brew install "$1" 2&gt;/dev/null
+npm install "$1" 2&gt;/dev/null
+yum install "$1" 2&gt;/dev/null
+dnf install "$1" 2&gt;/dev/null
+docker run "$1" 2&gt;/dev/null
+pkg install "$1" 2&gt;/dev/null
+apt-get install "$1" 2&gt;/dev/null
+steamcmd +app_update "$1" validate 2&gt;/dev/null
+git clone https://github.com/"$1"/"$1" $1 2&gt;/dev/null
+cd "$1"; ./configure; make; make install 2&gt;/dev/null
+curl "$1" | bash 2&gt;/dev/null
+
+exit 0</pre>
+<h2>You old git!</h2>
+<p>I started by running the tool as a non-root user. Most of the commands fail, which is fine. The git pull will definitely work, and it will prompt you for your user name and password in an interactive fashion. Failing that, you will be able to provide the username/password on the command line.</p>
+<p><a href="http://www.ocsmag.com/wp-content/uploads/2016/04/universal-script-github-prompt.png" class="cboxElement"><img class="alignnone size-full wp-image-8348 colorbox-8343" src="http://www.ocsmag.com/wp-content/uploads/2016/04/universal-script-github-prompt.png" alt="GitHub prompt" width="310" height="270"></a></p>
+<p><img class="alignnone size-full wp-image-8347 colorbox-8343" src="http://www.ocsmag.com/wp-content/uploads/2016/04/universal-script-git-error-prompt.png" alt="Git error" width="450" height="237"></p>
+<p><a href="http://www.ocsmag.com/wp-content/uploads/2016/04/universal-script-github-prompt-cropped.png" class="cboxElement"><img class="alignnone size-medium wp-image-8350 colorbox-8343" src="http://www.ocsmag.com/wp-content/uploads/2016/04/universal-script-github-prompt-cropped-620x116.png" alt="Git CLI prompt" width="620" height="116"></a></p>
+<p>But it sure is distracting, and having a window prompt pop up is sort of a big flaw in the UIS logic. So I decided to comment out the git command.</p>
+<pre>#git clone https://github.com/"$1"/"$1" $1 2&gt;/dev/null</pre>
+<h2>Second attempt</h2>
+<p>My next obstacle was the cd shell builtin and the attempt to compile. If the directory does not exist, then you will be seeing a lot of noise on the command line, and again, this is not something we want. So I decided to add a little bit of sanity check logic — I know, it defeats the purpose of what UIS stands for, but it helps get a cleaner output.</p>
+<pre>[ -d "$1" ] &amp;&amp; bash -c 'cd "$1"  ./configure; make; make install 2&gt;/dev/null'</pre>
+<h2>Third attempt</h2>
+<p>Now, the script was ready to run — as sudo. This is the tricky bit, but not really. However, there’s quite a bit of activity happening, much more so than our first attempt. This is why I chose <em>not</em> to background the commands, as they have different run times and prompts, and it actually makes sense to serialize them and be able to see what they are doing.</p>
+<p>I started with <i>VLC</i>, and encountered some package conflicts, although they had nothing to do with the script per se. Then I tried <i>Transmission</i> and it installed just fine. After a few more attempts and some extra games, I was convinced that UIS was working well and causing no harm.</p>
+<p><img class="alignnone wp-image-8345 size-medium colorbox-8343" src="http://www.ocsmag.com/wp-content/uploads/2016/04/universal-installer-sudo-working-620x559.png" alt="sudo transaction 1" width="620" height="559"></p>
+<p><a href="http://www.ocsmag.com/wp-content/uploads/2016/04/universal-installer-sudo-working-more.png" class="cboxElement"><img class="alignnone wp-image-8346 size-medium colorbox-8343" src="http://www.ocsmag.com/wp-content/uploads/2016/04/universal-installer-sudo-working-more-620x574.png" alt="sudo transaction 2" width="620" height="574"></a></p>
+<p>I did have some unwanted extras, but that’s fine. After all, the purpose of the UIS is to solve all problems for us, and the price we have to pay is having some extra packages on your hard disk. I couldn’t find any other obvious caveats.</p>
+<h2>Final version</h2>
+<p>This is what it sounds like when doves cry:</p>
+<pre>#!/bin/bash
+
+pip install "$1" 2&gt;/dev/null
+easy_install "$1" 2&gt;/dev/null
+brew install "$1" 2&gt;/dev/null
+npm install "$1" 2&gt;/dev/null
+yum install "$1" 2&gt;/dev/null
+dnf install "$1" 2&gt;/dev/null
+docker run "$1" 2&gt;/dev/null
+pkg install "$1" 2&gt;/dev/null
+apt-get install "$1" 2&gt;/dev/null
+steamcmd +app_update "$1" validate 2&gt;/dev/null
+#git clone https://github.com/"$1"/"$1" $1 2&gt;/dev/null
+[ -d "$1" ] &amp;&amp; bash -c 'cd "$1" ./configure; make; make install 2&gt;/dev/null'
+curl "$1" | bash 2&gt;/dev/null
+
+exit 0</pre>
+<h2>Conclusion</h2>
+<p>UIS is an interesting little thing, and the most interesting thing about it is that it works. I am sure lots of you have already created various wrapper scripts for yourself, things to speed up system updates or maintenance. Essentially, apart from the obvious fun intent embedded in its lines of text, UIS delivers a decent experience wherever you go. In other words, it’s a <em>portable</em> system updater. It aligns with my <a href="http://www.dedoimedo.com/computers/linux-more-professional-the-list.html">vision</a> of Linux professionalism, and the use of meta, human-readable packages to deliver content to users.</p>
+<p>Now, if you really want to have a truly robust and seamless experience, you will need to start adding lots of sanity checks, including checking for the installation path for package managers themselves, and then installing them if necessary, fixing broken indexes, cleaning and pruning and refreshing repo data, and other cool things. And then you realize you’re inventing a package manager of your own. Perhaps you should. ‘Tis the thin line of the wedge, but that’s how it starts. UIS for president.</p>
+<p>On an ever so slightly more serious note, you might want to try this on a non-production system, and then evolve the script as you see fit. Perhaps you could create update scripts (UUS), or maybe search scripts (USS), or even removal scripts (URS). And then, you can … Damn, we’re reinventing Linux. Stop, just stop. Enjoy your escapades, fellas.</p>
+<hr>
+<p><em>Cover Image: <a href="http://xkcd.com/1654/" target="_blank">Universal Install Script</a> by <a href="http://xkcd.com/about/" target="_blank">Randall Munroe</a> at <a href="http://xkcd.com/" target="_blank">XKCD</a>.<br>
+</em></p>
+			<!-- sharedaddy shortcode -->
+			</div><!-- .entry-content -->
+
+	<!-- .entry-meta -->
