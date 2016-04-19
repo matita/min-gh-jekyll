@@ -1,0 +1,210 @@
+---
+title: "alda-lang/alda"
+description: "alda - A music programming language for musicians. :notes:"
+link: "https://github.com/alda-lang/alda"
+saved: "2016-04-19 14:30:59"
+---
+<pre><code>                                       ________________________________
+                                      /    o   oooo ooo oooo   o o o  /\
+                                     /    oo  ooo  oo  oooo   o o o  / /
+                                    /    _________________________  / /
+                                   / // / // /// // /// // /// / / / /
+                                  /___ //////////////////////////_/ /
+                                  \____\________________________\_\/
+
+                                               ~ alda ~
+</code></pre>
+
+<h2 align="center"><a id="user-content-a-music-programming-language-for-musicians" class="anchor" href="https://github.com/alda-lang/alda?utm_source=SitePoint&amp;utm_medium=email&amp;utm_campaign=Versioning#a-music-programming-language-for-musicians" aria-hidden="true"><svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path d="M4 9h1v1h-1c-1.5 0-3-1.69-3-3.5s1.55-3.5 3-3.5h4c1.45 0 3 1.69 3 3.5 0 1.41-0.91 2.72-2 3.25v-1.16c0.58-0.45 1-1.27 1-2.09 0-1.28-1.02-2.5-2-2.5H4c-0.98 0-2 1.22-2 2.5s1 2.5 2 2.5z m9-3h-1v1h1c1 0 2 1.22 2 2.5s-1.02 2.5-2 2.5H9c-0.98 0-2-1.22-2-2.5 0-0.83 0.42-1.64 1-2.09v-1.16c-1.09 0.53-2 1.84-2 3.25 0 1.81 1.55 3.5 3 3.5h4c1.45 0 3-1.69 3-3.5s-1.5-3.5-3-3.5z"></path></svg></a>a music programming language for musicians</h2>
+
+<p align="center">
+
+<a href="http://clojars.org/alda">
+  <img src="https://camo.githubusercontent.com/3ea9e0eaba493561beaa75aa73a5f6f50c59c0dd/687474703a2f2f636c6f6a6172732e6f72672f616c64612f6c61746573742d76657273696f6e2e737667" alt="Clojars Project" data-canonical-src="http://clojars.org/alda/latest-version.svg">
+</a>
+<br>
+
+
+<b><a href="https://github.com/alda-lang/alda?utm_source=SitePoint&amp;utm_medium=email&amp;utm_campaign=Versioning#installation">Installation</a></b>
+|
+<b><a href="https://github.com/alda-lang/alda/blob/master/doc/index.md">Docs</a></b>
+|
+<b><a href="https://github.com/alda-lang/alda/blob/master/CHANGELOG.md">Changelog</a></b>
+|
+<b><a href="https://github.com/alda-lang/alda?utm_source=SitePoint&amp;utm_medium=email&amp;utm_campaign=Versioning#contributing">Contributing</a></b>
+
+(
+<a href="https://waffle.io/alda-lang/alda" alt="Features in Progress">
+  <img src="https://camo.githubusercontent.com/b62a46e416089d7e16fac1884990dc11059cf932/68747470733a2f2f62616467652e776166666c652e696f2f616c64612d6c616e672f616c64612e706e673f6c6162656c3d696e25323070726f6772657373267469746c653d496e25323050726f67726573733a" data-canonical-src="https://badge.waffle.io/alda-lang/alda.png?label=in%20progress&amp;title=In%20Progress:">
+</a>
+)
+
+<br>
+
+</p>
+
+<p><em>New to Alda? You may be interested in reading <a href="http://daveyarwood.github.io/alda/2015/09/05/alda-a-manifesto-and-gentle-introduction">this blog post</a> as an introduction.</em></p>
+
+<p>Inspired by other music/audio programming languages such as <a href="http://ppmck.wikidot.com/what-is-ppmck">PPMCK</a>,
+<a href="http://www.lilypond.org/">LilyPond</a> and <a href="http://chuck.cs.princeton.edu/">ChucK</a>, Alda aims to be a
+powerful and flexible programming language for the musician who wants to easily
+compose and generate music on the fly, using naught but a text editor.
+Alda is designed in a way that equally favors aesthetics, flexibility and
+ease of use, with (eventual) support for the text-based creation of all manner
+of music: classical, popular, chiptune, electroacoustic, and more!</p>
+
+<h2><a id="user-content-features" class="anchor" href="https://github.com/alda-lang/alda?utm_source=SitePoint&amp;utm_medium=email&amp;utm_campaign=Versioning#features" aria-hidden="true"><svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path d="M4 9h1v1h-1c-1.5 0-3-1.69-3-3.5s1.55-3.5 3-3.5h4c1.45 0 3 1.69 3 3.5 0 1.41-0.91 2.72-2 3.25v-1.16c0.58-0.45 1-1.27 1-2.09 0-1.28-1.02-2.5-2-2.5H4c-0.98 0-2 1.22-2 2.5s1 2.5 2 2.5z m9-3h-1v1h1c1 0 2 1.22 2 2.5s-1.02 2.5-2 2.5H9c-0.98 0-2-1.22-2-2.5 0-0.83 0.42-1.64 1-2.09v-1.16c-1.09 0.53-2 1.84-2 3.25 0 1.81 1.55 3.5 3 3.5h4c1.45 0 3-1.69 3-3.5s-1.5-3.5-3-3.5z"></path></svg></a>Features</h2>
+
+<ul>
+<li>Easy to understand, markup-like syntax</li>
+<li>Perfect for musicians who don't know how to program and programmers who don't know how to music</li>
+<li>Represent scores as text files and play them back with the <code>alda</code> command-line tool</li>
+<li><a href="https://github.com/alda-lang/alda/blob/master/doc/alda-repl.md">Interactive REPL</a> lets you type Alda code and hear the results in real time</li>
+<li><a href="https://github.com/alda-lang/alda/blob/master/doc/alda-lisp.md">Underlying Clojure DSL</a> allows you to <a href="https://github.com/alda-lang/alda/blob/master/doc/alda-now.md">use Alda directly in your Clojure project</a>.</li>
+<li><a href="https://github.com/alda-lang/alda/blob/master/doc/inline-clojure-code.md">Inline Clojure code</a> allows you to <a href="https://www.youtube.com/watch?v=vYNnPx8fZBs">hack the Gibson</a> and write scores programmatically</li>
+<li>Create MIDI music using any of the instruments in the <a href="http://www.midi.org/techspecs/gm1sound.php">General MIDI Sound Set</a></li>
+</ul>
+
+<h3><a id="user-content-todo" class="anchor" href="https://github.com/alda-lang/alda?utm_source=SitePoint&amp;utm_medium=email&amp;utm_campaign=Versioning#todo" aria-hidden="true"><svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path d="M4 9h1v1h-1c-1.5 0-3-1.69-3-3.5s1.55-3.5 3-3.5h4c1.45 0 3 1.69 3 3.5 0 1.41-0.91 2.72-2 3.25v-1.16c0.58-0.45 1-1.27 1-2.09 0-1.28-1.02-2.5-2-2.5H4c-0.98 0-2 1.22-2 2.5s1 2.5 2 2.5z m9-3h-1v1h1c1 0 2 1.22 2 2.5s-1.02 2.5-2 2.5H9c-0.98 0-2-1.22-2-2.5 0-0.83 0.42-1.64 1-2.09v-1.16c-1.09 0.53-2 1.84-2 3.25 0 1.81 1.55 3.5 3 3.5h4c1.45 0 3-1.69 3-3.5s-1.5-3.5-3-3.5z"></path></svg></a>TODO</h3>
+
+<ul>
+<li><a href="https://github.com/alda-lang/alda/issues/100">Define and use waveform synthesis instruments</a></li>
+<li><a href="https://github.com/alda-lang/alda/issues/85">Import MIDI files</a></li>
+<li><a href="https://github.com/alda-lang/alda/issues/44">Export to MusicXML</a> for inter-operability with other music software</li>
+<li><a href="https://github.com/alda-lang/alda/issues/54">A more robust REPL</a>, tailor-made for editing scores interactively</li>
+<li><a href="https://github.com/alda-lang/alda/issues/37">A plugin system</a> allowing users to define custom/unofficial syntax in Alda scores</li>
+</ul>
+
+<p>If you're a developer and you'd like to help, come on in -- <a href="https://github.com/alda-lang/alda?utm_source=SitePoint&amp;utm_medium=email&amp;utm_campaign=Versioning#contributing">the water's fine</a>!</p>
+
+<h2><a id="user-content-syntax-example" class="anchor" href="https://github.com/alda-lang/alda?utm_source=SitePoint&amp;utm_medium=email&amp;utm_campaign=Versioning#syntax-example" aria-hidden="true"><svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path d="M4 9h1v1h-1c-1.5 0-3-1.69-3-3.5s1.55-3.5 3-3.5h4c1.45 0 3 1.69 3 3.5 0 1.41-0.91 2.72-2 3.25v-1.16c0.58-0.45 1-1.27 1-2.09 0-1.28-1.02-2.5-2-2.5H4c-0.98 0-2 1.22-2 2.5s1 2.5 2 2.5z m9-3h-1v1h1c1 0 2 1.22 2 2.5s-1.02 2.5-2 2.5H9c-0.98 0-2-1.22-2-2.5 0-0.83 0.42-1.64 1-2.09v-1.16c-1.09 0.53-2 1.84-2 3.25 0 1.81 1.55 3.5 3 3.5h4c1.45 0 3-1.69 3-3.5s-1.5-3.5-3-3.5z"></path></svg></a>Syntax example</h2>
+
+<pre><code>piano: o3
+g8 a b &gt; c d e f+ g | a b &gt; c d e f+ g4
+g8 f+ e d c &lt; b a g | f+ e d c &lt; b a g4
+&lt;&lt; g1/&gt;g/&gt;g/b/&gt;d/g
+</code></pre>
+
+<p>For more examples, see these <a href="https://github.com/alda-lang/alda/tree/master/examples">example scores</a>.</p>
+
+<h2><a id="user-content-installation" class="anchor" href="https://github.com/alda-lang/alda?utm_source=SitePoint&amp;utm_medium=email&amp;utm_campaign=Versioning#installation" aria-hidden="true"><svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path d="M4 9h1v1h-1c-1.5 0-3-1.69-3-3.5s1.55-3.5 3-3.5h4c1.45 0 3 1.69 3 3.5 0 1.41-0.91 2.72-2 3.25v-1.16c0.58-0.45 1-1.27 1-2.09 0-1.28-1.02-2.5-2-2.5H4c-0.98 0-2 1.22-2 2.5s1 2.5 2 2.5z m9-3h-1v1h1c1 0 2 1.22 2 2.5s-1.02 2.5-2 2.5H9c-0.98 0-2-1.22-2-2.5 0-0.83 0.42-1.64 1-2.09v-1.16c-1.09 0.53-2 1.84-2 3.25 0 1.81 1.55 3.5 3 3.5h4c1.45 0 3-1.69 3-3.5s-1.5-3.5-3-3.5z"></path></svg></a>Installation</h2>
+
+<blockquote>
+<p>You must have <a href="https://www.java.com/en/download">Java</a> 7+ installed on your system in order to run Alda.</p>
+
+<p>(Chances are, you already have a recent enough version of Java installed.)</p>
+</blockquote>
+
+<h3><a id="user-content-mac-os-x--linux" class="anchor" href="https://github.com/alda-lang/alda?utm_source=SitePoint&amp;utm_medium=email&amp;utm_campaign=Versioning#mac-os-x--linux" aria-hidden="true"><svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path d="M4 9h1v1h-1c-1.5 0-3-1.69-3-3.5s1.55-3.5 3-3.5h4c1.45 0 3 1.69 3 3.5 0 1.41-0.91 2.72-2 3.25v-1.16c0.58-0.45 1-1.27 1-2.09 0-1.28-1.02-2.5-2-2.5H4c-0.98 0-2 1.22-2 2.5s1 2.5 2 2.5z m9-3h-1v1h1c1 0 2 1.22 2 2.5s-1.02 2.5-2 2.5H9c-0.98 0-2-1.22-2-2.5 0-0.83 0.42-1.64 1-2.09v-1.16c-1.09 0.53-2 1.84-2 3.25 0 1.81 1.55 3.5 3 3.5h4c1.45 0 3-1.69 3-3.5s-1.5-3.5-3-3.5z"></path></svg></a>Mac OS X / Linux</h3>
+
+<ul>
+<li><p>Go to the <a href="https://github.com/alda-lang/alda/releases/latest">latest release</a> page and download <code>alda</code>.</p></li>
+<li><p>Make the file executable:</p>
+
+<pre><code>chmod +x alda
+</code></pre></li>
+<li><p>Make <code>alda</code> available on your <code>$PATH</code>:</p>
+
+<blockquote>
+<p>Using <code>/usr/local/bin</code> here as an example;
+you can use any directory on your <code>$PATH</code>.</p>
+</blockquote>
+
+<pre><code>mv alda /usr/local/bin
+</code></pre></li>
+</ul>
+
+<h3><a id="user-content-windows" class="anchor" href="https://github.com/alda-lang/alda?utm_source=SitePoint&amp;utm_medium=email&amp;utm_campaign=Versioning#windows" aria-hidden="true"><svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path d="M4 9h1v1h-1c-1.5 0-3-1.69-3-3.5s1.55-3.5 3-3.5h4c1.45 0 3 1.69 3 3.5 0 1.41-0.91 2.72-2 3.25v-1.16c0.58-0.45 1-1.27 1-2.09 0-1.28-1.02-2.5-2-2.5H4c-0.98 0-2 1.22-2 2.5s1 2.5 2 2.5z m9-3h-1v1h1c1 0 2 1.22 2 2.5s-1.02 2.5-2 2.5H9c-0.98 0-2-1.22-2-2.5 0-0.83 0.42-1.64 1-2.09v-1.16c-1.09 0.53-2 1.84-2 3.25 0 1.81 1.55 3.5 3 3.5h4c1.45 0 3-1.69 3-3.5s-1.5-3.5-3-3.5z"></path></svg></a>Windows</h3>
+
+<ul>
+<li><p>Go to the <a href="https://github.com/alda-lang/alda/releases/latest">latest release</a> page and download <code>alda.exe</code>.</p></li>
+<li><p>Make the file executable:</p>
+
+<ul>
+<li>Go to your downloads folder, right click <code>alda.exe</code> to open up its file properties, and click <code>unblock</code></li>
+</ul></li>
+<li><p>Copy <code>alda.exe</code> to a location that makes sense for you. If you follow standard Windows conversions, this means creating a folder called <code>Alda</code> in your <code>Program Files (x86)</code> folder, and then moving the <code>alda.exe</code> file into it.</p></li>
+<li><p>Make <code>alda</code> available on your <code>PATH</code>:</p>
+
+<ul>
+<li> Go to the Windows <code>System</code> control panel option, select <code>Advanced System Settings</code> and then click on <code>Environment Variables</code>, then edit the <code>PATH</code> variable (either specifically for your user account or for the system in general) and add <code>;C:\Program Files (x86)\Alda</code> to the end. Save this edit. Note that if you placed <code>alda.exe</code> in a different folder, you will need to use that folder's full path name in your edit, instead.</li>
+</ul></li>
+</ul>
+
+<p>You will now be able to run Alda from anywhere in the command prompt by typing <code>alda</code>, but note that command prompts that were already open will need to be restarted before they will pick up on the new PATH value.</p>
+
+<h3><a id="user-content-updating-alda" class="anchor" href="https://github.com/alda-lang/alda?utm_source=SitePoint&amp;utm_medium=email&amp;utm_campaign=Versioning#updating-alda" aria-hidden="true"><svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path d="M4 9h1v1h-1c-1.5 0-3-1.69-3-3.5s1.55-3.5 3-3.5h4c1.45 0 3 1.69 3 3.5 0 1.41-0.91 2.72-2 3.25v-1.16c0.58-0.45 1-1.27 1-2.09 0-1.28-1.02-2.5-2-2.5H4c-0.98 0-2 1.22-2 2.5s1 2.5 2 2.5z m9-3h-1v1h1c1 0 2 1.22 2 2.5s-1.02 2.5-2 2.5H9c-0.98 0-2-1.22-2-2.5 0-0.83 0.42-1.64 1-2.09v-1.16c-1.09 0.53-2 1.84-2 3.25 0 1.81 1.55 3.5 3 3.5h4c1.45 0 3-1.69 3-3.5s-1.5-3.5-3-3.5z"></path></svg></a>Updating Alda</h3>
+
+<p>Once you have Alda installed, you can update to the latest version at any time by running:</p>
+
+<pre><code>alda update
+</code></pre>
+
+<h3><a id="user-content-midi-soundfonts" class="anchor" href="https://github.com/alda-lang/alda?utm_source=SitePoint&amp;utm_medium=email&amp;utm_campaign=Versioning#midi-soundfonts" aria-hidden="true"><svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path d="M4 9h1v1h-1c-1.5 0-3-1.69-3-3.5s1.55-3.5 3-3.5h4c1.45 0 3 1.69 3 3.5 0 1.41-0.91 2.72-2 3.25v-1.16c0.58-0.45 1-1.27 1-2.09 0-1.28-1.02-2.5-2-2.5H4c-0.98 0-2 1.22-2 2.5s1 2.5 2 2.5z m9-3h-1v1h1c1 0 2 1.22 2 2.5s-1.02 2.5-2 2.5H9c-0.98 0-2-1.22-2-2.5 0-0.83 0.42-1.64 1-2.09v-1.16c-1.09 0.53-2 1.84-2 3.25 0 1.81 1.55 3.5 3 3.5h4c1.45 0 3-1.69 3-3.5s-1.5-3.5-3-3.5z"></path></svg></a>MIDI soundfonts</h3>
+
+<p>Default JVM soundfonts usually are of low quality. We recommend installing a good freeware soundfont like FluidR3 to make your MIDI instruments sound a lot nicer. For your convenience, there is a script in this repo that will install the FluidR3 soundfont for Mac and Linux users.</p>
+
+<blockquote>
+<p>If you're a Windows user and you know how to install a MIDI soundfont to the Java Virtual Machine, please let us know!</p>
+</blockquote>
+
+<p>To install FluidR3 on your Mac or Linux system, clone this repo and run:</p>
+
+<pre><code>scripts/install-fluidr3
+</code></pre>
+
+<p>This will download FluidR3 and replace <code>~/.gervill/soundbank-emg.sf2</code> (your JVM's default soundfont) with it.</p>
+
+<h3><a id="user-content-editor-plugins" class="anchor" href="https://github.com/alda-lang/alda?utm_source=SitePoint&amp;utm_medium=email&amp;utm_campaign=Versioning#editor-plugins" aria-hidden="true"><svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path d="M4 9h1v1h-1c-1.5 0-3-1.69-3-3.5s1.55-3.5 3-3.5h4c1.45 0 3 1.69 3 3.5 0 1.41-0.91 2.72-2 3.25v-1.16c0.58-0.45 1-1.27 1-2.09 0-1.28-1.02-2.5-2-2.5H4c-0.98 0-2 1.22-2 2.5s1 2.5 2 2.5z m9-3h-1v1h1c1 0 2 1.22 2 2.5s-1.02 2.5-2 2.5H9c-0.98 0-2-1.22-2-2.5 0-0.83 0.42-1.64 1-2.09v-1.16c-1.09 0.53-2 1.84-2 3.25 0 1.81 1.55 3.5 3 3.5h4c1.45 0 3-1.69 3-3.5s-1.5-3.5-3-3.5z"></path></svg></a>Editor Plugins</h3>
+
+<p>For the best experience when editing Alda score files, install the Alda file-type plugin for your editor of choice.</p>
+
+<blockquote>
+<p>Don't see a plugin for your favorite editor? Write your own and open a Pull Request to add it here! :)</p>
+</blockquote>
+
+<ul>
+<li><a href="https://github.com/archimedespi/sublime-alda">Sublime Text</a></li>
+<li><a href="https://github.com/MadcapJake/language-alda">Atom</a></li>
+<li><a href="https://github.com/daveyarwood/vim-alda">Vim</a></li>
+<li><a href="https://github.com/jgkamat/alda-mode">Emacs</a></li>
+</ul>
+
+<h2><a id="user-content-demo" class="anchor" href="https://github.com/alda-lang/alda?utm_source=SitePoint&amp;utm_medium=email&amp;utm_campaign=Versioning#demo" aria-hidden="true"><svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path d="M4 9h1v1h-1c-1.5 0-3-1.69-3-3.5s1.55-3.5 3-3.5h4c1.45 0 3 1.69 3 3.5 0 1.41-0.91 2.72-2 3.25v-1.16c0.58-0.45 1-1.27 1-2.09 0-1.28-1.02-2.5-2-2.5H4c-0.98 0-2 1.22-2 2.5s1 2.5 2 2.5z m9-3h-1v1h1c1 0 2 1.22 2 2.5s-1.02 2.5-2 2.5H9c-0.98 0-2-1.22-2-2.5 0-0.83 0.42-1.64 1-2.09v-1.16c-1.09 0.53-2 1.84-2 3.25 0 1.81 1.55 3.5 3 3.5h4c1.45 0 3-1.69 3-3.5s-1.5-3.5-3-3.5z"></path></svg></a>Demo</h2>
+
+<p>To play a file:</p>
+
+<pre><code>alda play --file examples/bach_cello_suite_no_1.alda
+</code></pre>
+
+<p>To play arbitrary code:</p>
+
+<pre><code>alda play --code "piano: c6 d12 e6 g12~4"
+</code></pre>
+
+<p>To start an <a href="https://github.com/alda-lang/alda/blob/master/doc/alda-repl.md">Alda REPL</a>:</p>
+
+<pre><code>alda repl
+</code></pre>
+
+<h2><a id="user-content-documentation" class="anchor" href="https://github.com/alda-lang/alda?utm_source=SitePoint&amp;utm_medium=email&amp;utm_campaign=Versioning#documentation" aria-hidden="true"><svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path d="M4 9h1v1h-1c-1.5 0-3-1.69-3-3.5s1.55-3.5 3-3.5h4c1.45 0 3 1.69 3 3.5 0 1.41-0.91 2.72-2 3.25v-1.16c0.58-0.45 1-1.27 1-2.09 0-1.28-1.02-2.5-2-2.5H4c-0.98 0-2 1.22-2 2.5s1 2.5 2 2.5z m9-3h-1v1h1c1 0 2 1.22 2 2.5s-1.02 2.5-2 2.5H9c-0.98 0-2-1.22-2-2.5 0-0.83 0.42-1.64 1-2.09v-1.16c-1.09 0.53-2 1.84-2 3.25 0 1.81 1.55 3.5 3 3.5h4c1.45 0 3-1.69 3-3.5s-1.5-3.5-3-3.5z"></path></svg></a>Documentation</h2>
+
+<p>Alda's documentation can be found <a href="https://github.com/alda-lang/alda/blob/master/doc/index.md">here</a>.</p>
+
+<h2><a id="user-content-contributing" class="anchor" href="https://github.com/alda-lang/alda?utm_source=SitePoint&amp;utm_medium=email&amp;utm_campaign=Versioning#contributing" aria-hidden="true"><svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path d="M4 9h1v1h-1c-1.5 0-3-1.69-3-3.5s1.55-3.5 3-3.5h4c1.45 0 3 1.69 3 3.5 0 1.41-0.91 2.72-2 3.25v-1.16c0.58-0.45 1-1.27 1-2.09 0-1.28-1.02-2.5-2-2.5H4c-0.98 0-2 1.22-2 2.5s1 2.5 2 2.5z m9-3h-1v1h1c1 0 2 1.22 2 2.5s-1.02 2.5-2 2.5H9c-0.98 0-2-1.22-2-2.5 0-0.83 0.42-1.64 1-2.09v-1.16c-1.09 0.53-2 1.84-2 3.25 0 1.81 1.55 3.5 3 3.5h4c1.45 0 3-1.69 3-3.5s-1.5-3.5-3-3.5z"></path></svg></a>Contributing</h2>
+
+<p>PRs welcome! See: <a href="https://github.com/alda-lang/alda/blob/master/CONTRIBUTING.md">CONTRIBUTING.md</a></p>
+
+<p><img class="emoji" title=":clap:" alt=":clap:" src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f44f.png" height="20" width="20" align="absmiddle"> <img class="emoji" title=":clap:" alt=":clap:" src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f44f.png" height="20" width="20" align="absmiddle"> <img class="emoji" title=":clap:" alt=":clap:" src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f44f.png" height="20" width="20" align="absmiddle"> A big shout-out to our <a href="https://github.com/alda-lang/alda/graphs/contributors">contributors</a>! <img class="emoji" title=":clap:" alt=":clap:" src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f44f.png" height="20" width="20" align="absmiddle"> <img class="emoji" title=":clap:" alt=":clap:" src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f44f.png" height="20" width="20" align="absmiddle"> <img class="emoji" title=":clap:" alt=":clap:" src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f44f.png" height="20" width="20" align="absmiddle"></p>
+
+<h2><a id="user-content-support-discussion-comaraderie" class="anchor" href="https://github.com/alda-lang/alda?utm_source=SitePoint&amp;utm_medium=email&amp;utm_campaign=Versioning#support-discussion-comaraderie" aria-hidden="true"><svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path d="M4 9h1v1h-1c-1.5 0-3-1.69-3-3.5s1.55-3.5 3-3.5h4c1.45 0 3 1.69 3 3.5 0 1.41-0.91 2.72-2 3.25v-1.16c0.58-0.45 1-1.27 1-2.09 0-1.28-1.02-2.5-2-2.5H4c-0.98 0-2 1.22-2 2.5s1 2.5 2 2.5z m9-3h-1v1h1c1 0 2 1.22 2 2.5s-1.02 2.5-2 2.5H9c-0.98 0-2-1.22-2-2.5 0-0.83 0.42-1.64 1-2.09v-1.16c-1.09 0.53-2 1.84-2 3.25 0 1.81 1.55 3.5 3 3.5h4c1.45 0 3-1.69 3-3.5s-1.5-3.5-3-3.5z"></path></svg></a>Support, Discussion, Comaraderie</h2>
+
+<p><strong>Slack</strong>: Sign up to the universe of Clojure chat @ <a href="http://clojurians.net/">http://clojurians.net/</a>, then join us on #alda</p>
+
+<p><strong>Reddit</strong>: Come join us in <a href="https://www.reddit.com/r/alda/">/r/alda</a>, where you can discuss all things Alda and share your Alda scores!</p>
+
+<h2><a id="user-content-license" class="anchor" href="https://github.com/alda-lang/alda?utm_source=SitePoint&amp;utm_medium=email&amp;utm_campaign=Versioning#license" aria-hidden="true"><svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path d="M4 9h1v1h-1c-1.5 0-3-1.69-3-3.5s1.55-3.5 3-3.5h4c1.45 0 3 1.69 3 3.5 0 1.41-0.91 2.72-2 3.25v-1.16c0.58-0.45 1-1.27 1-2.09 0-1.28-1.02-2.5-2-2.5H4c-0.98 0-2 1.22-2 2.5s1 2.5 2 2.5z m9-3h-1v1h1c1 0 2 1.22 2 2.5s-1.02 2.5-2 2.5H9c-0.98 0-2-1.22-2-2.5 0-0.83 0.42-1.64 1-2.09v-1.16c-1.09 0.53-2 1.84-2 3.25 0 1.81 1.55 3.5 3 3.5h4c1.45 0 3-1.69 3-3.5s-1.5-3.5-3-3.5z"></path></svg></a>License</h2>
+
+<p>Copyright © 2012-2016 Dave Yarwood et al</p>
+
+<p>Distributed under the Eclipse Public License version 1.0.</p>
