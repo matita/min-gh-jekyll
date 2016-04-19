@@ -1,0 +1,137 @@
+---
+title: "Technical Debt: Rescuing Legacy Code through Refactoring"
+description: "Jeroen Moons offers advice and lessons learned on how to get a legacy codebase under control and bring it to a new level of maturity."
+link: "http://www.sitepoint.com/technical-debt-rescuing-legacy-code-through-refactoring/"
+saved: "2016-04-19 14:29:10"
+---
+
+    <p><em>How can you get a legacy codebase under control and bring it to a new level of maturity? In this post, Jeroen summarizes the lessons learned from years of working on a large legacy web application. This article was originally published by <a href="http://marketing.intracto.com/paying-technical-debt-how-to-rescue-legacy-code-through-refactoring">intracto</a>.</em></p>
+<hr>
+<h2 id="legacy-code-save">Legacy Code Can Be Saved by Refactoring</h2>
+<p>I have good news for you! Squirrels plant thousands of new trees every year by simply forgetting where they leave their acorns. Also: <strong>your project can be saved</strong>.</p>
+<p>No matter how awful a muddy legacy code mess your boss has bravely volunteered for you to deal with, there <em>is</em> a way out of the mire. There will be twists and turns along the way, and a monster behind every other tree. But, one step at a time, you will get there. </p>
+<h3 id="fear-no-evil">Fear no evil</h3>
+
+<p>Fair enough, you didn’t ask for this horrific quest. The blood-covered ‘Here Be Dragons’ sign near the entrance of the code swamp induces a strong urge to call in sick for the next couple of years. At first glance, you’d rather have some light lunch first, and perhaps a leisurely stroll through the meadow after that, than being the petrified peasant to rid said swamp of its monsters. </p>
+<p><img src="http://dab1nmslvvntp.cloudfront.net/wp-content/uploads/2016/04/1460552372murky-forest.jpg" alt="Murky forest" width="600" height="233" class="aligncenter size-full wp-image-128346"></p>
+<p>Unfortunately though, you are forced past the sign by a galant yet firm nudge from the boss, who will stay behind to defend the town and in the process have some light lunch with the duke owning the swamp.</p>
+<p>Bar some drastic measures, you can’t change these basic facts. However, <strong>you <em>can</em> turn a swamp into a magnificent meadow</strong> with just one muddy patch where cows live! </p>
+<h2 id="how-did">Technical Debt: How Did It Get This Way?</h2>
+<p>As you poke and prod the area just past the warning sign with a stick, you might wonder: how on earth can anyone have let this happen? <em>Someone must have seen this coming, surely?</em> Were the people who wrote this code <em>that</em> incompetent?</p>
+<p>Possibly. But not more so than anyone else. When push comes to shove, however confident people might seem, nobody else knows what they’re doing either.</p>
+<p><strong>Incompetence is far from the whole story.</strong> The principle at work here is usually referred to with a metaphor: <a href="https://www.youtube.com/watch?v=pqeJFYwnkjE">Technical Debt</a>.</p>
+<h3 id="cancer">Code cancer</h3>
+<p>The idea is that during development of any project, shortcuts will be taken. Ugly hacks will be allowed to get ahead quickly, just this once. This way, a debt is accumulated: code that does the job any way it can but is completely incapable of being maintained properly, let alone built upon.</p>
+<p>And so, bit by bit, a project’s code is corrupted. Nobody cares about this as long as they’re not the one having to touch it. But eventually someone has to, and it will probably be you.</p>
+<p>This principle is at work in any project, and if it isn’t it most likely means you’re not moving fast enough. Your competition <em>will</em> take shortcuts, getting new features out more quickly. As a result, <em>your precious users will leave</em>, and join the party in the swamp next door and have a Long Island Iced Tea at the cocktail bar there instead of standing in your impeccable square meter meadow you’ve painstakingly created over the past year. Your meadow might be pretty in and of itself, but there’s just not much going on there.</p>
+<p><img src="http://dab1nmslvvntp.cloudfront.net/wp-content/uploads/2016/04/1460552429party-swamp-color.jpg" alt="party swamp color" width="600" height="241" class="aligncenter size-full wp-image-128347"></p>
+<p>So, <strong>any healthy project will accumulate some technical debt</strong>, but in order not to go bankrupt — the code getting so hard to maintain it becomes unmanageable — at some point this debt will have to be settled.</p>
+<p>That is where the frightened and resentful peasant comes in, <em>forced to pay the debt</em> in the swamp owner’s stead. Paying this debt is often referred to as <a href="http://martinfowler.com/books/refactoring.html">refactoring</a>: swapping a bit of code with another bit that does exactly the same but can be maintained and expanded more easily.</p>
+<h2 id="persuading">Persuading the Customer</h2>
+<p>The duke, being the owner of the swamp, has a bit to say about which monsters you should be adding. There are always <em>new features</em> your customer wants to implement, the deadline for each one is last week and you should feel incompetent for not having finished all of them two weeks ago. So you will probably have a bit of explaining to do to convince him he needs to <em>let you rebuild</em> what he perceives as being in his possession already.</p>
+<p>This is a critical point. If you <em>don’t succeed</em> in swaying your customer to start paying what he owes, technical debt will grow to the point of collapse. You will be the guy left in the rubble, held accountable.</p>
+<p><img src="http://dab1nmslvvntp.cloudfront.net/wp-content/uploads/2016/04/1460552472mayhem.jpg" alt="mayhem" width="600" height="275" class="aligncenter size-full wp-image-128348"></p>
+<p>In the end, <strong>your customer and you want exactly the same thing</strong>: have a fun and painless job that earns everyone involved a living. This follows from a <em>stable project</em> built from code you can change without the whole thing coming down on top of you.</p>
+<h3 id="fight">Fight for your freedom</h3>
+<p>So for your own good, you need to make the situation clear. I think the best way to do it is to describe the impending doom lurking just around the corner, what the alternative is, and let the swamp owner know your good intentions:</p>
+<ul>
+<li><strong>Explain what technical debt means</strong>, and how it makes development slow down to a halt if it gets too high. The customer has to realize in which ways this will cost him: time spent finding bugs, fixing them and creating new ones, insufficient time to add features and advance his business. </li>
+<li><strong>Refactor with clear short-term goals in mind</strong>. You can add a new feature in a week, or you can refactor for a week and add it in a day, with the prospect of being able to add similar features in the future very easily. Show how option two will be more expensive short term but infinitely cheaper in the long term.</li>
+<li><strong>Point out that you want the best for your customer</strong> and yourself, and that these two concerns are really the same thing. </li>
+</ul>
+<p>Once you have the swamp owner on your side, the hardest part is over. You now have the freedom to <em>move the project in the right direction</em>.</p>
+<h2 id="swamp">A New Swamp Do Not Make</h2>
+<p>You can recover from a huge mess; <em>don’t replace it with a new one</em>. Greenfield rewrites seldom work out; most never get released. </p>
+<p>When you finally convince the duke that people who stroll into his swamp consistently don’t come out again, he might want to build a new version. You might be tempted to comply, starting anew using shiny new tools, convinced everything will be better when you’re done. <strong>Don’t.</strong></p>
+<p><img src="http://dab1nmslvvntp.cloudfront.net/wp-content/uploads/2016/04/1460552510caution.jpg" alt="caution" width="600" height="200" class="aligncenter size-full wp-image-128349"></p>
+<p>The main risks of a rewrite, as I see it, are:</p>
+<ul>
+<li><strong>The Big Red Button Switch</strong>: the new code has never run in production before and is guaranteed to explode on first production use.</li>
+<li><strong>Migration of data</strong>: exporting and importing data from the old system while keeping up with live data coming in is likely to go wrong.</li>
+<li><strong>Mistakes old and new</strong>: while rewriting code, you will create bugs, recreate old bugs, miss subtleties and implicit features … Often these problems will occur in parts of the system that were not really problematic to begin with. You lose lots of time while not adding any value to the business of your customer.</li>
+<li><strong>Keeping up with the business</strong>: during the long time you’re working on the new project, the old project needs to keep evolving with the business needs as well. The new code will need to rebuild the old features <em>and</em> add the new features continually being added to the old project.</li>
+</ul>
+<p><strong>So, don’t start over. Improve what you have.</strong> </p>
+<h2 id="problems">Make Problems Visible</h2>
+<p>This might sound vaguely unpleasant, but the monsters in your swamp should be spitting in your face, dragons burning off the hairs on your arms, the gnome living near the mushroom-shaped rock kicking you in the shins.</p>
+<p><strong>These nuisances are in there ruining your project</strong>, whether you notice them or not. You need to face them in order to get rid of them. You need to be able to <strong>see what is going wrong</strong> at any point in time.</p>
+<ul>
+<li><strong>Visualize errors</strong>: make some time every week to fix some of the errors that occur most often. Eventually the graph will flatline, hopefully beating you to it.</li>
+<li><strong>Monitor your environment</strong>: this is critical in diagnosing bottlenecks and impending crises (see next paragraph). </li>
+</ul>
+<p><img src="http://dab1nmslvvntp.cloudfront.net/wp-content/uploads/2016/04/1460552550errors.jpg" alt="errors" width="600" height="239" class="aligncenter size-full wp-image-128350"></p>
+<p>Now you know where and when it hurts, enabling you to administer first aid instead of potentially spending all your time scratching itches on a dying man.</p>
+<h2 id="what-hurts">Fight What Hurts Most</h2>
+<p>Next, it is vital to have a <strong>vision of the system as it ought to be</strong> in a perfect world — a mental picture over your ultimate meadow guiding your every move:</p>
+<p><img src="http://dab1nmslvvntp.cloudfront.net/wp-content/uploads/2016/04/1460552581perfect-meadow.jpg" alt="perfect meadow" width="600" height="209" class="aligncenter size-full wp-image-128351"></p>
+<p>Scratch it in the mud so you don’t forget. By taking <strong>small intermediate steps in the direction of heaven</strong>, you will find yourself looking through the fence eventually.</p>
+<p>The key is now to take the information you get from your monitoring tools, and the yearning for Valhalla, combining the two to decide <strong>which problem to tackle first</strong>. Your biggest problem might not be a realistic goal right away, but <em>start refactoring manageable roadblocks first</em> and make your way there.</p>
+<p>The cripple pixie that seems cross with you for some reason might annoy you, but she’s harmless. Your time is better spent contemplating how to kick the ogre out.</p>
+<h2 id="code-mine">This Code Is Mine</h2>
+<p>Fixing problems that matter is essential, but this <strong>does not imply details do not matter</strong>. In fact, they are probably just as important.</p>
+<p><img src="http://dab1nmslvvntp.cloudfront.net/wp-content/uploads/2016/04/1460552631swamp-camping.jpg" alt="swamp camping" width="600" height="207" class="aligncenter size-full wp-image-128352"></p>
+<p>The <a href="http://programmer.97things.oreilly.com/wiki/index.php/The_Boy_Scout_Rule">Boy Scout rule</a> of <strong>keeping the camping ground cleaner than you found it</strong> is rule number one in the swamp survival guide. By continually cleaning up clutter, taking care not to leave new filth anywhere, your environment will get ever cleaner, until you find yourself in the pristine meadow you crave.</p>
+<p>To achieve this, attitude is everything. Strive towards clean code.</p>
+<ul>
+<li><strong>You have to care</strong>: the code is yours and anyone who touches it has to answer to you. Sloppiness and carelessness can not be tolerated.</li>
+<li><strong>The whole team has to care</strong>: however much trouble you go through to clean up a project, if somebody undoes your hard work behind you, you’re getting nowhere.</li>
+<li><strong>Discipline is of the essence</strong>: once you (<em>or any team member!</em>) start letting things slide, it will be next to impossible to escape.</li>
+<li><strong>Keep taking small steps</strong>: in the right direction, of course. Progress is way more important than achieving perfection.</li>
+<li><strong>Small victories generate momentum</strong>: you will start seeing really nice patches of code, inducing you to clean up adjacent patches as well. </li>
+</ul>
+<h2 id="lib-build">Build a Library</h2>
+<p>A good indicator of civilization is the number of libraries per square meter. Therefore, to introduce civility into your project, this seems like an excellent approach.</p>
+<p><img src="http://dab1nmslvvntp.cloudfront.net/wp-content/uploads/2016/04/1460552667library.jpg" alt="library" width="600" height="288" class="aligncenter size-full wp-image-128353"></p>
+<p>Even the most treacherous morass will have, here and there, a few spots that aren’t too bad on their own. Whenever you find a bit of code that does a thing well, <strong>move it to your brand new library</strong> so it can be reused.</p>
+<p>Doubtless, the code you’re expected to rescue will do things completely wrong. It will somehow completely ignore and circumvent any standards or best practices that would make your life as a developer easier. Nobody will fix this for you, there is only one way to go: <em>start following these practices and standards in your new code</em>. </p>
+<p><strong>Make available industry-standard components or modules</strong> and start using them. You will have code using old or custom ways to accomplish things, but that doesn’t mean you can’t build new stuff the proper way. </p>
+<h3 id="refactor-new">Refactor using your new tools</h3>
+<p>Once the tools are there, you can <strong>refactor</strong> existing code to use them as well. You don’t have to keep a marathon sprint to do this; just whenever you stumble upon a case that does things the old way, fix that case. Small steps. You will get to a point where everything is replaced and you won’t recognize the old code anymore.</p>
+<p>Often, code would be quite acceptable, if it weren’t for the myriad <strong>dependencies</strong> scattered throughout (like session access, modules, or services consulted on the spot). A good way to handle this is by <em>pushing these out of the method</em> or function the code resides in, so they come in through the method’s parameters. That way, you make that bit of code <strong>self-contained</strong> and it becomes possible to move it around or split it up further.</p>
+<p>And once code is self-contained, <strong>you can test it</strong>.</p>
+<h2 id="confidence-testing">Building Confidence: Testing</h2>
+<p>A violent ogre roaming through the mud can do more damage than a violent ogre in chains. A great way to gain some control over your system is trying to put chains on the parts that are <strong>most critical</strong> and thus potentially cause the <strong>most damage</strong> — tests, preferably automated, that run on every build.</p>
+<p><img src="http://dab1nmslvvntp.cloudfront.net/wp-content/uploads/2016/04/1460552701chain.jpg" alt="chain" width="600" height="222" class="aligncenter size-full wp-image-128354"></p>
+<p>The more automated tests you have to check the behavior of the system, the more <strong>confidence</strong> you can have when changing things. Because, if anything breaks, your tests will tell you something is wrong so you can fix it before the problem makes it to the <strong>production environment</strong>.</p>
+<h3 id="high-level-tests">High-level tests</h3>
+<p>One way to start testing your system is by adding <strong>acceptance tests for critical scenarios</strong> within your system. For an average e-commerce system, this would definitely include the checkout process: if no orders come in, you lose money. If orders come in but there’s a problem processing them, that’s something you can recover from without any customer noticing. With tests like that in place, you can protect yourself from unwittingly introducing major problems.</p>
+<h3 id="low-level-tests">Low-level tests</h3>
+<p>On a <strong>lower level</strong>, you can apply <a href="http://martinfowler.com/bliki/UnitTest.html">unit tests</a>. Using the small steps approach of pushing dependencies out of your methods one by one, the result will be code that has a <strong>clear input and a clear output</strong>. In this situation, it becomes possible to cover the functionality of that code using unit tests. You define a set of inputs and declare the outputs you expect your code to produce, and your test suite will <em>make sure that bit of code keeps behaving as expected</em>.</p>
+<h3 id="dont-test-ev">Don’t test everything</h3>
+<p>Testing every single line of code in a system is both economically unviable and unnecessary. In principle, it would be great to be perfectly confident about every aspect of your system, but the cost of making everything testable, writing tests and maintaining the tests will start to outweigh the benefits at some point. In my experience, your time is best spent writing <strong>tests for non-trivial business logic and parts of the system that would cause havoc should they malfunction</strong> (even if the code is actually simple).</p>
+<p>In this way, you get the most dangerous monsters in chains and the swamp will be a safer, more predictable place for it.</p>
+<h2 id="isolate-replace">Isolate and Replace</h2>
+<p>A useful technique that combines pretty much all of the strategic patterns listed above is the old ‘isolate-and-replace’.</p>
+<p>Every once in a while, you will come across some code that is just intangible in its internal workings and effects to be properly small-steps refactored within polynomial time. In a case like this, consider the following approach:</p>
+<ul>
+<li><strong>Isolate the messy part</strong>, drop it in a separate method or class.</li>
+<li><strong>Push out dependencies</strong> so they come in as parameters.</li>
+<li><strong>Split logic from side-effects</strong> (like saving to a DB) using a small-steps approach.</li>
+<li><strong>Isolate the logic</strong> in a separate method.</li>
+<li><strong>Add unit tests</strong> that cover the behavior of the logic.</li>
+<li><strong>Rewrite the logic</strong> from scratch. If it passes the tests, it should at least be close to the behavior displayed by the old version.</li>
+<li><strong>Run old and new version of the logic side by side</strong> in the production environment. The old version is still the one actually used.</li>
+<li><strong>Log differences</strong> in output between the new and the old version.</li>
+<li><strong>Monitor the logs</strong> diligently. Whenever a difference shows up, add a new unit test for that case and fix the new version to pass the new case.</li>
+<li>Repeat until old and new version <strong>consistently agree</strong> with each other.</li>
+<li><strong>Switch the old version of the logic with the new version</strong> with confidence.</li>
+</ul>
+<p>This technique allows you to swap a car’s motor without the car breaking down or it even noticing it had its internals replaced.</p>
+<h2 id="persuade-yourself">Persuading Yourself</h2>
+<p>The mindset and tools outlined above have proven, to me, to be a successful way of steering a system on the brink of collapse away from disaster. </p>
+<p><img src="http://dab1nmslvvntp.cloudfront.net/wp-content/uploads/2016/04/1460552735dragon-yin-yang.png" alt="dragon yin yang" width="288" height="123" class="aligncenter size-full wp-image-128355"></p>
+<p>Where initially I was hesitant of dedicating my efforts full time to the task of taking on a long-term legacy challenge, I now see the many ways in which it has contributed to me <strong>becoming a better developer</strong>:</p>
+<ul>
+<li><strong>Learning to recognize bad code</strong>: you learn to see what’s bad because it’s what you have to spend most time on. The patterns you see here will not trip you up when you work on a new project because you know how it will hurt you in the future.</li>
+<li><strong>Back to basics</strong>: in my case, every single aspect of the system had to be questioned and re-evaluated. Nothing is holy, and you get an appreciation for lots of issues modern day frameworks handle for you.</li>
+<li><strong>You evolve with the system</strong>: you see new challenges arise as the system in your care grows. This way you learn which bottlenecks you need to deal with as more and more people use your work and you need to scale up to stay on top of things.</li>
+<li><strong>People are generating shiny new legacy constantly</strong>: diligently, faster than they generate garbage belts in our oceans, knowing how to make it work is a good skill to have.</li>
+<li><strong>Fun and rewarding</strong>: especially looking back on a road well traveled and realizing the system you have today looks nothing like the system you first met years ago induces a real sense of accomplishment.</li>
+</ul>
+<p><img src="http://dab1nmslvvntp.cloudfront.net/wp-content/uploads/2016/04/1460552774meadow-cow.jpg" alt="meadow cow" width="600" height="258" class="aligncenter size-full wp-image-128356"></p>
+<h3 id="bring">To bring this substantial (or lengthy, at least) post to a close</h3>
+<p>You can be the frightened peasant tiptoeing through the swamp, hoping somebody will come find you and take you to Disneyland instead, or you can take matters into your own hands, act like you own the place and enforce your own rules. Any swamp has solid ground underneath, and you can find it.</p>
+<p><em>Epilogue:</em></p>
+<p><em>A few years later, you stroll through the meadow. On the horizon you can see the duke replacing the old ‘Here Be Dragons’ sign with a beer commercial.</em></p>
+<p><em>He’s got a huge grin on his face.</em></p>
+  
