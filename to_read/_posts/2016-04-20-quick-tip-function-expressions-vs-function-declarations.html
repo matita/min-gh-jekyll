@@ -1,0 +1,133 @@
+---
+title: "Quick Tip: Function Expressions vs Function Declarations"
+description: "Paul Wilkins investigates the differences and advantages of function expressions over function declarations in JavaScript."
+link: "http://www.sitepoint.com/function-expressions-vs-declarations/"
+saved: "2016-04-20 16:44:47"
+---
+
+    <p><em>This article was peer reviewed by <a href="http://www.sitepoint.com/author/jmott">Jeff Mott</a>. Thanks to all of SitePoint’s peer reviewers for making SitePoint content the best it can be!</em></p>
+<p>JavaScript has two different ways of creating functions. Function declarations have been used for a long time, but function expressions have been gradually taking over.</p>
+<div class="ArticleBox u-inline"><h3 class="ArticleBox_header t-bg">
+                    <span class="ArticleBox_icon fa fa-pencil"></span> More from this author
+                 </h3><div class="ArticleBox_content"><ul class="ArticleBox_list t-list"><li><a href="http://www.sitepoint.com/radar-closures-photo-rights-best-apps/?utm_source=sitepoint&amp;utm_medium=relatedinline&amp;utm_term=javascript&amp;utm_campaign=relatedauthor">On Our Radar: Closures, Copyright and the Best Apps of 2014</a></li><li><a href="http://www.sitepoint.com/radar-php-7-controversy-dependency-injection-troubles/?utm_source=sitepoint&amp;utm_medium=relatedinline&amp;utm_term=javascript&amp;utm_campaign=relatedauthor">On Our Radar: PHP 7 Controversy and Dependency Injection</a></li></ul></div></div>
+<pre class=" language-javascript"><code class="javascript  language-javascript"><span class="token keyword">function</span> <span class="token function">funcDeclaration</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">return</span> <span class="token string">'A function declaration'</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+
+<span class="token keyword">var</span> funcExpression <span class="token operator">=</span> <span class="token keyword">function</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">return</span> <span class="token string">'A function expression'</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<h2 id="differencesbetweendeclarationsandexpressions">Differences between Declarations and Expressions</h2>
+<p>Similar to the <code class=" language-undefined">var</code> statement, function declarations are hoisted to the top of other code. Function expressions aren’t hoisted, which allows them to retain a copy of the local variables from the scope where they were defined.</p>
+<p>Normally function declarations and function expressions can be used interchangably, but there are times when function expressions result in easiler to understand code without the need for a temporary function name.</p>
+<h2 id="benefitsoffunctionexpressions">Benefits of Function Expressions</h2>
+<p>There are several different ways that function expressions become more useful than function declarations.</p>
+<ul>
+<li>As closures</li>
+<li>As arguments to other functions</li>
+<li>As Immediately Invoked Function Expressions (IIFE)</li>
+</ul>
+<h3 id="creatingclosures">Creating Closures</h3>
+<p>Closures are used when you want to give parameters to a function, before that function is executed. A good example of how this can benefit you is when looping though a <code class=" language-undefined">NodeList</code>. A closure allows you to retain other information such as the index, in situations where that information will no longer be available when the function is executed.</p>
+<pre class=" language-javascript"><code class="javascript  language-javascript"><span class="token keyword">function</span> <span class="token function">tabsHandler</span><span class="token punctuation">(</span>index<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">return</span> <span class="token keyword">function</span> <span class="token function">tabClickEvent</span><span class="token punctuation">(</span>evt<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token comment" spellcheck="true">// Do stuff with tab.</span>
+        <span class="token comment" spellcheck="true">// The index variable can be accessed from within here.</span>
+    <span class="token punctuation">}</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+
+<span class="token keyword">var</span> tabs <span class="token operator">=</span> document<span class="token punctuation">.</span><span class="token function">querySelectorAll</span><span class="token punctuation">(</span><span class="token string">'.tab'</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+    i<span class="token punctuation">;</span>
+
+<span class="token keyword">for</span> <span class="token punctuation">(</span>i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> tabs<span class="token punctuation">.</span>length<span class="token punctuation">;</span> i <span class="token operator">+</span><span class="token operator">=</span> <span class="token number">1</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    tabs<span class="token punctuation">[</span>index<span class="token punctuation">]</span><span class="token punctuation">.</span>onclick <span class="token operator">=</span> <span class="token function">tabsHandler</span><span class="token punctuation">(</span>i<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<p>The attached event handlers are executed at a later time (after the loop is finished), so a closure is needed to retain the appropriate value of the for loop.</p>
+<pre class=" language-javascript"><code class="javascript  language-javascript"><span class="token comment" spellcheck="true">// Bad code, demonstrating why a closure is needed</span>
+<span class="token keyword">var</span> i<span class="token punctuation">;</span>
+
+<span class="token keyword">for</span> <span class="token punctuation">(</span>i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> list<span class="token punctuation">.</span>length<span class="token punctuation">;</span> i <span class="token operator">+</span><span class="token operator">=</span> <span class="token number">1</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    document<span class="token punctuation">.</span><span class="token function">querySelector</span><span class="token punctuation">(</span><span class="token string">'#item'</span> <span class="token operator">+</span> i<span class="token punctuation">)</span><span class="token punctuation">.</span>onclick <span class="token operator">=</span> <span class="token keyword">function</span> <span class="token function">doSomething</span><span class="token punctuation">(</span>evt<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token comment" spellcheck="true">// Do something with item i</span>
+        <span class="token comment" spellcheck="true">// But, by the time this function executes, the value of i is always list.length</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<p>It’s easier to understand why the problem occurs by extracting the <code class=" language-undefined">doSomething()</code> function out from within the for loop.</p>
+<pre class=" language-javascript"><code class="javascript  language-javascript"><span class="token comment" spellcheck="true">// Bad code, demonstrating why a closure is needed</span>
+
+<span class="token keyword">var</span> list <span class="token operator">=</span> document<span class="token punctuation">.</span><span class="token function">querySelectorAll</span><span class="token punctuation">(</span><span class="token string">'.item'</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+    i<span class="token punctuation">,</span>
+    doSomething <span class="token operator">=</span> <span class="token keyword">function</span> <span class="token punctuation">(</span>evt<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token comment" spellcheck="true">// Do something with item i.</span>
+        <span class="token comment" spellcheck="true">// But, by the time this function executes, the value of i is not what it was in the loop.</span>
+    <span class="token punctuation">}</span><span class="token punctuation">;</span>
+
+<span class="token keyword">for</span> <span class="token punctuation">(</span>i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> list<span class="token punctuation">.</span>length<span class="token punctuation">;</span> i <span class="token operator">+</span><span class="token operator">=</span> <span class="token number">1</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    item<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">.</span>onclick <span class="token operator">=</span> doSomething<span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<p>The solution here is to pass the index as a function argument to an outer function, so that it can pass that value to an inner function. You’ll commonly see handler functions used to organize the information that an inner returning function needs.</p>
+<pre class=" language-javascript"><code class="javascript  language-javascript"><span class="token comment" spellcheck="true">// the following is good code, demonstrating the use of closure</span>
+
+<span class="token keyword">var</span> list <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token string">'item1'</span><span class="token punctuation">,</span> <span class="token string">'item2'</span><span class="token punctuation">,</span> <span class="token string">'item3'</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+    i<span class="token punctuation">,</span>
+    doSomethingHandler <span class="token operator">=</span> <span class="token keyword">function</span> <span class="token punctuation">(</span>itemIndex<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">return</span> <span class="token keyword">function</span> <span class="token function">doSomething</span><span class="token punctuation">(</span>evt<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token comment" spellcheck="true">// now this doSomething function can retain knowledge of</span>
+            <span class="token comment" spellcheck="true">// the index variable via the itemIndex parameter,</span>
+            <span class="token comment" spellcheck="true">// along with other variables that may be available too.</span>
+            console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token string">'Doing something with '</span> <span class="token operator">+</span> list<span class="token punctuation">[</span>itemIndex<span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span><span class="token punctuation">;</span>
+
+<span class="token keyword">for</span> <span class="token punctuation">(</span>i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> list<span class="token punctuation">.</span>length<span class="token punctuation">;</span> i <span class="token operator">+</span><span class="token operator">=</span> <span class="token number">1</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    list<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">.</span>onclick <span class="token operator">=</span> <span class="token function">doSomethingHandler</span><span class="token punctuation">(</span>i<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<p>Other good examples of closures and how they can help can be found at this <a href="http://jibbering.com/faq/faq_notes/closures.html#clClDo">closure examples FAQ</a>.</p>
+<h3 id="passingasarguments">Passing as Arguments</h3>
+<p>Function expressions can be passed directly to functions without having to be assigned to an intermediate temporary variable.</p>
+<p>They can be frequently seen in jQuery in the form of an anonymous function, for example:</p>
+<pre class=" language-javascript"><code class="javascript  language-javascript"><span class="token function">$</span><span class="token punctuation">(</span>document<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">ready</span><span class="token punctuation">(</span><span class="token keyword">function</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token string">'An anonymous function'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+</code></pre>
+<p>Also when using methods such as <code class=" language-undefined">forEach()</code>, a function expression is used to handle the array items. They don’t have to be unnamed anonymous functions either. It’s a good idea to name the function expression to help express what the function is supposed to do, and to aid in debugging.</p>
+<pre class=" language-javascript"><code class="javascript  language-javascript"><span class="token keyword">var</span> productIds <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token string">'12356'</span><span class="token punctuation">,</span> <span class="token string">'13771'</span><span class="token punctuation">,</span> <span class="token string">'15492'</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+
+productIds<span class="token punctuation">.</span><span class="token function">forEach</span><span class="token punctuation">(</span><span class="token keyword">function</span> <span class="token function">showProduct</span><span class="token punctuation">(</span>productId<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+</code></pre>
+<h3 id="immediatelyinvokedfunctionexpressionsiife">Immediately Invoked Function Expressions (IIFE)</h3>
+<p>IIFE’s are used to help prevent your functions and variables from affecting the global scope. All the properties within are scoped to the anonymous function. This is a common design pattern that’s used to prevent your code from having unwanted or undesired side-effects elsewhere.</p>
+<p>It’s also used as a module pattern to contain blocks of code in to easy to maintain sections. We take a deeper look at at these in <a href="http://www.sitepoint.com/demystifying-javascript-closures-callbacks-iifes/">Demystifying JavaScript closures, callbacks and IIFEs</a>.</p>
+<p>A simple example of an IIFE is:</p>
+<pre class=" language-javascript"><code class="javascript  language-javascript"><span class="token punctuation">(</span><span class="token keyword">function</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token comment" spellcheck="true">// code in here</span>
+<span class="token punctuation">}</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+</code></pre>
+<p>which when used as a module, can result in some easy-to-achieve maintainability for your code.</p>
+<pre class=" language-javascript"><code class="javascript  language-javascript"><span class="token keyword">var</span> myModule <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token keyword">function</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">var</span> privateMethod <span class="token operator">=</span> <span class="token keyword">function</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token string">'A private method'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    someMethod <span class="token operator">=</span> <span class="token keyword">function</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token string">'A public method'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    anotherMethod <span class="token operator">=</span> <span class="token keyword">function</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token string">'Another public method'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span><span class="token punctuation">;</span>
+
+    <span class="token keyword">return</span> <span class="token punctuation">{</span>
+        someMethod<span class="token punctuation">:</span> someMethod<span class="token punctuation">,</span>
+        anotherMethod<span class="token punctuation">:</span> anotherMethod
+    <span class="token punctuation">}</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+</code></pre>
+<h2 id="conclusion">Conclusion</h2>
+<p>As we’ve seen, function expressions don’t offer much that can’t be achieved with function declarations, but using them can often result in cleaner and more readable code. Their widespread use makes them an essential part of every developer’s toolbox. Do you use function expressions in your code in any interesting ways that I haven’t mentioned above? Comment and let me know!</p>
+  
