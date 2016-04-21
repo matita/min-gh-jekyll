@@ -1,0 +1,130 @@
+---
+title: "Deploying to Heroku: An introduction"
+description: "Adam Bard explains the simple steps involved in deploying web applications to Heroku, a managed server platform."
+link: "http://www.sitepoint.com/deploying-to-heroku-an-introduction/"
+saved: "2016-04-21 15:18:27"
+---
+
+    <p><em>Thanks to <a href="http://www.sitepoint.com/author/mwilkin/">Matthew Wilkin</a> for kindly helping to <a href="http://www.sitepoint.com/introduction-to-sitepoints-peer-review/">peer review</a> this article.</em></p>
+<p>In this article, you’ll learn about <a href="https://heroku.com/">Heroku</a> and how to deploy your web application to it.</p>
+<p><img src="http://dab1nmslvvntp.cloudfront.net/wp-content/uploads/2016/04/1461122387heroku-logo.jpg" alt="Heroku Logo" width="160" height="" class="alignright size-full wp-image-128739"></p>
+<p>If you’ve never heard of it, Heroku is a managed server platform for quickly deploying web applications. It automatically provisions server resources for you, and deployment is as easy as a <code class=" language-python">git push</code> to your app’s repository on Heroku. Best of all, you can deploy your app for free (provided it doesn’t get too much traffic), which makes getting started free <em>and</em> easy.</p>
+<p>If you have a lot of traffic, Heroku can get a bit pricy; each node (or <q>dyno</q>, as they call them) will cost you $25 or more per month, and adding features like databases will increase that a bit. That said, it’s a heck of a lot cheaper than hiring a devops team to deliver the stability and ease-of-use that Heroku offers.</p>
+<h2 id="before">Before We Start</h2>
+<p>If you want to follow along from here, you’ll need to make sure you have a few things handy.</p>
+<ol>
+<li>Go download and install the <a href="https://toolbelt.heroku.com/">Heroku Toolbelt</a>. This is the command-line utility that we’ll be using to configure the project.</li>
+<li>Make sure your project is using <a href="https://git-scm.com/">Git</a>. You should know what git is, but if you don’t, <a href="http://www.sitepoint.com/git-for-beginners/">here’s some light reading</a>. If you don’t have a project, just make sure <code class=" language-python">git</code> is installed.</li>
+</ol>
+<p>If you already have something ready to go, skip the next section and go straight to <strong><a href="http://www.sitepoint.com/deploying-to-heroku-an-introduction/?utm_source=SitePoint&amp;utm_medium=email&amp;utm_campaign=Versioning&amp;utm_medium=email&amp;utm_campaign=Versioning%20450&amp;utm_content=Versioning%20450+Version+A+CID_0d4d8bcbcfa7b1e3760aca0b6fe66ae1&amp;utm_source=CampaignMonitor%20SitePoint&amp;utm_term=Heres%20a%20primer#creating">Creating a Heroku Project</a></strong>.</p>
+<h2 id="example">Our Example Project</h2>
+<div class="ArticleBox u-inline"><h3 class="ArticleBox_header t-bg">
+                    <span class="ArticleBox_icon fa fa-pencil"></span> More from this author
+                 </h3><div class="ArticleBox_content"><ul class="ArticleBox_list t-list"><li><a href="http://www.sitepoint.com/configuring-nginx-speed-ghost-blog/?utm_source=sitepoint&amp;utm_medium=relatedinline&amp;utm_term=web&amp;utm_campaign=relatedauthor">Configuring Nginx to Speed Up Your Ghost.io Blog</a></li><li><a href="http://www.sitepoint.com/anatomy-web-app-redditlater-clojure/?utm_source=sitepoint&amp;utm_medium=relatedinline&amp;utm_term=web&amp;utm_campaign=relatedauthor">Anatomy of a Web App: How I Built RedditLater in Clojure</a></li></ul></div></div>
+<p>To assemble this example project, you’re going to need <a href="https://pip.pypa.io/en/stable/">pip</a> (which is good to have handy for any Python development anyhow). We’ll be using a Python project written using <a href="https://flask.pocoo.org/">Flask</a>, a web microframework for Python, but you can mostly follow along with any project (it should be obvious which parts are language-specific and how to adjust them).</p>
+<p>If you have something ready, skip ahead to the next section. If you need a project, set up a project folder as follows (you don’t have to call it <q>myproject</q>):</p>
+<div>
+<pre class=" language-python"><code class=" language-python"><span class="token operator">/</span>myproject
+  <span class="token operator">/</span>templates
+    index<span class="token punctuation">.</span>html
+  app<span class="token punctuation">.</span>py
+  requirements<span class="token punctuation">.</span>txt</code></pre>
+</div>
+<p>And fill them out like so:</p>
+<p><code class=" language-python">app<span class="token punctuation">.</span>py</code>:</p>
+<div>
+<pre class=" language-python"><code class=" language-python"><span class="token keyword">import</span> os
+<span class="token keyword">import</span> flask
+
+
+app <span class="token operator">=</span> Flask<span class="token punctuation">(</span>__name__<span class="token punctuation">)</span>
+
+@app<span class="token punctuation">.</span>route<span class="token punctuation">(</span><span class="token string">"/"</span><span class="token punctuation">)</span>
+<span class="token keyword">def</span> <span class="token function">index</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+    <span class="token keyword">return</span> render_template<span class="token punctuation">(</span><span class="token string">"index.html"</span><span class="token punctuation">)</span>
+
+
+<span class="token keyword">if</span> __name__ <span class="token operator">==</span> <span class="token string">"__main__"</span><span class="token punctuation">:</span>
+    app<span class="token punctuation">.</span>run<span class="token punctuation">(</span>port<span class="token operator">=</span>os<span class="token punctuation">.</span>environ<span class="token punctuation">.</span>get<span class="token punctuation">(</span><span class="token string">'PORT'</span><span class="token punctuation">,</span> <span class="token string">'5000'</span><span class="token punctuation">)</span><span class="token punctuation">)</span></code></pre>
+</div>
+<p><code class=" language-python">templates<span class="token operator">/</span>index<span class="token punctuation">.</span>html</code>:</p>
+<div>
+<pre class=" language-markup"><code class=" language-markup"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>!doctype</span> <span class="token attr-name">HTML</span><span class="token punctuation">&gt;</span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>html</span><span class="token punctuation">&gt;</span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>head</span><span class="token punctuation">&gt;</span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>title</span><span class="token punctuation">&gt;</span></span>My example project<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>title</span><span class="token punctuation">&gt;</span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>head</span><span class="token punctuation">&gt;</span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>body</span><span class="token punctuation">&gt;</span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>h1</span><span class="token punctuation">&gt;</span></span>This is my project.<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>h1</span><span class="token punctuation">&gt;</span></span>
+    <span class="token comment" spellcheck="true">&lt;!-- feel free to get a bit more creative here --&gt;</span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>body</span><span class="token punctuation">&gt;</span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>html</span><span class="token punctuation">&gt;</span></span></code></pre>
+</div>
+<p><code class=" language-python">requirements<span class="token punctuation">.</span>txt</code></p>
+<div>
+<pre class=" language-python"><code class=" language-python">Flask<span class="token operator">==</span><span class="token number">0.10</span><span class="token punctuation">.</span><span class="token number">1</span></code></pre>
+</div>
+<p>then run:</p>
+<div>
+<pre class=" language-python"><code class=" language-python">pip install <span class="token operator">-</span>r requirements<span class="token punctuation">.</span>txt</code></pre>
+</div>
+<p>After that, make sure everything is working by running <code class=" language-python">python app<span class="token punctuation">.</span>py</code> and navigating to <code class=" language-python">http<span class="token punctuation">:</span><span class="token operator">//</span>localhost<span class="token punctuation">:</span><span class="token number">5000</span><span class="token operator">/</span></code>. If all went well, you should see <code class=" language-python">index<span class="token punctuation">.</span>html</code> rendered there.</p>
+<h2 id="creating">Creating a Heroku Project</h2>
+<p>Here comes the easiest thing in the world. Open a terminal, <code class=" language-python">cd</code> to your project directory, and run the following commands (skip the git one if you already have git in your project):</p>
+<div>
+<pre class=" language-python"><code class=" language-python">$ git init
+$ heroku create
+Creating app<span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span> done<span class="token punctuation">,</span> stack <span class="token keyword">is</span> cedar<span class="token number">-14</span>
+https<span class="token punctuation">:</span><span class="token operator">//</span>calm<span class="token operator">-</span>lake<span class="token number">-56303.</span>herokuapp<span class="token punctuation">.</span>com<span class="token operator">/</span> <span class="token operator">|</span> https<span class="token punctuation">:</span><span class="token operator">//</span>git<span class="token punctuation">.</span>heroku<span class="token punctuation">.</span>com<span class="token operator">/</span>calm<span class="token operator">-</span>lake<span class="token number">-56303.</span>git</code></pre>
+</div>
+<p>With this command, Heroku:</p>
+<ul>
+<li>generated a name for us (we could have chosen one by running <code class=" language-python">heroku create myproject</code> instead)</li>
+<li>assigned us a url and a git repository</li>
+<li>initialized the <code class=" language-python">heroku</code> remote repository in git for us.</li>
+</ul>
+<p>We’re just about ready to deploy, but it’s good to know what’s about to happen first. Let’s learn a bit more about how Heroku can know what to do with your code — and how to make sure it’s satisfied.</p>
+<h2 id="buildpacks">An Aside on Buildpacks (or, how Heroku Recognizes Your Project)</h2>
+<p>Heroku projects are managed by <q>buildpacks</q>, which are in essence instructions for fetching dependencies, building and running your project. There are officially supported buildpacks for Node.js, Ruby, Java, Clojure, Scala, PHP, Python, and Go. You won’t need to tell Heroku what you’re using for these; instead, Heroku will guess what the project is, based on some conventions and heuristics regarding dependency management. For example, a <code class=" language-python">requirements<span class="token punctuation">.</span>txt</code> file in your project directory, as exists in the example project above, indicates a Python project. Here are the dependency files that Heroku will use to automatically detect your platform for other platforms:</p>
+<ul>
+<li>Node.js: <code class=" language-python">package<span class="token punctuation">.</span>json</code></li>
+<li>Ruby: <code class=" language-python">Gemfile</code></li>
+<li>PHP: <code class=" language-python">composer<span class="token punctuation">.</span>json</code></li>
+<li>Java: <code class=" language-python">pom<span class="token punctuation">.</span>xml</code></li>
+<li>Scala: <code class=" language-python">build<span class="token punctuation">.</span>properties</code></li>
+<li>Clojure: <code class=" language-python">project<span class="token punctuation">.</span>clj</code></li>
+<li>Go: <code class=" language-python">Godeps<span class="token operator">/</span>Godeps<span class="token punctuation">.</span>json</code></li>
+</ul>
+<p>If you’re using a different language, or using a different build tool for one of these languages, you can also use a third-party buildpack. Heroku maintains an <a href="https://elements.heroku.com/buildpacks">extensive directory of these</a>, so check there before giving up on your preferred language. You can set the buildpack using the git repository URL; for example, to use <a href="https://elements.heroku.com/buildpacks/upworthy/heroku-buildpack-boot">Upworthy’s Clojure Boot buildpack</a>, you could run this command in your project directory:</p>
+<div>
+<pre class=" language-python"><code class=" language-python">$ heroku buildpacks<span class="token punctuation">:</span>set https<span class="token punctuation">:</span><span class="token operator">//</span>github<span class="token punctuation">.</span>com<span class="token operator">/</span>upworthy<span class="token operator">/</span>heroku<span class="token operator">-</span>buildpack<span class="token operator">-</span>boot</code></pre>
+</div>
+<p>You might even find an unlisted buildpack on Github — just check around to make sure it’s safe to use!</p>
+<h2 id="procfile">Setting up Your Procfile</h2>
+<p>Everything we need is in place, except for one component. Heroku uses a file called <code class=" language-python">Procfile</code> to tell it what it should be running. For your getting started project, you’ll probably just want to specify a <code class=" language-python">web</code> process, but you can also specify <code class=" language-python">worker</code> jobs.</p>
+<p>Since we run our app with <code class=" language-python">python app<span class="token punctuation">.</span>py</code>, we will put the following in our <code class=" language-python">Procfile</code>:</p>
+<div>
+<pre class=" language-python"><code class=" language-python">web<span class="token punctuation">:</span> python app<span class="token punctuation">.</span>py</code></pre>
+</div>
+<p>(Later, you might want to use something more performant; you can use Gunicorn by adding it to your <code class=" language-python">requirements<span class="token punctuation">.</span>txt</code> and replacing your <code class=" language-python">Procfile</code> contents with <code class=" language-python">web<span class="token punctuation">:</span> gunicorn app<span class="token punctuation">:</span>app <span class="token operator">-</span>b <span class="token number">0.0</span><span class="token punctuation">.</span><span class="token number">0.0</span><span class="token punctuation">:</span>$PORT</code>).</p>
+<h2 id="deploying">Deploying Your Project</h2>
+<p>Add <code class=" language-python">Procfile</code> to your repository:</p>
+<div>
+<pre class=" language-python"><code class=" language-python">$ git add Procfile <span class="token operator">&amp;</span><span class="token operator">&amp;</span> git commit <span class="token operator">-</span>m <span class="token string">"added Procfile"</span></code></pre>
+</div>
+<p>Then, use <code class=" language-python">git push</code> to deploy to Heroku</p>
+<div>
+<pre class=" language-python"><code class=" language-python">git push heroku master</code></pre>
+</div>
+<h2 id="congrats"><img draggable="false" class="emoji" alt="🎉" src="https://s.w.org/images/core/emoji/72x72/1f389.png"><img draggable="false" class="emoji" alt="🎉" src="https://s.w.org/images/core/emoji/72x72/1f389.png"><img draggable="false" class="emoji" alt="🎉" src="https://s.w.org/images/core/emoji/72x72/1f389.png"> Congratulations <img draggable="false" class="emoji" alt="🎉" src="https://s.w.org/images/core/emoji/72x72/1f389.png"><img draggable="false" class="emoji" alt="🎉" src="https://s.w.org/images/core/emoji/72x72/1f389.png"><img draggable="false" class="emoji" alt="🎉" src="https://s.w.org/images/core/emoji/72x72/1f389.png"></h2>
+<p>Your app should be deployed on Heroku. Navigate to the URL that Heroku tells you, and you should see your home page.</p>
+<p>That’s it. That’s the whole article. That’s your life with Heroku now; just push your commits and they get deployed immediately. How crazy is that?!</p>
+<h2 id="bonus">Some Bonus Commands</h2>
+<p>Just in case you’re not satisfied, here’s some assorted things you might want to do with the <code class=" language-python">heroku</code> command:</p>
+<ul>
+<li><code class=" language-python">heroku config<span class="token punctuation">:</span>set MY_ENV_VARIABLE<span class="token operator">=</span>some_value</code>: Set a persistent config value. Useful for things like database passwords and other configuration.</li>
+<li><code class=" language-python">heroku ps<span class="token punctuation">:</span>scale web<span class="token operator">=</span><span class="token number">5</span></code>: Sudden traffic surge? Scale your process up to 5 web dynos in an instant. Note that this will cost you $125 at $25 per dyno, so use this with caution. To scale back down after you fall off Reddit, run <code class=" language-python">heroku ps<span class="token punctuation">:</span>scale web<span class="token operator">=</span><span class="token number">1</span></code>.</li>
+<li>Made a mistake? You can list your app’s releases with <code class=" language-python">heroku releases</code>. To roll back to a certain release, run <code class=" language-python">heroku rollback <span class="token operator">&lt;</span>release identifier<span class="token operator">&gt;</span></code>. Or just run <code class=" language-python">heroku release</code> to undo the latest release.</li>
+</ul>
+<p>You can also manage most of these from Heroku’s dashboard, if you prefer.</p>
+  
