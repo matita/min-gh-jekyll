@@ -1,0 +1,81 @@
+---
+title: "The Ultimate WordPress Development Environment"
+description: "Matt Geri explores the various modern development tools that can help take the headache and repetitiveness out of building WordPress sites on your computer."
+link: "http://www.sitepoint.com/ultimate-wordpress-development-environment/"
+saved: "2016-04-29 18:33:54"
+---
+
+    <p>WordPress development has come a very long way in recent years when it comes to tooling. In the past, developing a WordPress website required some sort of MAMP/WAMP localhost setup and almost always, a rather painful headache. Maybe you’re even one of those developers who developed their website on a live environment – I was.</p>
+<p>Luckily, times have changed and there are now tools that help take the headache and repetitiveness out of building WordPress sites on your computer.</p>
+<p><img src="http://dab1nmslvvntp.cloudfront.net/wp-content/uploads/2016/04/1461865935wordpress-development.png" alt="WordPress Development" width="498" height="113" class="aligncenter size-full wp-image-129396"></p>
+<p>In December last year, after 3 years of being almost completely devoid of any WordPress development, I became a full time WordPress developer again. Before that 3 year stint in the payments industry, I was a full time WordPress contractor.</p>
+<p>Being out of an industry for 3 years, gave me a unique perspective on how fast things change in computing and more specifically, web development. WordPress development is no exception.</p>
+<p>You see, when I returned to WordPress development in December last year, I decided to look at setting up the perfect WordPress development environment. I was pleasantly surprised to see that the tooling around WordPress had advanced so much that it was much like trading in a Ford for a Ferrari.</p>
+<p>I was excited, and still am of course, to explore all the tools and in today’s article I’m going to share with you a summary of what I have learned. Hopefully it will help you tweak your current environment and implement some of the tools that are available to you.</p>
+
+<h2>It Starts with the Server</h2>
+<p>To begin with, the most important piece in the WordPress development environment puzzle is the server. Without a server, we can’t do anything.</p>
+<p>There are so many different options available today to host WordPress websites on your local environment that it gets tricky to know which one to use.</p>
+<p>I’m going to suggest that you drop MAMP/WAMP/XAMP and start using a virtualized development environment.</p>
+<p>Why? There are so many reasons:</p>
+<ol>
+<li>It’s an isolated environment. By using a virtualized environment you’re creating a development server that is isolated from your host operating system. You can install whatever operating system you like on the virtual machine and start/stop/restart it without affecting your host. It’s easy to tear down once you’re done with development and no longer need it.</li>
+<li>Messed something up? No problem! Just rebuild the environment. I’m sure we’ve all been in the sticky situation where we’ve tinkered with our server settings and blew stuff up. This is easily fixed by rebuilding the virtual environment or simply using snapshots. So now you can play around and tweak your settings without fear of failure.</li>
+<li>As close to live as you can get. You can literally replicate your live environment on your localhost if you wanted. Having these two environments exactly the same helps with debugging, tweaking and even deployment.</li>
+<li>You can run multiple different server environments, on a single computer. Have one client using Apache and another Nginx? No problem, create those two different environments in virtual machines and you’re good to go.</li>
+<li>Unified environment across development teams. If everyone on a development team uses the exact same setup, it speeds up development time and there are less questions about why something is not working on x person’s machine.</li>
+</ol>
+<p>Now that you’re sold on a virtualized environment. What should you use?</p>
+<p>I’m using <a href="https://github.com/Varying-Vagrant-Vagrants/VVV">VVV</a>. For me it was extremely straight-forward to get up and running, has a good support system around and it is used by many of the big WordPress development agencies, including the one I work for, <a href="http://xwp.co/">XWP</a>.</p>
+<p>Some of the other options for a virtualized WordPress development environment include: <a href="https://github.com/wpengine/hgv">HGV</a>, <a href="http://wckr.github.io/">Wocker</a>, <a href="https://github.com/Automattic/vip-quickstart">VIP Quickstart</a>.</p>
+<p>If you decide to go with VVV, then I definitely recommend the following plugins and tools to take VVV to the next level of awesome.</p>
+<ul>
+<li><a href="https://github.com/cogitatio/vagrant-hostsupdater">vagrant-hostsupdater</a> – This plugin allows your vagrant installation to update the entries in your computer’s hosts file for adding domain mappings to an IP address. This means you don’t have to manually add entries to your hosts file.</li>
+<li><a href="https://github.com/bradp/vv">Variable VVV</a> – By far the most useful tool for VVV is called Variable VVV and what it does is gives you the ability to quickly and easily create new VVV WordPress installations using the command line. Definitely check this one out</li>
+</ul>
+<p>Aleksander Koko has <a href="http://www.sitepoint.com/wordpress-meets-vagrant-vvv/">previously written about VVV</a>, and I’ve also recently recorded a video on <a href="https://mattgeri.com/article/wordpress-vvv/">how to setup VVV on your own computer</a>.</p>
+<h2>The Power of the Command Line</h2>
+<p>Who doesn’t like a bit of command line fu, right? <a href="http://wp-cli.org/">WP-CLI</a> is the answer to your inner command line desire.</p>
+<p><img src="http://dab1nmslvvntp.cloudfront.net/wp-content/uploads/2016/04/1461864990wp-cli-wordpress-1024x275.gif" alt="WordPress WP-CLI" width="1024" height="275" class="aligncenter size-large wp-image-129390"></p>
+<p>WP-CLI let’s you manage a WordPress installation from the command line (it ships with VVV by the way).</p>
+<p>Let’s look at some practical examples of how you can use WP-CLI in your local development environment.</p>
+<ul>
+<li>Install WordPress. SSH’d into your server and need to install WordPress quickly? Simply use WP-CLI to create a new WordPress installation.</li>
+<li>Update WordPress. There’s not much more painful than updating tons of WordPress websites by visiting each one, logging in, clicking around and then updating. You can do this straight from the command line with a single command.</li>
+<li>Installing plugins. If you’ve found a great plugin that you want to install across multiple sites, again, do it with one command using WP-CLI.</li>
+<li>Resetting a WordPress database. Messed something up and want to start off fresh? Easy, one command (this is getting a little repetitive isn’t it?)</li>
+<li>Import content. Yep you guessed it, you can import content into your WordPress install or multiple installs with one command.</li>
+<li><a href="http://wp-cli.org/commands/">And so much more</a></li>
+</ul>
+<p>That’s all quite handy stuff that you can do from the command line. Best yet, in the next section we’ll talk about an IDE and you can run all these commands directly from that IDE.</p>
+<p>If you’re interested in learning more, check out <a href="http://www.sitepoint.com/wp-cli/">this article on WP-CLI by Ahsan Parwez</a>.</p>
+<h2>An IDE That Makes a Difference</h2>
+<p>Out of all the tools I am talking about today, I have a feeling that this is going to be the most contentious. When it comes to IDEs and editors it’s almost as if you’re invading personal space, and a lot of people don’t like that.</p>
+<p>I’m not going to try and tell you an IDE is better than a text editor or vice versa. What I’m going to do is tell you my experience of switching to an IDE and how it worked for me.</p>
+<p>I have always been someone who has disliked IDEs. Dislike is probably being kind, I hated them. I felt they were bloated, slow and cluttered.</p>
+<p>I was a big Sublime Text fan (and still am by the way, I use it daily).</p>
+<p>So in December, as I was getting back into WordPress development, I checked out what editors were available to write WordPress code. I was quite surprised when an IDE by the name of PhpStorm kept getting a mention.</p>
+<p>Reluctantly, I took a look and boy am I glad that I did!</p>
+<p>PhpStorm is the best IDE for PHP and WordPress development, in my opinion. It offers everything you need to build WordPress websites, plugins and themes all in one place and it has incredible WordPress integration (you really need to check it out).</p>
+<p>Here are three reasons why you should consider PhpStorm this year for WordPress development:</p>
+<ol>
+<li>Everything you need, in one place. FTP – check, database support – check, terminal – check, version control – check, debugging – check, refactoring – check, great intellisense and autocomplete – double check! And so much more.</li>
+<li>WordPress integration within PhpStorm is second to none. PhpStorm understands WordPress deeply. Once it’s hooked up to a WordPress project it knows how everything ties together. It autocompletes on WordPress functions and even on actions and filters.</li>
+<li>Many of the top WordPress developers and agencies are now developing their code with PhpStorm. That to me is a clear sign that it’s one of the best IDEs for WordPress development available.</li>
+</ol>
+<p>If you’re interested in getting started with PhpStorm, then check out a <a href="https://mattgeri.com/article/phpstorm-for-wordpress-development/">series of 7 PhpStorm videos</a> that I recorded to get your started with the IDE.</p>
+<h2>Making Sure Your Code Is Silky Clean</h2>
+<p>The last tool that I am going to write about today is a doozy! I’m particularly pedantic when it comes to writing code. I like it to be silky clean and follow the WordPress coding standards to a tee.</p>
+<p>But even being that pedantic, we’re all humans. And very often I find myself going through the code that I have written and cringing about a missed space or extra new line.</p>
+<p>Being in the Open Source world, it’s extremely important that developers stick to coding standards that are defined by the projects otherwise a codebase degrades extremely quickly, especially on a popular Open Source project like WordPress.</p>
+<p>In fact, the WordPress core team is particularly strict about coding standards and that they’re followed.</p>
+<p>So how can we make sure that our code follows the WordPress coding standards? The answer is simple and it is a tool called <a href="https://github.com/squizlabs/PHP_CodeSniffer">PHP CodeSniffer</a> with the <a href="https://github.com/WordPress-Coding-Standards/WordPress-Coding-Standards">WordPress coding standards</a> ruleset.</p>
+<p><img src="http://dab1nmslvvntp.cloudfront.net/wp-content/uploads/2016/04/1461865716WordPress-Coding-Standards-1024x504.png" alt="WordPress Coding Standards" width="1024" height="504" class="aligncenter size-large wp-image-129394"></p>
+<p>These two utilities will scan your code, find any discrepancies between your code and how it is expected to be written by the WordPress project and inform you of what is wrong. Magic!</p>
+<p>Best of all, they will also notify you of any high level security issues that it encounters. Now it won’t catch every single security issue so make sure you’re always thinking about security when you’re writing your code but it is a good first line of defense.</p>
+<p>Of course, I wouldn’t be able to complete this section without mentioning that PhpStorm has baked in support for PHP CodeSniffer. I’ve released a video on how to tie <a href="https://mattgeri.com/article/wordpress-coding-standards/">PhpStorm, PHPCS and the WordPress coding standards</a> ruleset together.</p>
+<h2>In Closing</h2>
+<p>There are many alternatives to the tools above and my hope is that at the very least everything I have spoken about today gets you interested in exploring some of the awesome tooling around WordPress development.</p>
+<p>The above tools, should you chose to use them, will give you a great foundation for getting started with a more streamlined and automated approached to WordPress development.</p>
+<p>If you have other tools that you use, I would love to hear about them in the comments below!</p>
+  
