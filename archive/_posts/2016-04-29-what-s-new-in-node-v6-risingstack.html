@@ -1,0 +1,127 @@
+---
+title: "What's new in Node v6? | @RisingStack"
+description: "Node.js v6 just got released - let's take a look at the improvements and new features landed in this release."
+link: "https://blog.risingstack.com/whats-new-in-node-v6/"
+saved: "2016-04-29 18:33:20"
+---
+
+
+<section class="post-content">
+<blockquote>
+<p>New “Current” version line focuses on performance improvements, increased reliability and better security for its 3.5 million users - <a href="https://nodejs.org/en/blog/announcements/v6-release/">https://nodejs.org/en/blog/announcements/v6-release/</a></p>
+</blockquote>
+<p>Node.js v6 just got released - let's take a look at the improvements and new features landed in this release.</p>
+<p><img src="https://risingstack-blog.s3.amazonaws.com/2016/Apr/Node_v6_just_got_released_find_out_whats_new_in_it-1461740940057.png" alt="Node v6 just got released - find out what's new in it"></p>
+<h2 id="performanceimprovements">Performance Improvements</h2>
+<ul>
+<li><strong>Module loading got 4-times faster</strong> compared to the current LTS version (Node.js v4). This helps developers to shorten the bootstrap phase of the applications.
+<ul><li>Related PRs:
+<ul><li><a href="https://github.com/nodejs/node/pull/5689">https://github.com/nodejs/node/pull/5689</a></li>
+<li><a href="https://github.com/nodejs/node/pull/5950">https://github.com/nodejs/node/pull/5950</a></li></ul></li></ul></li>
+<li><strong>Updated V8 engine</strong></li>
+</ul>
+<h2 id="securityimprovements">Security Improvements</h2>
+<ul>
+<li><code>Math.random</code> - improved security, but note, that it is still not cryptographically secure
+<ul><li>For more information, check: <a href="http://v8project.blogspot.hu/2015/12/theres-mathrandom-and-then-theres.html">http://v8project.blogspot.hu/2015/12/theres-mathrandom-and-then-theres.html</a></li></ul></li>
+<li><strong>New Buffer API</strong> to reduce the risk of bugs and vulnerabilities leaking into applications
+<ul><li>Related PRs:
+<ul><li><a href="https://github.com/nodejs/node/pull/4682">https://github.com/nodejs/node/pull/4682</a></li>
+<li><a href="https://github.com/nodejs/node/pull/5048">https://github.com/nodejs/node/pull/5048</a></li>
+<li><a href="https://github.com/nodejs/node/pull/4594">https://github.com/nodejs/node/pull/4594</a></li>
+<li><a href="https://github.com/nodejs/node/pull/4514">https://github.com/nodejs/node/pull/4514</a></li></ul></li></ul></li>
+</ul>
+<h2 id="newes6features">New ES6 Features</h2>
+<h5 id="defaultfunctionparameters">Default function parameters</h5>
+<pre class=" language-javascript"><code class=" language-javascript"><span class="token keyword">function</span> <span class="token function">multiply<span class="token punctuation">(</span></span>a<span class="token punctuation">,</span> b <span class="token operator">=</span> <span class="token number">1</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>  
+  <span class="token keyword">return</span> a <span class="token operator">*</span> b
+<span class="token punctuation">}</span>
+
+<span class="token function">multiply<span class="token punctuation">(</span></span><span class="token number">5</span><span class="token punctuation">)</span><span class="token comment" spellcheck="true"> // 5  
+</span></code></pre>
+<p><em>Learn more on the <a href="https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Functions/default_parameters">default function parameters</a>.</em></p>
+<h5 id="restparameters">Rest parameters</h5>
+<pre class=" language-javascript"><code class=" language-javascript"><span class="token keyword">function</span> <span class="token function">fun1<span class="token punctuation">(</span></span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>theArgs<span class="token punctuation">)</span> <span class="token punctuation">{</span>  
+  console<span class="token punctuation">.</span><span class="token function">log<span class="token punctuation">(</span></span>theArgs<span class="token punctuation">.</span>length<span class="token punctuation">)</span>
+<span class="token punctuation">}</span>
+
+<span class="token function">fun1<span class="token punctuation">(</span></span><span class="token punctuation">)</span> <span class="token comment" spellcheck="true"> // 0  
+</span><span class="token function">fun1<span class="token punctuation">(</span></span><span class="token number">5</span><span class="token punctuation">)</span><span class="token comment" spellcheck="true"> // 1  
+</span><span class="token function">fun1<span class="token punctuation">(</span></span><span class="token number">5</span><span class="token punctuation">,</span> <span class="token number">6</span><span class="token punctuation">,</span> <span class="token number">7</span><span class="token punctuation">)</span><span class="token comment" spellcheck="true"> // 3  
+</span></code></pre>
+<p><em>Learn more on the <a href="https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Functions/rest_parameters">rest parameters</a>.</em></p>
+<h5 id="spreadoperator">Spread operator</h5>
+<pre class=" language-javascript"><code class=" language-javascript"><span class="token comment" spellcheck="true">// before the spread operator
+</span><span class="token keyword">function</span> <span class="token function">myFunction<span class="token punctuation">(</span></span>x<span class="token punctuation">,</span> y<span class="token punctuation">,</span> z<span class="token punctuation">)</span> <span class="token punctuation">{</span> <span class="token punctuation">}</span>  
+<span class="token keyword">var</span> args <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">,</span> <span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">2</span><span class="token punctuation">]</span>  
+myFunction<span class="token punctuation">.</span><span class="token function">apply<span class="token punctuation">(</span></span><span class="token keyword">null</span><span class="token punctuation">,</span> args<span class="token punctuation">)</span>
+<span class="token comment" spellcheck="true">
+// with the spread operator
+</span><span class="token keyword">function</span> <span class="token function">myFunction<span class="token punctuation">(</span></span>x<span class="token punctuation">,</span> y<span class="token punctuation">,</span> z<span class="token punctuation">)</span> <span class="token punctuation">{</span> <span class="token punctuation">}</span>  
+<span class="token keyword">var</span> args <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">,</span> <span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">2</span><span class="token punctuation">]</span>  
+<span class="token function">myFunction<span class="token punctuation">(</span></span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>args<span class="token punctuation">)</span>  
+</code></pre>
+<p><em>Learn more on the <a href="https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Operators/Spread_operator">spread operator</a>.</em></p>
+<h5 id="destructuring">Destructuring</h5>
+<pre class=" language-javascript"><code class=" language-javascript"><span class="token keyword">var</span> x <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">2</span><span class="token punctuation">,</span> <span class="token number">3</span><span class="token punctuation">,</span> <span class="token number">4</span><span class="token punctuation">,</span> <span class="token number">5</span><span class="token punctuation">]</span>  
+<span class="token keyword">var</span> <span class="token punctuation">[</span>y<span class="token punctuation">,</span> z<span class="token punctuation">]</span> <span class="token operator">=</span> x  
+console<span class="token punctuation">.</span><span class="token function">log<span class="token punctuation">(</span></span>y<span class="token punctuation">)</span><span class="token comment" spellcheck="true"> // 1  
+</span>console<span class="token punctuation">.</span><span class="token function">log<span class="token punctuation">(</span></span>z<span class="token punctuation">)</span><span class="token comment" spellcheck="true"> // 2  
+</span></code></pre>
+<p><em>Learn more on <a href="https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Operators/Destructuring_assignment">destructuring</a>.</em></p>
+<h5 id="newtarget">new.target</h5>
+<pre class=" language-javascript"><code class=" language-javascript"><span class="token keyword">function</span> <span class="token function">Foo<span class="token punctuation">(</span></span><span class="token punctuation">)</span> <span class="token punctuation">{</span>  
+  <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span><span class="token keyword">new</span><span class="token punctuation">.</span>target<span class="token punctuation">)</span> <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">Error</span><span class="token punctuation">(</span><span class="token string">'Foo() must be called with new'</span><span class="token punctuation">)</span>
+  console<span class="token punctuation">.</span><span class="token function">log<span class="token punctuation">(</span></span><span class="token string">'Foo instantiated with new'</span><span class="token punctuation">)</span>
+<span class="token punctuation">}</span>
+
+<span class="token function">Foo<span class="token punctuation">(</span></span><span class="token punctuation">)</span><span class="token comment" spellcheck="true"> // throws "Foo() must be called with new"  
+</span><span class="token keyword">new</span> <span class="token class-name">Foo</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token comment" spellcheck="true"> // logs "Foo instantiated with new"  
+</span></code></pre>
+<p><em>Learn more on the <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/new.target">new.target</a>.</em></p>
+<h5 id="proxy">Proxy</h5>
+<blockquote>
+<p>The Proxy object is used to define custom behavior for fundamental operations.</p>
+</blockquote>
+<pre class=" language-javascript"><code class=" language-javascript"><span class="token keyword">var</span> handler <span class="token operator">=</span> <span class="token punctuation">{</span>  
+    <span class="token keyword">get</span><span class="token punctuation">:</span> <span class="token keyword">function</span><span class="token punctuation">(</span>target<span class="token punctuation">,</span> name<span class="token punctuation">)</span><span class="token punctuation">{</span>
+        <span class="token keyword">return</span> name <span class="token keyword">in</span> target <span class="token operator">?</span> target<span class="token punctuation">[</span>name<span class="token punctuation">]</span> <span class="token punctuation">:</span> <span class="token number">37</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span class="token punctuation">;</span>
+
+<span class="token keyword">var</span> p <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Proxy</span><span class="token punctuation">(</span><span class="token punctuation">{</span><span class="token punctuation">}</span><span class="token punctuation">,</span> handler<span class="token punctuation">)</span>  
+p<span class="token punctuation">.</span>a <span class="token operator">=</span> <span class="token number">1</span>  
+p<span class="token punctuation">.</span>b <span class="token operator">=</span> undefined
+
+console<span class="token punctuation">.</span><span class="token function">log<span class="token punctuation">(</span></span>p<span class="token punctuation">.</span>a<span class="token punctuation">,</span> p<span class="token punctuation">.</span>b<span class="token punctuation">)</span><span class="token comment" spellcheck="true"> // 1, undefined  
+</span>console<span class="token punctuation">.</span><span class="token function">log<span class="token punctuation">(</span></span><span class="token string">'c'</span> <span class="token keyword">in</span> p<span class="token punctuation">,</span> p<span class="token punctuation">.</span>c<span class="token punctuation">)</span><span class="token comment" spellcheck="true"> // false, 37  
+</span></code></pre>
+<p><em>Learn more on <a href="https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/Proxy">proxies</a>.</em></p>
+<h5 id="reflect">Reflect</h5>
+<blockquote>
+<p>Reflect is a built-in object that provides methods for interceptable JavaScript operations. </p>
+</blockquote>
+<p><em>Learn more on <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Reflect">reflect</a>.</em></p>
+<h5 id="symbols">Symbols</h5>
+<blockquote>
+<p>A symbol is a unique and immutable data type and may be used as an identifier for object properties.</p>
+</blockquote>
+<pre class=" language-javascript"><code class=" language-javascript"><span class="token function">Symbol<span class="token punctuation">(</span></span><span class="token string">"foo"</span><span class="token punctuation">)</span> <span class="token operator">===</span> <span class="token function">Symbol<span class="token punctuation">(</span></span><span class="token string">"foo"</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token comment" spellcheck="true"> // false  
+</span></code></pre>
+<p><em>Learn more on <a href="https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/Symbol">symbols</a>.</em></p>
+<h2 id="tryingnodejsv6">Trying Node.js v6</h2>
+<p>If you are using <a href="https://github.com/creationix/nvm">nvm</a>, you only have to:</p>
+<pre class=" language-bash"><code class=" language-bash">nvm install <span class="token number">6</span>  
+</code></pre>
+<p>If you for some reason cannot use nvm, you can download the binary from the <a href="https://nodejs.org/en">official Node.js website</a>.</p>
+<h2 id="whenshouldimigratetonode6">When should I migrate to Node 6?</h2>
+<p>In October Node.js v6 will become the LTS version - after that, you should make the change.</p>
+</section>
+
+<a href="https://trace.risingstack.com/?utm_source=risingstack&amp;utm_medium=blog&amp;utm_content=What%27s%20new%20in%20Node%20v6?&amp;utm_campaign=tracebeta" target="_blank">
+<img src="https://risingstack-blog.s3.amazonaws.com/2016/Apr/trace_node_js_monitoring_banner-1460471311258.png" alt="Trace - Node.js and microservice monitoring" class="full-img">
+</a>
+<div id="mc_embed_signup">
+
+</div>
+
