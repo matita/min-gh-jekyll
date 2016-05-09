@@ -1,0 +1,160 @@
+---
+title: "The current state of web forms"
+description: "Or: ‘Why UI libraries exist’In working with web forms, the same sorts of edge cases seem to appear repeatedly, and (at least) I find myself waffling on how to approach them with JavaScript.I feel..."
+link: "http://codepen.io/kevinSuttle/post/the-current-state-of-web-forms"
+saved: "2016-05-02 17:16:26"
+---
+
+
+  
+
+  <div class="width-wrapper">
+
+    <div class="blog-post">
+
+      <div class="post-content">
+
+        <section class="post-body">
+          <h2>Or: ‘Why UI libraries exist’</h2>
+
+<p>In working with web forms, the same sorts of edge cases seem to appear repeatedly, and (at least) I find myself waffling on how to approach them with JavaScript.</p>
+
+<p>I feel better not reinventing the wheel, and just normalizing the cross-browser differences. </p>
+
+<h3>It's hard to avoid reinventing the wheel</h3>
+
+<p>The timing and intercepting of validation events feels hacky at best, yet I feel sloppy <a rel="nofollow" href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/form#attr-novalidate">ignoring the browser's built in input validation</a>. That being said, input validation is not consistently supported, not does it behave predictably. Also the UX leaves a lot to be desired, with forms opting to wait until an entire form has been submitted, rather than validating inline. </p>
+
+<h4>Binary validation isn't enough</h4>
+
+<p>The form and input specs only provide <em>2 values</em> for validity state: <code>:valid</code> and <code>:invalid</code>, which are only evaluated after the input has had <code>onBlur</code> triggered as a target, unless it's also marked as <code>:required</code> which is evaluated on submit as <code>:invalid</code>.</p>
+
+<p>However: this is not always true. </p>
+
+<blockquote>
+<p>"an empty string means the constraint is satisfied". </p>
+</blockquote>
+
+<p>
+  <img src="https://cldup.com/4ZkLAI9iap.gif" alt="LukeW &quot;Huh?&quot;">
+</p>
+
+<p>– <a rel="nofollow" href="https://developer.mozilla.org/en-US/docs/Web/Guide/HTML/HTML5/Constraint_validation">MDN: Constraint validation</a></p>
+
+<p>I <em>have</em> seen folks like <a rel="nofollow" href="https://github.com/joshblack">@joshblack</a> use <code>Objects</code> like <code>Enum</code>s with 4 states, which seems like a much better idea. </p>
+
+<div class="box"><pre class="lang-javascript has-code">  <code class="JS cm-s-default" data-lang="javascript"><span class="cm-string">'valid'</span> <span class="cm-operator">|</span> <span class="cm-string">'invalid'</span> <span class="cm-operator">|</span> <span class="cm-string">'validating'</span> <span class="cm-operator">|</span> <span class="cm-string">'initial'</span>;<br></code>
+</pre></div>
+
+<p>We have CSS pseudo-classes for things like <a rel="nofollow" href="https://developer.mozilla.org/en-US/docs/Web/CSS/:out-of-range"><code>:out-of-range</code></a> for <code>min</code>- <code>max</code> ranges, and <a rel="nofollow" href="https://developer.mozilla.org/en-US/docs/Web/CSS/:indeterminate"><code>:indeterminate</code></a> for half-filled checkboxes, but not a breakdown of pseudo-classes for validity of initial states. </p>
+
+<p>The DOM method of <code>event.target.validity</code> is <strong>read-only</strong>, as is the <a rel="nofollow" href="https://developer.mozilla.org/en-US/docs/Web/API/ValidityState"><code>ValidityState</code></a> method. The latter is a real bummer, because that could be super useful.  </p>
+
+<p>You can only read from <code>checkValidity()</code> as well. There's no programmatic way in the browser to force set a field's validity. Sure, you can start <a rel="nofollow" href="https://github.com/JedWatson/classnames">juggling classes</a> like <code>.invalid</code>, <code>.required</code>, etc. but I can assure you: that is a guaranteed path to madness. </p>
+
+<p>In a handful of browsers,  <code>setCustomValidity()</code> sounds like a great idea, but it's only setting the content of the browser's default field validation message. </p>
+
+<p>
+  <img src="https://cldup.com/OZpsywpbKs.png" alt="setCustomValidity">
+</p>
+
+<blockquote>
+<p>"There is no standard way to change their look and feel with CSS."</p>
+</blockquote>
+
+<p>– <a rel="nofollow" href="https://developer.mozilla.org/en-US/docs/Web/Guide/HTML/Forms/Data_form_validation#Customized_error_messages">MDN - Data form validation</a></p>
+
+<h4>What about accessibility?</h4>
+
+<p>None of the aforementioned even touches how radically-inaccessible all of this is. Because of all the <a rel="nofollow" href="https://developer.mozilla.org/en-US/docs/Web/Guide/HTML/Forms/Data_form_validation#Example_that_doesn't_use_the_constraint_validation_API#JavaScript_2">wheel reinvention</a> needed to make inputs a reasonably-painless experience and consistent across various contexts, we've totally munged the native affordances given to us by HTML. This leads devs who care and notice to start applying attributes like <a rel="nofollow" href="https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/ARIA_Live_Regions"><code>aria-live</code></a>, and accessibility experts to pull out their hair. </p>
+
+<p>We have to do better.</p>
+
+<h2>Smarter defaults</h2>
+
+<p>Here are some ideas on how to improve developer and user experience at the W3C standards level.</p>
+
+<ul>
+<li>Automatically disable <code>autocorrect</code>, <code>autocaptialize</code>, on <code>email</code>, <code>url</code>, <code>password</code>, and every other <code>input type</code> that isn't <code>text</code> or <code>search</code>. </li>
+</ul>
+
+<ol>
+<li><p>Ditch <code>placeholder</code>, repurpose them to  static <a rel="nofollow" href="http://www.lukew.com/ff/entry.asp?756">input masks</a>. 
+<img src="https://cldup.com/CmP59mFEAT.png" alt="Input mask"></p></li>
+<li><p>Ditch <code>password</code> masking. At the very least, include a <code>hide password</code> UI control.</p>
+
+<ul>
+<li>Use this same input type for captchas.</li>
+<li>Introduce <code>input type="fingerprint"</code>. Native mobile operating systems are already doing this.</li>
+</ul></li>
+<li><p>Introduce UI counterparts on the Web for inputs that were born on native mobile interfaces.</p>
+
+<ul>
+<li>Toggles. Binary—on or off.</li>
+<li>Segmented controls. Perhaps a type of <code>radio</code> button or <code>select</code>.</li>
+<li><code>geolocation</code> input type. We already have geolocation APIs. Why not standardize the inputs? <code>step</code> attributes could allow finer-grained controls. </li>
+<li>Default form CSS to mobile-first styling</li>
+<li>Large, separated touch targets</li>
+<li>Picker menus instead of separate <code>input</code>s for <code>month</code>, <code>day</code>, <code>time</code>, etc.</li>
+</ul></li>
+<li><p>Make time data more intelligent</p>
+
+<ul>
+<li>Introduce <code>birthdate</code> types that automatically set <code>max</code> to youngest acceptable age for a given site's terms of service, avoiding "are you really from the future?" messages. </li>
+</ul></li>
+</ol>
+
+<ul>
+<li>Define consistent <em>relative</em> times and dates for <code>time</code> inputs and elements. See <a rel="nofollow" href="http://momentjs.com/">moment.js</a> for a great example of what a baseline API for this should look like.</li>
+</ul>
+
+<ol>
+<li><p>Provide validation APIs more control and much less boilerplate when it comes to custom client-side validation.</p>
+
+<ul>
+<li>Define validation errors as attributes on input elements</li>
+<li>Add the option to specify custom messages per <a rel="nofollow" href="https://developer.mozilla.org/en-US/docs/Web/API/ValidityState">ValidityState</a>, including defining custom ones. </li>
+</ul></li>
+<li><p>Allow the developer to choose when validation occurs</p>
+
+<ul>
+<li>Default to inline validation with a 2 second debounce, and/or <code>onBlur()</code></li>
+</ul></li>
+<li><p>Allow overriding CSS for browser validation error message popovers</p></li>
+<li><p>Introduce <code>camera</code> and <code>microphone</code> input types to make <a rel="nofollow" href="https://developers.google.com/web/updates/2013/01/Voice-Driven-Web-Apps-Introduction-to-the-Web-Speech-API?hl=en">speech and media input</a> easier.</p></li>
+<li><p>Explicitly separate <code>value</code> and add  <code>initialValue</code> (see <a rel="nofollow" href="https://facebook.github.io/react/docs/forms.html#default-value">React.js's <code>defaultValue</code> attribute</a> for why this makes sense)</p></li>
+<li><p>Eliminate the confusion created using scenarios such as the following: 
+<code>&lt;input type=text inputmode=numeric&gt;</code> (triggers numeric software keyboard)
+vs.
+<code>&lt;input type="number"&gt;</code> (does <em>not</em> trigger numeric software keyboard) </p></li>
+</ol>
+
+<ul>
+<li><code>&lt;input type="number"&gt;</code> should automatically have <code>inputmode="numeric"</code> and <code>pattern="[0-9]*</code>" set, and the <code>step</code> UI should be explicitly enabled/disabled. </li>
+</ul>
+
+<ol>
+<li><p>Don't force <code>input</code> elements to be wrapped by <code>label</code> elements to gain larger hit areas. Accessibility: yes! Markup hacks: <strong>no</strong>!</p></li>
+<li><p><code>&lt;input type="emoji"&gt;</code>. With the number of "reaction" UIs cropping up, this only makes sense. </p></li>
+<li><p>Consider custom keyboards
+Sure, it seems scary, and lots of dangerous things <em>could</em> be done. All I'm asking is to consider it. There is also a lot of good that can be done as well.</p></li>
+</ol>
+
+<h3>What do you say, W3C?</h3>
+
+<p>These are just a few improvements and suggestions for better developer and user experience. Let's make them happen. </p>
+
+        </section>
+
+        <hr class="end-of-article-sep">
+
+        
+
+      </div>
+
+    </div>
+
+  </div>
+
+  
+
