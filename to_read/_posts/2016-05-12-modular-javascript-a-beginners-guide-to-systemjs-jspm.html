@@ -1,0 +1,126 @@
+---
+title: "Modular JavaScript: A Beginners Guide to SystemJS & jspm"
+description: "Ravi Kiran introduces you to jspm and SystemJS that let you load any module format (ES6, AMD, CommonJS and globals) directly from any registry."
+link: "http://www.sitepoint.com/modular-javascript-systemjs-jspm/"
+saved: "2016-05-12 16:42:14"
+---
+
+    <p><em>This article was peer reviewed by <a href="http://www.sitepoint.com/author/asandu">Adrian Sandu</a> and <a href="http://www.sitepoint.com/author/mbrown/">Mark Brown</a>. Thanks to all of SitePoint’s peer reviewers for making SitePoint content the best it can be!</em></p>
+<p>Over the past few years, the JavaScript programming language has exploded in popularity. It has become the go-to language for developing both rich web applications, as well as hybrid mobile applications. And as JavaScript projects are becoming increasingly complex, developers are experiencing new requirements of the language. One of these is modularity.</p>
+<p>As far as I can see, there are two aspects in which modularity has to be achieved:</p>
+<div class="ArticleBox u-inline"><h3 class="ArticleBox_header t-bg">
+                    <span class="ArticleBox_icon fa fa-pencil"></span> More from this author
+                 </h3><div class="ArticleBox_content"><ul class="ArticleBox_list t-list"><li><a href="http://www.sitepoint.com/asynchronous-apis-using-fetch-api-es6-generators/?utm_source=sitepoint&amp;utm_medium=relatedinline&amp;utm_term=javascript&amp;utm_campaign=relatedauthor">Asynchronous APIs Using the Fetch API and ES6 Generators</a></li><li><a href="http://www.sitepoint.com/transpiling-es6-modules-to-amd-commonjs-using-babel-gulp/?utm_source=sitepoint&amp;utm_medium=relatedinline&amp;utm_term=javascript&amp;utm_campaign=relatedauthor">Transpiling ES6 Modules to AMD &amp; CommonJS Using Babel &amp; Gulp</a></li></ul></div></div>
+<ul>
+<li>Modules that we author</li>
+<li>External modules that are installed as dependencies</li>
+</ul>
+<p>ES6 brings a <a href="http://www.2ality.com/2014/09/es6-modules-final.html">standard module syntax</a> to JavaScript and a <a href="https://github.com/whatwg/loader/">loader specification</a>. This is a good step forward, however at the time of writing, there are <a href="https://www.nczonline.net/blog/2016/04/es6-module-loading-more-complicated-than-you-think/">no browsers that can natively load ES6 modules</a>. This means that if you want to use modules today, you’ll need to use a module bundler.</p>
+<p><em>For an overview of the current landscape see: <a href="http://www.sitepoint.com/javascript-modules-bundling-transpiling/">Understanding JavaScript Modules: Bundling &amp; Transpiling</a></em></p>
+<p>And what’s more, we don’t have a package manager that allows us to download a package and include it in our application. Package managers (such as Bower and npm) help us download front-end dependencies without having to visit a projects’ website, but that’s as far as it goes.</p>
+<p>In this article, we will see how <a href="http://jspm.io/">jspm</a> and <a href="https://github.com/systemjs/systemjs">SystemJS</a> can be used to overcome these problems.</p>
+<h2 id="whatarejspmandsystemjs">What are jspm and SystemJS?</h2>
+<p>The JavaScript Package Manager (aka jspm) is a package manager that works on top of the SystemJS universal module loader. It is not an entirely new package manager with its own set of rules, rather it works on top of existing package sources. Out of the box, it works with GitHub and npm. As most of the Bower based packages are based on GitHub, we can install the those packages using jspm as well. It has a <a href="http://kasperlewau.github.io/registry/#/">registry</a> that lists most of the commonly used front-end packages for easier installation. Like npm, it can be used to differentiate the packages as development and production packages during installation.</p>
+<p>SystemJS is a module loader that can import modules at run time in any of the popular formats used today (CommonJS, UMD, AMD, ES6). It is built on top of the <a href="https://github.com/ModuleLoader/es6-module-loader">ES6 module loader polyfill</a> and is smart enough to detect the format being used and handle it appropriately. SystemJS can also transpile ES6 code (with <a href="http://www.babeljs.io/">Babel</a> or <a href="https://github.com/google/traceur-compiler">Traceur</a>) or other languages such as <a href="http://www.typescriptlang.org/">TypeScript</a> and <a href="http://coffeescript.org/">CoffeeScript</a> using plugins. You configure these things within <code class=" language-undefined">System.config({ ... })</code> before importing your module.</p>
+<p>jspm uses SystemJS to manage packages and their dependencies, so we need not worry about putting the packages in the right order to load them.</p>
+<p>Now that we know what jspm and SystemJS are, let’s see how to use them.</p>
+<h2 id="settingupourenvironment">Setting up Our Environment</h2>
+<p>If you haven’t already, you’ll need to have <a href="https://nodejs.org/en/">Node.js</a> installed. A particularly easy way to do this is to use a version manager (such as nvm) and is detailed in <a href="http://www.sitepoint.com/quick-tip-multiple-versions-node-nvm/">this quick tip</a>. Once you’re up and running with Node, you can install jspm globally by running the following from the command line:</p>
+<pre class=" language-bash"><code class="bash  language-bash">npm <span class="token function">install</span> -g jspm
+</code></pre>
+<p>Now we can use the <a href="https://github.com/jspm/jspm-cli">jspm command line interface</a>. Let’s set up a project:</p>
+<pre class=" language-bash"><code class="bash  language-bash"><span class="token function">mkdir</span> new-project <span class="token operator">&amp;&amp;</span> <span class="token function">cd</span> new-project
+npm init -y
+npm <span class="token function">install</span> jspm --save-dev
+</code></pre>
+<p>This creates a directory named <code class=" language-undefined">new-project</code>, initializes an npm project and installs jspm locally. This is the <a href="http://jspm.io/docs/getting-started.html">recommended way of doing things</a>, as it locks down the jspm version for a project and ensures upgrades to the global jspm will not alter the behavior of your application.</p>
+<p>Another advantage of this approach is that if your project is deployed through a continuous integration build, you can configure the build process to use the local jspm package instead of having to install jspm globally on the server as well.</p>
+<p>You can use <code class=" language-undefined">jspm -v</code> to confirm the local version.</p>
+<pre class=" language-bash"><code class="bash  language-bash">$ jspm -v
+0.16.34
+Running against local jspm install.
+</code></pre>
+<p>To use jspm in a project, run the following command:</p>
+<pre class=" language-bash"><code class="bash  language-bash">jspm init
+</code></pre>
+<p>You will be prompted for a number of settings, hit enter to accept the default values or type a different value to change them. The following screenshot shows an instance when the command is executed with default settings:</p>
+<p><img src="http://dab1nmslvvntp.cloudfront.net/wp-content/uploads/2016/05/1462369073jspm_init_terminal.png" alt="Running the jspm init command in the terminal"></p>
+<h2 id="directorystructureandconfiguration">Directory Structure and Configuration</h2>
+<p>This creates a file named <code class=" language-undefined">config.js</code> in the root of the project, as well as a folder named <code class=" language-undefined">jspm_packages</code>. If you take a peek inside the <code class=" language-undefined">jspm_packages</code> folder you’ll see:</p>
+<ul>
+<li>A <code class=" language-undefined">github</code> sub-directory</li>
+<li>An <code class=" language-undefined">npm</code> sub-directory</li>
+<li>The main files for the SystemJS module loader</li>
+</ul>
+<p>The reason that jspm is creating <code class=" language-undefined">github</code> and <code class=" language-undefined">npm</code> directories is that it piggybacks on top of these registries, simply aliasing the npm or GitHub package requested. Additionally, the <code class=" language-undefined">github</code> directory  contains a SystemJS plugin to load JSON files from GitHub and the <code class=" language-undefined">npm</code> directory contains the Babel-related packages we will need to transpile our ES6 code</p>
+<p>The <code class=" language-undefined">config.js</code> file is mainly for SystemJS. If you open it, you will see that it has configuration options set for the paths of the packages from different sources, options for Babel and name maps for the packages to make it easy to refer them. This file gets updated automatically updated when a new package is installed using jspm.</p>
+<p>The command also updates the package.json file and adds a section for jspm. The Babel packages installed with the <code class=" language-undefined">init</code> command are added to <code class=" language-undefined">devDependencies</code> section of the project.</p>
+<pre class=" language-javascript"><code class="javascript  language-javascript"><span class="token string">"jspm"</span><span class="token punctuation">:</span> <span class="token punctuation">{</span>
+  <span class="token string">"devDependencies"</span><span class="token punctuation">:</span> <span class="token punctuation">{</span>
+    <span class="token string">"babel"</span><span class="token punctuation">:</span> <span class="token string">"npm:babel-core@^5.8.24"</span><span class="token punctuation">,</span>
+    <span class="token string">"babel-runtime"</span><span class="token punctuation">:</span> <span class="token string">"npm:babel-runtime@^5.8.24"</span><span class="token punctuation">,</span>
+    <span class="token string">"core-js"</span><span class="token punctuation">:</span> <span class="token string">"npm:core-js@^1.1.4"</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<p>Any new package installed using the jspm command with or without the <code class=" language-undefined">--save</code> option will get added to the<code class=" language-undefined">dependencies</code> section and so it becomes a production dependency. Installing with the <code class=" language-undefined">--save-dev</code> option makes the dependency a development time dependency and saves it to the <code class=" language-undefined">devDependencies</code> section.</p>
+<p>Finally, jspm adds an entry to the <code class=" language-undefined">map</code> section of the <code class=" language-undefined">config.js</code> file for every package installed using the <code class=" language-undefined">jspm</code> command. The mapped name can be used to load the library in any JavaScript file throughout your project. Any package dependencies are added to the map section as well. Following is a fragment from map section of the <code class=" language-undefined">config.js</code> file that shows how packages of jquery and jquery-ui are mapped and how the dependency is defined:</p>
+<pre class=" language-javascript"><code class="javascript  language-javascript"><span class="token string">"jquery"</span><span class="token punctuation">:</span> <span class="token string">"npm:jquery@2.2.0"</span><span class="token punctuation">,</span>
+<span class="token string">"jquery-ui"</span><span class="token punctuation">:</span> <span class="token string">"github:components/jqueryui@1.11.4"</span><span class="token punctuation">,</span>
+<span class="token string">"github:components/jqueryui@1.11.4"</span><span class="token punctuation">:</span> <span class="token punctuation">{</span>
+  <span class="token string">"jquery"</span><span class="token punctuation">:</span> <span class="token string">"npm:jquery@2.2.0"</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<p>As a point of interest, you can also generate these mappings automatically when you install a module:</p>
+<pre class=" language-bash"><code class="bash  language-bash">jspm <span class="token function">install</span> jq<span class="token operator">=</span>jquery
+</code></pre>
+<p>This would allow you to write the following elsewhere in your app:</p>
+<pre class=" language-bash"><code class="bash  language-bash">var $ <span class="token operator">=</span> require<span class="token punctuation">(</span><span class="token string">'jq'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+</code></pre>
+<h2 id="jspmandsystemjsinaction">jspm and SystemJS in Action</h2>
+<p>To accompany this article, I have made a simple Wikipedia search sample. You can find the <a href="https://github.com/sitepoint-editors/JSPM-SystemJS-Demos">GitHub repo here</a>. It is setup using the default options of the <code class=" language-undefined">jspm init</code> command and consequently it uses Babel as ES6 transpiler. It also uses the libraries jQuery and Bootstrap which are installed using jspm. As bootstrap needs jQuery, jspm creates a mapping in the <code class=" language-undefined">config.js</code> file to load jQuery before loading bootstrap:</p>
+<pre class=" language-javascript"><code class="javascript  language-javascript"><span class="token string">"github:twbs/bootstrap@3.3.6"</span><span class="token punctuation">:</span> <span class="token punctuation">{</span>
+  <span class="token string">"jquery"</span><span class="token punctuation">:</span> <span class="token string">"github:components/jquery@2.2.0"</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<p>As the name of the repo suggests, it queries the Wikipedia search API and displays the data received in the view. It uses jQuery’s <code class=" language-undefined">$.ajax()</code> to make a call to the API, displays the results on a page and has a link to show a snippet of the article in a modal popup. The sample has three JavaScript files under the <code class=" language-undefined">scripts</code> folder:</p>
+<ul>
+<li><code class=" language-undefined">search.js</code>: This file uses an AMD style module. It as loads jQuery as a dependency and makes an Ajax call to the Wikipedia search API. The module returns a function that any other consuming module can call with a parameter.</li>
+<li><code class=" language-undefined">summaryModal.js</code>: This file uses an ES6 style module. It loads Bootstrap’s JavaScript library. It then exports a function that accepts a piece of escaped HTML and unescapes the HTML text before displaying it in a modal popup.</li>
+<li><code class=" language-undefined">display.js</code>: This file uses a CommonJS style module. It loads jQuery and both of the above files as dependencies. It calls the method exposed by <code class=" language-undefined">search.js</code> to get results and then renders this data in an HTML table on the UI. Additionally, it makes use of the method exposed by <code class=" language-undefined">summaryModal.js</code> to show a modal on click of a link button on the table.</li>
+</ul>
+<p>As already mentioned, SystemJS understands all module systems in JavaScript. We can load all three of the above files using SystemJS.</p>
+<p>To make these scripts run, we need to load <code class=" language-undefined">system.js</code> and <code class=" language-undefined">config.js</code> on the HTML page. After that we will load the <code class=" language-undefined">display.js</code> file using the SystemJS module loader. As this file refers to other files in the repo and these files load the libraries needed, we don’t need to load any other file.</p>
+<pre class=" language-markup"><code class="markup  language-markup"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>script</span> <span class="token attr-name">src</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>jspm_packages/system.js<span class="token punctuation">"</span></span><span class="token punctuation">&gt;</span></span><span class="token script language-javascript"></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>script</span><span class="token punctuation">&gt;</span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>script</span> <span class="token attr-name">src</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>config.js<span class="token punctuation">"</span></span><span class="token punctuation">&gt;</span></span><span class="token script language-javascript"></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>script</span><span class="token punctuation">&gt;</span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>script</span><span class="token punctuation">&gt;</span></span><span class="token script language-javascript">
+  System<span class="token punctuation">.</span><span class="token keyword">import</span><span class="token punctuation">(</span><span class="token string">"scripts/display.js"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>script</span><span class="token punctuation">&gt;</span></span>
+</code></pre>
+<p>SystemJS transpiles the ES6 file on the fly using Babel and runs it in the browser. Here’s a (slightly simplified) demo of what this looks like:</p>
+<p><iframe src="https://embed.plnkr.co/QANOUZ/" frameborder="0" allowfullscren="allowfullscren"></iframe></p>
+<p>However, transpiling on the fly is bad for performance and shouldn’t be used in production applications. Don’t forget that jspm is a module bundler, so let’s bundle it.</p>
+<h2 id="bundling">Bundling</h2>
+<p>We can create a bundle for the entire application using the following command:</p>
+<pre class=" language-bash"><code class="bash  language-bash">jspm bundle scripts/display.js build.js
+</code></pre>
+<p>This command does the following:</p>
+<ul>
+<li>Combines all files and the libraries in a single file named <code class=" language-undefined">build.js</code></li>
+<li>Converts the module systems used by the files to SystemJS style modules</li>
+<li>Creates a source map file that is loaded during debugging</li>
+</ul>
+<p>Now we need to load the <code class=" language-undefined">build.js</code> file into <code class=" language-undefined">index.html</code> file. Here is the updated set of references:</p>
+<pre class=" language-markup"><code class="markup  language-markup"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>script</span> <span class="token attr-name">src</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>jspm_packages/system.js<span class="token punctuation">"</span></span><span class="token punctuation">&gt;</span></span><span class="token script language-javascript"></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>script</span><span class="token punctuation">&gt;</span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>script</span> <span class="token attr-name">src</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>config.js<span class="token punctuation">"</span></span><span class="token punctuation">&gt;</span></span><span class="token script language-javascript"></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>script</span><span class="token punctuation">&gt;</span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>script</span> <span class="token attr-name">src</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>build.js<span class="token punctuation">"</span></span><span class="token punctuation">&gt;</span></span><span class="token script language-javascript"></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>script</span><span class="token punctuation">&gt;</span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>script</span><span class="token punctuation">&gt;</span></span><span class="token script language-javascript">
+  System<span class="token punctuation">.</span><span class="token keyword">import</span><span class="token punctuation">(</span><span class="token string">"scripts/display.js"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>script</span><span class="token punctuation">&gt;</span></span>
+</code></pre>
+<p>Please note that we didn’t remove the import statement to load the module <code class=" language-undefined">display.js</code>. This statement doesn’t load a file anymore, instead it loads a SystemJS module that is already available in the <code class=" language-undefined">build.js</code> file.</p>
+<p>You can follow instructions in the project’s README file to run it. You can browse the code in the individual files in the developer tools and debug through them.</p>
+<h2 id="conclusion">Conclusion</h2>
+<p>The combination of jspm and SystemJS provides a unified way of installing and loading dependencies. This tool not only makes the job of managing dependencies easier but also opens up the door to use the future module system on today’s browsers. As I have demonstrated, jspm is easy to setup and use, two reasons which are contributing to its rising popularity.</p>
+<p>Are you using jspm in your projects? Why? Why not? Let me know in the comments below.</p>
+  
