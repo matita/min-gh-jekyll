@@ -1,0 +1,245 @@
+---
+title: "Breaking up with Sass: it’s not you, it’s me – Ben Frain"
+description: "null"
+link: "https://benfrain.com/breaking-up-with-sass-postcss/"
+saved: "2016-05-16 14:39:26"
+---
+
+ 
+<div class="post-Content">
+<div id="js-daysSince" class="post-DaysSince post-DaysSince_Over365"><span class="post-DaysSince_Info"><b class="post-DaysSince_No">442</b><em class="post-DaysSince_Sub">Days</em></span> <p class="post-DaysSince_Text">442 days since this post was last revised. Specific details are likely out of date.</p></div> <p>Right now, I have a near frictionless CSS workflow. I write in Sass, compile with Libsass and get vendor prefixes added with PostCSS/Autoprefixer via Gulp/Grunt. Why would I want to upset that?</p>
+<p>Just under a year ago, my interest was piqued by <a href="http://nicolasgallagher.com/custom-css-preprocessing/">a post by Nicolas Gallagher</a>. In it he described how he/they (Twitter) were using a JS tool to post-process CSS.</p>
+<p>More recently, David Clark pinged me about <a href="https://github.com/postcss/postcss">PostCSS</a> and using it instead of Sass. He subsequently wrote on the subject here: <a href="http://davidtheclark.com/excited-about-postcss/">http://davidtheclark.com/excited-about-postcss/</a></p>
+<p>David’s excitement re-ignited my curiosity and the thought of using PostCSS for all my CSS needs has been brewing since (<a href="https://github.com/postcss/postcss">PostCSS</a> is the core ‘thing’ that makes other ‘things’ like Autoprefixer possible).</p>
+<p>Let’s be clear. There’s nothing ‘wrong’ with Sass. My reasons to consider ending our relationship are mostly selfish. Walk with me:</p>
+<blockquote>
+<p>Everything that can be written in JS will be written in JS</p>
+</blockquote>
+<p>That was <a href="http://blog.codinghorror.com/the-principle-of-least-power/">Jeff Atwood back in 2007</a>. These words resonate with me even more so now; I don’t think JavaScript is going anywhere soon.</p>
+<p>Personally, all my development work is on the front-end of the stack. Currently, my JavaScript skills are ‘beginner’ level. I’d like to consider myself ‘intermediate’ at some point in the future and to get there I need to use JavaScript more frequently.</p>
+<p>I know Sass pretty well (I know, you’d hope so given <a href="http://sassandcompass.com/">my book on the subject</a>). However, my understanding and continued investment in learning that language is not portable. While many conventions I’ve encountered and now understand are basic Computer Science stuff I wouldn’t have encountered otherwise (as I don’t have a Computer Science background), the actual syntax and its foibles are unique. I can’t apply that knowledge elsewhere.</p>
+<p>Furthermore, reliance on Sass, the language, makes me beholden to the features that the authors of Sass add/remove. In many ways this is a good thing. However, I have no C or Ruby chops to extend the language should I need to. For example, I’d really like to see <a href="https://github.com/sass/libsass/issues/156">globbing support</a> but one of the authors is adamant that <a href="https://github.com/sass/libsass/issues/156#issuecomment-34229670">it won’t be part of the language</a>. That frustrates me. I’m not capable enough to change things.</p>
+<h2 id="h-H2_0">What do I need from Sass</h2>
+<p>I like to keep my CSS authoring close to CSS. What I mean by that is that I only use Sass features like loops, functions and mixins if I really need to. The biggest wins for me with Sass have always been in terms of variables (for consistency) and partials (organisational). However, there <a href="http://benfrain.com/using-lists-with-maps-in-sass-3-3/">have been occasions</a> where newer features like data structures have really proved useful. </p>
+<p>I made a list of the things I need from style sheets (in brackets are what currently facilitates those needs):</p>
+<ul>
+<li>variables [Sass]</li>
+<li>data structures [Sass]</li>
+<li>loops (of data structures) [Sass]</li>
+<li>nesting [Sass]</li>
+<li>color conversions (specifically HSB) [Sass]</li>
+<li>automatic vendor prefixing [PostCSS/Autoprefixer via Gulp]</li>
+<li>ability to group alike media queries (because, why not) [Gulp]</li>
+<li>re-minify CSS (after media queries and Autoprefixer have done their thing) [Gulp]</li>
+</ul>
+<p>These days, more and more of my needs are being handled by post-processing and build systems; something that wasn’t the case just a couple of years ago. Back then, my vendor prefixing used to be handled with Compass. My minification used to be handled by Sass. That is no longer the case.</p>
+<p>Given these current needs, I wanted to see if it was possible (and preferable) to move the existing Sass based functionality into the PostCSS world. </p>
+<p>I’ll document that process now before I attempt to consolidate my current thinking on the matter.</p>
+<h2 id="h-H2_1">Migrating from Sass to PostCSS</h2>
+<p>Gulp is my current build tool of choice. I have used Gulp as my ‘passport’ to PostCSS.</p>
+<div class="boxOut">
+Eventually I would like to get ‘closer to the metal’ and use Node directly as a build tool but I’m not there yet. For reference, check out Keith Cirkel’s <a href="http://blog.keithcirkel.co.uk/why-we-should-stop-using-grunt/">http://blog.keithcirkel.co.uk/why-we-should-stop-using-grunt/</a> and <a href="http://blog.keithcirkel.co.uk/how-to-use-npm-as-a-build-tool/">http://blog.keithcirkel.co.uk/how-to-use-npm-as-a-build-tool/</a> on that subject.
+</div>
+<p>Here is the basic <code>gulpfile.js</code> I used to test PostCSS. The actual part that deals with PostCSS is a small subset of this but I’m listing it all out for the sake of completeness. </p>
+<pre class=" language-javascript"><code class=" language-javascript"><span class="token keyword">var</span> gulp <span class="token operator">=</span> <span class="token function">require</span><span class="token punctuation">(</span><span class="token string">'gulp'</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+    jshint <span class="token operator">=</span> <span class="token function">require</span><span class="token punctuation">(</span><span class="token string">'gulp-jshint'</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+    uglify <span class="token operator">=</span> <span class="token function">require</span><span class="token punctuation">(</span><span class="token string">'gulp-uglify'</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+    imagemin <span class="token operator">=</span> <span class="token function">require</span><span class="token punctuation">(</span><span class="token string">'gulp-imagemin'</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+    rename <span class="token operator">=</span> <span class="token function">require</span><span class="token punctuation">(</span><span class="token string">'gulp-rename'</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+    concat <span class="token operator">=</span> <span class="token function">require</span><span class="token punctuation">(</span><span class="token string">'gulp-concat'</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+    notify <span class="token operator">=</span> <span class="token function">require</span><span class="token punctuation">(</span><span class="token string">'gulp-notify'</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+    cache <span class="token operator">=</span> <span class="token function">require</span><span class="token punctuation">(</span><span class="token string">'gulp-cache'</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+    browserSync <span class="token operator">=</span> <span class="token function">require</span><span class="token punctuation">(</span><span class="token string">'browser-sync'</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+    reload      <span class="token operator">=</span> browserSync<span class="token punctuation">.</span>reload<span class="token punctuation">;</span>
+ 
+<span class="token keyword">var</span> gutil <span class="token operator">=</span> <span class="token function">require</span><span class="token punctuation">(</span><span class="token string">'gulp-util'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token keyword">var</span> postcss <span class="token operator">=</span> <span class="token function">require</span><span class="token punctuation">(</span><span class="token string">'gulp-postcss'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token keyword">var</span> simplevars <span class="token operator">=</span> <span class="token function">require</span><span class="token punctuation">(</span><span class="token string">'postcss-simple-vars'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token keyword">var</span> autoprefixer <span class="token operator">=</span> <span class="token function">require</span><span class="token punctuation">(</span><span class="token string">'autoprefixer-core'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token keyword">var</span> mqpacker <span class="token operator">=</span> <span class="token function">require</span><span class="token punctuation">(</span><span class="token string">'css-mqpacker'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token keyword">var</span> csswring <span class="token operator">=</span> <span class="token function">require</span><span class="token punctuation">(</span><span class="token string">'csswring'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token keyword">var</span> nestedcss <span class="token operator">=</span> <span class="token function">require</span><span class="token punctuation">(</span><span class="token string">'postcss-nested'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token keyword">var</span> corepostcss <span class="token operator">=</span> <span class="token function">require</span><span class="token punctuation">(</span><span class="token string">'postcss'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token keyword">var</span> categories <span class="token operator">=</span> <span class="token function">require</span><span class="token punctuation">(</span><span class="token string">'./data/cat-colors.json'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+ 
+<span class="token keyword">var</span> dataloop <span class="token operator">=</span> <span class="token keyword">function</span><span class="token punctuation">(</span>css<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">for</span> <span class="token punctuation">(</span> <span class="token keyword">var</span> category <span class="token keyword">in</span> categories<span class="token punctuation">.</span>colorList <span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">var</span> colorSet <span class="token operator">=</span> categories<span class="token punctuation">.</span>colorList<span class="token punctuation">[</span>category<span class="token punctuation">]</span><span class="token punctuation">;</span>
+        <span class="token keyword">var</span> borderTop <span class="token operator">=</span> colorSet<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+        <span class="token keyword">var</span> borderBottom <span class="token operator">=</span> colorSet<span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+        <span class="token keyword">var</span> rule <span class="token operator">=</span> corepostcss<span class="token punctuation">.</span><span class="token function">rule</span><span class="token punctuation">(</span><span class="token punctuation">{</span> selector<span class="token punctuation">:</span> <span class="token string">'.cat-'</span> <span class="token operator">+</span> category <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        rule<span class="token punctuation">.</span><span class="token function">append</span><span class="token punctuation">(</span><span class="token punctuation">{</span> prop<span class="token punctuation">:</span> <span class="token string">'border-top'</span><span class="token punctuation">,</span> value<span class="token punctuation">:</span> <span class="token string">'1px solid '</span> <span class="token operator">+</span> borderTop<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        rule<span class="token punctuation">.</span><span class="token function">append</span><span class="token punctuation">(</span><span class="token punctuation">{</span> prop<span class="token punctuation">:</span> <span class="token string">'border-bottom'</span><span class="token punctuation">,</span> value<span class="token punctuation">:</span> <span class="token string">'1px solid '</span> <span class="token operator">+</span> borderBottom <span class="token operator">+</span> <span class="token string">";"</span><span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        css<span class="token punctuation">.</span><span class="token function">append</span><span class="token punctuation">(</span>rule<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span class="token punctuation">;</span>
+ 
+gulp<span class="token punctuation">.</span><span class="token function">task</span><span class="token punctuation">(</span><span class="token string">'css'</span><span class="token punctuation">,</span> <span class="token keyword">function</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">var</span> processors <span class="token operator">=</span> <span class="token punctuation">[</span>
+        <span class="token function">autoprefixer</span><span class="token punctuation">(</span><span class="token punctuation">{</span>browsers<span class="token punctuation">:</span> <span class="token punctuation">[</span><span class="token string">'last 2 version'</span><span class="token punctuation">,</span> <span class="token string">'safari 5'</span><span class="token punctuation">,</span> <span class="token string">'ie 8'</span><span class="token punctuation">,</span> <span class="token string">'ie 9'</span><span class="token punctuation">,</span> <span class="token string">'opera 12.1'</span><span class="token punctuation">,</span> <span class="token string">'ios 6'</span><span class="token punctuation">,</span> <span class="token string">'android 4'</span><span class="token punctuation">]</span><span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+        simplevars<span class="token punctuation">,</span>
+        nestedcss<span class="token punctuation">,</span>
+        dataloop
+    <span class="token punctuation">]</span><span class="token punctuation">;</span>
+    <span class="token keyword">return</span> gulp<span class="token punctuation">.</span><span class="token function">src</span><span class="token punctuation">(</span>'<span class="token punctuation">.</span><span class="token operator">/</span>preCSS<span class="token comment" spellcheck="true">/*.css')
+        .pipe(postcss(processors))
+        .pipe(gulp.dest('./dest'));
+});
+ 
+// Static server
+gulp.task('browser-sync', function() {
+     browserSync({
+          server: {
+                baseDir: "./"
+          }
+     });
+});
+ 
+// Concatenate &amp; Minify JS
+gulp.task('scripts', function() {
+    return gulp.src('js/*.js')
+        .pipe(concat('all.js'))
+        .pipe(gulp.dest('dist'))
+        .pipe(rename('all.min.js'))
+        .pipe(uglify())
+        .pipe(gulp.dest('dist'))
+        .pipe(reload({stream:true}));
+});
+ 
+// Images
+gulp.task('images', function() {
+  return gulp.src('img/**/</span><span class="token operator">*</span>'<span class="token punctuation">)</span>
+    <span class="token punctuation">.</span><span class="token function">pipe</span><span class="token punctuation">(</span><span class="token function">cache</span><span class="token punctuation">(</span><span class="token function">imagemin</span><span class="token punctuation">(</span><span class="token punctuation">{</span> optimizationLevel<span class="token punctuation">:</span> <span class="token number">3</span><span class="token punctuation">,</span> progressive<span class="token punctuation">:</span> <span class="token keyword">true</span><span class="token punctuation">,</span> interlaced<span class="token punctuation">:</span> <span class="token keyword">true</span> <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+    <span class="token punctuation">.</span><span class="token function">pipe</span><span class="token punctuation">(</span>gulp<span class="token punctuation">.</span><span class="token function">dest</span><span class="token punctuation">(</span><span class="token string">'dist/images'</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+    <span class="token punctuation">.</span><span class="token function">pipe</span><span class="token punctuation">(</span><span class="token function">notify</span><span class="token punctuation">(</span><span class="token punctuation">{</span> message<span class="token punctuation">:</span> <span class="token string">'Images task complete'</span> <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+ 
+<span class="token comment" spellcheck="true">// Watch</span>
+gulp<span class="token punctuation">.</span><span class="token function">task</span><span class="token punctuation">(</span><span class="token string">'watch'</span><span class="token punctuation">,</span> <span class="token keyword">function</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+ 
+    <span class="token comment" spellcheck="true">// Watch .css files</span>
+    gulp<span class="token punctuation">.</span><span class="token function">watch</span><span class="token punctuation">(</span>'preCSS<span class="token comment" spellcheck="true">/**/</span><span class="token operator">*</span><span class="token punctuation">.</span>css<span class="token string">', ['</span>css'<span class="token punctuation">,</span> browserSync<span class="token punctuation">.</span>reload<span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+ 
+    <span class="token comment" spellcheck="true">// Watch .js files</span>
+    gulp<span class="token punctuation">.</span><span class="token function">watch</span><span class="token punctuation">(</span><span class="token punctuation">[</span>'js<span class="token comment" spellcheck="true">/**/</span><span class="token operator">*</span><span class="token punctuation">.</span>js<span class="token string">','</span>main<span class="token punctuation">.</span>js<span class="token string">'], ['</span>scripts'<span class="token punctuation">,</span> browserSync<span class="token punctuation">.</span>reload<span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+ 
+    <span class="token comment" spellcheck="true">// Watch image files</span>
+    gulp<span class="token punctuation">.</span><span class="token function">watch</span><span class="token punctuation">(</span>'img<span class="token comment" spellcheck="true">/**/</span><span class="token operator">*</span><span class="token string">', ['</span>images'<span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+ 
+    <span class="token comment" spellcheck="true">// Watch any files in dist/, reload on change</span>
+    gulp<span class="token punctuation">.</span><span class="token function">watch</span><span class="token punctuation">(</span><span class="token string">"*.html"</span><span class="token punctuation">,</span> browserSync<span class="token punctuation">.</span>reload<span class="token punctuation">)</span><span class="token punctuation">;</span>
+ 
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+ 
+gulp<span class="token punctuation">.</span><span class="token function">task</span><span class="token punctuation">(</span><span class="token string">'default'</span><span class="token punctuation">,</span> <span class="token punctuation">[</span><span class="token string">'css'</span><span class="token punctuation">,</span> <span class="token string">'browser-sync'</span><span class="token punctuation">,</span> <span class="token string">'scripts'</span><span class="token punctuation">,</span> <span class="token string">'watch'</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+</code></pre>
+<h3>Plugins for Sass like conveniences</h3>
+<p>I wanted to specifically test nesting, variables and looping through data structures, PostCSS style. By default, PostCSS is pretty lean. You add the additional functionality you need by way of the many and varied plugins. </p>
+<p>Therefore <a href="https://github.com/postcss/postcss#plugins">PostCSS plugins</a> provide similar variable, nesting and mixin conventions that I am used to with Sass.</p>
+<p>These plugins just work. I had to do no work in terms of configuration so I’ll therefore only talk about them briefly.</p>
+<p>For example, with the <a href="https://github.com/postcss/postcss-simple-vars">PostCSS Simple Variables</a> plugin, you can use variables just like you would in Sass: <code>$variable-name: value;</code>. When you want to interpolate, the syntax is slightly different, <code>$(variable-name)_normal-thing</code> (as opposed to <code>#{$variable-name}</code> in Sass).</p>
+<div class="boxOut">
+You may be interested to know that if you want to get closer to the current <a href="http://www.w3.org/TR/css-variables-1/">W3C specification for custom properties</a>, you can use <a href="https://github.com/postcss/postcss-custom-properties">https://github.com/postcss/postcss-custom-properties</a>.
+</div>
+<p>If you want mixins there is <a href="https://github.com/postcss/postcss-mixins">PostCSS Mixins</a>. The syntax is again, purposely similar to Sass. I’ve not really done anything with these. I was more interested in data structures as there is nothing ‘off the shelf’ to deal with these.</p>
+<h3>Data structures and looping</h3>
+<p>I don’t need to loop through data structures very often but when I do, I’m sure glad there’s a way to do it in Sass. There are a couple of instances in current projects I’m working where I literally would not be without this capability. This was one of the first things <a href="https://github.com/cssnext/cssnext/issues/60">I started asking about</a>. And <a href="https://github.com/postcss/postcss/issues/218">further questioning</a> and a lot of help from <a href="https://twitter.com/tommillard81">Tom</a> (seriously, I couldn’t accomplish anything in JS without Tom) revealed the way to do this in PostCSS.</p>
+<p>Unlike Sass, which purposely mixes logic in with styles, PostCSS would ideally like you to keep logic and programming out of your style sheets. I’m torn on this. I can appreciate both approaches. Let’s put the philosophical debates on this aside and merely consider how we can load in a data structure and loop through it in PostCSS land.</p>
+<h3>Referencing a data structure in PostCSS</h3>
+<p>The great thing about using PostCSS is that it’s JavaScript. So JSON data structures need no special work to start making use of. You can see in the Gulpfile above I’m merely referencing my test JSON data structure like this:</p>
+<pre class=" language-javascript"><code class=" language-javascript"><span class="token keyword">var</span> categories <span class="token operator">=</span> <span class="token function">require</span><span class="token punctuation">(</span><span class="token string">'./data/cat-colors.json'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+</code></pre>
+<p>Here is the content of that JSON file:</p>
+<pre class=" language-javascript"><code class=" language-javascript"><span class="token punctuation">{</span>
+    <span class="token string">"colorList"</span><span class="token punctuation">:</span> <span class="token punctuation">{</span>
+        <span class="token string">"c1"</span>  <span class="token punctuation">:</span> <span class="token punctuation">[</span><span class="token string">"#000000"</span><span class="token punctuation">,</span> <span class="token string">"#000011"</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+        <span class="token string">"c2"</span>  <span class="token punctuation">:</span> <span class="token punctuation">[</span><span class="token string">"#000011"</span><span class="token punctuation">,</span> <span class="token string">"#000022"</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+        <span class="token string">"c3"</span>  <span class="token punctuation">:</span> <span class="token punctuation">[</span><span class="token string">"#000022"</span><span class="token punctuation">,</span> <span class="token string">"#000033"</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+        <span class="token string">"c4"</span>  <span class="token punctuation">:</span> <span class="token punctuation">[</span><span class="token string">"#000033"</span><span class="token punctuation">,</span> <span class="token string">"#000044"</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+        <span class="token string">"c7"</span>  <span class="token punctuation">:</span> <span class="token punctuation">[</span><span class="token string">"#000044"</span><span class="token punctuation">,</span> <span class="token string">"#000055"</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+        <span class="token string">"c8"</span>  <span class="token punctuation">:</span> <span class="token punctuation">[</span><span class="token string">"#000055"</span><span class="token punctuation">,</span> <span class="token string">"#000066"</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+        <span class="token string">"c9"</span>  <span class="token punctuation">:</span> <span class="token punctuation">[</span><span class="token string">"#000066"</span><span class="token punctuation">,</span> <span class="token string">"#000077"</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+        <span class="token string">"c10"</span> <span class="token punctuation">:</span> <span class="token punctuation">[</span><span class="token string">"#000077"</span><span class="token punctuation">,</span> <span class="token string">"#000088"</span><span class="token punctuation">]</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<p>With this data, I want to loop through and choose the first hex value for the border-top colour and the second hex value for the border-bottom colour. I also want to use the key value to make a selector. Here is the loop from the above gulpfile.</p>
+<pre class=" language-javascript"><code class=" language-javascript"><span class="token keyword">var</span> dataloop <span class="token operator">=</span> <span class="token keyword">function</span><span class="token punctuation">(</span>css<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">for</span> <span class="token punctuation">(</span> <span class="token keyword">var</span> category <span class="token keyword">in</span> categories<span class="token punctuation">.</span>colorList <span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">var</span> colorSet <span class="token operator">=</span> categories<span class="token punctuation">.</span>colorList<span class="token punctuation">[</span>category<span class="token punctuation">]</span><span class="token punctuation">;</span>
+        <span class="token keyword">var</span> borderTop <span class="token operator">=</span> colorSet<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+        <span class="token keyword">var</span> borderBottom <span class="token operator">=</span> colorSet<span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+        <span class="token keyword">var</span> rule <span class="token operator">=</span> corepostcss<span class="token punctuation">.</span><span class="token function">rule</span><span class="token punctuation">(</span><span class="token punctuation">{</span> selector<span class="token punctuation">:</span> <span class="token string">'.cat-'</span> <span class="token operator">+</span> category <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        rule<span class="token punctuation">.</span><span class="token function">append</span><span class="token punctuation">(</span><span class="token punctuation">{</span> prop<span class="token punctuation">:</span> <span class="token string">'border-top'</span><span class="token punctuation">,</span> value<span class="token punctuation">:</span> <span class="token string">'1px solid '</span> <span class="token operator">+</span> borderTop<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        rule<span class="token punctuation">.</span><span class="token function">append</span><span class="token punctuation">(</span><span class="token punctuation">{</span> prop<span class="token punctuation">:</span> <span class="token string">'border-bottom'</span><span class="token punctuation">,</span> value<span class="token punctuation">:</span> <span class="token string">'1px solid '</span> <span class="token operator">+</span> borderBottom <span class="token operator">+</span> <span class="token string">";"</span><span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        css<span class="token punctuation">.</span><span class="token function">append</span><span class="token punctuation">(</span>rule<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span class="token punctuation">;</span>
+</code></pre>
+<p>If you are used to writing JavaScript, the above loop will not need explanation. If you don’t currently write much JavaScript, here is the ‘York Notes’ version of what’s going on. </p>
+<p>First, we make a variable to serve as a reference to the function:</p>
+<pre class=" language-javascript"><code class=" language-javascript"><span class="token keyword">var</span> dataloop <span class="token operator">=</span> <span class="token keyword">function</span><span class="token punctuation">(</span>css<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+</code></pre>
+<p>The argument in there <code>(css)</code> is what will be passed in from the PostCSS job (the CSS). </p>
+<p>Then the loop:</p>
+<pre class=" language-javascript"><code class=" language-javascript"><span class="token keyword">for</span> <span class="token punctuation">(</span> <span class="token keyword">var</span> category <span class="token keyword">in</span> categories<span class="token punctuation">.</span>colorList <span class="token punctuation">)</span> <span class="token punctuation">{</span>
+</code></pre>
+<p>Remember that we have already referenced our JSON data as ‘categories’. Within that JSON we want the <code>colorList</code> object, so, using dot notation, that results in <code>categories.colorList</code>. The <code>var category</code> is just giving us a dynamic name to serve as the iteration of the loop. Next we want to reference each ‘row’ of that JSON. The next variable serves that purpose:</p>
+<pre class=" language-javascript"><code class=" language-javascript"><span class="token keyword">var</span> colorSet <span class="token operator">=</span> categories<span class="token punctuation">.</span>colorList<span class="token punctuation">[</span>category<span class="token punctuation">]</span><span class="token punctuation">;</span>
+</code></pre>
+<p>With that referenced we can then grab each value inside the array (e.g. <code>colorSet[0]</code>) to assign the values needed to make the CSS rules we need. The rest of the loop merely deals with creating the rules and appending them to the CSS. </p>
+<pre class=" language-javascript"><code class=" language-javascript"><span class="token keyword">var</span> rule <span class="token operator">=</span> corepostcss<span class="token punctuation">.</span><span class="token function">rule</span><span class="token punctuation">(</span><span class="token punctuation">{</span> selector<span class="token punctuation">:</span> <span class="token string">'.cat-'</span> <span class="token operator">+</span> category <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+rule<span class="token punctuation">.</span><span class="token function">append</span><span class="token punctuation">(</span><span class="token punctuation">{</span> prop<span class="token punctuation">:</span> <span class="token string">'border-top'</span><span class="token punctuation">,</span> value<span class="token punctuation">:</span> <span class="token string">'1px solid '</span> <span class="token operator">+</span> borderTop<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+rule<span class="token punctuation">.</span><span class="token function">append</span><span class="token punctuation">(</span><span class="token punctuation">{</span> prop<span class="token punctuation">:</span> <span class="token string">'border-bottom'</span><span class="token punctuation">,</span> value<span class="token punctuation">:</span> <span class="token string">'1px solid '</span> <span class="token operator">+</span> borderBottom <span class="token operator">+</span> <span class="token string">";"</span><span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+css<span class="token punctuation">.</span><span class="token function">append</span><span class="token punctuation">(</span>rule<span class="token punctuation">)</span><span class="token punctuation">;</span>
+</code></pre>
+<div class="boxOut">
+You might notice that I’m referencing postCSS twice at the top of my gulpfile. That was because I had some difficulty getting this to work using the <code>var postcss = require('gulp-postcss');</code>. I therefore ended up pulling in the ‘normal’ PostCSS to give me access to the rule method. If someone knows what I’m doing wrong here, please let me know.
+</div>
+<p>Each time a CSS file is saved, the data is looped through and rules for each key in that data structure are appended to the end of the CSS. For example:</p>
+<pre class=" language-css"><code class=" language-css"><span class="token selector">.cat-c1 </span><span class="token punctuation">{</span>
+    <span class="token property">border-top</span><span class="token punctuation">:</span> 1px solid #000000<span class="token punctuation">;</span>
+    <span class="token property">border-bottom</span><span class="token punctuation">:</span> 1px solid #000011<span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<h2 id="h-H2_2">The actual PostCSS task</h2>
+<p>The actual PostCSS task in gulp is nice and simple:</p>
+<pre class=" language-javascript"><code class=" language-javascript">gulp<span class="token punctuation">.</span><span class="token function">task</span><span class="token punctuation">(</span><span class="token string">'css'</span><span class="token punctuation">,</span> <span class="token keyword">function</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">var</span> processors <span class="token operator">=</span> <span class="token punctuation">[</span>
+        <span class="token function">autoprefixer</span><span class="token punctuation">(</span><span class="token punctuation">{</span>browsers<span class="token punctuation">:</span> <span class="token punctuation">[</span><span class="token string">'last 2 version'</span><span class="token punctuation">,</span> <span class="token string">'safari 5'</span><span class="token punctuation">,</span> <span class="token string">'ie 8'</span><span class="token punctuation">,</span> <span class="token string">'ie 9'</span><span class="token punctuation">,</span> <span class="token string">'opera 12.1'</span><span class="token punctuation">,</span> <span class="token string">'ios 6'</span><span class="token punctuation">,</span> <span class="token string">'android 4'</span><span class="token punctuation">]</span><span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+        simplevars<span class="token punctuation">,</span>
+        nestedcss<span class="token punctuation">,</span>
+        dataloop
+    <span class="token punctuation">]</span><span class="token punctuation">;</span>
+    <span class="token keyword">return</span> gulp<span class="token punctuation">.</span><span class="token function">src</span><span class="token punctuation">(</span><span class="token string">'./preCSS/*.css'</span><span class="token punctuation">)</span>
+        <span class="token punctuation">.</span><span class="token function">pipe</span><span class="token punctuation">(</span><span class="token function">postcss</span><span class="token punctuation">(</span>processors<span class="token punctuation">)</span><span class="token punctuation">)</span>
+        <span class="token punctuation">.</span><span class="token function">pipe</span><span class="token punctuation">(</span>gulp<span class="token punctuation">.</span><span class="token function">dest</span><span class="token punctuation">(</span><span class="token string">'./dest'</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+</code></pre>
+<p>You can see in the <code>processors</code> variable you just list out the different plugins you want to process the CSS with. Notice our own <code>dataloop</code> function is listed here? Any further functions/plugins you wanted to write can be referenced in the same manner. If they live outside the gulpfile you can simply pull them in with a <code>require</code>.</p>
+<p>Subsequently, the capability to do ‘things’ with the CSS is effectively limitless (or limited only by your imagination and capability).</p>
+<p>So, to conclude this section, I think it’s safe to say, almost all the issues you would need to solve with Sass could be solved with PostCSS.</p>
+<h1 id="h-H1_3">Why wouldn’t you use PostCSS?</h1>
+<p>Like all popular frameworks and tools, there are some good reasons to embrace them. They make it easier to on-board newer developers to your projects. If you can say ‘We use Angular’, or ‘We use Ember’, or ‘We use Sass’ etc it’s easier for new devs to make sense of your work; these are all robust, capable and well-documented projects, regardless of any short-comings.</p>
+<p>If you go down this route, to some extent you are creating a bespoke CSS processing tool. That is a double-edged sword.</p>
+<p>In addition there is some value being able to include logic in style sheets. The <code>@warn</code> directive can be pretty handy. Or wrapping sections in <code>@if</code> statements so they only get output in different eventualities. I have found utility in these features. With Sass they are there, solid, ready and waiting.</p>
+<h1 id="h-H1_4">Why would you use PostCSS?</h1>
+<p>PostCSS offers a virtually limitless means of manipulating your CSS in any way you need.</p>
+<p>It’s insanely fast. I need to test and substantiate with a huge project but I’d venture at this point it’s faster than Libsass.</p>
+<p>If you don’t use JavaScript much, the JavaScript you learn using PostCSS is portable. The knowledge can be applied elsewhere on the stack.</p>
+<h1 id="h-H1_5">Summary</h1>
+<p>For the majority of style sheet authors currently (and happily) using Sass, there is little benefit in jumping ship to PostCSS right now. I hope it’s clear from this post that I believe to do so would be for philosophical and/or personal reasons. My default advice to someone looking to pick a tool to help organise and maintain CSS would still be ‘use Sass’. </p>
+<p>Furthermore, there are arguments that suggest PostCSS is a better choice than existing pre-processors as it allows you to use the current W3C syntaxes for things like variables/custom properties. The <a href="http://cssnext.github.io/">cssnext</a> project takes this approach to its logical conclusion, adding the ability to use a bunch of future (in proposal/dev) CSS module syntaxes today. The thinking being that it therefore provides a more future proof way to author style sheets. While this will appeal to some, I’m not convinced on this approach.</p>
+<p>A W3C specification that is not ratified or implemented by more than a couple of vendors is no more stable or future proof that some arbitrary abstraction. If you think otherwise, I’d wonder if you’ve ever tried documenting things like Flexbox or linear-gradients over the years! Plus, changing a variable from one format to another is likely little more than a 10 minute job in any competent text editor.&nbsp;</p>
+<p>When it comes to speed, both Libsass and PostCSS are incredibly fast. PostCSS has the edge but whether you’ll see or feel any tangible benefit is questionable; maybe on enormous projects but for most users, probably not. I intend to test this for myself in due course.</p>
+<p>You can also facilitate globbing imports with either tool via a build tool like Gulp (the current <a href="https://github.com/postcss/postcss-import">inlining imports plugin</a> for postCSS <a href="https://github.com/postcss/postcss-import/issues/8">doesn’t support globbing</a>) so there’s no inherent advantage to PostCSS in that respect either.</p>
+<p>Instead, I think the real attraction with PostCSS is the unshackling of restraints and the portability of skills. Tackling your CSS problems with tools manipulated with JavaScript is either: liberating if you already understand the language well, or time better spent if you have any ambitions to enjoy working in the front (and perhaps even back) of the web stack in the future.</p>
+ 
+<h3 class="post-Bio_Title">About The Author</h3>
+<div class="post-Bio_Wrapper">
+<div class="post-Bio_Avatar"><img alt="" src="https://secure.gravatar.com/avatar/08382dba09a1b945d96656df5e1725f7?s=100&amp;d=retro&amp;r=pg" srcset="https://secure.gravatar.com/avatar/08382dba09a1b945d96656df5e1725f7?s=200&amp;d=retro&amp;r=pg 2x" class="avatar avatar-100 photo" height="100" width="100"></div>
+<p class="post-Bio_Text"><b><a href="https://plus.google.com/107588612045728705538?rel=author">Ben Frain</a></b> is front-end web developer and author based in Cheshire, UK.
+His books, '<a href="http://leanpub.com/enduringcss">Enduring CSS</a>', '<a href="http://benfra.in/1y5">Responsive web design with HTML5 &amp; CSS3</a>' and '<a href="http://benfra.in/1zi">Sass and Compass for Designers'</a> are available now.
+You can follow him on Twitter <a href="http://twitter.com/benfrain">@benfrain</a>.</p>
+</div>
+</div> 
