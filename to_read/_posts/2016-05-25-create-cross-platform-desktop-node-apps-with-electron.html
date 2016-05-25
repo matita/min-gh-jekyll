@@ -1,0 +1,191 @@
+---
+title: "Create Cross-Platform Desktop Node Apps with Electron"
+description: "Chris Ward looks at Electron, an application framework for building desktop Node apps using HTML5 and JavaScript that work on Windows, Linux and MacOS."
+link: "https://www.sitepoint.com/desktop-node-apps-with-electron/"
+saved: "2016-05-25 16:20:03"
+---
+
+    <p><em>This article was peer reviewed by <a href="http://www.sitepoint.com/author/mbrown">Mark Brown</a> and <a href="http://www.sitepoint.com/author/dprince/">Dan Prince</a>. Thanks to all of SitePoint’s peer reviewers for making SitePoint content the best it can be!</em></p>
+<p>Call me old-fashioned, but I have always preferred using a desktop app suited to each purpose. I feel that if all I’m going to use is a browser for everything I do, then why have a ‘proper’ computer? On a practical level, I travel frequently and am generally ‘between’ internet connectivity or using unstable internet connections, and ‘real’ applications are typically far better at allowing effective offline working.</p>
+<div class="ArticleBox u-inline"><h3 class="ArticleBox_header t-bg">
+                    <span class="ArticleBox_icon fa fa-pencil"></span> More from this author
+                 </h3><div class="ArticleBox_content"><ul class="ArticleBox_list t-list"><li><a href="https://www.sitepoint.com/8-key-announcements-for-android-developers-at-google-io/?utm_source=sitepoint&amp;utm_medium=relatedinline&amp;utm_term=javascript&amp;utm_campaign=relatedauthor">8 Key Announcements for Android Developers at Google IO</a></li><li><a href="https://www.sitepoint.com/introducing-the-swift-package-manager/?utm_source=sitepoint&amp;utm_medium=relatedinline&amp;utm_term=javascript&amp;utm_campaign=relatedauthor">Dependency Management with the Swift Package Manager</a></li></ul></div></div>
+<p>I appreciate how complex developing and maintaining native desktop applications is and can understand why companies push users towards web or cross-platform versions. There has been a plethora of options for accomplishing this over the decades. Flash, Air, Java and Sliverlight are all options that promised this capability with varying degrees of success.</p>
+<p>The main problem with these options is that they generally involved learning another language (which defeats the point) or forced users to install plugins plagued with stability, performance and security problems.</p>
+<p>We all know the power of JavaScript and web technologies and have seen a wave of options for developing and packaging cross-platform desktop apps using this knowledge.</p>
+<p><a href="http://electron.atom.io/">Electron</a>, by GitHub is one option, but as I already happily use several apps built with it, it seemed a good option to investigate. After two years of development, including one name change (from Atom shell), <a href="http://electron.atom.io/blog/2016/05/11/electron-1-0">Electron has recently reached version 1.0</a>, always a milestone in any project’s existence. What better time to see what it’s capable of.</p>
+<h2 id="installingelectron">Installing Electron</h2>
+<p>Electron has a <a href="https://github.com/atom/electron-quick-start">quick start project</a> and <a href="https://github.com/atom/electron/releases">pre-built releases</a> available, but let’s dive straight in the deep end and install Electron via npm:</p>
+<pre class=" language-bash"><code class="bash  language-bash">npm <span class="token function">install</span> electron-prebuilt -g
+</code></pre>
+<p>Or for Mac Homebrew lovers, via <a href="https://caskroom.github.io/">Cask</a>:</p>
+<pre class=" language-bash"><code class="bash  language-bash">brew <span class="token function">install</span> Caskroom/cask/electron
+</code></pre>
+<p>Whichever option you follow, you should end up with an executable electron binary.</p>
+<p><img src="http://dab1nmslvvntp.cloudfront.net/wp-content/uploads/2016/04/1461589341electron-binary.png" alt="Electron Binary"></p>
+<p>This application is only used for bundling and running your final project, not for creating one. For this you can use any standard text editor or IDE.</p>
+<p>An Electron project requires three files:</p>
+<ul>
+<li><code class=" language-javascript">index<span class="token punctuation">.</span>html</code>: The web page rendered by default.</li>
+<li><code class=" language-javascript">main<span class="token punctuation">.</span>js</code>: Starts the app and creates a browser window to render HTML.</li>
+<li><code class=" language-javascript"><span class="token keyword">package</span><span class="token punctuation">.</span>json</code>: Lists the application dependencies, meta data and files needed.</li>
+</ul>
+<p><img src="http://dab1nmslvvntp.cloudfront.net/wp-content/uploads/2016/04/1461589349file-structure.png" alt="File Structure"></p>
+<h2 id="youneedahero">You Need a Hero</h2>
+<p>In this example I am going to create a simple application that connects to the <a href="http://developer.marvel.com/">Marvel API</a>, pulls in 25 super heroes and displays their name and thumbnail image. It will display a system notification when the process is complete and have an OS-like application icon. An end-user will not be aware of how the application was created or be able to view the source code.</p>
+<p>You can find the final project on <a href="https://github.com/ChrisChinchilla/sp_electron">GitHub</a>.</p>
+<p>Open <code class=" language-javascript"><span class="token keyword">package</span><span class="token punctuation">.</span>json</code> and add the following:</p>
+<pre class=" language-javascript"><code class="javascript  language-javascript"><span class="token punctuation">{</span>
+  <span class="token string">"name"</span><span class="token punctuation">:</span> <span class="token string">"hero-browser"</span><span class="token punctuation">,</span>
+  <span class="token string">"version"</span><span class="token punctuation">:</span> <span class="token string">"0.1.0"</span><span class="token punctuation">,</span>
+  <span class="token string">"main"</span><span class="token punctuation">:</span> <span class="token string">"main.js"</span><span class="token punctuation">,</span>
+  <span class="token string">"dependencies"</span><span class="token punctuation">:</span> <span class="token punctuation">{</span>
+    <span class="token string">"dotenv"</span><span class="token punctuation">:</span> <span class="token string">"^2.0.0"</span><span class="token punctuation">,</span>
+    <span class="token string">"md5"</span><span class="token punctuation">:</span> <span class="token string">"^2.1.0"</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<p>This is a standard <code class=" language-javascript"><span class="token keyword">package</span><span class="token punctuation">.</span>json</code> file and follows the same format and options as node.js. Here setting the application name, version, main JavaScript file and dependencies.</p>
+<p>Run <code class=" language-javascript">npm install</code> after adding these to ensure you have the dependencies installed.</p>
+<p><code class=" language-javascript">main<span class="token punctuation">.</span>js</code> handles interactions between the host operating system and your JavaScript code. This will be a simple example, you can find out more on what’s possible in <a href="http://electron.atom.io/docs/v0.37.7/">Electron’s documentation</a>.</p>
+<p>First, let’s set up the requirements needed (i.e. electron), create an app, native browser window and a main window placeholder to work with.</p>
+<pre class=" language-javascript"><code class="javascript  language-javascript"><span class="token string">'use strict'</span><span class="token punctuation">;</span>
+
+<span class="token keyword">const</span> electron <span class="token operator">=</span> <span class="token function">require</span><span class="token punctuation">(</span><span class="token string">'electron'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token keyword">const</span> app <span class="token operator">=</span> electron<span class="token punctuation">.</span>app<span class="token punctuation">;</span>  <span class="token comment" spellcheck="true">// Module to control application life.</span>
+<span class="token keyword">const</span> BrowserWindow <span class="token operator">=</span> electron<span class="token punctuation">.</span>BrowserWindow<span class="token punctuation">;</span>  <span class="token comment" spellcheck="true">// Module to create native browser window.</span>
+<span class="token keyword">var</span> mainWindow <span class="token operator">=</span> <span class="token keyword">null</span><span class="token punctuation">;</span>
+</code></pre>
+<p>Next handle quitting the application if windows are closed. If the platform is OS X, applications typically remain open after all windows are closed and users will normally explicitly quit, so handle that use case.</p>
+<pre class=" language-javascript"><code class="javascript  language-javascript">app<span class="token punctuation">.</span><span class="token function">on</span><span class="token punctuation">(</span><span class="token string">'window-all-closed'</span><span class="token punctuation">,</span> <span class="token keyword">function</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>process<span class="token punctuation">.</span>platform <span class="token operator">!=</span> <span class="token string">'darwin'</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        app<span class="token punctuation">.</span><span class="token function">quit</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+</code></pre>
+<p>Once Electron is initialized, create the browser window and load the application code. If the window is closed, dereference the window object.</p>
+<pre class=" language-javascript"><code class="javascript  language-javascript">app<span class="token punctuation">.</span><span class="token function">on</span><span class="token punctuation">(</span><span class="token string">'ready'</span><span class="token punctuation">,</span> <span class="token keyword">function</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  mainWindow <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">BrowserWindow</span><span class="token punctuation">(</span><span class="token punctuation">{</span>width<span class="token punctuation">:</span> <span class="token number">800</span><span class="token punctuation">,</span> height<span class="token punctuation">:</span> <span class="token number">600</span><span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  mainWindow<span class="token punctuation">.</span><span class="token function">loadURL</span><span class="token punctuation">(</span><span class="token string">'file://'</span> <span class="token operator">+</span> __dirname <span class="token operator">+</span> <span class="token string">'/app/index.html'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+  mainWindow<span class="token punctuation">.</span><span class="token function">on</span><span class="token punctuation">(</span><span class="token string">'closed'</span><span class="token punctuation">,</span> <span class="token keyword">function</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    mainWindow <span class="token operator">=</span> <span class="token keyword">null</span><span class="token punctuation">;</span>
+  <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+</code></pre>
+<p>Create a subfolder called <code class=" language-javascript">app</code>. In <code class=" language-javascript">app<span class="token operator">/</span>index<span class="token punctuation">.</span>html</code> add references to the stylesheets and JavaScript files needed and setup the HTML structure of the interface.</p>
+<pre class=" language-markup"><code class="markup  language-markup"><span class="token doctype">&lt;!DOCTYPE html&gt;</span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>html</span><span class="token punctuation">&gt;</span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>head</span><span class="token punctuation">&gt;</span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>meta</span> <span class="token attr-name">charset</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>UTF-8<span class="token punctuation">"</span></span><span class="token punctuation">&gt;</span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>title</span><span class="token punctuation">&gt;</span></span>Marvel Super Hero Browser<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>title</span><span class="token punctuation">&gt;</span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>link</span> <span class="token attr-name">href</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>css/index.css<span class="token punctuation">"</span></span> <span class="token attr-name">rel</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>stylesheet<span class="token punctuation">"</span></span> <span class="token attr-name">type</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>text/css<span class="token punctuation">"</span></span><span class="token punctuation">/&gt;</span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>head</span><span class="token punctuation">&gt;</span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>body</span><span class="token punctuation">&gt;</span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>h1</span><span class="token punctuation">&gt;</span></span>Marvel Super Hero Browser<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>h1</span><span class="token punctuation">&gt;</span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>em</span><span class="token punctuation">&gt;</span></span>Thanks to Marvel for their API.<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>em</span><span class="token punctuation">&gt;</span></span>
+
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">id</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>character_list<span class="token punctuation">"</span></span><span class="token punctuation">&gt;</span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">&gt;</span></span>
+
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>script</span> <span class="token attr-name">src</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>js/index.js<span class="token punctuation">"</span></span><span class="token punctuation">&gt;</span></span><span class="token script language-javascript"></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>script</span><span class="token punctuation">&gt;</span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>body</span><span class="token punctuation">&gt;</span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>html</span><span class="token punctuation">&gt;</span></span>
+</code></pre>
+<p>Create <code class=" language-javascript">app<span class="token operator">/</span>css<span class="token operator">/</span>index<span class="token punctuation">.</span>css</code> and add some basic css to aid layout.</p>
+<pre class=" language-css"><code class="css  language-css"><span class="token selector"><span class="token id">#character_list</span> <span class="token class">.character</span> img </span><span class="token punctuation">{</span>
+    <span class="token property">width</span><span class="token punctuation">:</span> <span class="token number">100</span>px<span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+
+<span class="token selector"><span class="token class">.character</span> </span><span class="token punctuation">{</span>
+    <span class="token property">float</span><span class="token punctuation">:</span> left<span class="token punctuation">;</span>
+    <span class="token property">padding</span><span class="token punctuation">:</span> <span class="token number">25</span>px<span class="token punctuation">;</span>
+    <span class="token property">max-width</span><span class="token punctuation">:</span> <span class="token number">100</span>px<span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<p>Create <code class=" language-javascript">app<span class="token operator">/</span>js<span class="token operator">/</span>index<span class="token punctuation">.</span>js</code>. This will be where most of the application functionality takes place. Start by setting up the dependencies and variables needed:</p>
+<pre class=" language-javascript"><code class="javascript  language-javascript"><span class="token string">'use strict'</span><span class="token punctuation">;</span>
+
+<span class="token function">require</span><span class="token punctuation">(</span><span class="token string">'dotenv'</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">config</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token keyword">var</span> md5 <span class="token operator">=</span> <span class="token function">require</span><span class="token punctuation">(</span><span class="token string">'md5'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token keyword">var</span> publicKey <span class="token operator">=</span> process<span class="token punctuation">.</span>env<span class="token punctuation">.</span>MARVEL_PUBLIC_KEY<span class="token punctuation">;</span>
+<span class="token keyword">var</span> privateKey <span class="token operator">=</span> process<span class="token punctuation">.</span>env<span class="token punctuation">.</span>MARVEL_PRIVATE_KEY<span class="token punctuation">;</span>
+<span class="token keyword">var</span> ts <span class="token operator">=</span> <span class="token function">String</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">Date</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getTime</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token keyword">var</span> hash <span class="token operator">=</span> <span class="token function">md5</span><span class="token punctuation">(</span>ts<span class="token operator">+</span>privateKey<span class="token operator">+</span>publicKey<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token keyword">var</span> url <span class="token operator">=</span> <span class="token template-string"><span class="token string">`https://gateway.marvel.com/v1/public/characters?ts=</span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span>ts<span class="token interpolation-punctuation punctuation">}</span></span><span class="token string">&amp;apikey=</span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span>publicKey<span class="token interpolation-punctuation punctuation">}</span></span><span class="token string">&amp;hash=</span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span>hash<span class="token interpolation-punctuation punctuation">}</span></span><span class="token string">&amp;limit=25`</span></span><span class="token punctuation">;</span>
+</code></pre>
+<p>The Marvel API is a fun API to use, but it’s authentication and data structure can be confusing. <a href="http://developer.marvel.com/signup">Sign up here for a key</a> and <a href="https://developer.marvel.com/documentation/authorization">follow these instructions</a> to get the three parameters needed above. The public and private keys required for authentication are stored in a <code class=" language-javascript"><span class="token punctuation">.</span>env</code> file and accessed using the <a href="https://www.npmjs.com/package/dotenv">dotenv package</a>.</p>
+<pre class=" language-javascript"><code class=" language-javascript">MARVEL_PRIVATE_KEY<span class="token operator">=</span><span class="token operator">&lt;</span>PRIVATE_KEY<span class="token operator">&gt;</span>
+MARVEL_PUBLIC_KEY<span class="token operator">=</span><span class="token operator">&lt;</span>PUBLIC_KEY<span class="token operator">&gt;</span>
+</code></pre>
+<p>The <code class=" language-javascript">limit</code> value sets how many records to request and there are other parameters that can be set.</p>
+<p>If you would rather skip connecting and authenticating with the Marvel API, then I created a JSON file of data for you to use instead. Replace the above JavaScript code with:</p>
+<pre class=" language-javascript"><code class="javascript  language-javascript"><span class="token string">'use strict'</span><span class="token punctuation">;</span>
+
+<span class="token keyword">var</span> url <span class="token operator">=</span> <span class="token template-string"><span class="token string">`https://gist.githubusercontent.com/ChrisChinchilla/29486e8ce367f426dfe6b15dbcc3fa54/raw/3ea92af51ce3749bb5983c1cb0359883592daef6/Marvel%2520Electron%2520Data`</span></span><span class="token punctuation">;</span>
+</code></pre>
+<p>Next create the HTML and placeholder variables needed for outputting each character into the <code class=" language-javascript">character_list</code> div:</p>
+<pre class=" language-javascript"><code class="javascript  language-javascript"><span class="token keyword">var</span> characterHTML <span class="token operator">=</span> <span class="token punctuation">(</span>character<span class="token punctuation">)</span><span class="token operator">=</span><span class="token operator">&gt;</span> `
+  <span class="token operator">&lt;</span>div <span class="token keyword">class</span><span class="token operator">=</span><span class="token string">"character"</span><span class="token operator">&gt;</span>
+    <span class="token operator">&lt;</span>h2<span class="token operator">&gt;</span>$<span class="token punctuation">{</span>character<span class="token punctuation">.</span>name<span class="token punctuation">}</span><span class="token operator">&lt;</span><span class="token operator">/</span>h2<span class="token operator">&gt;</span>
+    <span class="token operator">&lt;</span>img src<span class="token operator">=</span><span class="token string">"${character.thumbnail.path}.${character.thumbnail.extension}"</span> <span class="token operator">/</span><span class="token operator">&gt;</span>
+  <span class="token operator">&lt;</span><span class="token operator">/</span>div<span class="token operator">&gt;</span>`<span class="token punctuation">;</span>
+</code></pre>
+<p>Next, make a call to the API and process the response, drilling down into the JSON structure for the actual list of characters inside <code class=" language-javascript">resp<span class="token punctuation">.</span>data<span class="token punctuation">.</span>results</code>.</p>
+<p>Create HTML elements for each character, appending them to <code class=" language-javascript">character_list</code>. Images in the Marvel API are separated into a file name and extension. If there is no image available, it displays a ‘no image available’ image, we could handle this, but won’t in this example.</p>
+<p>When the loop completes, display a system notification, close methods and handle potential errors connecting to the API.</p>
+<pre class=" language-javascript"><code class="javascript  language-javascript"><span class="token function">fetch</span><span class="token punctuation">(</span>url<span class="token punctuation">)</span>
+    <span class="token punctuation">.</span><span class="token function">then</span><span class="token punctuation">(</span>resp <span class="token operator">=</span><span class="token operator">&gt;</span> resp<span class="token punctuation">.</span><span class="token function">json</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+    <span class="token punctuation">.</span><span class="token function">then</span><span class="token punctuation">(</span>json <span class="token operator">=</span><span class="token operator">&gt;</span> json<span class="token punctuation">.</span>data<span class="token punctuation">.</span>results<span class="token punctuation">)</span>
+    <span class="token punctuation">.</span><span class="token function">then</span><span class="token punctuation">(</span>characters <span class="token operator">=</span><span class="token operator">&gt;</span> <span class="token punctuation">{</span>
+        <span class="token keyword">var</span> html <span class="token operator">=</span> characters<span class="token punctuation">.</span><span class="token function">map</span><span class="token punctuation">(</span>characterHTML<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">join</span><span class="token punctuation">(</span><span class="token string">''</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">var</span> characterList <span class="token operator">=</span> document<span class="token punctuation">.</span><span class="token function">getElementById</span><span class="token punctuation">(</span><span class="token string">"character_list"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        characterList<span class="token punctuation">.</span>innerHTML <span class="token operator">=</span> html<span class="token punctuation">;</span>
+
+        <span class="token keyword">new</span> <span class="token class-name">Notification</span><span class="token punctuation">(</span>document<span class="token punctuation">.</span>title<span class="token punctuation">,</span> <span class="token punctuation">{</span>
+            body<span class="token punctuation">:</span> <span class="token string">'Super Heroes Loaded!'</span>
+        <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span><span class="token punctuation">)</span>
+    <span class="token punctuation">.</span><span class="token keyword">catch</span><span class="token punctuation">(</span><span class="token punctuation">(</span>error<span class="token punctuation">)</span><span class="token operator">=</span><span class="token operator">&gt;</span> <span class="token punctuation">{</span>
+        console<span class="token punctuation">.</span><span class="token function">error</span><span class="token punctuation">(</span>error<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+</code></pre>
+<p>Run the application by executing the command below in the project’s root directory:</p>
+<pre class=" language-bash"><code class="bash  language-bash">electron <span class="token keyword">.</span>
+</code></pre>
+<p><img src="http://dab1nmslvvntp.cloudfront.net/wp-content/uploads/2016/04/1461589360launch-app.png" alt="Launch Application"></p>
+<h2 id="packagingtheapplication">Packaging the Application</h2>
+<p>Packaging the code into a ‘native’ application is straightforward but requires a few pieces. First an icon for the application badge. The look and file type of this will depend on the operating systems you are targeting, but here’s the icon I used, taken from Marvel’s official Android app.</p>
+<p><img src="http://dab1nmslvvntp.cloudfront.net/wp-content/uploads/2016/04/1461589368marvel-app.png" alt="App Badge"></p>
+<p><strong>Note</strong>: We are using copyrighted Marvel properties here for illustrative purposes. Please don’t distribute them as your own!</p>
+<p>I then used <a href="https://iconverticons.com/online">iconverticons.com/online/</a> to convert the png to a Mac icon file, but there are other tools available.</p>
+<p>The simplest way to package the project is by using the <a href="https://github.com/electron-userland/electron-packager">electron-packager</a> npm module (<strong>Note:</strong> this needs to be installed separately). It can generate large binaries, for desktop apps this may not be an issue, but if it is, other options are <a href="http://electron.atom.io/docs/v0.37.5/tutorial/application-packaging/">described</a> here.</p>
+<p>If you are packaging for Windows on a non-Windows platform, you will need to install <a href="https://www.winehq.org/">Wine</a>, which is a large dependency.</p>
+<p>Those caveats aside, here’s how to create the application binary. In your project folder, run (<em>replacing with relevant values for your project</em>):</p>
+<pre class=" language-bash"><code class="bash  language-bash">electron-packager /Users/chrisward/Workspace/sp_electron MarvelBrowse --platform<span class="token operator">=</span>darwin --arch<span class="token operator">=</span>x64 --version<span class="token operator">=</span>0.36.10 --out<span class="token operator">=</span>/Users/chrisward/Workspace --overwrite --icon<span class="token operator">=</span>/Users/chrisward/Workspace/sp_electron/marvel-app.icns
+</code></pre>
+<p>In order, these parameters set:</p>
+<ul>
+<li>The project folder.</li>
+<li>The generated application name.</li>
+<li><strong>The platform</strong>: These are <code class=" language-javascript">win32</code> for Windows, <code class=" language-javascript">linux</code>, <code class=" language-javascript">darwin</code> for vanilla Mac OS X and <code class=" language-javascript">mas</code> for a Mac App store release. Setting <code class=" language-javascript">all</code>, will generate a binary for all platforms.</li>
+<li><strong>The architecture</strong>: <code class=" language-javascript">ia32</code> and <code class=" language-javascript">x64</code> for 32 and 64 bit CPU architectures, or <code class=" language-javascript">all</code>.</li>
+<li>The Electron Version to use.</li>
+<li>The output binary location and wether to overwrite existing files.</li>
+<li>The icons to use.</li>
+</ul>
+<p><strong>Note</strong>: All parameters can be comma separated for multiple values and if you want to generate all platforms and architectures you can replace the relevant parameters with <code class=" language-javascript"><span class="token operator">--</span>all</code>.</p>
+<p><img src="http://dab1nmslvvntp.cloudfront.net/wp-content/uploads/2016/04/1461589354generated-app.png" alt="App Badge"></p>
+<h2 id="furthersteps">Further Steps</h2>
+<p>This was a simple example to illustrate the potential of Electron and much more is possible. Setting aside what can be accomplished with pure JavaScript, you might like to take a look at:</p>
+<ul>
+<li><a href="http://electron.atom.io/docs/v0.37.5/tutorial/mac-app-store-submission-guide/">Mac App Store submissions</a>.</li>
+<li><a href="http://electron.atom.io/docs/v0.37.5/tutorial/devtools-extension/">Using Chrome Dev Tools</a>.</li>
+<li><a href="http://electron.atom.io/docs/v0.37.5/api/clipboard/">Clipboard access</a>.</li>
+<li><a href="https://github.com/maxogden/menubar">Creating an application menu bar tool</a>.</li>
+<li>Electron’s new <a href="https://github.com/electron/electron-api-demos">interactive API explorer</a>.</li>
+<li><a href="http://electron.atom.io/devtron/">Devtron</a>, an extension to Chrome Dev Tools, specifically for Electron development.</li>
+</ul>
+<p>Still skeptical? I’d like to point out that whilst writing this article in <a href="https://atom.io/">Atom</a>, I communicated with the editor of this article in <a href="https://slack.com/downloads">Slack</a> and tested the application in Docker containers created in <a href="https://kitematic.com/">Kitematic</a>. All of which are Electron generated applications. OK, they have their issues, but that’s pretty impressive!</p>
+<p>I’d love to hear about the applications you build with Electron in the comments below.</p>
+  
