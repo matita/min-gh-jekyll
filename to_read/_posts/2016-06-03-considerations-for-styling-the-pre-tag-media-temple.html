@@ -1,0 +1,97 @@
+---
+title: "Considerations for styling the < pre > tag - Media Temple"
+description: "You&#8217;ve probably used it. It&#8217;s that very special tag in HTML that allows for the white space within the tags to actually be honored. For example, four spaces..."
+link: "http://mediatemple.net/blog/tips/considerations-for-styling-the-pre-tag/"
+saved: "2016-06-03 11:57:22"
+---
+
+                        <p>You’ve probably used it. It’s that very special tag in HTML that allows for the white space within the tags to actually be honored. For example, four spaces will actually be four spaces! That’s unlike how HTML normally works, where white space “collapses” (the four spaces will become one). The <code>&lt;pre&gt;</code> tag is useful indeed.</p>
+<h3>Do you use the <code>&lt;code&gt;</code> tag inside?</h3>
+<p>The “pre” of a <code>&lt;pre&gt;</code> tag literally means “preformatted text” – which doesn’t say anything about what that text is. A <code>&lt;code&gt;</code> tag, semantically, says the text within is code. Makes sense to me! I always use it <em>when placing blocks of code</em>, which in my experience is the #1 use case.</p>
+<pre><code class="html">&lt;pre&gt;&lt;code&gt;
+function cool(x) {
+  return x + 1;
+}
+&lt;/code&gt;&lt;/pre&gt;
+</code></pre>
+<p>Quick aside: Notice there is a line break before the text starts in the block above. That line break <strong>will render</strong>, which can be highly annoying. There is no great CSS way to handle that. The best way is just to start the text on the same line as the <code>&lt;pre&gt;</code> tag, or programmatically remove the leading white space.</p>
+<p><img src="https://draftin.com/images/38571?token=mrvDT4b-c9xFKNrnF4H7WLKIwqQGTi9gzYmqNd-mr3noNfEzc7WfchITILygoFpjzQfLlv5QemRH511bm26z90E" alt="Screen Shot 2016-05-21 at 9.02.25 AM.png"></p>
+<h3>Picking a font</h3>
+<p>Since the primary use case of the <code>&lt;pre&gt;</code> tag is blocks of code and code is generally written in a monospace font, setting a monospace <code>font-family</code> is probably a good idea.</p>
+<p>Lucky for us, the “user agent stylesheet” (the styles you get in the browser without adding any of your own CSS at all) already sets <code>font-family: monospace;</code>. So, you could just do nothing at all. Or, you could get fancy.</p>
+<p>There is <a href="https://www.sitepoint.com/eight-definitive-font-stacks/">an article</a> from 2009 by Michael Tuck who explored <a href="https://css-tricks.com/snippets/css/font-stacks/">“font stacks”</a>. That is, listing a bunch of fonts in a single <code>font-family</code> declaration such that the most ideal choices come first, and fall down the stack toward less ideal choices. His example stack for monospace fonts takes cross-platform pre-installed fonts into play:</p>
+<pre><code class="css">font-family: Consolas, "Andale Mono WT", "Andale Mono", "Lucida Console", 
+"Lucida Sans Typewriter", "DejaVu Sans Mono", "Bitstream Vera Sans Mono", 
+"Liberation Mono", "Nimbus Mono L", Monaco, "Courier New", Courier, monospace;
+</code></pre>
+<p><img src="https://draftin.com/images/38563?token=GSNZtztvSkvRYGK2IrTzXxXRIAhnfwGfISxIBuXh4CMLbKdOoAN2vdhqET_bgbYtP40r_J_HoavsJf_pYJOcgFo" alt="1697-monostack.thumb.jpg"></p>
+<p>I’m not sure how that stack still holds up across all platforms today, but it looks like a great start.</p>
+<p>Alternatively, you could <a href="https://css-tricks.com/snippets/css/using-font-face/">load up</a> your own custom <code>@font-face</code> font and use that (font stacks still apply). Or, use a service. Typekit has <a href="https://typekit.com/fonts?classification=monospaced&amp;script=latin">23 monospace font offerings</a>, as I write this.</p>
+<h3>To wrap or not to wrap?</h3>
+<p>This is rather a personal preference. Personally, I’m split.</p>
+<p>When coding in my code editor, I prefer it when long lines that break the width of the visible area break down onto the next line down (rather than cause horizontal scrolling). When looking at code in articles, I prefer the code doesn’t break. Weird, I know. On CodePen, we make it a user option since the world is so divided on what they prefer.</p>
+<p><img src="https://draftin.com/images/38572?token=qUFnghOSrtEXE5cgVFkSfd1DLZlnqdxrQ74iAWyN8AjUKdAEq_q2xiZDKxYhA5DoPdnoWeowTk461n-QPh3FgUk" alt="linewrapping.gif"></p>
+<p>When styling, you’ll have to make the choice. If you go with wrapping, fortunately, you can maintain the <code>&lt;pre&gt;</code> tag’s unique ability to preserve whitespace <em>and</em> get wrapping, like this:</p>
+<pre><code>pre {
+  white-space: pre-wrap;
+}
+</code></pre>
+<p>If you go without wrapping, you don’t have to do anything. Except, you should consider what happens in the case of really long lines. Really long lines will happily bust out of fixed width containers or stretch the width of containers unexpectedly. To prevent that, I’d suggest at least:</p>
+<pre><code>pre {
+  overflow-x: auto;
+}
+</code></pre>
+<p><img src="https://draftin.com/images/38573?token=frv1L2N3SnLaQJHc8ioSaByq0BFmtOVz49jm25EEpJ7vA2PT6cxx3VHCujDytNabvlqlFHX3tJ7GkkfGsJhBgu8" alt="overflow.gif"></p>
+<p>You might even consider a <code>max-height</code> and total <code>overflow: auto;</code> if you want to avoid obnoxiously tall blocks of code.</p>
+<h3>Perhaps make it auto-expanding</h3>
+<p>Some people, perhaps even you, dislike both line wrapping and horizontal scrolling. There may be a solution! You can keep your <code>&lt;pre&gt;</code> blocks the default block-container width, but allow them to expand when interacted with:</p>
+<pre><code>pre:hover,
+pre:focus {
+  width: min-content;
+}
+</code></pre>
+<p><img src="https://draftin.com/images/38574?token=A2BRSQf6GgGATv93JYQaG773yT6tjwmcpluwo5PDlf4DRIVgXGy6Z8cpYjToNVv7WIZR3p4UtbKB1ItSn0l0UhY" alt="hover.gif"></p>
+<h3>Will this ever be going into an email?</h3>
+<p>Perhaps some way or another, the HTML you write ends up used in an email. &lt;Pre&gt; tags can be dangerous in email, as your CSS doesn’t apply to emails (which can help the lines wrap), so the default non-wrapping text happens and long lines can break email layouts.</p>
+<p>On CSS-Tricks, back when I was auto-generating the email newsletter from the RSS feed, I had to generate a special RSS feed that would process the HTML and ensure that inline styles were forced upon all <code>&lt;pre&gt;</code> tags like this:</p>
+<pre><code>&lt;pre style="white-space: pre-wrap;"&gt;&lt;/pre&gt;
+</code></pre>
+<p>That way I was doing all I could to ensure blocks of code with long lines wouldn’t break the layout.</p>
+<h3>Do you need syntax highlighting?</h3>
+<p><span>There is no shortage of syntax highlighting options out there. You can web search around for them. Personally, I’m a fan of </span><a href="http://prismjs.com/"><span>Prism.js</span></a><span> as…</span></p>
+<ol>
+<li><span>It’s small in file size;</span></li>
+<li><span>It has no dependencies;</span></li>
+<li><span>It has sensical class names; and </span></li>
+<li><span>It allows you to customize a copy with just the stuff you need.</span></li>
+</ol>
+<p><img src="https://draftin.com/images/38575?token=SAUU_KiJsgwnNWlUQdkPJIwH5arw3cDAA3wfjP3Y9XkxBM0CxI4wWtLwLYzyV7UKGDVQaI5_AScANk2WRtNYOwQ" alt="Screen Shot 2016-05-21 at 9.22.31 AM.png"></p>
+<p>The only thing I’d give up Prism.js for is some kind of clever way to inject the <code>&lt;span&gt;</code>s (used for the coloring) server side instead.</p>
+<h3>Do you label the language?</h3>
+<p>I personally like seeing blocks of code identified with the language that they are.</p>
+<p>Like this:</p>
+<p><img src="https://draftin.com/images/38576?token=MBe0INtTy2S1daZqw0-6ksCjyD17JXSRZtN0mQF2qrhYEj6rS0kUYfUeVtgZ2JkO4Cl-fzXPThFaf78o2ENzAtI" alt="Screen Shot 2016-05-21 at 9.23.39 AM.png"></p>
+<p>One way to do that is to label it using a data-* attribute (perhaps one that your syntax highlighter already requires) and then display that, like:</p>
+<pre><code>&lt;pre data-lang="HTML"&gt;&lt;code&gt;
+  &lt;h1&gt;Example code&lt;/h1&gt;
+&lt;code&gt;&lt;/pre&gt;
+</code></pre>
+<pre><code>pre[data-lang]::before {
+  content: attr(data-lang);
+  display: block;
+}
+</code></pre>
+<p>I don’t think that’s a particularly accessible way to do it, so perhaps someone can chime in in the comments about that. Maybe a <code>title</code> attribute would be better?</p>
+<h3>Controlling the spacing</h3>
+<p>If you use <em>actual</em> tab characters in the blocks of text within <code>&lt;pre&gt;</code> tags (not just multiple spaces that look like tabs), you might be surprised at how wide those tab characters render.</p>
+<p>Tabs render as <em>8 spaces wide</em> by default, ludicrously enough.</p>
+<p><img src="https://draftin.com/images/38577?token=t3fAxmoGLspq5hnL_t7ZKXKGlSnhPUigzOm7rNBI9gZ5poY9qPQb4Qb5Eghy2y8q-3_uV-JzYVdukZYUDVcL_00" alt="tab-size.gif"></p>
+<p>Seems like 4 spaces is more normal in coding environments. Fortunately, you can control it your liking:</p>
+<pre><code>pre {
+  tab-width: 4;
+}
+</code></pre>
+<p>Personally, I like spaces anyway ;).</p>
+<h3>Other options</h3>
+<p>It’s not a trivial amount of effort to get code blocks displaying nicely on a site, but very doable. If you’d rather leave the job to someone else, CodePen offers <a href="http://codepen.io/embeds">Embedded Pens</a> that can showcase blocks of code nicely (along with a preview), and embedded <a href="https://gist.github.com/">GitHub Gists</a> are also popular.</p>
+                    
