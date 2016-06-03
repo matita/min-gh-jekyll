@@ -1,0 +1,190 @@
+---
+title: "Harnessing the Google Maps JavaScript API the Right Way"
+description: "Jamie Shields walks through best practices for getting started with the Google Maps JavaScript API."
+link: "https://www.sitepoint.com/google-maps-javascript-api-the-right-way/"
+saved: "2016-06-03 14:12:01"
+---
+
+    <p><em>This article was peer reviewed by <a href="https://www.sitepoint.com/author/tseverien/">Tim Severien</a>, <a href="https://twitter.com/nuriaz">Nuria Zuazo</a> and Mallory van Achterberg. Thanks to all of SitePoint’s peer reviewers for making SitePoint content the best it can be!</em></p>
+<p><img src="https://dab1nmslvvntp.cloudfront.net/wp-content/uploads/2016/02/1456222922Google-Maps-New-Icon.png" alt="Google Maps icon" width="300" height="292" class="alignright size-medium wp-image-125436"></p>
+<p>Google Maps is an online mapping service providing up-to-date road maps, business listings, directions, street-level photos and more.</p>
+<p>There are notable alternatives to Google Maps, such as <a href="https://www.mapbox.com/">Mapbox</a> and <a href="https://www.openstreetmap.org/">Open Street Map</a>. But in my view, none of the competitors can match up to Google Maps for the sole reason of the completeness of its business directory. Google is able to present a complete and vast map equipped with up-to-date business details, thanks mainly to the crossover with their search offering.</p>
+<p>There are <a href="https://developers.google.com/maps/get-started/">various APIs</a> for interacting with Maps, from the simple <a href="https://developers.google.com/maps/documentation/static-maps/">Static API</a> to the powerful <a href="https://developers.google.com/maps/documentation/javascript/">JavaScript API</a>, which is the focus of this article.</p>
+<p>Of course, you can place Google Maps on your site without leveraging the various APIs on offer. This makes life easier, of course, and still offers a lot of useful features. But the Maps JavaScript API gives us full control over our map for performance and customization purposes.</p>
+<h3 id="harnessingthegooglemapsjavascriptapi">Harnessing the Google Maps JavaScript API</h3>
+<p>In this article, I’d like to show you how to make the most of the Maps JavaScript API — using it <em>the right way</em>.</p>
+<div class="ArticleBox u-inline"><h3 class="ArticleBox_header t-bg">
+                    <span class="ArticleBox_icon fa fa-pencil"></span> More from this author
+                 </h3><div class="ArticleBox_content"><ul class="ArticleBox_list t-list"><li><a href="https://www.sitepoint.com/sending-emails-gmail-javascript-api/?utm_source=sitepoint&amp;utm_medium=relatedinline&amp;utm_term=javascript&amp;utm_campaign=relatedauthor">Sending Emails with the Gmail JavaScript API</a></li><li><a href="https://www.sitepoint.com/overview-javascript-templating-engines/?utm_source=sitepoint&amp;utm_medium=relatedinline&amp;utm_term=javascript&amp;utm_campaign=relatedauthor">An Overview of JavaScript Templating Engines</a></li></ul></div></div>
+<p>There are lots of tutorials and examples already out there for this, but too often without a focus on the best way of achieving the desired result. They get things done quickly, but without a considered approach or explanation of why certain steps have been taken.</p>
+<p>The complete source code for this article can be found on our <a href="https://github.com/sitepoint-editors/google-maps-api-template">GitHub repo</a>.</p>
+<h2 id="creatingabasicmapcanvas">Creating a Basic Map Canvas</h2>
+<p>The first thing we need to do is set up a simple front-end framework for building the mapping application.</p>
+<h3 id="createthehtml">Create the HTML</h3>
+<p>Let’s create an HTML file with the following markup:</p>
+<pre><code class="markup language-markup">&lt;!DOCTYPE html&gt;
+&lt;html lang="en"&gt;
+  &lt;head&gt;
+    &lt;meta charset="utf-8"&gt;
+    &lt;meta http-equiv="X-UA-Compatible" content="IE=edge"&gt;
+    &lt;meta name="viewport" content="width=device-width, initial-scale=1"&gt;
+    &lt;title&gt;Google Maps API Template&lt;/title&gt;
+
+    &lt;link rel="stylesheet" href="style.css" /&gt;
+  &lt;/head&gt;
+  &lt;body&gt;
+    &lt;div id="map"&gt;&lt;/div&gt;
+
+    &lt;script src="script.js" defer&gt;&lt;/script&gt;
+  &lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+<p>This gives us a robust platform for building a full mapping application.</p>
+<p>Notice how we’ve used the <code>defer</code> attribute for our script. This tells the browser to download the specified scripts as soon as possible, but to wait until HTML parsing has finished before executing them. It’s important to use <code>defer</code> whenever possible, as it will prevent the rendering of the page from halting before it’s finished in order to execute JavaScript code — providing a janky loading experience for the user. The eagle-eyed reader may notice how we haven’t included Google Maps’ JavaScript: this is deliberate, and will be explained shortly!</p>
+<h3 id="buildtheonreadycallback">Build the on-ready callback</h3>
+<p>Now, let’s set up our initial JavaScript file, <code>script.js</code>, starting with the <code>document.addEventListener('DOMContentLoaded', function () {})</code> call:</p>
+<pre><code class="javascript language-javascript">document.addEventListener('DOMContentLoaded', function () {
+  if (document.querySelectorAll('#map').length &gt; 0)
+  {
+    if (document.querySelector('html').lang)
+      lang = document.querySelector('html').lang;
+    else
+      lang = 'en';
+
+    var js_file = document.createElement('script');
+    js_file.type = 'text/javascript';
+    js_file.src = 'https://maps.googleapis.com/maps/api/js?callback=initMap&amp;signed_in=true&amp;language=' + lang;
+    document.getElementsByTagName('head')[0].appendChild(js_file);
+  }
+});
+</code></pre>
+<p>The <code>#map</code> length check is a quick way to find out if a certain element is present on the current page. Quite often, the same external JavaScript file will be included on an entire website, and quite often some portions of code are only required for certain pages. In this instance, we only ever want to execute this code if we’re presenting a map canvas to the user. This prevents unnecessary code bloat on pages that don’t require it. (Performance matters!)</p>
+<p>Once we’re sure we have a map canvas on the page, we may think we’re ready to proceed, but there’s one more check we should perform. By default, the Google Maps JavaScript API loads in English, regardless of what language the requesting page is in. A great way to counteract this is to set a <code>lang</code> variable based on the <code>lang</code> attribute in the <code>&lt;html&gt;</code> element. This will allow us to include the Google Maps JS in the correct language for our user. This is especially useful for multilingual (i18n) websites that include the same <code>script.js</code> file across all languages.</p>
+<h3 id="grabbinggooglesjavascriptfile">Grabbing Google’s JavaScript file</h3>
+<p>Now comes the time to load the external Google Maps JS file. The reason we’ve left it until now, rather than including it as a regular <code>&lt;script&gt;</code> tag in the HTML, is to prevent unnecessary code bloat in pages that don’t have a map canvas. To load in the file, we create a new <code>&lt;script&gt;</code> element and inject it into the <code>&lt;head&gt;</code> of the DOM. As Google’s API handles callbacks for us, we don’t need to do anything more fancy than this:</p>
+<pre><code class="javascript language-javascript">var js_file = document.createElement('script');
+js_file.type = 'text/javascript';
+js_file.src = 'https://maps.googleapis.com/maps/api/js?callback=initMap&amp;signed_in=true&amp;key=YOUR_API_KEY&amp;language=' + lang;
+document.getElementsByTagName('head')[0].appendChild(js_file);
+</code></pre>
+<p>There are a few interesting things to note in the query string parameters passed to the API.</p>
+<p>Firstly, we pass our <code>lang</code> variable as the <code>language</code> parameter to instruct Google on which language we want the map to be in.</p>
+<p>Secondly, we provide the <code>signed_in</code> parameter as <code>true</code>. This is to increase the personalization of the map (e.g. it will have your starred locations visible, amongst other things).</p>
+<p>Next, we pass the <code>key</code> parameter with our API key (more on that shortly).</p>
+<p>Finally, and most importantly, we specify our callback function using the <code>callback</code> parameter. This tells Google which of our functions it should trigger once the file has been fetched successfully.</p>
+<p>Google Maps JS API will still work without a valid <code>key</code> parameter. However, we would be issued with a JavaScript error console warning message. So we should make sure we get ourselves a free API key by following <a href="https://developers.google.com/maps/documentation/javascript/get-api-key">Google’s guide</a>.</p>
+<h3 id="initializingthemapcanvas">Initializing the map canvas</h3>
+<p>Now that we’ve got our initialization function call set up, we can move on to defining our callback function <code>initMap()</code>. This is the function that the Google Maps JS API will trigger once it’s successfully loaded.</p>
+<pre><code class="javascript language-javascript">var map;
+
+function initMap() {
+  map = new google.maps.Map(document.getElementById('map'), {
+    center: {lat: -34.397, lng: 150.644},
+    zoom: 8
+  });
+}
+</code></pre>
+<p>When creating a new Google Map, it’s best to create the variable for the map in the global scope (outside of any functions) so that it’s easier to interact with the map later. This is why we define <code>map</code> outside of <code>initMap()</code>.</p>
+<p>Now that we’ve got an empty <code>map</code> variable to work with, we can go ahead and assign the Google Map object to it inside the <code>initMap</code> function. This is exactly as <a href="https://developers.google.com/maps/documentation/javascript/examples/map-simple">Google’s Simple Map example</a>. One important thing to note is that we must specify both a <code>center</code> and a <code>zoom</code>, or the map will not initialize at all. There is no default!</p>
+<h3 id="dontforgetthecss">Don’t forget the CSS</h3>
+<p>One last important step to getting the initial basic map canvas to function is to provide some CSS in our <code>style.css</code> file:</p>
+<pre><code class="css language-css">html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+#map {
+  height: 100%;
+}
+</code></pre>
+<p>The most common pitfall we’ll cover today is forgetting to set a <code>height</code> attribute for the <code>#canvas</code> element. Regardless of everything else covered in this article, if there’s no <code>height</code> (or <code>min-height</code>) CSS attribute set, we won’t see a map at all. The styles applied to <code>&lt;html&gt;</code> and <code>&lt;body&gt;</code> are only there to allow the canvas to be full-screen.</p>
+<p><img src="https://dab1nmslvvntp.cloudfront.net/wp-content/uploads/2016/05/1462547768Screenshot-from-2016-05-06-16-13-41.png" alt="Google map without markers"></p>
+<h2 id="addingmarkerstothemapcanvas">Adding Markers to the Map Canvas</h2>
+<p>Once we’ve got a basic map canvas displayed, the most common next task is to plot markers on the map. One piece of advice I always give in most programming contexts is to separate data from logic whenever possible. In this case this is illustrated by storing your marker details in a separate JSON file.</p>
+<h3 id="createajsonfileforthemarkers">Create a JSON file for the markers</h3>
+<p>Go ahead and create a JSON file called <code>markers.json</code>:</p>
+<pre><code class="javascript language-javascript">[
+  {
+    "lat": 53.817680,
+    "lng": -1.537657
+  },
+  {
+    "lat": 53.790123,
+    "lng": -1.53243
+  },
+  {
+    "lat": 53.756745,
+    "lng": -1.5309087
+  },
+  {
+    "lat": 53.6474675,
+    "lng": -1.49564554
+  },
+  {
+    "lat": 53.69123456,
+    "lng": -1.6545466
+  }
+]
+</code></pre>
+<p>It’s always a good idea to store Google Maps markers as latitude and longitude values rather than addresses. Otherwise, we have to use Google’s <a href="https://developers.google.com/maps/documentation/geocoding/start">Geocoding service</a> at runtime. This is a separate API with strict usage limits that will also add another external entity to the map initialization process, increasing latency.</p>
+<p>Now that our JSON file is set up, we need to make use of it when initializing our map.</p>
+<h3 id="plotthemarkers">Plot the markers</h3>
+<p>Start off by amending the <code>initMap()</code> function to grab the <code>markers.json</code> file after the map has been initialized, using <a href="http://www.sitepoint.com/introduction-to-the-fetch-api/">the shiny new Fetch API</a>, passing a callback to a new function, <code>plotMarkers()</code>. We also use promises here to ensure the response is parsed into JSON before being passed to the callback function:</p>
+<pre><code class="javascript language-javascript">fetch('markers.json')
+  .then(function(response){return response.json()})
+  .then(plotMarkers);
+</code></pre>
+<p>Then let’s go ahead and define <code>plotMarkers()</code>:</p>
+<pre><code class="javascript language-javascript">var markers;
+var bounds;
+
+function plotMarkers(m)
+{
+  markers = [];
+  bounds = new google.maps.LatLngBounds();
+
+  m.forEach(function (marker) {
+    var position = new google.maps.LatLng(marker.lat, marker.lng);
+
+    markers.push(
+      new google.maps.Marker({
+        position: position,
+        map: map,
+        animation: google.maps.Animation.DROP
+      })
+    );
+
+    bounds.extend(position);
+  });
+
+  map.fitBounds(bounds);
+}
+</code></pre>
+<p>As with our <code>map</code> variable, we want to define some more variables outside of the function, in the global scope. In this function, we’ll be working with <code>markers</code> and <code>bounds</code>, both of which may be useful elsewhere later, so it’s a good idea to have these in the global scope.</p>
+<p>Inside the <code>plotMarkers</code> function, the first things we need to do are set our <code>markers</code> variable to an empty array, and set our <code>bounds</code> variable to an empty Google <code>LatLngBounds</code> object. We’ll use the <code>LatLngBounds</code> object to keep track of the area that needs to be viewable on our canvas to fit all of our markers on.</p>
+<p>Now we need to iterate over each marker, providing an anonymous callback function which creates a new Google position object from the <code>lat</code> and <code>lng</code> parameters available in our JSON file. Once we’ve got that, we’ll create a new Google map marker object and push it into our <code>markers</code> array. Finally, we’ll extend our bounds using the new position:</p>
+<pre><code class="javascript language-javascript">var position = new google.maps.LatLng(this.lat, this.lng);
+
+markers.push(
+  new google.maps.Marker({
+    position: position,
+    map: map,
+    animation: google.maps.Animation.DROP
+  })
+);
+
+bounds.extend(position);
+</code></pre>
+<p>One thing to note: when creating a new Google map marker object, the only required parameters are <code>position</code> and <code>map</code>. The <code>position</code> parameter can be either an object containing <code>lat</code> and <code>lng</code> parameters, or a Google position object (as shown here). The <code>map</code> parameter is simply the Google map object that we want to plot the marker on. We also provide an <code>animation</code> parameter: this isn’t required, but is so easy to implement — and everyone loves a little animation!</p>
+<h3 id="recenterthemapcanvas">Re-center the map canvas</h3>
+<p>Now that we’ve iterated through all of our markers, added them to the map and built our canvas bounds, we’ll call <code>map.fitBounds()</code> to re-center the map canvas around the markers plotted, overriding the initial <code>center</code> and <code>zoom</code> parameters we provided when initializing the map object. This is very useful, as it allows us to update our <code>markers.json</code> file without worrying about our <code>center</code> or <code>zoom</code> parameters.</p>
+<div><iframe id="cp_embed_YWKLzv" src="https://codepen.io/SitePoint/embed/YWKLzv?height=500&amp;theme-id=6441&amp;slug-hash=YWKLzv&amp;default-tab=result&amp;user=SitePoint&amp;embed-version=2" scrolling="no" frameborder="0" height="500" allowtransparency="true" allowfullscreen="true" name="CodePen Embed" title="CodePen Embed" class="cp_embed_iframe "></iframe></div>
+<p></p>
+<h2 id="closingremarks">Closing Remarks</h2>
+<p>We should now have a working app that can display a full-screen Google Maps canvas, and plot markers on that map from a JSON file.</p>
+<p>If you’re interested in taking it further, the next logical step would be to implement <a href="https://developers.google.com/maps/documentation/javascript/infowindows">InfoWindows</a>, which appear when a marker is clicked.</p>
+<p>If you’re interested in building on the functionality already provided in this article, a good starting point would be to look at customizing the icons plotted on the map. This can be done by simply passing a URL as the <code>icon</code> parameter to the new marker object.</p>
+<p>If you have any other improvements or suggestions, please feel free to add them in the comments.</p>
+<p>And don’t forget, the full source code is available via our <a href="https://github.com/sitepoint-editors/google-maps-api-template">GitHub repo</a>.</p>
+  
