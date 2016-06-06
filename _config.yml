@@ -9,10 +9,3 @@ baseurl:  /min-gh-jekyll
 permalink:  /link/:title
 
 ghuser:   matita
-
-defaults:
-  -
-    scope:
-      path: ""
-    values:
-      layout: "post"
