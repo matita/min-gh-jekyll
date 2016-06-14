@@ -1,0 +1,77 @@
+---
+title: "The Importance of Code Reviews"
+description: "Hugo discusses the importance of code reviews, and how to get them happening within your development team."
+link: "https://www.sitepoint.com/the-importance-of-code-reviews/"
+saved: "2016-06-14 17:14:00"
+---
+
+    <p>I recently read this on <a href="https://twitter.com/fvsch/status/739070284716740608">Twitter</a>:</p>
+<blockquote>
+<p>Sadly, it seems code reviewing is a practice that’s foreign to many students, freelancers and agencies. [Translated]</p>
+</blockquote>
+<p>Apparently, it’s not obvious to everyone that code reviews are actually helpful. Call me naive, but I really thought it was a process used in all IT companies. Apparently I was wrong, and it scares me.</p>
+<p>In this article, I’d like to give my thoughts on code reviews, why I believe they’re an important part of the code shipping process, and how to get started with them. If you don’t do code reviews, or if you feel like you could do better, I hope this write-up will help!</p>
+<h2 id="whatisacodereview">What Is a Code Review?</h2>
+<p>We live in the era of Wikipedia, so allow me to begin by quoting the definition given on the <a href="https://en.wikipedia.org/wiki/Code_review">Code review</a> entry:</p>
+<blockquote>
+<p>Code review is systematic examination (sometimes referred to as peer review) of computer source code. It is intended to find mistakes overlooked in the initial development phase, improving the overall quality of software. Reviews are done in various forms such as pair programming, informal walkthroughs, and formal inspections.</p>
+</blockquote>
+<p>A code review, as the name states, is the process of reviewing some code in order to make sure it works, and in order to improve it where possible.</p>
+<h2 id="waystodoacodereview">Ways to Do a Code Review</h2>
+<div class="ArticleBox u-inline"><h3 class="ArticleBox_header t-bg">
+                    <span class="ArticleBox_icon fa fa-pencil"></span> More from this author
+                 </h3><div class="ArticleBox_content"><ul class="ArticleBox_list t-list"><li><a href="https://www.sitepoint.com/inline-css-in-jekyll/?utm_source=sitepoint&amp;utm_medium=relatedinline&amp;utm_term=web&amp;utm_campaign=relatedauthor">Inline CSS in Jekyll</a></li><li><a href="https://www.sitepoint.com/a-tale-of-css-and-sass-precision/?utm_source=sitepoint&amp;utm_medium=relatedinline&amp;utm_term=web&amp;utm_campaign=relatedauthor">A Tale of CSS and Sass Precision</a></li></ul></div></div>
+<p>As the Wikipedia definition notes, there are various ways to perform code reviews. However, in a world where so much code lives on <a href="https://github.com/">GitHub</a>, code reviewing often goes hand-in-hand with what we call a “pull request”.</p>
+<p>A pull request is a request to introduce changes to a code repository using a distributed version control system (Git, SVN, Mercurial etc.). It works by “pulling” the original code, applying changes, then submitting a request to merge the changes in. </p>
+<p>GitHub made this process particularly easy and efficient thanks to its friendly user interface, abstracting most of the Git knowledge requirements.</p>
+<p><img src="https://dab1nmslvvntp.cloudfront.net/wp-content/uploads/2016/06/1465566958pull-request-1024x580.png" alt="An example of a merged pull request on the Sass Guidelines repository on GitHub" width="1024" height="580" class="aligncenter size-large wp-image-133103"></p>
+<h2 id="whyreviewingcodematters">Why Reviewing Code Matters</h2>
+<p>So, why does code reviewing matter? After all, we’re all competent here. Surely we can ship code without having someone metaphorically standing over our shoulder, watching everything we do.</p>
+<p>In theory, yes. But in practice, there are many reasons why having an established code reviewing process helps. Let’s look at a few of them.</p>
+<h3 id="itlimitsrisks">It limits risks</h3>
+<p>This is probably the most important reason of all. Having someone double-checking our work never hurts, and limits the risk of unnoticed mistakes. Even good developers get tunnel vision sometimes. </p>
+<p>It’s always good to make sure not to forget anything. For instance, proper keyboard navigation, screen reader accessibility, flexibility for internationalization and friendly, non-JavaScript behavior are often forgotten topics in the front-end world, to name but four.</p>
+<h3 id="itdramaticallyimprovescodequality">It dramatically improves code quality</h3>
+<p>Let’s make something clear: this is not about standards and code linting (at least not exclusively). It’s about making code more efficient. </p>
+<p>In a team where everybody has their own background and strong suits, asking for improvements (because that’s what it’s about) is always a good idea. Someone could suggest a smarter solution, a more appropriate design pattern, a way to reduce complexity or to improve performance.</p>
+<h3 id="itmakeseveryonebetter">It makes everyone better</h3>
+<p>By joining forces, everyone can learn and get better. The code submitter is likely to receive feedback on their work, making them aware of possible problems and areas for improvement. The reviewers could well learn new things by reading through the code, and figure out solutions applicable to their own work.</p>
+<h3 id="ithelpsbeingfamiliarwiththeproject">It helps being familiar with the project</h3>
+<p>When a team works on a project, it’s highly unlikely that every developer is working on every part of the application. Sometimes a developer will heavily work on one large part for a while, while another one is working on something else entirely. </p>
+<p>Doing code reviews helps people familiarize themselves with code they haven’t written but might be asked to maintain in the future. It promotes knowledge of the codebase across the team, and is likely to speed up future development.</p>
+<h2 id="howtodoitproperly">How To Do It Properly</h2>
+<p>Again, having an established code reviewing process is both extremely useful and important. Every team producing code should have some code review, one way or the other.</p>
+<p>That being said, doing meaningful and helpful code reviews is not always as straightforward as it might seem. Worry not, it’s not like it’s going to bite you if it’s done poorly. It simply won’t be useful, and could feel like a waste of time.</p>
+<p>Recently at my workplace, we had a retrospective about our code reviewing process. We knew some things were wrong when we realized only 3 out of 12 developers were engaging in code reviews. </p>
+<p>To help us change this, one of our Scrum Masters organized a retrospective to determine where there was room for improvement, and how we could bring it about.</p>
+<h3 id="planningahead">Planning ahead</h3>
+<p>The most recurrent argument to justify the lack of participation in code reviews was that it takes time — time that people can’t or aren’t willing to take.</p>
+<p>I must say I don’t really understand this argument myself, because I picture it like this: if a colleague comes to me directly and asks me to help them with something, I’m not going to say — “Don’t have time, not interested.” I’m going to find time to help. Maybe not right now, maybe in an hour — but I will obviously take time for them. Why? Because </p>
+<ul>
+<li>this is what being part of a team means</li>
+<li>if they want my opinion, it’s because they value it one way or another, and therefore it makes only sense to give them.</li>
+</ul>
+<blockquote>
+<p>“Why don’t you take part in the code reviewing process?” </p>
+<p>“I don’t have time.”</p>
+</blockquote>
+<p>To me, a pull request is no different from a coworker asking for help. Saying you don’t have time is perfectly fine from time to time, but by systematically refusing to help, you’re actively pulling yourself out of the team. This behavior is neither friendly nor positive. Take the time to help.</p>
+<p>To make it possible for developers to find time, we started taking into account that every developer will spend a bit of time (maybe 30 minutes) reviewing code every day. No more surprise when we end up spending half an hour on a large code review: it’s part of the day.</p>
+<p>We also tried to dramatically reduce the amount of code constituting a pull request. We used to have mammoth pull requests — of thousands of changes across dozens of files. </p>
+<p>We try not to do that anymore. By making smaller pull requests, we make them easier to review, the feedback more relevant, and developers more willing to engage in this process. “Ship small and often.”</p>
+<h3 id="givingcontext">Giving context</h3>
+<p>The second biggest problem we found was that we usually lacked an understanding of the code’s context, which is needed if you’re going to provide helpful feedback. When missing the context, we usually did no more than a syntax review — which, though useful to some extent, is not enough. You simple become what we call a “human linter”.</p>
+<p>Fortunately, the solution to this problem is relatively simple: add a description to the pull request to explain what the objective is, and how to get there. It doesn’t have to be a wall of text; just a few lines are usually enough. It also helps to add a link to the issue and/or story. <a href="https://twitter.com/livmadsen">Liv Madsen</a>, one of our developers, even adds screenshots — or screencasts when relevant — to illustrate what she’s done, which is amazing.</p>
+<p><img src="https://dab1nmslvvntp.cloudfront.net/wp-content/uploads/2016/06/1465570262screenshots.gif" alt="Providing context to pull requests with description and screenshots or screencasts" width="960" height="699" class="aligncenter size-full wp-image-133106"></p>
+<h3 id="actuallyasking">Actually asking</h3>
+<p>The third problem we pointed out was that we sometimes simply didn’t realize there was something to review. Let’s face it, we’re flooded with tons of emails and notifications every day — so much so that it can be hard to keep track. We’re only human, after all.</p>
+<p>Here, again, the solution is pretty simple: actually ask someone for a review. There are many ways to do that, from honking a horn in the office to pinging someone on Slack; to each team their own.</p>
+<p>We created groups on GitHub based on our activity, and when submitting a pull request, we always ping a group. Members of this group will receive a notification and are free to tackle it as soon as they have time. Sometimes, we ping a developer (or several) directly when it’s more specific to someone’s work. That also works.</p>
+<p>From there, pinged people can review the code and leave comments. We try to leave a comment even when there’s nothing specific to report — if only to indicate that the code is ready to be merged.</p>
+<p>Because we had some pull requests blindly merged regardless of given comments, we established a strict “reply or fix everything” policy. When receiving feedback, either you fix it or you reply to explain why you didn’t. In any case, you never leave a comment pending, and you certainly don’t merge your pull request with non-handled comments.</p>
+<h2 id="wrappingthingsup">Wrapping Things Up</h2>
+<p>Having a regular and efficient code reviewing process is essential to maintain high-quality code standards, grow as a team and share knowledge between developers. </p>
+<p>Asking for a code review is not a mark of weakness. There’s nothing embarrassing about asking for help, and certainly not in the form of a code review. Accept all feedback given to you, and offer constructive (ideally positive) comments to people submitting pull requests.</p>
+<p>Find what works for you. Reviewing code should be a large part of the code shipping process, so you should tailor it to your team. Make it the way you want so that it’s helpful and positive for everybody.</p>
+<p>Happy reviewing!</p>
+  
