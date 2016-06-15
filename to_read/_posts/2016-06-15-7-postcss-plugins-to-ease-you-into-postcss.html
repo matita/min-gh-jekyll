@@ -1,0 +1,160 @@
+---
+title: "7 PostCSS Plugins to Ease You into PostCSS"
+description: "Are you confused by PostCSS? Are you worried about complicating your build process? Don't be - Craig reveals how and why you should use it."
+link: "https://www.sitepoint.com/7-postcss-plugins-to-ease-you-into-postcss/"
+saved: "2016-06-15 17:14:17"
+---
+
+    <p>We’ve featured <a href="https://www.sitepoint.com/an-introduction-to-postcss/">PostCSS</a> <a href="https://www.sitepoint.com/how-to-use-postcss-with-gulp/">many</a> <a href="https://www.sitepoint.com/postcss-mythbusting/">times</a> <a href="https://www.sitepoint.com/the-postcss-guide-to-improving-selectors-and-media-queries/">before</a> on SitePoint, yet it continues to confuse many. To summarize it in one sentence:</p>
+<blockquote>
+<p>PostCSS handles tedious jobs so you don’t have to.</p>
+</blockquote>
+<p>It is subtly different to a pre-processor such as Sass, Less and Stylus which provide an alternative, more concise programming language which compiles to CSS. Part of the confusion is caused by:</p>
+<ul>
+<li>
+<p>Its name. <a href="http://postcss.org/">PostCSS</a> can perform actions on files either before and/or after a pre-processor has compiled its source code to real CSS.</p>
+</li>
+<li>
+<p>PostCSS <em>could</em> replace your pre-processor. There are plugins which implement constructs such as <a href="https://github.com/postcss/postcss-simple-vars">variables</a>, <a href="https://github.com/postcss/postcss-nested">nesting</a>, <a href="https://github.com/postcss/postcss-mixins">mixins</a> and <a href="https://github.com/davidtheclark/postcss-simple-extend">extends</a>.</p>
+</li>
+</ul>
+<p>However, while you can <a href="https://www.sitepoint.com/build-css-preprocessor-postcss/">build your own pre-processor</a>, there’s little reason to do so unless you want to limit the functionality and increase compilation speed. Personally, I use Sass followed by a sprinkling of PostCSS seasoning to enhance my CSS.</p>
+<h2 id="howdoyouusepostcss">How Do You Use PostCSS?</h2>
+<p>PostCSS can be used within standalone JavaScript files, Gulp, Grunt, Broccoli, Brunch and <a href="https://github.com/postcss/postcss#usage">a wide range of task runners</a> I’ve never heard of!</p>
+<p>On its own, <a href="http://postcss.org/">PostCSS</a> does nothing but parse a CSS file into JavaScript objects and tokens. The real magic happens with plugins which examine, manipulate, add or change properties and values before the final CSS file is written.</p>
+<p>To use PostCSS in Gulp, you need to set-up your project then install both modules:</p>
+<pre class=" language-bash"><code class=" language-bash">npm init
+npm <span class="token function">install</span> --save-dev gulp gulp-postcss</code></pre>
+<p>You can then add the plugins you require, e.g. <a href="https://github.com/postcss/autoprefixer">autoprefixer</a> and <a href="https://github.com/ben-eb/cssnano">cssnano</a>:</p>
+<pre class=" language-bash"><code class=" language-bash">npm <span class="token function">install</span> --save-dev autoprefixer cssnano</code></pre>
+<p>A <code class=" language-css">gulpfile<span class="token number">.</span>js</code> can be created. It defines a task which loads the CSS source and pipes it through PostCSS. Plugins and any required options are passed to PostCSS in an array. Finally, the CSS is output to a destination file:</p>
+<pre class=" language-javascript"><code class=" language-javascript"><span class="token comment" spellcheck="true">// Gulp.js configuration</span>
+<span class="token keyword">var</span> gulp <span class="token operator">=</span> <span class="token function">require</span><span class="token punctuation">(</span><span class="token string">'gulp'</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+    postcss <span class="token operator">=</span> <span class="token function">require</span><span class="token punctuation">(</span><span class="token string">'gulp-postcss'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token comment" spellcheck="true">// apply PostCSS plugins</span>
+gulp<span class="token punctuation">.</span><span class="token function">task</span><span class="token punctuation">(</span><span class="token string">'css'</span><span class="token punctuation">,</span> <span class="token keyword">function</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">return</span> gulp<span class="token punctuation">.</span><span class="token function">src</span><span class="token punctuation">(</span><span class="token string">'src/main.css'</span><span class="token punctuation">)</span>
+    <span class="token punctuation">.</span><span class="token function">pipe</span><span class="token punctuation">(</span><span class="token function">postcss</span><span class="token punctuation">(</span><span class="token punctuation">[</span>
+      <span class="token function">require</span><span class="token punctuation">(</span><span class="token string">'autoprefixer'</span><span class="token punctuation">)</span><span class="token punctuation">(</span><span class="token punctuation">{</span><span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+      <span class="token function">require</span><span class="token punctuation">(</span><span class="token string">'cssnano'</span><span class="token punctuation">)</span>
+    <span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+    <span class="token punctuation">.</span><span class="token function">pipe</span><span class="token punctuation">(</span>gulp<span class="token punctuation">.</span><span class="token function">dest</span><span class="token punctuation">(</span><span class="token string">'dest/main.css'</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span></code></pre>
+<p>The task can be run from the console with:</p>
+<pre class=" language-bash"><code class=" language-bash">gulp css</code></pre>
+<p>All we need now is a handy list of PostCSS plugins…</p>
+<h2 id="1autoprefixerhttpsgithubcompostcssautoprefixer">1. <a href="https://github.com/postcss/autoprefixer">Autoprefixer</a></h2>
+<p>If you use nothing else, install <a href="https://github.com/postcss/autoprefixer">Autoprefixer</a>:</p>
+<pre class=" language-bash"><code class=" language-bash">npm <span class="token function">install</span> --save-dev autoprefixer</code></pre>
+<p>Browser-specific prefixes such as <code class=" language-css">-webkit-</code>, <code class=" language-css">-moz-</code> and <code class=" language-css">-ms-</code> are gradually dying out as standards become better supported and vendors opt for alternatives such as flag-based property enabling. Unfortunately, you cannot avoid vendor prefixes but it’s difficult to know when they’re always required, (e.g. for <a href="http://caniuse.com/#feat=user-select-none">user-select</a>), sometimes required (e.g. for <a href="http://caniuse.com/#feat=transforms3d">3D transformations</a>), or never required (e.g. <a href="http://caniuse.com/#feat=border-radius">border-radius</a>).</p>
+<p>You need never worry about prefixing again with Autoprefixer. You just need to define non-prefixed CSS, then state which browsers you want to support. Autoprefixer will check <a href="http://caniuse.com/">caniuse.com</a> before adding the necessary prefixes — the following code specifies the last two versions of any mainstream browser, or any exceeding 2% market share:</p>
+<pre class=" language-javascript"><code class=" language-javascript"><span class="token punctuation">.</span><span class="token function">pipe</span><span class="token punctuation">(</span><span class="token function">postcss</span><span class="token punctuation">(</span><span class="token punctuation">[</span>
+  <span class="token function">require</span><span class="token punctuation">(</span><span class="token string">'autoprefixer'</span><span class="token punctuation">)</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+    browsers<span class="token punctuation">:</span> <span class="token punctuation">[</span><span class="token string">'last 2 versions'</span><span class="token punctuation">,</span> <span class="token string">'&gt; 2%'</span><span class="token punctuation">]</span>
+  <span class="token punctuation">}</span><span class="token punctuation">)</span>
+<span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">)</span></code></pre>
+<p>This is a superior option to pre-processor library functions which normally require special coding and apply vendor prefixes regardless. Your prefixed code will be removed in future PostCSS runs as browser standards evolve.</p>
+<p>Autoprefixer is so useful and widespread, it is possible you’re already using without realizing it is a PostCSS plugin.</p>
+<h2 id="2postcssassetshttpsgithubcomassetsjspostcssassets">2. <a href="https://github.com/assetsjs/postcss-assets">PostCSS Assets</a></h2>
+<p>PostCSS Assets provides a number of useful image-handling functions:</p>
+<pre class=" language-bash"><code class=" language-bash">npm <span class="token function">install</span> --save-dev postcss-assets</code></pre>
+<p>The options include:</p>
+<ul>
+<li><strong>URL resolution:</strong> Given a file name, PostCSS Assets replaces <code class=" language-css"><span class="token function">resolve</span><span class="token punctuation">(</span>image<span class="token punctuation">)</span></code> with a root path or fully-qualified URL.</li>
+<li><strong>Dimension handling:</strong> PostCSS Assets replaces references to <code class=" language-css"><span class="token function">width</span><span class="token punctuation">(</span>image<span class="token punctuation">)</span></code>, <code class=" language-css"><span class="token function">height</span><span class="token punctuation">(</span>image<span class="token punctuation">)</span></code> or <code class=" language-css"><span class="token function">size</span><span class="token punctuation">(</span>image<span class="token punctuation">)</span></code> with a pixel equivalent.</li>
+<li><strong>Image inlining:</strong> PostCSS Assets replaces <code class=" language-css"><span class="token function">inline</span><span class="token punctuation">(</span>image<span class="token punctuation">)</span></code> with a Base64-encoded string.</li>
+<li><strong>Cache-busting:</strong> PostCSS Assets can append a random query string to an image reference to ensure the latest file is loaded.</li>
+</ul>
+<h2 id="3cssnexthttpcssnextio">3. <a href="http://cssnext.io/">cssnext</a></h2>
+<p>cssnext allows you to use the latest CSS syntax today.</p>
+<pre class=" language-bash"><code class=" language-bash">npm <span class="token function">install</span> --save-dev postcss-cssnext</code></pre>
+<p>The plugin has a <a href="http://cssnext.io/features/">long list of features</a> including support for:</p>
+<ul>
+<li><code class=" language-css">var</code> variables</li>
+<li><code class=" language-css">#rrggbbaa</code> colors</li>
+<li>Color functions</li>
+<li>Filters</li>
+<li>Fallbacks</li>
+</ul>
+<p>When it executes, cssnext translates code to a syntax commonly supported in today’s browsers.</p>
+<h2 id="4rucksackhttpsimplaiogithubiorucksack">4. <a href="http://simplaio.github.io/rucksack/">Rucksack</a></h2>
+<p>Rucksack offers a <a href="http://simplaio.github.io/rucksack/docs/">range of functions</a> which, the developer claims, makes CSS development fun again!</p>
+<pre class=" language-bash"><code class=" language-bash">npm <span class="token function">install</span> --save-dev rucksack-css</code></pre>
+<p>Options include:</p>
+<ul>
+<li>Responsive typography which adjusts font sizes and line heights with a single <code class=" language-css"><span class="token property">font-size</span><span class="token punctuation">:</span> responsive</code> declaration.</li>
+<li>Quantity pseudo-selectors such as <code class=" language-css"><span class="token property">li</span><span class="token punctuation">:</span><span class="token function">at-least</span><span class="token punctuation">(</span><span class="token number">4</span><span class="token punctuation">)</span></code> which targets any list with four or more items.</li>
+<li>Property aliases such as defining <code class=" language-css">bg</code> as <code class=" language-css">background</code> which can be used throughout your CSS.</li>
+<li>A set of pre-defined <a href="http://simplaio.github.io/rucksack/docs/#easings">easing functions</a>.</li>
+</ul>
+<h2 id="5stylelinthttpsgithubcomstylelintstylelint">5. <a href="https://github.com/stylelint/stylelint">Stylelint</a></h2>
+<p>Stylelint reports CSS errors based on 140 rules designed to catch common mistakes, implement style conventions and enforce best practices. There are many options to configure Stylelint to your liking — Pavels Jelisejevs’ article <a href="https://www.sitepoint.com/improving-the-quality-of-your-css-with-postcss/">Improving the Quality of Your CSS with PostCSS</a> walks you through the set up process.</p>
+<h2 id="6cssmqpackerhttpsgithubcomhail2unodecssmqpacker">6. <a href="https://github.com/hail2u/node-css-mqpacker">CSS MQPacker</a></h2>
+<p>MQPacker optimizes your media queries into single rules when possible:</p>
+<pre class=" language-bash"><code class=" language-bash">npm <span class="token function">install</span> --save-dev css-mqpacker</code></pre>
+<p>Pre-processors such as Sass make it easy to use media queries within a declaration, e.g.</p>
+<pre class=" language-css"><code class=" language-css"><span class="token selector"><span class="token class">.widget1</span> </span><span class="token punctuation">{</span>
+  <span class="token property">width</span><span class="token punctuation">:</span> <span class="token number">100%</span><span class="token punctuation">;</span>
+
+  <span class="token atrule"><span class="token rule">@media</span> <span class="token punctuation">(</span><span class="token property">min-width</span><span class="token punctuation">:</span> 30em<span class="token punctuation">)</span></span> <span class="token punctuation">{</span>
+    <span class="token property">width</span><span class="token punctuation">:</span> <span class="token number">50%</span><span class="token punctuation">;</span>
+  <span class="token punctuation">}</span>
+
+  <span class="token atrule"><span class="token rule">@media</span> <span class="token punctuation">(</span><span class="token property">min-width</span><span class="token punctuation">:</span> 60em<span class="token punctuation">)</span></span> <span class="token punctuation">{</span>
+    <span class="token property">width</span><span class="token punctuation">:</span> <span class="token number">25%</span><span class="token punctuation">;</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+
+<span class="token selector"><span class="token class">.widget2</span> </span><span class="token punctuation">{</span>
+  <span class="token property">width</span><span class="token punctuation">:</span> <span class="token number">100</span>px<span class="token punctuation">;</span>
+
+  <span class="token atrule"><span class="token rule">@media</span> <span class="token punctuation">(</span><span class="token property">min-width</span><span class="token punctuation">:</span> 30em<span class="token punctuation">)</span></span> <span class="token punctuation">{</span>
+    <span class="token property">width</span><span class="token punctuation">:</span> <span class="token number">200</span>px<span class="token punctuation">;</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<p>This compiles to:</p>
+<pre class=" language-css"><code class=" language-css"><span class="token selector"><span class="token class">.widget1</span> </span><span class="token punctuation">{</span> <span class="token property">width</span><span class="token punctuation">:</span> <span class="token number">100%</span><span class="token punctuation">;</span> <span class="token punctuation">}</span>
+
+<span class="token atrule"><span class="token rule">@media</span> <span class="token punctuation">(</span><span class="token property">min-width</span><span class="token punctuation">:</span> 30em<span class="token punctuation">)</span></span> <span class="token punctuation">{</span>
+  <span class="token selector"><span class="token class">.widget1</span> </span><span class="token punctuation">{</span> <span class="token property">width</span><span class="token punctuation">:</span> <span class="token number">50%</span><span class="token punctuation">;</span> <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+
+<span class="token atrule"><span class="token rule">@media</span> <span class="token punctuation">(</span><span class="token property">min-width</span><span class="token punctuation">:</span> 60em<span class="token punctuation">)</span></span> <span class="token punctuation">{</span>
+  <span class="token selector"><span class="token class">.widget1</span> </span><span class="token punctuation">{</span> <span class="token property">width</span><span class="token punctuation">:</span> <span class="token number">25%</span><span class="token punctuation">;</span> <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+
+<span class="token selector"><span class="token class">.widget2</span> </span><span class="token punctuation">{</span> <span class="token property">width</span><span class="token punctuation">:</span> <span class="token number">100</span>px<span class="token punctuation">;</span> <span class="token punctuation">}</span>
+
+<span class="token atrule"><span class="token rule">@media</span> <span class="token punctuation">(</span><span class="token property">min-width</span><span class="token punctuation">:</span> 30em<span class="token punctuation">)</span></span> <span class="token punctuation">{</span>
+  <span class="token selector"><span class="token class">.widget2</span> </span><span class="token punctuation">{</span> <span class="token property">width</span><span class="token punctuation">:</span> <span class="token number">200</span>px<span class="token punctuation">;</span> <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<p>To reduce file sizes and (possibly) improve parsing times, MQPacker packs multiple declarations into one <code class=" language-css">@media</code> rule, i.e.</p>
+<pre class=" language-css"><code class=" language-css"><span class="token selector"><span class="token class">.widget1</span> </span><span class="token punctuation">{</span> <span class="token property">width</span><span class="token punctuation">:</span> <span class="token number">100%</span><span class="token punctuation">;</span> <span class="token punctuation">}</span>
+<span class="token selector"><span class="token class">.widget2</span> </span><span class="token punctuation">{</span> <span class="token property">width</span><span class="token punctuation">:</span> <span class="token number">100</span>px<span class="token punctuation">;</span> <span class="token punctuation">}</span>
+
+<span class="token atrule"><span class="token rule">@media</span> <span class="token punctuation">(</span><span class="token property">min-width</span><span class="token punctuation">:</span> 30em<span class="token punctuation">)</span></span> <span class="token punctuation">{</span>
+  <span class="token selector"><span class="token class">.widget1</span> </span><span class="token punctuation">{</span> <span class="token property">width</span><span class="token punctuation">:</span> <span class="token number">50%</span><span class="token punctuation">;</span> <span class="token punctuation">}</span>
+  <span class="token selector"><span class="token class">.widget2</span> </span><span class="token punctuation">{</span> <span class="token property">width</span><span class="token punctuation">:</span> <span class="token number">200</span>px<span class="token punctuation">;</span> <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+
+<span class="token atrule"><span class="token rule">@media</span> <span class="token punctuation">(</span><span class="token property">min-width</span><span class="token punctuation">:</span> 60em<span class="token punctuation">)</span></span> <span class="token punctuation">{</span>
+  <span class="token selector"><span class="token class">.widget1</span> </span><span class="token punctuation">{</span> <span class="token property">width</span><span class="token punctuation">:</span> <span class="token number">25%</span><span class="token punctuation">;</span> <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<p><em><strong>Hot tip</strong>: ensure the first media query declaration in your code defines all possible options in the order you want them even if there’s no actual difference. This guarantees MQPacker will define rules in the correct order.</em></p>
+<p>MQPacker also provides options for sorting media queries and outputting source maps.</p>
+<h2 id="7cssnanohttpcssnanoco">7. <a href="http://cssnano.co/">cssnano</a></h2>
+<p>cssnano compacts your CSS file to ensure the download is as small as possible in your production environment. Install it via:</p>
+<pre class=" language-bash"><code class=" language-bash">npm <span class="token function">install</span> --save-dev cssnano</code></pre>
+<p>The plugin works by removing comments, whitespace, duplicate rules, outdated vendor prefixes and making other optimizations to typically save at least 50%. There are alternative options but cssnano is one of the best. Use it!</p>
+<h2 id="wantmore">Want More?</h2>
+<div class="ArticleBox u-inline"><h3 class="ArticleBox_header t-bg">
+                    <span class="ArticleBox_icon fa fa-pencil"></span> More from this author
+                 </h3><div class="ArticleBox_content"><ul class="ArticleBox_list t-list"><li><a href="https://www.sitepoint.com/blisk-your-next-web-development-browser/?utm_source=sitepoint&amp;utm_medium=relatedinline&amp;utm_term=html-css&amp;utm_campaign=relatedauthor">Blisk: Your Next Web Development Browser?</a></li><li><a href="https://www.sitepoint.com/browser-trends-june-2016-microsoft-misfortune/?utm_source=sitepoint&amp;utm_medium=relatedinline&amp;utm_term=html-css&amp;utm_campaign=relatedauthor">Browser Trends June 2016: Microsoft Misfortune</a></li></ul></div></div>
+<p>A searchable index of PostCSS plugins is available at <a href="http://postcss.parts/">postcss.parts</a> and the <a href="https://github.com/postcss/postcss#usage">PostCSS usage documentation</a> provides a list of recommended options. You’ll find plugins for almost any CSS task you can imagine although be aware there is some cross-over and duplication — for example, cssnext also includes Autoprefixer.</p>
+<p>If that’s not enough, you can develop your own PostCSS plugins in JavaScript. The PostCSS documentation explains <a href="https://github.com/postcss/postcss/blob/master/docs/writing-a-plugin.md">how to write a plugin</a> and provides an <a href="https://github.com/postcss/postcss/blob/master/docs/api.md">API reference</a>.</p>
+<p>PostCSS makes CSS development easier regardless of whether you use a pre-processor. The CSS development time it saves more than outweighs the initial installation and configuration effort.</p>
+  
