@@ -1,0 +1,1159 @@
+---
+title: "Realtime App Development with RethinkDB and React Native"
+description: "Wern Ancheta covers realtime app development with RethinkDB and React Native for automatic data updates pushed straight to users"
+link: "https://www.sitepoint.com/realtime-app-development-with-rethinkdb-and-react-native/"
+saved: "2016-06-21 14:13:15"
+---
+
+    <p>A realtime app keeps a user up-to-date with the information they want to know, when they need it. A user doesn’t need to constantly refresh a window to get the latest updates, a server behind the app will push updates to the app automatically. In this tutorial I’m going to cover realtime app development by creating a news sharing app with <a href="https://www.rethinkdb.com/">RethinkDB</a> and <a href="https://facebook.github.io/react-native/">React Native</a>.</p>
+<p>I’m going to assume that you already have experience creating React Native apps so I’m not going to go into detail on each line of code. If you’re a beginner, I recommend you read my previous tutorial, “<a href="https://www.sitepoint.com/build-android-app-react-native/">Build an Android App with React Native</a>“. If you want to follow along, you can find the code on <a href="https://github.com/sitepoint-editors/rn-rethinkdb-socketio-newssharer">Github</a>.</p>
+<p>Here’s how the final app will look:</p>
+<p><img src="https://dab1nmslvvntp.cloudfront.net/wp-content/uploads/2016/06/1465202769news-sharer.jpg" alt="news sharer app"></p>
+<p>I will start by looking at the code for the mobile app and then move on to the server component which uses Node, Express, Socket.io and RethinkDB.</p>
+<div class="ArticleBox u-inline"><h3 class="ArticleBox_header t-bg">
+                    <span class="ArticleBox_icon fa fa-pencil"></span> More from this author
+                 </h3><div class="ArticleBox_content"><ul class="ArticleBox_list t-list"><li><a href="https://www.sitepoint.com/webrtc-video-chat-application-peerjs/?utm_source=sitepoint&amp;utm_medium=relatedinline&amp;utm_term=mobile&amp;utm_campaign=relatedauthor">Building a WebRTC Video Chat Application with PeerJS</a></li><li><a href="https://www.sitepoint.com/were-building-a-marvel-catalog-reader-avengers-assemble/?utm_source=sitepoint&amp;utm_medium=relatedinline&amp;utm_term=mobile&amp;utm_campaign=relatedauthor">We're Building a Marvel Catalog Reader! Avengers, Assemble!</a></li></ul></div></div>
+<h2 id="installdependencies">Install Dependencies</h2>
+<p>Inside your clone of the project, navigate the <em>NewsSharer</em> directory and execute <code class=" language-undefined">npm install</code> to install the following dependencies:</p>
+<ul>
+<li><strong><a href="https://facebook.github.io/react-native/">react-native</a></strong>: The React Native framework.</li>
+<li><strong><a href="https://github.com/lodash/lodash">lodash</a></strong>: Used for manipulating the array of news items so that it’s limited and ordered according to number of votes.</li>
+<li><strong><a href="https://github.com/maxs15/react-native-modalbox">react-native-modalbox</a></strong>: Used for creating a modal to share a news item.</li>
+<li><strong><a href="https://github.com/ide/react-native-button">react-native-button</a></strong>: A dependency of react-native-modalbox used for creating buttons.</li>
+<li><strong><a href="https://github.com/oblador/react-native-vector-icons">react-native-vector-icons</a></strong>: Used for creating icons with popular icon sets such as <a href="http://fortawesome.github.io/Font-Awesome/icons/">FontAwesome</a> and <a href="http://ionicframework.com/docs/v2/ionicons/">Ionicons</a>. This is primarily used for creating the icon for the vote button.</li>
+<li><strong><a href="https://github.com/socketio/socket.io-client">socket.io-client</a></strong>: The client component of <a href="http://socket.io/">Socket.io</a>, a realtime application framework.</li>
+</ul>
+<h3 id="linkingicons">Linking Icons</h3>
+<p>After installing the dependencies, there’s one extra step to get the icons to work, linking them to the app. Do this by using <a href="https://github.com/rnpm/rnpm">rnpm</a>, the React Native package manager.</p>
+<p>Install rnpm with npm:</p>
+<pre class=" language-bash"><code class="bash  language-bash">npm <span class="token function">install</span> rnpm -g
+</code></pre>
+<p>Then execute <code class=" language-undefined">rnpm link</code> in the root of the <em>NewsSharer</em> directory to link the icons.</p>
+<h2 id="theapp">The App</h2>
+<p>Below are the contents of the <em>index.android.js</em> file:</p>
+<pre class=" language-javascript"><code class="javascript  language-javascript"><span class="token keyword">import</span> React<span class="token punctuation">,</span> <span class="token punctuation">{</span> Component <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'react'</span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token punctuation">{</span>
+  AppRegistry<span class="token punctuation">,</span>
+  StyleSheet<span class="token punctuation">,</span>
+  View
+<span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'react-native'</span><span class="token punctuation">;</span>
+
+<span class="token keyword">import</span> Main <span class="token keyword">from</span> <span class="token string">'./components/Main'</span><span class="token punctuation">;</span>
+
+<span class="token keyword">class</span> <span class="token class-name">NewsSharer</span> <span class="token keyword">extends</span> <span class="token class-name">Component</span> <span class="token punctuation">{</span>
+
+  <span class="token function">render</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">return</span> <span class="token punctuation">(</span>
+      <span class="token operator">&lt;</span>View style<span class="token operator">=</span><span class="token punctuation">{</span>styles<span class="token punctuation">.</span>container<span class="token punctuation">}</span><span class="token operator">&gt;</span>
+        <span class="token operator">&lt;</span>Main <span class="token operator">/</span><span class="token operator">&gt;</span>
+      <span class="token operator">&lt;</span><span class="token operator">/</span>View<span class="token operator">&gt;</span>
+    <span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+
+<span class="token keyword">const</span> styles <span class="token operator">=</span> StyleSheet<span class="token punctuation">.</span><span class="token function">create</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+  container<span class="token punctuation">:</span> <span class="token punctuation">{</span>
+    flex<span class="token punctuation">:</span> <span class="token number">1</span><span class="token punctuation">,</span>
+    justifyContent<span class="token punctuation">:</span> <span class="token string">'center'</span><span class="token punctuation">,</span>
+    alignItems<span class="token punctuation">:</span> <span class="token string">'center'</span><span class="token punctuation">,</span>
+    backgroundColor<span class="token punctuation">:</span> <span class="token string">'#F5FCFF'</span><span class="token punctuation">,</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+AppRegistry<span class="token punctuation">.</span><span class="token function">registerComponent</span><span class="token punctuation">(</span><span class="token string">'NewsSharer'</span><span class="token punctuation">,</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=</span><span class="token operator">&gt;</span> NewsSharer<span class="token punctuation">)</span><span class="token punctuation">;</span>
+</code></pre>
+<p>This file is the entry-point file for the Android app. If you want to deploy to iOS, you can copy the code into a new <em>index.ios.js</em> file.</p>
+<p>The main task of this file does is to import the <code class=" language-undefined">Main</code> component, where the core of the app is located. This reduces code repetition as you import a component instead of repeating code for each platform.</p>
+<h3 id="mainappcomponent">Main App Component</h3>
+<p>Inside <em>components/Main.js</em>:</p>
+<pre class=" language-javascript"><code class="javascript  language-javascript"><span class="token keyword">import</span> React<span class="token punctuation">,</span> <span class="token punctuation">{</span> Component <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'react'</span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token punctuation">{</span>
+  AppRegistry<span class="token punctuation">,</span>
+  StyleSheet<span class="token punctuation">,</span>
+  Text<span class="token punctuation">,</span>
+  View<span class="token punctuation">,</span>
+  TextInput<span class="token punctuation">,</span>
+  TouchableHighlight<span class="token punctuation">,</span>
+  Linking<span class="token punctuation">,</span>
+  ListView
+<span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'react-native'</span><span class="token punctuation">;</span>
+
+<span class="token keyword">import</span> Button <span class="token keyword">from</span> <span class="token string">'react-native-button'</span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> Modal <span class="token keyword">from</span> <span class="token string">'react-native-modalbox'</span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> Icon <span class="token keyword">from</span> <span class="token string">'react-native-vector-icons/Octicons'</span><span class="token punctuation">;</span>
+
+<span class="token keyword">import</span> <span class="token string">"../UserAgent"</span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> io <span class="token keyword">from</span> <span class="token string">'socket.io-client/socket.io'</span><span class="token punctuation">;</span>
+
+<span class="token keyword">import</span> _ <span class="token keyword">from</span> <span class="token string">'lodash'</span><span class="token punctuation">;</span>
+
+<span class="token keyword">var</span> base_url <span class="token operator">=</span> <span class="token string">'http://YOUR_DOMAIN_NAME_OR_IP_ADDRESS:3000'</span><span class="token punctuation">;</span>
+
+<span class="token keyword">export</span> <span class="token keyword">default</span> <span class="token keyword">class</span> <span class="token class-name">Main</span> <span class="token keyword">extends</span> <span class="token class-name">Component</span> <span class="token punctuation">{</span>
+
+  <span class="token function">constructor</span><span class="token punctuation">(</span>props<span class="token punctuation">)</span><span class="token punctuation">{</span>
+    <span class="token keyword">super</span><span class="token punctuation">(</span>props<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token keyword">this</span><span class="token punctuation">.</span>socket <span class="token operator">=</span> <span class="token function">io</span><span class="token punctuation">(</span>base_url<span class="token punctuation">,</span> <span class="token punctuation">{</span>
+      transports<span class="token punctuation">:</span> <span class="token punctuation">[</span><span class="token string">'websocket'</span><span class="token punctuation">]</span>
+    <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token keyword">this</span><span class="token punctuation">.</span>state <span class="token operator">=</span> <span class="token punctuation">{</span>
+      is_modal_open<span class="token punctuation">:</span> <span class="token boolean">false</span><span class="token punctuation">,</span>
+      news_title<span class="token punctuation">:</span> <span class="token string">''</span><span class="token punctuation">,</span>
+      news_url<span class="token punctuation">:</span> <span class="token string">''</span><span class="token punctuation">,</span>
+      news_items_datasource<span class="token punctuation">:</span> <span class="token keyword">new</span> <span class="token class-name">ListView<span class="token punctuation">.</span>DataSource</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+        rowHasChanged<span class="token punctuation">:</span> <span class="token punctuation">(</span>row1<span class="token punctuation">,</span> row2<span class="token punctuation">)</span> <span class="token operator">=</span><span class="token operator">&gt;</span> row1 <span class="token operator">!==</span> row2<span class="token punctuation">,</span>
+      <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+      is_news_loaded<span class="token punctuation">:</span> <span class="token boolean">false</span><span class="token punctuation">,</span>
+      news<span class="token punctuation">:</span> <span class="token punctuation">{</span><span class="token punctuation">}</span><span class="token punctuation">,</span>
+      news_items<span class="token punctuation">:</span> <span class="token punctuation">[</span><span class="token punctuation">]</span>
+    <span class="token punctuation">}</span><span class="token punctuation">;</span>
+
+  <span class="token punctuation">}</span>
+
+  <span class="token function">getNewsItems</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
+
+    <span class="token function">fetch</span><span class="token punctuation">(</span>base_url <span class="token operator">+</span> <span class="token string">'/news'</span><span class="token punctuation">)</span>
+      <span class="token punctuation">.</span><span class="token function">then</span><span class="token punctuation">(</span><span class="token punctuation">(</span>response<span class="token punctuation">)</span> <span class="token operator">=</span><span class="token operator">&gt;</span> <span class="token punctuation">{</span>
+        <span class="token keyword">return</span> response<span class="token punctuation">.</span><span class="token function">json</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+      <span class="token punctuation">}</span><span class="token punctuation">)</span>
+      <span class="token punctuation">.</span><span class="token function">then</span><span class="token punctuation">(</span><span class="token punctuation">(</span>news_items<span class="token punctuation">)</span> <span class="token operator">=</span><span class="token operator">&gt;</span> <span class="token punctuation">{</span>
+
+        <span class="token keyword">this</span><span class="token punctuation">.</span><span class="token function">setState</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+          <span class="token string">'news_items'</span><span class="token punctuation">:</span> news_items
+        <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token keyword">var</span> news_datasource <span class="token operator">=</span> <span class="token keyword">this</span><span class="token punctuation">.</span>state<span class="token punctuation">.</span>news_items_datasource<span class="token punctuation">.</span><span class="token function">cloneWithRows</span><span class="token punctuation">(</span>news_items<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token keyword">this</span><span class="token punctuation">.</span><span class="token function">setState</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+          <span class="token string">'news'</span><span class="token punctuation">:</span> news_datasource<span class="token punctuation">,</span>
+          <span class="token string">'is_news_loaded'</span><span class="token punctuation">:</span> <span class="token boolean">true</span>
+        <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token keyword">return</span> news_items<span class="token punctuation">;</span>
+      <span class="token punctuation">}</span><span class="token punctuation">)</span>
+      <span class="token punctuation">.</span><span class="token keyword">catch</span><span class="token punctuation">(</span><span class="token punctuation">(</span>error<span class="token punctuation">)</span> <span class="token operator">=</span><span class="token operator">&gt;</span> <span class="token punctuation">{</span>
+        <span class="token function">alert</span><span class="token punctuation">(</span><span class="token string">'Error occured while fetching news items'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+      <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+  <span class="token punctuation">}</span>
+
+  <span class="token function">componentWillMount</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
+
+    <span class="token keyword">this</span><span class="token punctuation">.</span>socket<span class="token punctuation">.</span><span class="token function">on</span><span class="token punctuation">(</span><span class="token string">'news_updated'</span><span class="token punctuation">,</span> <span class="token punctuation">(</span>data<span class="token punctuation">)</span> <span class="token operator">=</span><span class="token operator">&gt;</span> <span class="token punctuation">{</span>
+
+      <span class="token keyword">var</span> news_items <span class="token operator">=</span> <span class="token keyword">this</span><span class="token punctuation">.</span>state<span class="token punctuation">.</span>news_items<span class="token punctuation">;</span>
+      <span class="token keyword">if</span><span class="token punctuation">(</span>data<span class="token punctuation">.</span>old_val <span class="token operator">===</span> <span class="token keyword">null</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
+
+        news_items<span class="token punctuation">.</span><span class="token function">push</span><span class="token punctuation">(</span>data<span class="token punctuation">.</span>new_val<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+      <span class="token punctuation">}</span><span class="token keyword">else</span><span class="token punctuation">{</span>
+
+        _<span class="token punctuation">.</span><span class="token function">map</span><span class="token punctuation">(</span>news_items<span class="token punctuation">,</span> <span class="token keyword">function</span><span class="token punctuation">(</span>row<span class="token punctuation">,</span> index<span class="token punctuation">)</span><span class="token punctuation">{</span>
+          <span class="token keyword">if</span><span class="token punctuation">(</span>row<span class="token punctuation">.</span>id <span class="token operator">==</span> data<span class="token punctuation">.</span>new_val<span class="token punctuation">.</span>id<span class="token punctuation">)</span><span class="token punctuation">{</span>
+            news_items<span class="token punctuation">[</span>index<span class="token punctuation">]</span><span class="token punctuation">.</span>upvotes <span class="token operator">=</span> data<span class="token punctuation">.</span>new_val<span class="token punctuation">.</span>upvotes<span class="token punctuation">;</span>
+          <span class="token punctuation">}</span>
+
+        <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+      <span class="token punctuation">}</span>
+
+      <span class="token keyword">this</span><span class="token punctuation">.</span><span class="token function">updateUI</span><span class="token punctuation">(</span>news_items<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+  <span class="token punctuation">}</span>
+
+  <span class="token function">updateUI</span><span class="token punctuation">(</span>news_items<span class="token punctuation">)</span><span class="token punctuation">{</span>
+    <span class="token keyword">var</span> ordered_news_items <span class="token operator">=</span> _<span class="token punctuation">.</span><span class="token function">orderBy</span><span class="token punctuation">(</span>news_items<span class="token punctuation">,</span> <span class="token string">'upvotes'</span><span class="token punctuation">,</span> <span class="token string">'desc'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">var</span> limited_news_items <span class="token operator">=</span> _<span class="token punctuation">.</span><span class="token function">slice</span><span class="token punctuation">(</span>ordered_news_items<span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">,</span> <span class="token number">30</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">var</span> news_datasource <span class="token operator">=</span> <span class="token keyword">this</span><span class="token punctuation">.</span>state<span class="token punctuation">.</span>news_items_datasource<span class="token punctuation">.</span><span class="token function">cloneWithRows</span><span class="token punctuation">(</span>limited_news_items<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token keyword">this</span><span class="token punctuation">.</span><span class="token function">setState</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+      <span class="token string">'news'</span><span class="token punctuation">:</span> news_datasource<span class="token punctuation">,</span>
+      <span class="token string">'is_news_loaded'</span><span class="token punctuation">:</span> <span class="token boolean">true</span><span class="token punctuation">,</span>
+      <span class="token string">'is_modal_open'</span><span class="token punctuation">:</span> <span class="token boolean">false</span><span class="token punctuation">,</span>
+      <span class="token string">'news_items'</span><span class="token punctuation">:</span> limited_news_items
+    <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token punctuation">}</span>
+
+  <span class="token function">componentDidMount</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
+    <span class="token keyword">this</span><span class="token punctuation">.</span><span class="token function">getNewsItems</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token punctuation">}</span>
+
+  <span class="token function">upvoteNewsItem</span><span class="token punctuation">(</span>id<span class="token punctuation">,</span> upvotes<span class="token punctuation">)</span><span class="token punctuation">{</span>
+
+    <span class="token function">fetch</span><span class="token punctuation">(</span>base_url <span class="token operator">+</span> <span class="token string">'/upvote-newsitem'</span><span class="token punctuation">,</span> <span class="token punctuation">{</span>
+      method<span class="token punctuation">:</span> <span class="token string">'POST'</span><span class="token punctuation">,</span>
+      headers<span class="token punctuation">:</span> <span class="token punctuation">{</span>
+        <span class="token string">'Accept'</span><span class="token punctuation">:</span> <span class="token string">'application/json'</span><span class="token punctuation">,</span>
+        <span class="token string">'Content-Type'</span><span class="token punctuation">:</span> <span class="token string">'application/json'</span><span class="token punctuation">,</span>
+      <span class="token punctuation">}</span><span class="token punctuation">,</span>
+      body<span class="token punctuation">:</span> JSON<span class="token punctuation">.</span><span class="token function">stringify</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+        news_id<span class="token punctuation">:</span> id<span class="token punctuation">,</span>
+        upvotes<span class="token punctuation">:</span> upvotes <span class="token operator">+</span> <span class="token number">1</span>
+      <span class="token punctuation">}</span><span class="token punctuation">)</span>
+    <span class="token punctuation">}</span><span class="token punctuation">)</span>
+      <span class="token punctuation">.</span><span class="token keyword">catch</span><span class="token punctuation">(</span><span class="token punctuation">(</span>err<span class="token punctuation">)</span> <span class="token operator">=</span><span class="token operator">&gt;</span> <span class="token punctuation">{</span>
+        <span class="token function">alert</span><span class="token punctuation">(</span><span class="token string">'Error occured while trying to upvote'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+      <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>    
+
+  <span class="token punctuation">}</span>
+
+  <span class="token function">openModal</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
+    <span class="token keyword">this</span><span class="token punctuation">.</span><span class="token function">setState</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+      is_modal_open<span class="token punctuation">:</span> <span class="token boolean">true</span>
+    <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token punctuation">}</span>
+
+  <span class="token function">closeModal</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
+    <span class="token keyword">this</span><span class="token punctuation">.</span><span class="token function">setState</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+      is_modal_open<span class="token punctuation">:</span> <span class="token boolean">false</span>
+    <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token punctuation">}</span>
+
+  <span class="token function">shareNews</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
+
+    <span class="token function">fetch</span><span class="token punctuation">(</span>base_url <span class="token operator">+</span> <span class="token string">'/save-newsitem'</span><span class="token punctuation">,</span> <span class="token punctuation">{</span>
+      method<span class="token punctuation">:</span> <span class="token string">'POST'</span><span class="token punctuation">,</span>
+      headers<span class="token punctuation">:</span> <span class="token punctuation">{</span>
+        <span class="token string">'Accept'</span><span class="token punctuation">:</span> <span class="token string">'application/json'</span><span class="token punctuation">,</span>
+        <span class="token string">'Content-Type'</span><span class="token punctuation">:</span> <span class="token string">'application/json'</span><span class="token punctuation">,</span>
+      <span class="token punctuation">}</span><span class="token punctuation">,</span>
+      body<span class="token punctuation">:</span> JSON<span class="token punctuation">.</span><span class="token function">stringify</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+        news_title<span class="token punctuation">:</span> <span class="token keyword">this</span><span class="token punctuation">.</span>state<span class="token punctuation">.</span>news_title<span class="token punctuation">,</span>
+        news_url<span class="token punctuation">:</span> <span class="token keyword">this</span><span class="token punctuation">.</span>state<span class="token punctuation">.</span>news_url<span class="token punctuation">,</span>
+      <span class="token punctuation">}</span><span class="token punctuation">)</span>
+    <span class="token punctuation">}</span><span class="token punctuation">)</span>
+      <span class="token punctuation">.</span><span class="token function">then</span><span class="token punctuation">(</span><span class="token punctuation">(</span>response<span class="token punctuation">)</span> <span class="token operator">=</span><span class="token operator">&gt;</span> <span class="token punctuation">{</span>
+        <span class="token function">alert</span><span class="token punctuation">(</span><span class="token string">'News was shared!'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span><span class="token function">setState</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+          news_title<span class="token punctuation">:</span> <span class="token string">''</span><span class="token punctuation">,</span>
+          news_url<span class="token punctuation">:</span> <span class="token string">''</span>
+        <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+      <span class="token punctuation">}</span><span class="token punctuation">)</span>
+      <span class="token punctuation">.</span><span class="token keyword">catch</span><span class="token punctuation">(</span><span class="token punctuation">(</span>err<span class="token punctuation">)</span> <span class="token operator">=</span><span class="token operator">&gt;</span> <span class="token punctuation">{</span>
+        <span class="token function">alert</span><span class="token punctuation">(</span><span class="token string">'Error occured while sharing news'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+      <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+  <span class="token punctuation">}</span>
+
+  <span class="token function">openPage</span><span class="token punctuation">(</span>url<span class="token punctuation">)</span><span class="token punctuation">{</span>
+    Linking<span class="token punctuation">.</span><span class="token function">canOpenURL</span><span class="token punctuation">(</span>url<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">then</span><span class="token punctuation">(</span>supported <span class="token operator">=</span><span class="token operator">&gt;</span> <span class="token punctuation">{</span>
+      <span class="token keyword">if</span><span class="token punctuation">(</span>supported<span class="token punctuation">)</span><span class="token punctuation">{</span>
+        Linking<span class="token punctuation">.</span><span class="token function">openURL</span><span class="token punctuation">(</span>url<span class="token punctuation">)</span><span class="token punctuation">;</span>
+      <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token punctuation">}</span>
+
+  <span class="token function">renderNews</span><span class="token punctuation">(</span>news<span class="token punctuation">)</span><span class="token punctuation">{</span>
+    <span class="token keyword">return</span> <span class="token punctuation">(</span>
+      <span class="token operator">&lt;</span>View style<span class="token operator">=</span><span class="token punctuation">{</span>styles<span class="token punctuation">.</span>news_item<span class="token punctuation">}</span><span class="token operator">&gt;</span>
+        <span class="token operator">&lt;</span>TouchableHighlight onPress<span class="token operator">=</span><span class="token punctuation">{</span><span class="token keyword">this</span><span class="token punctuation">.</span>upvoteNewsItem<span class="token punctuation">.</span><span class="token function">bind</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">,</span> news<span class="token punctuation">.</span>id<span class="token punctuation">,</span> news<span class="token punctuation">.</span>upvotes<span class="token punctuation">)</span><span class="token punctuation">}</span> underlayColor<span class="token operator">=</span><span class="token punctuation">{</span><span class="token string">"#E8E8E8"</span><span class="token punctuation">}</span><span class="token operator">&gt;</span>
+          <span class="token operator">&lt;</span>View style<span class="token operator">=</span><span class="token punctuation">{</span>styles<span class="token punctuation">.</span>upvote<span class="token punctuation">}</span><span class="token operator">&gt;</span>
+              <span class="token operator">&lt;</span>Icon name<span class="token operator">=</span><span class="token string">"triangle-up"</span> size<span class="token operator">=</span><span class="token punctuation">{</span><span class="token number">30</span><span class="token punctuation">}</span> color<span class="token operator">=</span><span class="token string">"#666"</span> <span class="token operator">/</span><span class="token operator">&gt;</span>
+              <span class="token operator">&lt;</span>Text style<span class="token operator">=</span><span class="token punctuation">{</span>styles<span class="token punctuation">.</span>upvote_text<span class="token punctuation">}</span><span class="token operator">&gt;</span><span class="token punctuation">{</span>news<span class="token punctuation">.</span>upvotes<span class="token punctuation">}</span><span class="token operator">&lt;</span><span class="token operator">/</span>Text<span class="token operator">&gt;</span>
+          <span class="token operator">&lt;</span><span class="token operator">/</span>View<span class="token operator">&gt;</span>
+        <span class="token operator">&lt;</span><span class="token operator">/</span>TouchableHighlight<span class="token operator">&gt;</span>
+        <span class="token operator">&lt;</span>TouchableHighlight onPress<span class="token operator">=</span><span class="token punctuation">{</span><span class="token keyword">this</span><span class="token punctuation">.</span>openPage<span class="token punctuation">.</span><span class="token function">bind</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">,</span> news<span class="token punctuation">.</span>url<span class="token punctuation">)</span><span class="token punctuation">}</span> underlayColor<span class="token operator">=</span><span class="token punctuation">{</span><span class="token string">"#E8E8E8"</span><span class="token punctuation">}</span><span class="token operator">&gt;</span>
+          <span class="token operator">&lt;</span>View style<span class="token operator">=</span><span class="token punctuation">{</span>styles<span class="token punctuation">.</span>news_title<span class="token punctuation">}</span><span class="token operator">&gt;</span>
+            <span class="token operator">&lt;</span>Text style<span class="token operator">=</span><span class="token punctuation">{</span>styles<span class="token punctuation">.</span>news_item_text<span class="token punctuation">}</span><span class="token operator">&gt;</span><span class="token punctuation">{</span>news<span class="token punctuation">.</span>title<span class="token punctuation">}</span><span class="token operator">&lt;</span><span class="token operator">/</span>Text<span class="token operator">&gt;</span>
+          <span class="token operator">&lt;</span><span class="token operator">/</span>View<span class="token operator">&gt;</span>
+        <span class="token operator">&lt;</span><span class="token operator">/</span>TouchableHighlight<span class="token operator">&gt;</span>
+      <span class="token operator">&lt;</span><span class="token operator">/</span>View<span class="token operator">&gt;</span>
+    <span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token punctuation">}</span>
+
+  <span class="token function">render</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
+
+    <span class="token keyword">return</span> <span class="token punctuation">(</span>
+      <span class="token operator">&lt;</span>View style<span class="token operator">=</span><span class="token punctuation">{</span>styles<span class="token punctuation">.</span>container<span class="token punctuation">}</span><span class="token operator">&gt;</span>
+        <span class="token operator">&lt;</span>View style<span class="token operator">=</span><span class="token punctuation">{</span>styles<span class="token punctuation">.</span>header<span class="token punctuation">}</span><span class="token operator">&gt;</span>
+          <span class="token operator">&lt;</span>View style<span class="token operator">=</span><span class="token punctuation">{</span>styles<span class="token punctuation">.</span>app_title<span class="token punctuation">}</span><span class="token operator">&gt;</span>
+            <span class="token operator">&lt;</span>Text style<span class="token operator">=</span><span class="token punctuation">{</span>styles<span class="token punctuation">.</span>header_text<span class="token punctuation">}</span><span class="token operator">&gt;</span>News Sharer<span class="token operator">&lt;</span><span class="token operator">/</span>Text<span class="token operator">&gt;</span>   
+          <span class="token operator">&lt;</span><span class="token operator">/</span>View<span class="token operator">&gt;</span>
+          <span class="token operator">&lt;</span>View style<span class="token operator">=</span><span class="token punctuation">{</span>styles<span class="token punctuation">.</span>header_button_container<span class="token punctuation">}</span><span class="token operator">&gt;</span>
+            <span class="token operator">&lt;</span>Button onPress<span class="token operator">=</span><span class="token punctuation">{</span><span class="token keyword">this</span><span class="token punctuation">.</span>openModal<span class="token punctuation">.</span><span class="token function">bind</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">)</span><span class="token punctuation">}</span> style<span class="token operator">=</span><span class="token punctuation">{</span>styles<span class="token punctuation">.</span>btn<span class="token punctuation">}</span><span class="token operator">&gt;</span>
+              Share News
+            <span class="token operator">&lt;</span><span class="token operator">/</span>Button<span class="token operator">&gt;</span>
+          <span class="token operator">&lt;</span><span class="token operator">/</span>View<span class="token operator">&gt;</span>     
+        <span class="token operator">&lt;</span><span class="token operator">/</span>View<span class="token operator">&gt;</span>
+
+        <span class="token punctuation">{</span>
+          <span class="token keyword">this</span><span class="token punctuation">.</span>state<span class="token punctuation">.</span>is_news_loaded <span class="token operator">&amp;&amp;</span>
+          <span class="token operator">&lt;</span>View style<span class="token operator">=</span><span class="token punctuation">{</span>styles<span class="token punctuation">.</span>body<span class="token punctuation">}</span><span class="token operator">&gt;</span>
+            <span class="token operator">&lt;</span>ListView initialListSize<span class="token operator">=</span><span class="token punctuation">{</span><span class="token number">1</span><span class="token punctuation">}</span> dataSource<span class="token operator">=</span><span class="token punctuation">{</span><span class="token keyword">this</span><span class="token punctuation">.</span>state<span class="token punctuation">.</span>news<span class="token punctuation">}</span> style<span class="token operator">=</span><span class="token punctuation">{</span>styles<span class="token punctuation">.</span>news<span class="token punctuation">}</span> renderRow<span class="token operator">=</span><span class="token punctuation">{</span><span class="token keyword">this</span><span class="token punctuation">.</span>renderNews<span class="token punctuation">.</span><span class="token function">bind</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">)</span><span class="token punctuation">}</span><span class="token operator">&gt;</span><span class="token operator">&lt;</span><span class="token operator">/</span>ListView<span class="token operator">&gt;</span>
+          <span class="token operator">&lt;</span><span class="token operator">/</span>View<span class="token operator">&gt;</span>
+        <span class="token punctuation">}</span>
+
+        <span class="token operator">&lt;</span>Modal
+          isOpen<span class="token operator">=</span><span class="token punctuation">{</span><span class="token keyword">this</span><span class="token punctuation">.</span>state<span class="token punctuation">.</span>is_modal_open<span class="token punctuation">}</span>
+          style<span class="token operator">=</span><span class="token punctuation">{</span>styles<span class="token punctuation">.</span>modal<span class="token punctuation">}</span>
+          position<span class="token operator">=</span><span class="token punctuation">{</span><span class="token string">"center"</span><span class="token punctuation">}</span>
+        <span class="token operator">&gt;</span>
+          <span class="token operator">&lt;</span>View style<span class="token operator">=</span><span class="token punctuation">{</span>styles<span class="token punctuation">.</span>modal_body<span class="token punctuation">}</span><span class="token operator">&gt;</span>
+            <span class="token operator">&lt;</span>View style<span class="token operator">=</span><span class="token punctuation">{</span>styles<span class="token punctuation">.</span>modal_header<span class="token punctuation">}</span><span class="token operator">&gt;</span>
+              <span class="token operator">&lt;</span>Text style<span class="token operator">=</span><span class="token punctuation">{</span>styles<span class="token punctuation">.</span>modal_header_text<span class="token punctuation">}</span><span class="token operator">&gt;</span>Share News<span class="token operator">&lt;</span><span class="token operator">/</span>Text<span class="token operator">&gt;</span>
+            <span class="token operator">&lt;</span><span class="token operator">/</span>View<span class="token operator">&gt;</span>
+
+            <span class="token operator">&lt;</span>View style<span class="token operator">=</span><span class="token punctuation">{</span>styles<span class="token punctuation">.</span>input_row<span class="token punctuation">}</span><span class="token operator">&gt;</span>
+              <span class="token operator">&lt;</span>TextInput
+                style<span class="token operator">=</span><span class="token punctuation">{</span><span class="token punctuation">{</span>height<span class="token punctuation">:</span> <span class="token number">40</span><span class="token punctuation">,</span> borderColor<span class="token punctuation">:</span> <span class="token string">'gray'</span><span class="token punctuation">,</span> borderWidth<span class="token punctuation">:</span> <span class="token number">1</span><span class="token punctuation">}</span><span class="token punctuation">}</span>
+                onChangeText<span class="token operator">=</span><span class="token punctuation">{</span><span class="token punctuation">(</span>text<span class="token punctuation">)</span> <span class="token operator">=</span><span class="token operator">&gt;</span> <span class="token keyword">this</span><span class="token punctuation">.</span><span class="token function">setState</span><span class="token punctuation">(</span><span class="token punctuation">{</span>news_title<span class="token punctuation">:</span> text<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">}</span>
+                value<span class="token operator">=</span><span class="token punctuation">{</span><span class="token keyword">this</span><span class="token punctuation">.</span>state<span class="token punctuation">.</span>news_title<span class="token punctuation">}</span>
+                placeholder<span class="token operator">=</span><span class="token string">"Title"</span>
+              <span class="token operator">/</span><span class="token operator">&gt;</span>
+            <span class="token operator">&lt;</span><span class="token operator">/</span>View<span class="token operator">&gt;</span>
+
+            <span class="token operator">&lt;</span>View style<span class="token operator">=</span><span class="token punctuation">{</span>styles<span class="token punctuation">.</span>input_row<span class="token punctuation">}</span><span class="token operator">&gt;</span>
+              <span class="token operator">&lt;</span>TextInput
+                style<span class="token operator">=</span><span class="token punctuation">{</span><span class="token punctuation">{</span>height<span class="token punctuation">:</span> <span class="token number">40</span><span class="token punctuation">,</span> borderColor<span class="token punctuation">:</span> <span class="token string">'gray'</span><span class="token punctuation">,</span> borderWidth<span class="token punctuation">:</span> <span class="token number">1</span><span class="token punctuation">}</span><span class="token punctuation">}</span>
+                onChangeText<span class="token operator">=</span><span class="token punctuation">{</span><span class="token punctuation">(</span>text<span class="token punctuation">)</span> <span class="token operator">=</span><span class="token operator">&gt;</span> <span class="token keyword">this</span><span class="token punctuation">.</span><span class="token function">setState</span><span class="token punctuation">(</span><span class="token punctuation">{</span>news_url<span class="token punctuation">:</span> text<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">}</span>
+                value<span class="token operator">=</span><span class="token punctuation">{</span><span class="token keyword">this</span><span class="token punctuation">.</span>state<span class="token punctuation">.</span>news_url<span class="token punctuation">}</span>
+                placeholder<span class="token operator">=</span><span class="token string">"URL"</span>
+                keyboardType<span class="token operator">=</span><span class="token string">"url"</span>
+              <span class="token operator">/</span><span class="token operator">&gt;</span>
+            <span class="token operator">&lt;</span><span class="token operator">/</span>View<span class="token operator">&gt;</span>
+
+            <span class="token operator">&lt;</span>View style<span class="token operator">=</span><span class="token punctuation">{</span>styles<span class="token punctuation">.</span>input_row<span class="token punctuation">}</span><span class="token operator">&gt;</span>
+              <span class="token operator">&lt;</span>Button onPress<span class="token operator">=</span><span class="token punctuation">{</span><span class="token keyword">this</span><span class="token punctuation">.</span>shareNews<span class="token punctuation">.</span><span class="token function">bind</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">)</span><span class="token punctuation">}</span> style<span class="token operator">=</span><span class="token punctuation">{</span><span class="token punctuation">[</span>styles<span class="token punctuation">.</span>btn<span class="token punctuation">,</span> styles<span class="token punctuation">.</span>share_btn<span class="token punctuation">]</span><span class="token punctuation">}</span><span class="token operator">&gt;</span>
+                Share
+              <span class="token operator">&lt;</span><span class="token operator">/</span>Button<span class="token operator">&gt;</span>
+            <span class="token operator">&lt;</span><span class="token operator">/</span>View<span class="token operator">&gt;</span>
+          <span class="token operator">&lt;</span><span class="token operator">/</span>View<span class="token operator">&gt;</span>
+
+        <span class="token operator">&lt;</span><span class="token operator">/</span>Modal<span class="token operator">&gt;</span>
+      <span class="token operator">&lt;</span><span class="token operator">/</span>View<span class="token operator">&gt;</span>
+    <span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+
+<span class="token keyword">const</span> styles <span class="token operator">=</span> StyleSheet<span class="token punctuation">.</span><span class="token function">create</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+  container<span class="token punctuation">:</span> <span class="token punctuation">{</span>
+    flex<span class="token punctuation">:</span> <span class="token number">1</span><span class="token punctuation">,</span>
+    alignSelf<span class="token punctuation">:</span> <span class="token string">'stretch'</span><span class="token punctuation">,</span>
+    backgroundColor<span class="token punctuation">:</span> <span class="token string">'#F5FCFF'</span><span class="token punctuation">,</span>
+  <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  header<span class="token punctuation">:</span> <span class="token punctuation">{</span>
+    flex<span class="token punctuation">:</span> <span class="token number">1</span><span class="token punctuation">,</span>
+    backgroundColor<span class="token punctuation">:</span> <span class="token string">'#3B3738'</span><span class="token punctuation">,</span>
+    flexDirection<span class="token punctuation">:</span> <span class="token string">'row'</span>
+  <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  app_title<span class="token punctuation">:</span> <span class="token punctuation">{</span>
+    flex<span class="token punctuation">:</span> <span class="token number">7</span><span class="token punctuation">,</span>
+    padding<span class="token punctuation">:</span> <span class="token number">10</span>
+  <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  header_text<span class="token punctuation">:</span> <span class="token punctuation">{</span>
+    fontSize<span class="token punctuation">:</span> <span class="token number">20</span><span class="token punctuation">,</span>
+    color<span class="token punctuation">:</span> <span class="token string">'#FFF'</span><span class="token punctuation">,</span>
+    fontWeight<span class="token punctuation">:</span> <span class="token string">'bold'</span>
+  <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  header_button_container<span class="token punctuation">:</span> <span class="token punctuation">{</span>
+    flex<span class="token punctuation">:</span> <span class="token number">3</span>
+  <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  body<span class="token punctuation">:</span> <span class="token punctuation">{</span>
+    flex<span class="token punctuation">:</span> <span class="token number">19</span>
+  <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  btn<span class="token punctuation">:</span> <span class="token punctuation">{</span>
+    backgroundColor<span class="token punctuation">:</span> <span class="token string">"#05A5D1"</span><span class="token punctuation">,</span>
+    color<span class="token punctuation">:</span> <span class="token string">"white"</span><span class="token punctuation">,</span>
+    margin<span class="token punctuation">:</span> <span class="token number">10</span>
+  <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  modal<span class="token punctuation">:</span> <span class="token punctuation">{</span>
+    height<span class="token punctuation">:</span> <span class="token number">300</span>
+  <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  modal_header<span class="token punctuation">:</span> <span class="token punctuation">{</span>
+    margin<span class="token punctuation">:</span> <span class="token number">20</span><span class="token punctuation">,</span>
+  <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  modal_body<span class="token punctuation">:</span> <span class="token punctuation">{</span>
+    alignItems<span class="token punctuation">:</span> <span class="token string">'center'</span>
+  <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  input_row<span class="token punctuation">:</span> <span class="token punctuation">{</span>
+    padding<span class="token punctuation">:</span> <span class="token number">20</span>
+  <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  modal_header_text<span class="token punctuation">:</span> <span class="token punctuation">{</span>
+    fontSize<span class="token punctuation">:</span> <span class="token number">18</span><span class="token punctuation">,</span>
+    fontWeight<span class="token punctuation">:</span> <span class="token string">'bold'</span>
+  <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  share_btn<span class="token punctuation">:</span> <span class="token punctuation">{</span>
+    width<span class="token punctuation">:</span> <span class="token number">100</span>
+  <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  news_item<span class="token punctuation">:</span> <span class="token punctuation">{</span>
+    paddingLeft<span class="token punctuation">:</span> <span class="token number">10</span><span class="token punctuation">,</span>
+    paddingRight<span class="token punctuation">:</span> <span class="token number">10</span><span class="token punctuation">,</span>
+    paddingTop<span class="token punctuation">:</span> <span class="token number">15</span><span class="token punctuation">,</span>
+    paddingBottom<span class="token punctuation">:</span> <span class="token number">15</span><span class="token punctuation">,</span>
+    marginBottom<span class="token punctuation">:</span> <span class="token number">5</span><span class="token punctuation">,</span>
+    borderBottomWidth<span class="token punctuation">:</span> <span class="token number">1</span><span class="token punctuation">,</span>
+    borderBottomColor<span class="token punctuation">:</span> <span class="token string">'#ccc'</span><span class="token punctuation">,</span>
+    flex<span class="token punctuation">:</span> <span class="token number">1</span><span class="token punctuation">,</span>
+    flexDirection<span class="token punctuation">:</span> <span class="token string">'row'</span>
+  <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  news_item_text<span class="token punctuation">:</span> <span class="token punctuation">{</span>
+    color<span class="token punctuation">:</span> <span class="token string">'#575757'</span><span class="token punctuation">,</span>
+    fontSize<span class="token punctuation">:</span> <span class="token number">18</span>
+  <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  upvote<span class="token punctuation">:</span> <span class="token punctuation">{</span>
+    flex<span class="token punctuation">:</span> <span class="token number">2</span><span class="token punctuation">,</span>
+    paddingRight<span class="token punctuation">:</span> <span class="token number">15</span><span class="token punctuation">,</span>
+    paddingLeft<span class="token punctuation">:</span> <span class="token number">5</span><span class="token punctuation">,</span>
+    alignItems<span class="token punctuation">:</span> <span class="token string">'center'</span>
+  <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  news_title<span class="token punctuation">:</span> <span class="token punctuation">{</span>
+    flex<span class="token punctuation">:</span> <span class="token number">18</span><span class="token punctuation">,</span>
+    justifyContent<span class="token punctuation">:</span> <span class="token string">'center'</span>
+  <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  upvote_text<span class="token punctuation">:</span> <span class="token punctuation">{</span>
+    fontSize<span class="token punctuation">:</span> <span class="token number">18</span><span class="token punctuation">,</span>
+    fontWeight<span class="token punctuation">:</span> <span class="token string">'bold'</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+AppRegistry<span class="token punctuation">.</span><span class="token function">registerComponent</span><span class="token punctuation">(</span><span class="token string">'Main'</span><span class="token punctuation">,</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=</span><span class="token operator">&gt;</span> Main<span class="token punctuation">)</span><span class="token punctuation">;</span>
+</code></pre>
+<p>Breaking down the code above. First import the built-in React Native and third-party components needed.</p>
+<pre class=" language-javascript"><code class="javascript  language-javascript"><span class="token keyword">import</span> React<span class="token punctuation">,</span> <span class="token punctuation">{</span> Component <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'react'</span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token punctuation">{</span>
+  AppRegistry<span class="token punctuation">,</span>
+  StyleSheet<span class="token punctuation">,</span>
+  Text<span class="token punctuation">,</span>
+  View<span class="token punctuation">,</span>
+  TextInput<span class="token punctuation">,</span>
+  TouchableHighlight<span class="token punctuation">,</span>
+  Linking<span class="token punctuation">,</span>
+  ListView
+<span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'react-native'</span><span class="token punctuation">;</span>
+
+<span class="token keyword">import</span> Button <span class="token keyword">from</span> <span class="token string">'react-native-button'</span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> Modal <span class="token keyword">from</span> <span class="token string">'react-native-modalbox'</span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> Icon <span class="token keyword">from</span> <span class="token string">'react-native-vector-icons/Octicons'</span><span class="token punctuation">;</span>
+
+<span class="token keyword">import</span> <span class="token string">"../UserAgent"</span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> io <span class="token keyword">from</span> <span class="token string">'socket.io-client/socket.io'</span><span class="token punctuation">;</span>
+
+<span class="token keyword">import</span> _ <span class="token keyword">from</span> <span class="token string">'lodash'</span><span class="token punctuation">;</span>
+</code></pre>
+<p>Note that you’re importing custom code here:</p>
+<pre class=" language-javascript"><code class="javascript  language-javascript"><span class="token keyword">import</span> <span class="token string">"../UserAgent"</span><span class="token punctuation">;</span>
+</code></pre>
+<p>This is the <em>UserAgent.js</em> file that you see at the root of the <em>NewsSharer</em> directory. It contains code to set the user agent to <code class=" language-undefined">react-native</code>, needed by Socket.io to work, or it will assume that it’s in a browser environment.</p>
+<pre class=" language-javascript"><code class="javascript  language-javascript">window<span class="token punctuation">.</span>navigator<span class="token punctuation">.</span>userAgent <span class="token operator">=</span> <span class="token string">'react-native'</span><span class="token punctuation">;</span>
+</code></pre>
+<p>Next, the base URL to which the app is going to make requests. If you’re testing locally this can be the internal IP address of your computer. For this to work, you have to make sure that your phone or tablet is connected to the same network as your computer.</p>
+<pre class=" language-javascript"><code class="javascript  language-javascript"><span class="token keyword">var</span> base_url <span class="token operator">=</span> <span class="token string">'http://YOUR_DOMAIN_NAME_OR_IP_ADDRESS:3000'</span><span class="token punctuation">;</span>
+</code></pre>
+<p>Inside the constructor, initialize the socket connection:</p>
+<pre class=" language-javascript"><code class="javascript  language-javascript"><span class="token keyword">this</span><span class="token punctuation">.</span>socket <span class="token operator">=</span> <span class="token function">io</span><span class="token punctuation">(</span>base_url<span class="token punctuation">,</span> <span class="token punctuation">{</span>
+  transports<span class="token punctuation">:</span> <span class="token punctuation">[</span><span class="token string">'websocket'</span><span class="token punctuation">]</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+</code></pre>
+<p>Set the default app state:</p>
+<pre class=" language-javascript"><code class="javascript  language-javascript"><span class="token keyword">this</span><span class="token punctuation">.</span>state <span class="token operator">=</span> <span class="token punctuation">{</span>
+  is_modal_open<span class="token punctuation">:</span> <span class="token boolean">false</span><span class="token punctuation">,</span> <span class="token comment" spellcheck="true">//for showing/hiding the modal</span>
+  news_title<span class="token punctuation">:</span> <span class="token string">''</span><span class="token punctuation">,</span> <span class="token comment" spellcheck="true">//default value for news title text field</span>
+  news_url<span class="token punctuation">:</span> <span class="token string">''</span><span class="token punctuation">,</span> <span class="token comment" spellcheck="true">//default value for news url text field</span>
+  <span class="token comment" spellcheck="true">//initialize a datasource for the news items</span>
+  news_items_datasource<span class="token punctuation">:</span> <span class="token keyword">new</span> <span class="token class-name">ListView<span class="token punctuation">.</span>DataSource</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+    rowHasChanged<span class="token punctuation">:</span> <span class="token punctuation">(</span>row1<span class="token punctuation">,</span> row2<span class="token punctuation">)</span> <span class="token operator">=</span><span class="token operator">&gt;</span> row1 <span class="token operator">!==</span> row2<span class="token punctuation">,</span>
+  <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+  <span class="token comment" spellcheck="true">//for showing/hiding the news items</span>
+  is_news_loaded<span class="token punctuation">:</span> <span class="token boolean">false</span><span class="token punctuation">,</span>
+  news<span class="token punctuation">:</span> <span class="token punctuation">{</span><span class="token punctuation">}</span><span class="token punctuation">,</span> <span class="token comment" spellcheck="true">//the news items datasource</span>
+  news_items<span class="token punctuation">:</span> <span class="token punctuation">[</span><span class="token punctuation">]</span> <span class="token comment" spellcheck="true">//the news items</span>
+<span class="token punctuation">}</span><span class="token punctuation">;</span>
+</code></pre>
+<p>This function fetches the news items from the server, using the built-in <a href="https://facebook.github.io/react-native/docs/network.html">fetch</a> method. It performs a <code class=" language-undefined">GET</code> request to the <code class=" language-undefined">news</code> route and then extracts the <code class=" language-undefined">news_items</code> object from the response. This is then used to create the news datasource which required by the <code class=" language-undefined">ListView</code> component. Once created, it updates the state with the news datasource so that the UI gets updated with the news items in it.</p>
+<pre class=" language-javascript"><code class="javascript  language-javascript"><span class="token function">getNewsItems</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
+
+  <span class="token function">fetch</span><span class="token punctuation">(</span>base_url <span class="token operator">+</span> <span class="token string">'/news'</span><span class="token punctuation">)</span>
+    <span class="token punctuation">.</span><span class="token function">then</span><span class="token punctuation">(</span><span class="token punctuation">(</span>response<span class="token punctuation">)</span> <span class="token operator">=</span><span class="token operator">&gt;</span> <span class="token punctuation">{</span>
+      <span class="token keyword">return</span> response<span class="token punctuation">.</span><span class="token function">json</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span><span class="token punctuation">)</span>
+    <span class="token punctuation">.</span><span class="token function">then</span><span class="token punctuation">(</span><span class="token punctuation">(</span>news_items<span class="token punctuation">)</span> <span class="token operator">=</span><span class="token operator">&gt;</span> <span class="token punctuation">{</span>
+
+      <span class="token keyword">this</span><span class="token punctuation">.</span><span class="token function">setState</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+        <span class="token string">'news_items'</span><span class="token punctuation">:</span> news_items
+      <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+      <span class="token keyword">var</span> news_datasource <span class="token operator">=</span> <span class="token keyword">this</span><span class="token punctuation">.</span>state<span class="token punctuation">.</span>news_items_datasource<span class="token punctuation">.</span><span class="token function">cloneWithRows</span><span class="token punctuation">(</span>news_items<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+      <span class="token keyword">this</span><span class="token punctuation">.</span><span class="token function">setState</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+        <span class="token string">'news'</span><span class="token punctuation">:</span> news_datasource<span class="token punctuation">,</span>
+        <span class="token string">'is_news_loaded'</span><span class="token punctuation">:</span> <span class="token boolean">true</span>
+      <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+      <span class="token keyword">return</span> news_items<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span><span class="token punctuation">)</span>
+    <span class="token punctuation">.</span><span class="token keyword">catch</span><span class="token punctuation">(</span><span class="token punctuation">(</span>error<span class="token punctuation">)</span> <span class="token operator">=</span><span class="token operator">&gt;</span> <span class="token punctuation">{</span>
+      <span class="token function">alert</span><span class="token punctuation">(</span><span class="token string">'Error occured while fetching news items'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token punctuation">}</span>
+</code></pre>
+<p>The <a href="https://facebook.github.io/react/docs/component-specs.html#mounting-componentwillmount"><code class=" language-undefined">componentWillMount</code></a> method is one of React’s lifecycle methods. This allows you to execute code before the initial rendering occurs. This is where you listen for the <code class=" language-undefined">news_updated</code> event emitted by Socket.io’s server component, and when this event happens, it can be one of two things. When a users shares a news item or when they upvote an existing news item.</p>
+<p>RethinkDB’s changefeed returns a <code class=" language-undefined">null</code> value for the <code class=" language-undefined">old_val</code> if it’s a new item. This is how you distinguish between the two possibilities. If a user has shared a new news item, push it to the <code class=" language-undefined">news_items</code> array. Otherwise, look for the upvoted news item and update its upvote count. Now you can update the UI to reflect the changes.</p>
+<pre class=" language-javascript"><code class="javascript  language-javascript"><span class="token function">componentWillMount</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
+
+  <span class="token keyword">this</span><span class="token punctuation">.</span>socket<span class="token punctuation">.</span><span class="token function">on</span><span class="token punctuation">(</span><span class="token string">'news_updated'</span><span class="token punctuation">,</span> <span class="token punctuation">(</span>data<span class="token punctuation">)</span> <span class="token operator">=</span><span class="token operator">&gt;</span> <span class="token punctuation">{</span>
+
+    <span class="token keyword">var</span> news_items <span class="token operator">=</span> <span class="token keyword">this</span><span class="token punctuation">.</span>state<span class="token punctuation">.</span>news_items<span class="token punctuation">;</span>
+    <span class="token keyword">if</span><span class="token punctuation">(</span>data<span class="token punctuation">.</span>old_val <span class="token operator">===</span> <span class="token keyword">null</span><span class="token punctuation">)</span><span class="token punctuation">{</span> <span class="token comment" spellcheck="true">//a new news item is shared</span>
+      <span class="token comment" spellcheck="true">//push the new item to the news_items array</span>
+      news_items<span class="token punctuation">.</span><span class="token function">push</span><span class="token punctuation">(</span>data<span class="token punctuation">.</span>new_val<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token punctuation">}</span><span class="token keyword">else</span><span class="token punctuation">{</span> <span class="token comment" spellcheck="true">//an existing news item is upvoted</span>
+      <span class="token comment" spellcheck="true">//find the news item that was upvoted and update its upvote count</span>
+      _<span class="token punctuation">.</span><span class="token function">map</span><span class="token punctuation">(</span>news_items<span class="token punctuation">,</span> <span class="token keyword">function</span><span class="token punctuation">(</span>row<span class="token punctuation">,</span> index<span class="token punctuation">)</span><span class="token punctuation">{</span>
+        <span class="token keyword">if</span><span class="token punctuation">(</span>row<span class="token punctuation">.</span>id <span class="token operator">==</span> data<span class="token punctuation">.</span>new_val<span class="token punctuation">.</span>id<span class="token punctuation">)</span><span class="token punctuation">{</span>
+          news_items<span class="token punctuation">[</span>index<span class="token punctuation">]</span><span class="token punctuation">.</span>upvotes <span class="token operator">=</span> data<span class="token punctuation">.</span>new_val<span class="token punctuation">.</span>upvotes<span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+
+      <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token punctuation">}</span>
+
+    <span class="token comment" spellcheck="true">//update the UI to reflect the changes</span>
+    <span class="token keyword">this</span><span class="token punctuation">.</span><span class="token function">updateUI</span><span class="token punctuation">(</span>news_items<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+  <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token punctuation">}</span>
+</code></pre>
+<p>The <code class=" language-undefined">updateUI</code> function orders the news items by their upvote count, highest to lowest. Once sorted, extract the first 30 news items and update the state.</p>
+<pre class=" language-javascript"><code class="javascript  language-javascript"><span class="token function">updateUI</span><span class="token punctuation">(</span>news_items<span class="token punctuation">)</span><span class="token punctuation">{</span>
+  <span class="token keyword">var</span> ordered_news_items <span class="token operator">=</span> _<span class="token punctuation">.</span><span class="token function">orderBy</span><span class="token punctuation">(</span>news_items<span class="token punctuation">,</span> <span class="token string">'upvotes'</span><span class="token punctuation">,</span> <span class="token string">'desc'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token keyword">var</span> limited_news_items <span class="token operator">=</span> _<span class="token punctuation">.</span><span class="token function">slice</span><span class="token punctuation">(</span>ordered_news_items<span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">,</span> <span class="token number">30</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token keyword">var</span> news_datasource <span class="token operator">=</span> <span class="token keyword">this</span><span class="token punctuation">.</span>state<span class="token punctuation">.</span>news_items_datasource<span class="token punctuation">.</span><span class="token function">cloneWithRows</span><span class="token punctuation">(</span>limited_news_items<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+  <span class="token keyword">this</span><span class="token punctuation">.</span><span class="token function">setState</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+    <span class="token string">'news'</span><span class="token punctuation">:</span> news_datasource<span class="token punctuation">,</span>
+    <span class="token string">'is_news_loaded'</span><span class="token punctuation">:</span> <span class="token boolean">true</span><span class="token punctuation">,</span>
+    <span class="token string">'is_modal_open'</span><span class="token punctuation">:</span> <span class="token boolean">false</span><span class="token punctuation">,</span>
+    <span class="token string">'news_items'</span><span class="token punctuation">:</span> limited_news_items
+  <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<p>The <a href="https://facebook.github.io/react/docs/component-specs.html#mounting-componentdidmount"><code class=" language-undefined">componentDidMount</code></a> method is another React lifecycle method invoked after the initial rendering occurs. This is where you fetch the news items from the server.</p>
+<p><strong>Note</strong>: You can also do this inside the <code class=" language-undefined">componentWillMount</code> method if you want to make the request before the component is mounted.</p>
+<pre class=" language-javascript"><code class="javascript  language-javascript"><span class="token function">componentDidMount</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
+  <span class="token keyword">this</span><span class="token punctuation">.</span><span class="token function">getNewsItems</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<p>The <code class=" language-undefined">upvoteNewsItem</code> method makes an upvote news item request to the server.</p>
+<pre class=" language-javascript"><code class="javascript  language-javascript"><span class="token function">upvoteNewsItem</span><span class="token punctuation">(</span>id<span class="token punctuation">,</span> upvotes<span class="token punctuation">)</span><span class="token punctuation">{</span>
+
+  <span class="token function">fetch</span><span class="token punctuation">(</span>base_url <span class="token operator">+</span> <span class="token string">'/upvote-newsitem'</span><span class="token punctuation">,</span> <span class="token punctuation">{</span>
+    method<span class="token punctuation">:</span> <span class="token string">'POST'</span><span class="token punctuation">,</span>
+    headers<span class="token punctuation">:</span> <span class="token punctuation">{</span>
+      <span class="token string">'Accept'</span><span class="token punctuation">:</span> <span class="token string">'application/json'</span><span class="token punctuation">,</span>
+      <span class="token string">'Content-Type'</span><span class="token punctuation">:</span> <span class="token string">'application/json'</span><span class="token punctuation">,</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    body<span class="token punctuation">:</span> JSON<span class="token punctuation">.</span><span class="token function">stringify</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+      news_id<span class="token punctuation">:</span> id<span class="token punctuation">,</span>
+      upvotes<span class="token punctuation">:</span> upvotes <span class="token operator">+</span> <span class="token number">1</span>
+    <span class="token punctuation">}</span><span class="token punctuation">)</span>
+  <span class="token punctuation">}</span><span class="token punctuation">)</span>
+    <span class="token punctuation">.</span><span class="token keyword">catch</span><span class="token punctuation">(</span><span class="token punctuation">(</span>err<span class="token punctuation">)</span> <span class="token operator">=</span><span class="token operator">&gt;</span> <span class="token punctuation">{</span>
+      <span class="token function">alert</span><span class="token punctuation">(</span><span class="token string">'Error occured while trying to upvote'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>    
+
+<span class="token punctuation">}</span>
+</code></pre>
+<p>The <code class=" language-undefined">openModal</code> and <code class=" language-undefined">closeModal</code> methods show and hide the modal for sharing a news item.</p>
+<pre class=" language-javascript"><code class="javascript  language-javascript"><span class="token function">openModal</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
+  <span class="token keyword">this</span><span class="token punctuation">.</span><span class="token function">setState</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+    is_modal_open<span class="token punctuation">:</span> <span class="token boolean">true</span>
+  <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+
+<span class="token function">closeModal</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
+  <span class="token keyword">this</span><span class="token punctuation">.</span><span class="token function">setState</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+    is_modal_open<span class="token punctuation">:</span> <span class="token boolean">false</span>
+  <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<p>The <code class=" language-undefined">shareNews</code> function sends a request for creating a news item.</p>
+<pre class=" language-javascript"><code class="javascript  language-javascript"><span class="token function">shareNews</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
+
+  <span class="token function">fetch</span><span class="token punctuation">(</span>base_url <span class="token operator">+</span> <span class="token string">'/save-newsitem'</span><span class="token punctuation">,</span> <span class="token punctuation">{</span>
+    method<span class="token punctuation">:</span> <span class="token string">'POST'</span><span class="token punctuation">,</span>
+    headers<span class="token punctuation">:</span> <span class="token punctuation">{</span>
+      <span class="token string">'Accept'</span><span class="token punctuation">:</span> <span class="token string">'application/json'</span><span class="token punctuation">,</span>
+      <span class="token string">'Content-Type'</span><span class="token punctuation">:</span> <span class="token string">'application/json'</span><span class="token punctuation">,</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    body<span class="token punctuation">:</span> JSON<span class="token punctuation">.</span><span class="token function">stringify</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+      news_title<span class="token punctuation">:</span> <span class="token keyword">this</span><span class="token punctuation">.</span>state<span class="token punctuation">.</span>news_title<span class="token punctuation">,</span>
+      news_url<span class="token punctuation">:</span> <span class="token keyword">this</span><span class="token punctuation">.</span>state<span class="token punctuation">.</span>news_url<span class="token punctuation">,</span>
+    <span class="token punctuation">}</span><span class="token punctuation">)</span>
+  <span class="token punctuation">}</span><span class="token punctuation">)</span>
+    <span class="token punctuation">.</span><span class="token function">then</span><span class="token punctuation">(</span><span class="token punctuation">(</span>response<span class="token punctuation">)</span> <span class="token operator">=</span><span class="token operator">&gt;</span> <span class="token punctuation">{</span>
+      <span class="token function">alert</span><span class="token punctuation">(</span><span class="token string">'News was shared!'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+      <span class="token keyword">this</span><span class="token punctuation">.</span><span class="token function">setState</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+        news_title<span class="token punctuation">:</span> <span class="token string">''</span><span class="token punctuation">,</span>
+        news_url<span class="token punctuation">:</span> <span class="token string">''</span>
+      <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span><span class="token punctuation">)</span>
+    <span class="token punctuation">.</span><span class="token keyword">catch</span><span class="token punctuation">(</span><span class="token punctuation">(</span>err<span class="token punctuation">)</span> <span class="token operator">=</span><span class="token operator">&gt;</span> <span class="token punctuation">{</span>
+      <span class="token function">alert</span><span class="token punctuation">(</span><span class="token string">'Error occured while sharing news'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token punctuation">}</span>
+</code></pre>
+<p>The <code class=" language-undefined">openPage</code> function opens the URL of the news item in the browser.</p>
+<pre class=" language-javascript"><code class="javascript  language-javascript"><span class="token function">openPage</span><span class="token punctuation">(</span>url<span class="token punctuation">)</span><span class="token punctuation">{</span>
+  Linking<span class="token punctuation">.</span><span class="token function">canOpenURL</span><span class="token punctuation">(</span>url<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">then</span><span class="token punctuation">(</span>supported <span class="token operator">=</span><span class="token operator">&gt;</span> <span class="token punctuation">{</span>
+    <span class="token keyword">if</span><span class="token punctuation">(</span>supported<span class="token punctuation">)</span><span class="token punctuation">{</span>
+      Linking<span class="token punctuation">.</span><span class="token function">openURL</span><span class="token punctuation">(</span>url<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<p>The <code class=" language-undefined">renderNews</code> function returns the UI for each of the news items. This displays the upvote button, the number of upvotes and the news title. The news title is wrapped inside a <code class=" language-undefined">TouchableHighlight</code> component. This allows you to execute the <code class=" language-undefined">openPage</code> function to open the URL. You do the same thing for the upvote count.</p>
+<p><strong>Note</strong>: The code uses the <code class=" language-undefined">TouchableHighlight</code> component instead of the <code class=" language-undefined">Button</code> component because the <code class=" language-undefined">Button</code> component cannot have <code class=" language-undefined">View</code> or <code class=" language-undefined">Text</code> components inside it.</p>
+<pre class=" language-javascript"><code class="javascript  language-javascript"><span class="token function">renderNews</span><span class="token punctuation">(</span>news<span class="token punctuation">)</span><span class="token punctuation">{</span>
+  <span class="token keyword">return</span> <span class="token punctuation">(</span>
+    <span class="token operator">&lt;</span>View style<span class="token operator">=</span><span class="token punctuation">{</span>styles<span class="token punctuation">.</span>news_item<span class="token punctuation">}</span><span class="token operator">&gt;</span>
+      <span class="token operator">&lt;</span>TouchableHighlight onPress<span class="token operator">=</span><span class="token punctuation">{</span><span class="token keyword">this</span><span class="token punctuation">.</span>upvoteNewsItem<span class="token punctuation">.</span><span class="token function">bind</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">,</span> news<span class="token punctuation">.</span>id<span class="token punctuation">,</span> news<span class="token punctuation">.</span>upvotes<span class="token punctuation">)</span><span class="token punctuation">}</span> underlayColor<span class="token operator">=</span><span class="token punctuation">{</span><span class="token string">"#E8E8E8"</span><span class="token punctuation">}</span><span class="token operator">&gt;</span>
+        <span class="token operator">&lt;</span>View style<span class="token operator">=</span><span class="token punctuation">{</span>styles<span class="token punctuation">.</span>upvote<span class="token punctuation">}</span><span class="token operator">&gt;</span>
+            <span class="token operator">&lt;</span>Icon name<span class="token operator">=</span><span class="token string">"triangle-up"</span> size<span class="token operator">=</span><span class="token punctuation">{</span><span class="token number">30</span><span class="token punctuation">}</span> color<span class="token operator">=</span><span class="token string">"#666"</span> <span class="token operator">/</span><span class="token operator">&gt;</span>
+            <span class="token operator">&lt;</span>Text style<span class="token operator">=</span><span class="token punctuation">{</span>styles<span class="token punctuation">.</span>upvote_text<span class="token punctuation">}</span><span class="token operator">&gt;</span><span class="token punctuation">{</span>news<span class="token punctuation">.</span>upvotes<span class="token punctuation">}</span><span class="token operator">&lt;</span><span class="token operator">/</span>Text<span class="token operator">&gt;</span>
+        <span class="token operator">&lt;</span><span class="token operator">/</span>View<span class="token operator">&gt;</span>
+      <span class="token operator">&lt;</span><span class="token operator">/</span>TouchableHighlight<span class="token operator">&gt;</span>
+      <span class="token operator">&lt;</span>TouchableHighlight onPress<span class="token operator">=</span><span class="token punctuation">{</span><span class="token keyword">this</span><span class="token punctuation">.</span>openPage<span class="token punctuation">.</span><span class="token function">bind</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">,</span> news<span class="token punctuation">.</span>url<span class="token punctuation">)</span><span class="token punctuation">}</span> underlayColor<span class="token operator">=</span><span class="token punctuation">{</span><span class="token string">"#E8E8E8"</span><span class="token punctuation">}</span><span class="token operator">&gt;</span>
+        <span class="token operator">&lt;</span>View style<span class="token operator">=</span><span class="token punctuation">{</span>styles<span class="token punctuation">.</span>news_title<span class="token punctuation">}</span><span class="token operator">&gt;</span>
+          <span class="token operator">&lt;</span>Text style<span class="token operator">=</span><span class="token punctuation">{</span>styles<span class="token punctuation">.</span>news_item_text<span class="token punctuation">}</span><span class="token operator">&gt;</span><span class="token punctuation">{</span>news<span class="token punctuation">.</span>title<span class="token punctuation">}</span><span class="token operator">&lt;</span><span class="token operator">/</span>Text<span class="token operator">&gt;</span>
+        <span class="token operator">&lt;</span><span class="token operator">/</span>View<span class="token operator">&gt;</span>
+      <span class="token operator">&lt;</span><span class="token operator">/</span>TouchableHighlight<span class="token operator">&gt;</span>
+    <span class="token operator">&lt;</span><span class="token operator">/</span>View<span class="token operator">&gt;</span>
+  <span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<p>The <code class=" language-undefined">render</code> function returns the UI of the whole app.</p>
+<pre class=" language-javascript"><code class="javascript  language-javascript"><span class="token function">render</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
+    <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<p>Inside the <code class=" language-undefined">render</code> function you have the header which contains the title of the app and a button for opening the modal for sharing a news item.</p>
+<pre class=" language-javascript"><code class="javascript  language-javascript"><span class="token operator">&lt;</span>View style<span class="token operator">=</span><span class="token punctuation">{</span>styles<span class="token punctuation">.</span>header<span class="token punctuation">}</span><span class="token operator">&gt;</span>
+  <span class="token operator">&lt;</span>View style<span class="token operator">=</span><span class="token punctuation">{</span>styles<span class="token punctuation">.</span>app_title<span class="token punctuation">}</span><span class="token operator">&gt;</span>
+    <span class="token operator">&lt;</span>Text style<span class="token operator">=</span><span class="token punctuation">{</span>styles<span class="token punctuation">.</span>header_text<span class="token punctuation">}</span><span class="token operator">&gt;</span>News Sharer<span class="token operator">&lt;</span><span class="token operator">/</span>Text<span class="token operator">&gt;</span>   
+  <span class="token operator">&lt;</span><span class="token operator">/</span>View<span class="token operator">&gt;</span>
+  <span class="token operator">&lt;</span>View style<span class="token operator">=</span><span class="token punctuation">{</span>styles<span class="token punctuation">.</span>header_button_container<span class="token punctuation">}</span><span class="token operator">&gt;</span>
+    <span class="token operator">&lt;</span>Button onPress<span class="token operator">=</span><span class="token punctuation">{</span><span class="token keyword">this</span><span class="token punctuation">.</span>openModal<span class="token punctuation">.</span><span class="token function">bind</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">)</span><span class="token punctuation">}</span> style<span class="token operator">=</span><span class="token punctuation">{</span>styles<span class="token punctuation">.</span>btn<span class="token punctuation">}</span><span class="token operator">&gt;</span>
+      Share News
+    <span class="token operator">&lt;</span><span class="token operator">/</span>Button<span class="token operator">&gt;</span>
+  <span class="token operator">&lt;</span><span class="token operator">/</span>View<span class="token operator">&gt;</span>     
+<span class="token operator">&lt;</span><span class="token operator">/</span>View<span class="token operator">&gt;</span>
+</code></pre>
+<p>For the body, you have the <a href="https://facebook.github.io/react-native/docs/listview.html#content"><code class=" language-undefined">ListView</code> component</a> for rendering the news items. It has three required parameters, <code class=" language-undefined">initialListSize</code>, <code class=" language-undefined">dataSource</code>, and <code class=" language-undefined">renderRow</code>. The <code class=" language-undefined">initialListSize</code> is set to 1 so that the <code class=" language-undefined">ListView</code> renders each row one by one over the course of multiple frames. You can also update this to a higher value if you want the rows to appear all at once. The <code class=" language-undefined">dataSource</code> are the news items and the <code class=" language-undefined">renderRow</code> is the function for rendering each individual news item row.</p>
+<pre class=" language-javascript"><code class="javascript  language-javascript"><span class="token punctuation">{</span>
+  <span class="token keyword">this</span><span class="token punctuation">.</span>state<span class="token punctuation">.</span>is_news_loaded <span class="token operator">&amp;&amp;</span>
+  <span class="token operator">&lt;</span>View style<span class="token operator">=</span><span class="token punctuation">{</span>styles<span class="token punctuation">.</span>body<span class="token punctuation">}</span><span class="token operator">&gt;</span>
+    <span class="token operator">&lt;</span>ListView initialListSize<span class="token operator">=</span><span class="token punctuation">{</span><span class="token number">1</span><span class="token punctuation">}</span> dataSource<span class="token operator">=</span><span class="token punctuation">{</span><span class="token keyword">this</span><span class="token punctuation">.</span>state<span class="token punctuation">.</span>news<span class="token punctuation">}</span> style<span class="token operator">=</span><span class="token punctuation">{</span>styles<span class="token punctuation">.</span>news<span class="token punctuation">}</span> renderRow<span class="token operator">=</span><span class="token punctuation">{</span><span class="token keyword">this</span><span class="token punctuation">.</span>renderNews<span class="token punctuation">.</span><span class="token function">bind</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">)</span><span class="token punctuation">}</span><span class="token operator">&gt;</span><span class="token operator">&lt;</span><span class="token operator">/</span>ListView<span class="token operator">&gt;</span>
+  <span class="token operator">&lt;</span><span class="token operator">/</span>View<span class="token operator">&gt;</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<p>Next is the modal for sharing news. This has two text fields for entering the title and the URL of the news, and a button for submitting it to the server. The text fields uses the <a href="https://facebook.github.io/react-native/docs/textinput.html#content"><code class=" language-undefined">TextInput</code> component</a>. There are no labels so add placeholder text to guide the user to what they need to input.</p>
+<p>Both text fields have the <code class=" language-undefined">onChangeText</code> method which updates the value for each one. The <code class=" language-undefined">keyboardType</code> of <code class=" language-undefined">url</code> is used for the news URL text field so that it opens the keyboard optimized for entering URL’s in the device. The user is not expected to enter it manually, they could use copy and paste, but this is a ‘nice to have’ in case they decide to enter it manually. Below the text fields is the button for sharing the news. This calls the <code class=" language-undefined">shareNews</code> function defined earlier.</p>
+<pre class=" language-javascript"><code class="javascript  language-javascript"><span class="token operator">&lt;</span>Modal
+  isOpen<span class="token operator">=</span><span class="token punctuation">{</span><span class="token keyword">this</span><span class="token punctuation">.</span>state<span class="token punctuation">.</span>is_modal_open<span class="token punctuation">}</span>
+  style<span class="token operator">=</span><span class="token punctuation">{</span>styles<span class="token punctuation">.</span>modal<span class="token punctuation">}</span>
+  position<span class="token operator">=</span><span class="token punctuation">{</span><span class="token string">"center"</span><span class="token punctuation">}</span>
+<span class="token operator">&gt;</span>
+  <span class="token operator">&lt;</span>View style<span class="token operator">=</span><span class="token punctuation">{</span>styles<span class="token punctuation">.</span>modal_body<span class="token punctuation">}</span><span class="token operator">&gt;</span>
+    <span class="token operator">&lt;</span>View style<span class="token operator">=</span><span class="token punctuation">{</span>styles<span class="token punctuation">.</span>modal_header<span class="token punctuation">}</span><span class="token operator">&gt;</span>
+      <span class="token operator">&lt;</span>Text style<span class="token operator">=</span><span class="token punctuation">{</span>styles<span class="token punctuation">.</span>modal_header_text<span class="token punctuation">}</span><span class="token operator">&gt;</span>Share News<span class="token operator">&lt;</span><span class="token operator">/</span>Text<span class="token operator">&gt;</span>
+    <span class="token operator">&lt;</span><span class="token operator">/</span>View<span class="token operator">&gt;</span>
+
+    <span class="token operator">&lt;</span>View style<span class="token operator">=</span><span class="token punctuation">{</span>styles<span class="token punctuation">.</span>input_row<span class="token punctuation">}</span><span class="token operator">&gt;</span>
+      <span class="token operator">&lt;</span>TextInput
+        style<span class="token operator">=</span><span class="token punctuation">{</span><span class="token punctuation">{</span>height<span class="token punctuation">:</span> <span class="token number">40</span><span class="token punctuation">,</span> borderColor<span class="token punctuation">:</span> <span class="token string">'gray'</span><span class="token punctuation">,</span> borderWidth<span class="token punctuation">:</span> <span class="token number">1</span><span class="token punctuation">}</span><span class="token punctuation">}</span>
+        onChangeText<span class="token operator">=</span><span class="token punctuation">{</span><span class="token punctuation">(</span>text<span class="token punctuation">)</span> <span class="token operator">=</span><span class="token operator">&gt;</span> <span class="token keyword">this</span><span class="token punctuation">.</span><span class="token function">setState</span><span class="token punctuation">(</span><span class="token punctuation">{</span>news_title<span class="token punctuation">:</span> text<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">}</span>
+        value<span class="token operator">=</span><span class="token punctuation">{</span><span class="token keyword">this</span><span class="token punctuation">.</span>state<span class="token punctuation">.</span>news_title<span class="token punctuation">}</span>
+        placeholder<span class="token operator">=</span><span class="token string">"Title"</span>
+      <span class="token operator">/</span><span class="token operator">&gt;</span>
+    <span class="token operator">&lt;</span><span class="token operator">/</span>View<span class="token operator">&gt;</span>
+
+    <span class="token operator">&lt;</span>View style<span class="token operator">=</span><span class="token punctuation">{</span>styles<span class="token punctuation">.</span>input_row<span class="token punctuation">}</span><span class="token operator">&gt;</span>
+      <span class="token operator">&lt;</span>TextInput
+        style<span class="token operator">=</span><span class="token punctuation">{</span><span class="token punctuation">{</span>height<span class="token punctuation">:</span> <span class="token number">40</span><span class="token punctuation">,</span> borderColor<span class="token punctuation">:</span> <span class="token string">'gray'</span><span class="token punctuation">,</span> borderWidth<span class="token punctuation">:</span> <span class="token number">1</span><span class="token punctuation">}</span><span class="token punctuation">}</span>
+        onChangeText<span class="token operator">=</span><span class="token punctuation">{</span><span class="token punctuation">(</span>text<span class="token punctuation">)</span> <span class="token operator">=</span><span class="token operator">&gt;</span> <span class="token keyword">this</span><span class="token punctuation">.</span><span class="token function">setState</span><span class="token punctuation">(</span><span class="token punctuation">{</span>news_url<span class="token punctuation">:</span> text<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">}</span>
+        value<span class="token operator">=</span><span class="token punctuation">{</span><span class="token keyword">this</span><span class="token punctuation">.</span>state<span class="token punctuation">.</span>news_url<span class="token punctuation">}</span>
+        placeholder<span class="token operator">=</span><span class="token string">"URL"</span>
+        keyboardType<span class="token operator">=</span><span class="token string">"url"</span>
+      <span class="token operator">/</span><span class="token operator">&gt;</span>
+    <span class="token operator">&lt;</span><span class="token operator">/</span>View<span class="token operator">&gt;</span>
+
+    <span class="token operator">&lt;</span>View style<span class="token operator">=</span><span class="token punctuation">{</span>styles<span class="token punctuation">.</span>input_row<span class="token punctuation">}</span><span class="token operator">&gt;</span>
+      <span class="token operator">&lt;</span>Button onPress<span class="token operator">=</span><span class="token punctuation">{</span><span class="token keyword">this</span><span class="token punctuation">.</span>shareNews<span class="token punctuation">.</span><span class="token function">bind</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">)</span><span class="token punctuation">}</span> style<span class="token operator">=</span><span class="token punctuation">{</span><span class="token punctuation">[</span>styles<span class="token punctuation">.</span>btn<span class="token punctuation">,</span> styles<span class="token punctuation">.</span>share_btn<span class="token punctuation">]</span><span class="token punctuation">}</span><span class="token operator">&gt;</span>
+        Share
+      <span class="token operator">&lt;</span><span class="token operator">/</span>Button<span class="token operator">&gt;</span>
+    <span class="token operator">&lt;</span><span class="token operator">/</span>View<span class="token operator">&gt;</span>
+  <span class="token operator">&lt;</span><span class="token operator">/</span>View<span class="token operator">&gt;</span>
+
+<span class="token operator">&lt;</span><span class="token operator">/</span>Modal<span class="token operator">&gt;</span>
+</code></pre>
+<p>Set the styles for the component:</p>
+<pre class=" language-javascript"><code class="javascript  language-javascript"><span class="token keyword">const</span> styles <span class="token operator">=</span> StyleSheet<span class="token punctuation">.</span><span class="token function">create</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+  container<span class="token punctuation">:</span> <span class="token punctuation">{</span>
+    flex<span class="token punctuation">:</span> <span class="token number">1</span><span class="token punctuation">,</span>
+    alignSelf<span class="token punctuation">:</span> <span class="token string">'stretch'</span><span class="token punctuation">,</span>
+    backgroundColor<span class="token punctuation">:</span> <span class="token string">'#F5FCFF'</span><span class="token punctuation">,</span>
+  <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  header<span class="token punctuation">:</span> <span class="token punctuation">{</span>
+    flex<span class="token punctuation">:</span> <span class="token number">1</span><span class="token punctuation">,</span>
+    backgroundColor<span class="token punctuation">:</span> <span class="token string">'#3B3738'</span><span class="token punctuation">,</span>
+    flexDirection<span class="token punctuation">:</span> <span class="token string">'row'</span>
+  <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  app_title<span class="token punctuation">:</span> <span class="token punctuation">{</span>
+    flex<span class="token punctuation">:</span> <span class="token number">7</span><span class="token punctuation">,</span>
+    padding<span class="token punctuation">:</span> <span class="token number">10</span>
+  <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  header_text<span class="token punctuation">:</span> <span class="token punctuation">{</span>
+    fontSize<span class="token punctuation">:</span> <span class="token number">20</span><span class="token punctuation">,</span>
+    color<span class="token punctuation">:</span> <span class="token string">'#FFF'</span><span class="token punctuation">,</span>
+    fontWeight<span class="token punctuation">:</span> <span class="token string">'bold'</span>
+  <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  header_button_container<span class="token punctuation">:</span> <span class="token punctuation">{</span>
+    flex<span class="token punctuation">:</span> <span class="token number">3</span>
+  <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  body<span class="token punctuation">:</span> <span class="token punctuation">{</span>
+    flex<span class="token punctuation">:</span> <span class="token number">19</span>
+  <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  btn<span class="token punctuation">:</span> <span class="token punctuation">{</span>
+    backgroundColor<span class="token punctuation">:</span> <span class="token string">"#05A5D1"</span><span class="token punctuation">,</span>
+    color<span class="token punctuation">:</span> <span class="token string">"white"</span><span class="token punctuation">,</span>
+    margin<span class="token punctuation">:</span> <span class="token number">10</span>
+  <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  modal<span class="token punctuation">:</span> <span class="token punctuation">{</span>
+    height<span class="token punctuation">:</span> <span class="token number">300</span>
+  <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  modal_header<span class="token punctuation">:</span> <span class="token punctuation">{</span>
+    margin<span class="token punctuation">:</span> <span class="token number">20</span><span class="token punctuation">,</span>
+  <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  modal_body<span class="token punctuation">:</span> <span class="token punctuation">{</span>
+    alignItems<span class="token punctuation">:</span> <span class="token string">'center'</span>
+  <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  input_row<span class="token punctuation">:</span> <span class="token punctuation">{</span>
+    padding<span class="token punctuation">:</span> <span class="token number">20</span>
+  <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  modal_header_text<span class="token punctuation">:</span> <span class="token punctuation">{</span>
+    fontSize<span class="token punctuation">:</span> <span class="token number">18</span><span class="token punctuation">,</span>
+    fontWeight<span class="token punctuation">:</span> <span class="token string">'bold'</span>
+  <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  share_btn<span class="token punctuation">:</span> <span class="token punctuation">{</span>
+    width<span class="token punctuation">:</span> <span class="token number">100</span>
+  <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  news_item<span class="token punctuation">:</span> <span class="token punctuation">{</span>
+    paddingLeft<span class="token punctuation">:</span> <span class="token number">10</span><span class="token punctuation">,</span>
+    paddingRight<span class="token punctuation">:</span> <span class="token number">10</span><span class="token punctuation">,</span>
+    paddingTop<span class="token punctuation">:</span> <span class="token number">15</span><span class="token punctuation">,</span>
+    paddingBottom<span class="token punctuation">:</span> <span class="token number">15</span><span class="token punctuation">,</span>
+    marginBottom<span class="token punctuation">:</span> <span class="token number">5</span><span class="token punctuation">,</span>
+    borderBottomWidth<span class="token punctuation">:</span> <span class="token number">1</span><span class="token punctuation">,</span>
+    borderBottomColor<span class="token punctuation">:</span> <span class="token string">'#ccc'</span><span class="token punctuation">,</span>
+    flex<span class="token punctuation">:</span> <span class="token number">1</span><span class="token punctuation">,</span>
+    flexDirection<span class="token punctuation">:</span> <span class="token string">'row'</span>
+  <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  news_item_text<span class="token punctuation">:</span> <span class="token punctuation">{</span>
+    color<span class="token punctuation">:</span> <span class="token string">'#575757'</span><span class="token punctuation">,</span>
+    fontSize<span class="token punctuation">:</span> <span class="token number">18</span>
+  <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  upvote<span class="token punctuation">:</span> <span class="token punctuation">{</span>
+    flex<span class="token punctuation">:</span> <span class="token number">2</span><span class="token punctuation">,</span>
+    paddingRight<span class="token punctuation">:</span> <span class="token number">15</span><span class="token punctuation">,</span>
+    paddingLeft<span class="token punctuation">:</span> <span class="token number">5</span><span class="token punctuation">,</span>
+    alignItems<span class="token punctuation">:</span> <span class="token string">'center'</span>
+  <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  news_title<span class="token punctuation">:</span> <span class="token punctuation">{</span>
+    flex<span class="token punctuation">:</span> <span class="token number">18</span><span class="token punctuation">,</span>
+    justifyContent<span class="token punctuation">:</span> <span class="token string">'center'</span>
+  <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  upvote_text<span class="token punctuation">:</span> <span class="token punctuation">{</span>
+    fontSize<span class="token punctuation">:</span> <span class="token number">18</span><span class="token punctuation">,</span>
+    fontWeight<span class="token punctuation">:</span> <span class="token string">'bold'</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+</code></pre>
+<h2 id="theservercomponent">The Server Component</h2>
+<p>Now it’s time to move to the server component of the app, where you’ll learn how to save and upvote news items in RethinkDB, and how to inform the app that a change has happened in the database.</p>
+<h3 id="creatingthedatabase">Creating the Database</h3>
+<p>I’m going to assume that you have already installed RethinkDB on your computer. If not, follow the <a href="https://www.rethinkdb.com/docs/install/">installation and getting started docs on the RethinkDB website</a>.</p>
+<p>Once that’s done, you can now access <code class=" language-undefined">http://localhost:8080</code> in your browser to view the RethinkDB admin console. Click on the <em>Tables</em> tab then click on the <em>Add Database</em> button. This will open a modal box that lets you enter the name of the database, call it ‘newssharer’ and click <strong>Add</strong>.</p>
+<p><img src="https://dab1nmslvvntp.cloudfront.net/wp-content/uploads/2016/06/1465202621new-db.png" alt="create new database"></p>
+<p>Now create the table where you’re going to save the news items. Click the <em>Add Table</em> button, name it ‘news_items’, then click <em>Create Table</em>.</p>
+<p><img src="https://dab1nmslvvntp.cloudfront.net/wp-content/uploads/2016/06/1465202625new-table.png" alt="create news_items table"></p>
+<h3 id="installdependencies-1">Install Dependencies</h3>
+<p>You can install the server dependencies by navigating to the root of the project directory (with the <em>newssharer-server.js</em> and <em>package.json</em> files), and execute <code class=" language-undefined">npm install</code> to install the following dependencies:</p>
+<ul>
+<li><strong><a href="http://expressjs.com/">express</a></strong>: A web framework for Node.js that allows you to create a web server that responds to specific routes.</li>
+<li><strong><a href="https://github.com/expressjs/body-parser">body-parser</a></strong>: Allows for easy extraction of a JSON string passed along in the request body.</li>
+<li><strong><a href="https://www.npmjs.com/package/rethinkdb">rethinkdb</a></strong>: The RethinkDB client for Node.js.</li>
+<li><strong><a href="http://socket.io/">socket.io</a></strong>: The realtime framework that allows you to communicate to all connected clients when someone shares a news or upvotes an existing news.</li>
+</ul>
+<h3 id="theserversidecode">The Server-Side Code</h3>
+<p>Inside <em>newssharer-server.js</em>:</p>
+<pre class=" language-javascript"><code class="javascript  language-javascript"><span class="token keyword">var</span> r <span class="token operator">=</span> <span class="token function">require</span><span class="token punctuation">(</span><span class="token string">'rethinkdb'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token keyword">var</span> express <span class="token operator">=</span> <span class="token function">require</span><span class="token punctuation">(</span><span class="token string">'express'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token keyword">var</span> app <span class="token operator">=</span> <span class="token function">express</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token keyword">var</span> server <span class="token operator">=</span> <span class="token function">require</span><span class="token punctuation">(</span><span class="token string">'http'</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">createServer</span><span class="token punctuation">(</span>app<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token keyword">var</span> io <span class="token operator">=</span> <span class="token function">require</span><span class="token punctuation">(</span><span class="token string">'socket.io'</span><span class="token punctuation">)</span><span class="token punctuation">(</span>server<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token keyword">var</span> bodyParser <span class="token operator">=</span> <span class="token function">require</span><span class="token punctuation">(</span><span class="token string">'body-parser'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+app<span class="token punctuation">.</span><span class="token function">use</span><span class="token punctuation">(</span>bodyParser<span class="token punctuation">.</span><span class="token function">json</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token keyword">var</span> connection<span class="token punctuation">;</span>
+
+r<span class="token punctuation">.</span><span class="token function">connect</span><span class="token punctuation">(</span><span class="token punctuation">{</span>host<span class="token punctuation">:</span> <span class="token string">'localhost'</span><span class="token punctuation">,</span> port<span class="token punctuation">:</span> <span class="token number">28015</span><span class="token punctuation">}</span><span class="token punctuation">,</span> <span class="token keyword">function</span><span class="token punctuation">(</span>err<span class="token punctuation">,</span> conn<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">if</span><span class="token punctuation">(</span>err<span class="token punctuation">)</span> <span class="token keyword">throw</span> err<span class="token punctuation">;</span>
+    connection <span class="token operator">=</span> conn<span class="token punctuation">;</span>
+
+    r<span class="token punctuation">.</span><span class="token function">db</span><span class="token punctuation">(</span><span class="token string">'newssharer'</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">table</span><span class="token punctuation">(</span><span class="token string">'news_items'</span><span class="token punctuation">)</span>
+        <span class="token punctuation">.</span><span class="token function">orderBy</span><span class="token punctuation">(</span><span class="token punctuation">{</span>index<span class="token punctuation">:</span> r<span class="token punctuation">.</span><span class="token function">desc</span><span class="token punctuation">(</span><span class="token string">'upvotes'</span><span class="token punctuation">)</span><span class="token punctuation">}</span><span class="token punctuation">)</span>
+        <span class="token punctuation">.</span><span class="token function">changes</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+        <span class="token punctuation">.</span><span class="token function">run</span><span class="token punctuation">(</span>connection<span class="token punctuation">,</span> <span class="token keyword">function</span><span class="token punctuation">(</span>err<span class="token punctuation">,</span> cursor<span class="token punctuation">)</span><span class="token punctuation">{</span>
+
+            <span class="token keyword">if</span> <span class="token punctuation">(</span>err<span class="token punctuation">)</span> <span class="token keyword">throw</span> err<span class="token punctuation">;</span>
+            io<span class="token punctuation">.</span>sockets<span class="token punctuation">.</span><span class="token function">on</span><span class="token punctuation">(</span><span class="token string">'connection'</span><span class="token punctuation">,</span> <span class="token keyword">function</span><span class="token punctuation">(</span>socket<span class="token punctuation">)</span><span class="token punctuation">{</span>
+                cursor<span class="token punctuation">.</span><span class="token function">each</span><span class="token punctuation">(</span><span class="token keyword">function</span><span class="token punctuation">(</span>err<span class="token punctuation">,</span> row<span class="token punctuation">)</span><span class="token punctuation">{</span>
+                    <span class="token keyword">if</span><span class="token punctuation">(</span>err<span class="token punctuation">)</span> <span class="token keyword">throw</span> err<span class="token punctuation">;</span>
+                    io<span class="token punctuation">.</span>sockets<span class="token punctuation">.</span><span class="token function">emit</span><span class="token punctuation">(</span><span class="token string">'news_updated'</span><span class="token punctuation">,</span> row<span class="token punctuation">)</span><span class="token punctuation">;</span>   
+                <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+app<span class="token punctuation">.</span><span class="token keyword">get</span><span class="token punctuation">(</span><span class="token string">'/create-table'</span><span class="token punctuation">,</span> <span class="token keyword">function</span><span class="token punctuation">(</span>req<span class="token punctuation">,</span> res<span class="token punctuation">)</span><span class="token punctuation">{</span>
+    r<span class="token punctuation">.</span><span class="token function">db</span><span class="token punctuation">(</span><span class="token string">'newssharer'</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">table</span><span class="token punctuation">(</span><span class="token string">'news_items'</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">indexCreate</span><span class="token punctuation">(</span><span class="token string">'upvotes'</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">run</span><span class="token punctuation">(</span>connection<span class="token punctuation">,</span> <span class="token keyword">function</span><span class="token punctuation">(</span>err<span class="token punctuation">,</span> result<span class="token punctuation">)</span><span class="token punctuation">{</span>
+        console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token string">'boom'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        res<span class="token punctuation">.</span><span class="token function">send</span><span class="token punctuation">(</span><span class="token string">'ok'</span><span class="token punctuation">)</span>
+    <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+app<span class="token punctuation">.</span><span class="token keyword">get</span><span class="token punctuation">(</span><span class="token string">'/fill'</span><span class="token punctuation">,</span> <span class="token keyword">function</span><span class="token punctuation">(</span>req<span class="token punctuation">,</span> res<span class="token punctuation">)</span><span class="token punctuation">{</span>
+    r<span class="token punctuation">.</span><span class="token function">db</span><span class="token punctuation">(</span><span class="token string">'newssharer'</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">table</span><span class="token punctuation">(</span><span class="token string">'news_items'</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">insert</span><span class="token punctuation">(</span><span class="token punctuation">[</span>
+        <span class="token punctuation">{</span>
+            title<span class="token punctuation">:</span> <span class="token string">'A Conversation About Fantasy User Interfaces'</span><span class="token punctuation">,</span>
+            url<span class="token punctuation">:</span> <span class="token string">'https://www.subtraction.com/2016/06/02/a-conversation-about-fantasy-user-interfaces/'</span><span class="token punctuation">,</span>
+            upvotes<span class="token punctuation">:</span> <span class="token number">30</span>
+        <span class="token punctuation">}</span><span class="token punctuation">,</span>
+        <span class="token punctuation">{</span>
+            title<span class="token punctuation">:</span> <span class="token string">'Apple Cloud Services Outage'</span><span class="token punctuation">,</span>
+            url<span class="token punctuation">:</span> <span class="token string">'https://www.apple.com/support/systemstatus/'</span><span class="token punctuation">,</span>
+            upvotes<span class="token punctuation">:</span> <span class="token number">20</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">run</span><span class="token punctuation">(</span>connection<span class="token punctuation">,</span> <span class="token keyword">function</span><span class="token punctuation">(</span>err<span class="token punctuation">,</span> result<span class="token punctuation">)</span><span class="token punctuation">{</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>err<span class="token punctuation">)</span> <span class="token keyword">throw</span> err<span class="token punctuation">;</span>
+        res<span class="token punctuation">.</span><span class="token function">send</span><span class="token punctuation">(</span><span class="token string">'news_items table was filled!'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+app<span class="token punctuation">.</span><span class="token keyword">get</span><span class="token punctuation">(</span><span class="token string">'/news'</span><span class="token punctuation">,</span> <span class="token keyword">function</span><span class="token punctuation">(</span>req<span class="token punctuation">,</span> res<span class="token punctuation">)</span><span class="token punctuation">{</span>
+    res<span class="token punctuation">.</span><span class="token function">header</span><span class="token punctuation">(</span><span class="token string">"Content-Type"</span><span class="token punctuation">,</span> <span class="token string">"application/json"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    r<span class="token punctuation">.</span><span class="token function">db</span><span class="token punctuation">(</span><span class="token string">'newssharer'</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">table</span><span class="token punctuation">(</span><span class="token string">'news_items'</span><span class="token punctuation">)</span>
+        <span class="token punctuation">.</span><span class="token function">orderBy</span><span class="token punctuation">(</span><span class="token punctuation">{</span>index<span class="token punctuation">:</span> r<span class="token punctuation">.</span><span class="token function">desc</span><span class="token punctuation">(</span><span class="token string">'upvotes'</span><span class="token punctuation">)</span><span class="token punctuation">}</span><span class="token punctuation">)</span>
+        <span class="token punctuation">.</span><span class="token function">limit</span><span class="token punctuation">(</span><span class="token number">30</span><span class="token punctuation">)</span>
+        <span class="token punctuation">.</span><span class="token function">run</span><span class="token punctuation">(</span>connection<span class="token punctuation">,</span> <span class="token keyword">function</span><span class="token punctuation">(</span>err<span class="token punctuation">,</span> cursor<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span>err<span class="token punctuation">)</span> <span class="token keyword">throw</span> err<span class="token punctuation">;</span>
+            cursor<span class="token punctuation">.</span><span class="token function">toArray</span><span class="token punctuation">(</span><span class="token keyword">function</span><span class="token punctuation">(</span>err<span class="token punctuation">,</span> result<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                <span class="token keyword">if</span> <span class="token punctuation">(</span>err<span class="token punctuation">)</span> <span class="token keyword">throw</span> err<span class="token punctuation">;</span>
+                res<span class="token punctuation">.</span><span class="token function">send</span><span class="token punctuation">(</span>result<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+app<span class="token punctuation">.</span><span class="token function">post</span><span class="token punctuation">(</span><span class="token string">'/save-newsitem'</span><span class="token punctuation">,</span> <span class="token keyword">function</span><span class="token punctuation">(</span>req<span class="token punctuation">,</span> res<span class="token punctuation">)</span><span class="token punctuation">{</span>
+
+    <span class="token keyword">var</span> news_title <span class="token operator">=</span> req<span class="token punctuation">.</span>body<span class="token punctuation">.</span>news_title<span class="token punctuation">;</span>
+    <span class="token keyword">var</span> news_url <span class="token operator">=</span> req<span class="token punctuation">.</span>body<span class="token punctuation">.</span>news_url<span class="token punctuation">;</span>
+
+    r<span class="token punctuation">.</span><span class="token function">db</span><span class="token punctuation">(</span><span class="token string">'newssharer'</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">table</span><span class="token punctuation">(</span><span class="token string">'news_items'</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">insert</span><span class="token punctuation">(</span><span class="token punctuation">[</span>
+       <span class="token punctuation">{</span>
+        <span class="token string">'title'</span><span class="token punctuation">:</span> news_title<span class="token punctuation">,</span>
+        <span class="token string">'url'</span><span class="token punctuation">:</span> news_url<span class="token punctuation">,</span>
+        <span class="token string">'upvotes'</span><span class="token punctuation">:</span> <span class="token number">100</span>
+       <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">run</span><span class="token punctuation">(</span>connection<span class="token punctuation">,</span> <span class="token keyword">function</span><span class="token punctuation">(</span>err<span class="token punctuation">,</span> result<span class="token punctuation">)</span><span class="token punctuation">{</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>err<span class="token punctuation">)</span> <span class="token keyword">throw</span> err<span class="token punctuation">;</span>
+        res<span class="token punctuation">.</span><span class="token function">send</span><span class="token punctuation">(</span><span class="token string">'ok'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+app<span class="token punctuation">.</span><span class="token function">post</span><span class="token punctuation">(</span><span class="token string">'/upvote-newsitem'</span><span class="token punctuation">,</span> <span class="token keyword">function</span><span class="token punctuation">(</span>req<span class="token punctuation">,</span> res<span class="token punctuation">)</span><span class="token punctuation">{</span>
+
+    <span class="token keyword">var</span> id <span class="token operator">=</span> req<span class="token punctuation">.</span>body<span class="token punctuation">.</span>news_id<span class="token punctuation">;</span>
+    <span class="token keyword">var</span> upvote_count <span class="token operator">=</span> req<span class="token punctuation">.</span>body<span class="token punctuation">.</span>upvotes<span class="token punctuation">;</span>
+
+    r<span class="token punctuation">.</span><span class="token function">db</span><span class="token punctuation">(</span><span class="token string">'newssharer'</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">table</span><span class="token punctuation">(</span><span class="token string">'news_items'</span><span class="token punctuation">)</span>
+        <span class="token punctuation">.</span><span class="token function">filter</span><span class="token punctuation">(</span>r<span class="token punctuation">.</span><span class="token function">row</span><span class="token punctuation">(</span><span class="token string">'id'</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">eq</span><span class="token punctuation">(</span>id<span class="token punctuation">)</span><span class="token punctuation">)</span>
+        <span class="token punctuation">.</span><span class="token function">update</span><span class="token punctuation">(</span><span class="token punctuation">{</span>upvotes<span class="token punctuation">:</span> upvote_count<span class="token punctuation">}</span><span class="token punctuation">)</span>
+        <span class="token punctuation">.</span><span class="token function">run</span><span class="token punctuation">(</span>connection<span class="token punctuation">,</span> <span class="token keyword">function</span><span class="token punctuation">(</span>err<span class="token punctuation">,</span> result<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span>err<span class="token punctuation">)</span> <span class="token keyword">throw</span> err<span class="token punctuation">;</span>
+            res<span class="token punctuation">.</span><span class="token function">send</span><span class="token punctuation">(</span><span class="token string">'ok'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+app<span class="token punctuation">.</span><span class="token keyword">get</span><span class="token punctuation">(</span><span class="token string">'/test/upvote'</span><span class="token punctuation">,</span> <span class="token keyword">function</span><span class="token punctuation">(</span>req<span class="token punctuation">,</span> res<span class="token punctuation">)</span><span class="token punctuation">{</span>
+    <span class="token keyword">var</span> id <span class="token operator">=</span> <span class="token string">'144f7d7d-d580-42b3-8704-8372e9b2a17c'</span><span class="token punctuation">;</span>
+    <span class="token keyword">var</span> upvote_count <span class="token operator">=</span> <span class="token number">350</span><span class="token punctuation">;</span>
+
+    r<span class="token punctuation">.</span><span class="token function">db</span><span class="token punctuation">(</span><span class="token string">'newssharer'</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">table</span><span class="token punctuation">(</span><span class="token string">'news_items'</span><span class="token punctuation">)</span>
+        <span class="token punctuation">.</span><span class="token function">filter</span><span class="token punctuation">(</span>r<span class="token punctuation">.</span><span class="token function">row</span><span class="token punctuation">(</span><span class="token string">'id'</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">eq</span><span class="token punctuation">(</span>id<span class="token punctuation">)</span><span class="token punctuation">)</span>
+        <span class="token punctuation">.</span><span class="token function">update</span><span class="token punctuation">(</span><span class="token punctuation">{</span>upvotes<span class="token punctuation">:</span> upvote_count<span class="token punctuation">}</span><span class="token punctuation">)</span>
+        <span class="token punctuation">.</span><span class="token function">run</span><span class="token punctuation">(</span>connection<span class="token punctuation">,</span> <span class="token keyword">function</span><span class="token punctuation">(</span>err<span class="token punctuation">,</span> result<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span>err<span class="token punctuation">)</span> <span class="token keyword">throw</span> err<span class="token punctuation">;</span>
+            res<span class="token punctuation">.</span><span class="token function">send</span><span class="token punctuation">(</span><span class="token string">'ok'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+app<span class="token punctuation">.</span><span class="token keyword">get</span><span class="token punctuation">(</span><span class="token string">'/test/save-newsitem'</span><span class="token punctuation">,</span> <span class="token keyword">function</span><span class="token punctuation">(</span>req<span class="token punctuation">,</span> res<span class="token punctuation">)</span><span class="token punctuation">{</span>
+
+    r<span class="token punctuation">.</span><span class="token function">db</span><span class="token punctuation">(</span><span class="token string">'newssharer'</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">table</span><span class="token punctuation">(</span><span class="token string">'news_items'</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">insert</span><span class="token punctuation">(</span><span class="token punctuation">[</span>
+       <span class="token punctuation">{</span>
+        <span class="token string">'title'</span><span class="token punctuation">:</span> <span class="token string">'banana'</span><span class="token punctuation">,</span>
+        <span class="token string">'url'</span><span class="token punctuation">:</span> <span class="token string">'http://banana.com'</span><span class="token punctuation">,</span>
+        <span class="token string">'upvotes'</span><span class="token punctuation">:</span> <span class="token number">190</span><span class="token punctuation">,</span>
+        <span class="token string">'downvotes'</span><span class="token punctuation">:</span> <span class="token number">0</span>
+       <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">run</span><span class="token punctuation">(</span>connection<span class="token punctuation">,</span> <span class="token keyword">function</span><span class="token punctuation">(</span>err<span class="token punctuation">,</span> result<span class="token punctuation">)</span><span class="token punctuation">{</span>
+        <span class="token keyword">if</span><span class="token punctuation">(</span>err<span class="token punctuation">)</span> <span class="token keyword">throw</span> err<span class="token punctuation">;</span>
+        res<span class="token punctuation">.</span><span class="token function">send</span><span class="token punctuation">(</span><span class="token string">'ok'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+
+server<span class="token punctuation">.</span><span class="token function">listen</span><span class="token punctuation">(</span><span class="token number">3000</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+</code></pre>
+<p>In the code above, first you import dependencies:</p>
+<pre class=" language-javascript"><code class="javascript  language-javascript"><span class="token keyword">var</span> r <span class="token operator">=</span> <span class="token function">require</span><span class="token punctuation">(</span><span class="token string">'rethinkdb'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token keyword">var</span> express <span class="token operator">=</span> <span class="token function">require</span><span class="token punctuation">(</span><span class="token string">'express'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token keyword">var</span> app <span class="token operator">=</span> <span class="token function">express</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token keyword">var</span> server <span class="token operator">=</span> <span class="token function">require</span><span class="token punctuation">(</span><span class="token string">'http'</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">createServer</span><span class="token punctuation">(</span>app<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token keyword">var</span> io <span class="token operator">=</span> <span class="token function">require</span><span class="token punctuation">(</span><span class="token string">'socket.io'</span><span class="token punctuation">)</span><span class="token punctuation">(</span>server<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token keyword">var</span> bodyParser <span class="token operator">=</span> <span class="token function">require</span><span class="token punctuation">(</span><span class="token string">'body-parser'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+app<span class="token punctuation">.</span><span class="token function">use</span><span class="token punctuation">(</span>bodyParser<span class="token punctuation">.</span><span class="token function">json</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+</code></pre>
+<p>Create the variable for storing the current RethinkDB connection.</p>
+<pre class=" language-javascript"><code class="javascript  language-javascript"><span class="token keyword">var</span> connection<span class="token punctuation">;</span>
+</code></pre>
+<h4 id="listeningforchanges">Listening for Changes</h4>
+<p>Connect to the RethinkDB database, by default RethinkDB runs on port <code class=" language-undefined">28015</code> so that is where you connect. If you’ve used a different port, replace <code class=" language-undefined">28015</code> with the port that you used.</p>
+<pre class=" language-javascript"><code class="javascript  language-javascript">r<span class="token punctuation">.</span><span class="token function">connect</span><span class="token punctuation">(</span><span class="token punctuation">{</span>host<span class="token punctuation">:</span> <span class="token string">'localhost'</span><span class="token punctuation">,</span> port<span class="token punctuation">:</span> <span class="token number">28015</span><span class="token punctuation">}</span><span class="token punctuation">,</span> <span class="token keyword">function</span><span class="token punctuation">(</span>err<span class="token punctuation">,</span> conn<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">if</span><span class="token punctuation">(</span>err<span class="token punctuation">)</span> <span class="token keyword">throw</span> err<span class="token punctuation">;</span>
+    connection <span class="token operator">=</span> conn<span class="token punctuation">;</span>
+
+    <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+</code></pre>
+<p>Still inside the database connection code, query the <code class=" language-undefined">news_items</code> table in the <code class=" language-undefined">newssharer</code> database, ordering the items by their upvotes count. Then use RethinkDB’s <a href="https://rethinkdb.com/docs/changefeeds/javascript/">Changefeeds feature</a> to listen for changes in the table (a database log of sorts). Every time a change happens in the table (CRUD operations), it’s notified of the change.</p>
+<pre class=" language-javascript"><code class="javascript  language-javascript">r<span class="token punctuation">.</span><span class="token function">db</span><span class="token punctuation">(</span><span class="token string">'newssharer'</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">table</span><span class="token punctuation">(</span><span class="token string">'news_items'</span><span class="token punctuation">)</span>
+    <span class="token punctuation">.</span><span class="token function">orderBy</span><span class="token punctuation">(</span><span class="token punctuation">{</span>index<span class="token punctuation">:</span> r<span class="token punctuation">.</span><span class="token function">desc</span><span class="token punctuation">(</span><span class="token string">'upvotes'</span><span class="token punctuation">)</span><span class="token punctuation">}</span><span class="token punctuation">)</span>
+    <span class="token punctuation">.</span><span class="token function">changes</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token punctuation">.</span><span class="token function">run</span><span class="token punctuation">(</span>connection<span class="token punctuation">,</span> <span class="token keyword">function</span><span class="token punctuation">(</span>err<span class="token punctuation">,</span> cursor<span class="token punctuation">)</span><span class="token punctuation">{</span>
+
+        <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+</code></pre>
+<p>Inside the callback function for the <code class=" language-undefined">run</code> method, initialize the socket connection and loop through the contents of the <code class=" language-undefined">cursor</code>. The <code class=" language-undefined">cursor</code> represents the changes made in the table. Every time a change occurs, it triggers the <code class=" language-undefined">cursor.each</code> function.</p>
+<p><strong>Note</strong>: The function doesn’t contain all the data changes. The previous changes gets replaced whenever a new change is made. This means that it only loops through a single row at any given time. This allows you to send the changes to the client using socket.io.</p>
+<pre class=" language-javascript"><code class="javascript  language-javascript"><span class="token keyword">if</span> <span class="token punctuation">(</span>err<span class="token punctuation">)</span> <span class="token keyword">throw</span> err<span class="token punctuation">;</span> <span class="token comment" spellcheck="true">//check if there are errors and return it if any</span>
+io<span class="token punctuation">.</span>sockets<span class="token punctuation">.</span><span class="token function">on</span><span class="token punctuation">(</span><span class="token string">'connection'</span><span class="token punctuation">,</span> <span class="token keyword">function</span><span class="token punctuation">(</span>socket<span class="token punctuation">)</span><span class="token punctuation">{</span>
+    cursor<span class="token punctuation">.</span><span class="token function">each</span><span class="token punctuation">(</span><span class="token keyword">function</span><span class="token punctuation">(</span>err<span class="token punctuation">,</span> row<span class="token punctuation">)</span><span class="token punctuation">{</span>
+        <span class="token keyword">if</span><span class="token punctuation">(</span>err<span class="token punctuation">)</span> <span class="token keyword">throw</span> err<span class="token punctuation">;</span>
+        io<span class="token punctuation">.</span>sockets<span class="token punctuation">.</span><span class="token function">emit</span><span class="token punctuation">(</span><span class="token string">'news_updated'</span><span class="token punctuation">,</span> row<span class="token punctuation">)</span><span class="token punctuation">;</span>   
+    <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+</code></pre>
+<p>Each <code class=" language-undefined">row</code> has the following structure if a news item is shared:</p>
+<pre class=" language-javascript"><code class="javascript  language-javascript"><span class="token punctuation">{</span>
+  <span class="token string">"old_val"</span><span class="token punctuation">:</span> <span class="token keyword">null</span><span class="token punctuation">,</span>
+  <span class="token string">"new_val"</span><span class="token punctuation">:</span> <span class="token punctuation">{</span>
+    <span class="token string">"id"</span><span class="token punctuation">:</span> <span class="token number">1</span><span class="token punctuation">,</span>
+    <span class="token string">"news_title"</span><span class="token punctuation">:</span> <span class="token string">"Google"</span><span class="token punctuation">,</span>
+    <span class="token string">"news_url"</span><span class="token punctuation">:</span> <span class="token string">"http://google.com"</span><span class="token punctuation">,</span>
+    <span class="token string">"upvotes"</span><span class="token punctuation">:</span> <span class="token number">0</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<p>This is why you checked for <code class=" language-undefined">null</code> earlier, because a newly shared news item won’t have an <code class=" language-undefined">old_val</code>.</p>
+<p>If a user upvotes a news item:</p>
+<pre class=" language-javascript"><code class="javascript  language-javascript"><span class="token punctuation">{</span>
+  <span class="token string">"old_val"</span><span class="token punctuation">:</span> <span class="token punctuation">{</span>
+    <span class="token string">"id"</span><span class="token punctuation">:</span> <span class="token number">1</span><span class="token punctuation">,</span>
+    <span class="token string">"news_title"</span><span class="token punctuation">:</span> <span class="token string">"Google"</span><span class="token punctuation">,</span>
+    <span class="token string">"news_url"</span><span class="token punctuation">:</span> <span class="token string">"http://google.com"</span><span class="token punctuation">,</span>
+    <span class="token string">"upvotes"</span><span class="token punctuation">:</span> <span class="token number">0</span>
+  <span class="token punctuation">}</span>
+  <span class="token string">"new_val"</span><span class="token punctuation">:</span> <span class="token punctuation">{</span>
+    <span class="token string">"id"</span><span class="token punctuation">:</span> <span class="token number">1</span><span class="token punctuation">,</span>
+    <span class="token string">"news_title"</span><span class="token punctuation">:</span> <span class="token string">"Google"</span><span class="token punctuation">,</span>
+    <span class="token string">"news_url"</span><span class="token punctuation">:</span> <span class="token string">"http://google.com"</span><span class="token punctuation">,</span>
+    <span class="token string">"upvotes"</span><span class="token punctuation">:</span> <span class="token number">1</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<p>It returns both the whole structure for the old value and the new value of the row. This means you can update more than one field in one client and send those changes to all the other connected clients. RethinkDB makes implementing realtime apps simple with it’s changfeeds feature.</p>
+<h4 id="addinganindextotheupvotesfield">Adding an Index to the Upvotes Field</h4>
+<p>This is the route that adds an index to the <code class=" language-undefined">upvotes</code> field:</p>
+<pre class=" language-javascript"><code class="javascript  language-javascript">app<span class="token punctuation">.</span><span class="token keyword">get</span><span class="token punctuation">(</span><span class="token string">'/add-index'</span><span class="token punctuation">,</span> <span class="token keyword">function</span><span class="token punctuation">(</span>req<span class="token punctuation">,</span> res<span class="token punctuation">)</span><span class="token punctuation">{</span>
+    r<span class="token punctuation">.</span><span class="token function">db</span><span class="token punctuation">(</span><span class="token string">'newssharer'</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">table</span><span class="token punctuation">(</span><span class="token string">'news_items'</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">indexCreate</span><span class="token punctuation">(</span><span class="token string">'upvotes'</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">run</span><span class="token punctuation">(</span>connection<span class="token punctuation">,</span> <span class="token keyword">function</span><span class="token punctuation">(</span>err<span class="token punctuation">,</span> result<span class="token punctuation">)</span><span class="token punctuation">{</span>
+        res<span class="token punctuation">.</span><span class="token function">send</span><span class="token punctuation">(</span><span class="token string">'ok'</span><span class="token punctuation">)</span>
+    <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+</code></pre>
+<p>You need this for the <code class=" language-undefined">orderBy</code> function to work, because it needs the field you are sorting with to have an index.</p>
+<pre class=" language-javascript"><code class="javascript  language-javascript"><span class="token punctuation">.</span><span class="token function">orderBy</span><span class="token punctuation">(</span><span class="token punctuation">{</span>index<span class="token punctuation">:</span> r<span class="token punctuation">.</span><span class="token function">desc</span><span class="token punctuation">(</span><span class="token string">'upvotes'</span><span class="token punctuation">)</span><span class="token punctuation">}</span><span class="token punctuation">)</span>
+</code></pre>
+<p>When the server is running, make sure to open <code class=" language-undefined">http://localhost:3000/add-index</code> in you browser before you test out the app. This route only needs to be called once.</p>
+<h4 id="addingdummynewsitems">Adding Dummy News Items</h4>
+<p>This route inserts dummy entries to the <code class=" language-undefined">news_items</code> table. This is optional for testing purposes so that you can see news items immediately without having to add them through the app.</p>
+<pre class=" language-javascript"><code class="javascript  language-javascript">app<span class="token punctuation">.</span><span class="token keyword">get</span><span class="token punctuation">(</span><span class="token string">'/fill'</span><span class="token punctuation">,</span> <span class="token keyword">function</span><span class="token punctuation">(</span>req<span class="token punctuation">,</span> res<span class="token punctuation">)</span><span class="token punctuation">{</span>
+    r<span class="token punctuation">.</span><span class="token function">db</span><span class="token punctuation">(</span><span class="token string">'newssharer'</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">table</span><span class="token punctuation">(</span><span class="token string">'news_items'</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">insert</span><span class="token punctuation">(</span><span class="token punctuation">[</span>
+        <span class="token punctuation">{</span>
+            title<span class="token punctuation">:</span> <span class="token string">'A Conversation About Fantasy User Interfaces'</span><span class="token punctuation">,</span>
+            url<span class="token punctuation">:</span> <span class="token string">'https://www.subtraction.com/2016/06/02/a-conversation-about-fantasy-user-interfaces/'</span><span class="token punctuation">,</span>
+            upvotes<span class="token punctuation">:</span> <span class="token number">30</span>
+        <span class="token punctuation">}</span><span class="token punctuation">,</span>
+        <span class="token punctuation">{</span>
+            title<span class="token punctuation">:</span> <span class="token string">'Apple Cloud Services Outage'</span><span class="token punctuation">,</span>
+            url<span class="token punctuation">:</span> <span class="token string">'https://www.apple.com/support/systemstatus/'</span><span class="token punctuation">,</span>
+            upvotes<span class="token punctuation">:</span> <span class="token number">20</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">run</span><span class="token punctuation">(</span>connection<span class="token punctuation">,</span> <span class="token keyword">function</span><span class="token punctuation">(</span>err<span class="token punctuation">,</span> result<span class="token punctuation">)</span><span class="token punctuation">{</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>err<span class="token punctuation">)</span> <span class="token keyword">throw</span> err<span class="token punctuation">;</span>
+        res<span class="token punctuation">.</span><span class="token function">send</span><span class="token punctuation">(</span><span class="token string">'news_items table was filled!'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+</code></pre>
+<h4 id="returningnewsitems">Returning News Items</h4>
+<p>This route returns the news items:</p>
+<pre class=" language-javascript"><code class="javascript  language-javascript">app<span class="token punctuation">.</span><span class="token keyword">get</span><span class="token punctuation">(</span><span class="token string">'/news'</span><span class="token punctuation">,</span> <span class="token keyword">function</span><span class="token punctuation">(</span>req<span class="token punctuation">,</span> res<span class="token punctuation">)</span><span class="token punctuation">{</span>
+    res<span class="token punctuation">.</span><span class="token function">header</span><span class="token punctuation">(</span><span class="token string">"Content-Type"</span><span class="token punctuation">,</span> <span class="token string">"application/json"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    r<span class="token punctuation">.</span><span class="token function">db</span><span class="token punctuation">(</span><span class="token string">'newssharer'</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">table</span><span class="token punctuation">(</span><span class="token string">'news_items'</span><span class="token punctuation">)</span>
+        <span class="token punctuation">.</span><span class="token function">orderBy</span><span class="token punctuation">(</span><span class="token punctuation">{</span>index<span class="token punctuation">:</span> r<span class="token punctuation">.</span><span class="token function">desc</span><span class="token punctuation">(</span><span class="token string">'upvotes'</span><span class="token punctuation">)</span><span class="token punctuation">}</span><span class="token punctuation">)</span>
+        <span class="token punctuation">.</span><span class="token function">limit</span><span class="token punctuation">(</span><span class="token number">30</span><span class="token punctuation">)</span>
+        <span class="token punctuation">.</span><span class="token function">run</span><span class="token punctuation">(</span>connection<span class="token punctuation">,</span> <span class="token keyword">function</span><span class="token punctuation">(</span>err<span class="token punctuation">,</span> cursor<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span>err<span class="token punctuation">)</span> <span class="token keyword">throw</span> err<span class="token punctuation">;</span>
+            cursor<span class="token punctuation">.</span><span class="token function">toArray</span><span class="token punctuation">(</span><span class="token keyword">function</span><span class="token punctuation">(</span>err<span class="token punctuation">,</span> result<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                <span class="token keyword">if</span> <span class="token punctuation">(</span>err<span class="token punctuation">)</span> <span class="token keyword">throw</span> err<span class="token punctuation">;</span>
+                res<span class="token punctuation">.</span><span class="token function">send</span><span class="token punctuation">(</span>result<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+</code></pre>
+<p>The news items are ordered from the highest upvote count to the lowest and limited to 30. Instead of using <code class=" language-undefined">cursor.each</code> to loop through the news items, use <code class=" language-undefined">cursor.toArray</code> to convert it to an array with the following structure:</p>
+<pre class=" language-javascript"><code class="javascript  language-javascript"><span class="token punctuation">[</span>
+    <span class="token punctuation">{</span>
+        <span class="token string">"title"</span><span class="token punctuation">:</span> <span class="token string">"A Conversation About Fantasy User Interfaces"</span><span class="token punctuation">,</span>
+        <span class="token string">"url"</span><span class="token punctuation">:</span> <span class="token string">"https://www.subtraction.com/2016/06/02/a-conversation-about-fantasy-user-interfaces/"</span><span class="token punctuation">,</span>
+        <span class="token string">"upvotes"</span><span class="token punctuation">:</span> <span class="token number">30</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token punctuation">{</span>
+        <span class="token string">"title"</span><span class="token punctuation">:</span> <span class="token string">"Apple Cloud Services Outage"</span><span class="token punctuation">,</span>
+        <span class="token string">"url"</span><span class="token punctuation">:</span> <span class="token string">"https://www.apple.com/support/systemstatus/"</span><span class="token punctuation">,</span>
+        <span class="token string">"upvotes"</span><span class="token punctuation">:</span> <span class="token number">20</span>
+    <span class="token punctuation">}</span>    
+<span class="token punctuation">]</span>
+</code></pre>
+<h4 id="creatinganewsitem">Creating a News Item</h4>
+<p>This route saves a news item:</p>
+<pre class=" language-javascript"><code class="javascript  language-javascript">app<span class="token punctuation">.</span><span class="token function">post</span><span class="token punctuation">(</span><span class="token string">'/save-newsitem'</span><span class="token punctuation">,</span> <span class="token keyword">function</span><span class="token punctuation">(</span>req<span class="token punctuation">,</span> res<span class="token punctuation">)</span><span class="token punctuation">{</span>
+
+    <span class="token keyword">var</span> news_title <span class="token operator">=</span> req<span class="token punctuation">.</span>body<span class="token punctuation">.</span>news_title<span class="token punctuation">;</span>
+    <span class="token keyword">var</span> news_url <span class="token operator">=</span> req<span class="token punctuation">.</span>body<span class="token punctuation">.</span>news_url<span class="token punctuation">;</span>
+
+    r<span class="token punctuation">.</span><span class="token function">db</span><span class="token punctuation">(</span><span class="token string">'newssharer'</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">table</span><span class="token punctuation">(</span><span class="token string">'news_items'</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">insert</span><span class="token punctuation">(</span><span class="token punctuation">[</span>
+       <span class="token punctuation">{</span>
+        <span class="token string">'title'</span><span class="token punctuation">:</span> news_title<span class="token punctuation">,</span>
+        <span class="token string">'url'</span><span class="token punctuation">:</span> news_url<span class="token punctuation">,</span>
+        <span class="token string">'upvotes'</span><span class="token punctuation">:</span> <span class="token number">100</span>
+       <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">run</span><span class="token punctuation">(</span>connection<span class="token punctuation">,</span> <span class="token keyword">function</span><span class="token punctuation">(</span>err<span class="token punctuation">,</span> result<span class="token punctuation">)</span><span class="token punctuation">{</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>err<span class="token punctuation">)</span> <span class="token keyword">throw</span> err<span class="token punctuation">;</span>
+        res<span class="token punctuation">.</span><span class="token function">send</span><span class="token punctuation">(</span><span class="token string">'ok'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+</code></pre>
+<p>This is called when a user shares a news item in the app. It accepts the news title and URL from the request body. The initial upvote count is set to 100 but you can pick another number.</p>
+<h4 id="upvotinganewsitem">Upvoting a News Item</h4>
+<p>This is the route for upvoting a news item:</p>
+<pre class=" language-javascript"><code class="javascript  language-javascript">app<span class="token punctuation">.</span><span class="token function">post</span><span class="token punctuation">(</span><span class="token string">'/upvote-newsitem'</span><span class="token punctuation">,</span> <span class="token keyword">function</span><span class="token punctuation">(</span>req<span class="token punctuation">,</span> res<span class="token punctuation">)</span><span class="token punctuation">{</span>
+
+    <span class="token keyword">var</span> id <span class="token operator">=</span> req<span class="token punctuation">.</span>body<span class="token punctuation">.</span>news_id<span class="token punctuation">;</span>
+    <span class="token keyword">var</span> upvote_count <span class="token operator">=</span> req<span class="token punctuation">.</span>body<span class="token punctuation">.</span>upvotes<span class="token punctuation">;</span>
+
+    r<span class="token punctuation">.</span><span class="token function">db</span><span class="token punctuation">(</span><span class="token string">'newssharer'</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">table</span><span class="token punctuation">(</span><span class="token string">'news_items'</span><span class="token punctuation">)</span>
+        <span class="token punctuation">.</span><span class="token function">filter</span><span class="token punctuation">(</span>r<span class="token punctuation">.</span><span class="token function">row</span><span class="token punctuation">(</span><span class="token string">'id'</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">eq</span><span class="token punctuation">(</span>id<span class="token punctuation">)</span><span class="token punctuation">)</span>
+        <span class="token punctuation">.</span><span class="token function">update</span><span class="token punctuation">(</span><span class="token punctuation">{</span>upvotes<span class="token punctuation">:</span> upvote_count<span class="token punctuation">}</span><span class="token punctuation">)</span>
+        <span class="token punctuation">.</span><span class="token function">run</span><span class="token punctuation">(</span>connection<span class="token punctuation">,</span> <span class="token keyword">function</span><span class="token punctuation">(</span>err<span class="token punctuation">,</span> result<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span>err<span class="token punctuation">)</span> <span class="token keyword">throw</span> err<span class="token punctuation">;</span>
+            res<span class="token punctuation">.</span><span class="token function">send</span><span class="token punctuation">(</span><span class="token string">'ok'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+</code></pre>
+<p>This is called when a user upvotes a news item in the app. It uses the ID of the news item to fetch and then update it.</p>
+<p><strong>Note</strong>: You’ve already incremented the <code class=" language-undefined">upvotes</code> inside the app so are supplying the value that’s in the request body.</p>
+<h4 id="testsavingandupvotingnewsitems">Test Saving and Upvoting News Items</h4>
+<p>I’ve also included a couple of routes for testing saving and upvoting news items. The best time to access these is when the app is already running on your device. That way, you’ll see that the UI is updated. How to run the app will be covered in the next section.</p>
+<p>This is the route for testing saving a news item:</p>
+<pre class=" language-javascript"><code class="javascript  language-javascript">app<span class="token punctuation">.</span><span class="token keyword">get</span><span class="token punctuation">(</span><span class="token string">'/test/save-newsitem'</span><span class="token punctuation">,</span> <span class="token keyword">function</span><span class="token punctuation">(</span>req<span class="token punctuation">,</span> res<span class="token punctuation">)</span><span class="token punctuation">{</span>
+
+    r<span class="token punctuation">.</span><span class="token function">db</span><span class="token punctuation">(</span><span class="token string">'newssharer'</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">table</span><span class="token punctuation">(</span><span class="token string">'news_items'</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">insert</span><span class="token punctuation">(</span><span class="token punctuation">[</span>
+       <span class="token punctuation">{</span>
+        <span class="token string">'title'</span><span class="token punctuation">:</span> <span class="token string">'banana'</span><span class="token punctuation">,</span>
+        <span class="token string">'url'</span><span class="token punctuation">:</span> <span class="token string">'http://banana.com'</span><span class="token punctuation">,</span>
+        <span class="token string">'upvotes'</span><span class="token punctuation">:</span> <span class="token number">190</span><span class="token punctuation">,</span>
+        <span class="token string">'downvotes'</span><span class="token punctuation">:</span> <span class="token number">0</span>
+       <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">run</span><span class="token punctuation">(</span>connection<span class="token punctuation">,</span> <span class="token keyword">function</span><span class="token punctuation">(</span>err<span class="token punctuation">,</span> result<span class="token punctuation">)</span><span class="token punctuation">{</span>
+        <span class="token keyword">if</span><span class="token punctuation">(</span>err<span class="token punctuation">)</span> <span class="token keyword">throw</span> err<span class="token punctuation">;</span>
+        res<span class="token punctuation">.</span><span class="token function">send</span><span class="token punctuation">(</span><span class="token string">'ok'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+</code></pre>
+<p>And this is the route for testing the upvoting of a news item. Be sure to replace the ID with the ID of an existing news item to make it work.</p>
+<pre class=" language-javascript"><code class="javascript  language-javascript">app<span class="token punctuation">.</span><span class="token keyword">get</span><span class="token punctuation">(</span><span class="token string">'/test/upvote'</span><span class="token punctuation">,</span> <span class="token keyword">function</span><span class="token punctuation">(</span>req<span class="token punctuation">,</span> res<span class="token punctuation">)</span><span class="token punctuation">{</span>
+    <span class="token keyword">var</span> id <span class="token operator">=</span> <span class="token string">'144f7d7d-d580-42b3-8704-8372e9b2a17c'</span><span class="token punctuation">;</span>
+    <span class="token keyword">var</span> upvote_count <span class="token operator">=</span> <span class="token number">350</span><span class="token punctuation">;</span>
+
+    r<span class="token punctuation">.</span><span class="token function">db</span><span class="token punctuation">(</span><span class="token string">'newssharer'</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">table</span><span class="token punctuation">(</span><span class="token string">'news_items'</span><span class="token punctuation">)</span>
+        <span class="token punctuation">.</span><span class="token function">filter</span><span class="token punctuation">(</span>r<span class="token punctuation">.</span><span class="token function">row</span><span class="token punctuation">(</span><span class="token string">'id'</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">eq</span><span class="token punctuation">(</span>id<span class="token punctuation">)</span><span class="token punctuation">)</span>
+        <span class="token punctuation">.</span><span class="token function">update</span><span class="token punctuation">(</span><span class="token punctuation">{</span>upvotes<span class="token punctuation">:</span> upvote_count<span class="token punctuation">}</span><span class="token punctuation">)</span>
+        <span class="token punctuation">.</span><span class="token function">run</span><span class="token punctuation">(</span>connection<span class="token punctuation">,</span> <span class="token keyword">function</span><span class="token punctuation">(</span>err<span class="token punctuation">,</span> result<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span>err<span class="token punctuation">)</span> <span class="token keyword">throw</span> err<span class="token punctuation">;</span>
+            res<span class="token punctuation">.</span><span class="token function">send</span><span class="token punctuation">(</span><span class="token string">'ok'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+</code></pre>
+<h2 id="runningtheserver">Running the Server</h2>
+<p>At this point I assume that RethinkDB is still running in the background. Run it if it’s not already running. Once it’s running, execute <code class=" language-undefined">node newssharer-server.js</code> at the root of the project directory to run the server component of the app.</p>
+<h2 id="runningtheapp">Running the App</h2>
+<p>You can run the app the same way you run any React Native app. Below are the links for running the app in the platform of your choice:</p>
+<ul>
+<li><a href="https://facebook.github.io/react-native/docs/running-on-device-android.html#content">Running on Android</a></li>
+<li><a href="https://facebook.github.io/react-native/docs/running-on-device-ios.html#content">Running on iOS</a></li>
+</ul>
+<p>If you’re having a trouble running the app, you can check the <strong>Common Problems</strong> section on my previous article on <a href="https://www.sitepoint.com/build-android-app-react-native/">Building an Android App with React Native</a>.</p>
+<p>Once the app is running, try it out or access any of the test routes in your browser.</p>
+<h2 id="whatsnext">What’s Next</h2>
+<p>Here are some suggestions for further improving the app:</p>
+<ul>
+<li>Instead of opening the news items in the default web browser app of the device, use React Native’s <a href="https://facebook.github.io/react-native/docs/webview.html">WebView component</a> to create a webview used within the app.</li>
+<li>The app allows users to repeatedly tap on the upvote button, add a function to check whether the current user has already upvoted the news item.</li>
+<li>Set the server to only accept requests coming from the app.</li>
+</ul>
+<p>And that’s it! In this tutorial you created a realtime news sharing app and learned how to use Socket.io and RethinkDB’s changefeeds to create a realtime app.</p>
+  
