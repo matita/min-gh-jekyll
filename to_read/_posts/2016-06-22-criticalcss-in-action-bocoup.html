@@ -1,0 +1,37 @@
+---
+title: "CriticalCSS In Action -  - Bocoup"
+description: "Open Design & Technology Services for People Creating the Future"
+link: "https://bocoup.com/weblog/criticalcss-in-action"
+saved: "2016-06-22 17:33:17"
+---
+
+        <p>In just my first weeks at Bocoup, I’ve been learning a lot about performance and how to make a site smoking fast. Recently, we were hired to audit and help a client understand what they could do to improve their site speed, and through this project I learned the nuts of bolts of actually implementing some of the things I’ve been reading about.</p>
+
+<h3>Audit</h3>
+
+<p>The first part was figuring out how the site was doing. I spent a lot of time learning how to use <a href="http://www.webpagetest.org/">Web Pagetest</a> and <a href="https://developers.google.com/speed/pagespeed/insights/">PageSpeed Insights</a> and testing URLs to get a baseline understanding of where the site was at. It seems, from the outside, like this should be boring, but I actually found it fascinating.</p>
+
+<p>Each test result was a window into how things could be improved. In addition, all the various things you could do with WebPagetest to simulate different connections and devices made it incredibly useful. It’s a really great tool.</p>
+
+<p>So, nuts and bolts, what did this audit we did actually look like? We created a document that listed the name of the page tested, then the URL, then we had two sections below that, one for Web Pagetest and another for PageSpeed Insights. Below each heading, we linked to the reports from each tool, and we put in some additional summary information, speeds and scores. In the case of Web Pagetest there were a couple headings below the main one for the various scenarios we tested (such as broadband, 3G fast, etc).</p>
+
+<p><img src="https://static2.bocoup.com/assets/2016/06/10201446/Screenshot-2016-06-09-11.29.52.png" srcset="https://static3.bocoup.com/assets/2016/06/10201446/Screenshot-2016-06-09-11.29.52-383x257.png 383w, https://static2.bocoup.com/assets/2016/06/10201446/Screenshot-2016-06-09-11.29.52-500x336.png 500w, https://static1.bocoup.com/assets/2016/06/10201446/Screenshot-2016-06-09-11.29.52-640x430.png 640w, https://static3.bocoup.com/assets/2016/06/10201446/Screenshot-2016-06-09-11.29.52-700x470.png 700w, https://static2.bocoup.com/assets/2016/06/10201446/Screenshot-2016-06-09-11.29.52-1100x738.png 1100w, https://static1.bocoup.com/assets/2016/06/10201446/Screenshot-2016-06-09-11.29.52.png 1630w" sizes="(min-width: 85em) 668px, (min-width: 70em) 62.962963vw, (min-width: 60em) 70.3703704vw, (min-width: 35em) 77.7777778vw, 85.1851852vw" alt="Shows what is described for our performance audit documents."></p>
+
+<p class="caption">A template showing how we collect results along with links to the full tests should we need to reference them later.</p>
+
+<p>The point of the audit document is to give a quick scan of the information we found with the different tools and a way back to more information. Making it easy to scan is the goal, so you know exactly where the site stands for the various pages you’ve tested.</p>
+
+<p>Once the audit document was complete, we were able to move on to a new document. This contains our recommendations. We start fresh and enter in the sections for what we recommend changing to speed up the site. So, for this project, we had CriticalCSS, Web Fonts, Images, and more. Writing this up helps us to clearly state what is helpful and what isn’t in regards to the various topics and we’re able to link to a lot of supporting documentation for further research should the client desire to do that.</p>
+
+<h3>Implementing CriticalCSS</h3>
+
+<p>We’d done the above and CriticalCSS was one of the improvements we recommended to speed up the site. And through this process, I was following the lead of my Bocoup guide, Mat Marquis, and when it came to CriticalCSS, I learned from how we implemented a small example repo to show the client how it could be done on their site.</p>
+
+<p>So, first things, we set up a <a href="https://github.com/bocoup/critical-css-boilerplate">small repo</a> to be able to show how the implementation could be done. Since we were working with a client who had a PHP code base, we tried our best to replicate that in the repo.</p>
+
+<p>We added in Grunt and <a href="https://github.com/filamentgroup/grunt-criticalcss">Grunt CriticalCSS</a>. We made a small CSS file along with some small HTML files. We use a PHP server to do to do the server side portion of CriticalCSS.</p>
+
+<p>Two tasks were added to the code base so that we could get the CriticalCSS working. And Mat added in a small PHP function he already created for Bocoup.com. This is where the meat happens, and if you run <code>grunt critical</code> it inserts the styles into the <code>&lt;head&gt;</code> and the script is added that sets up to cache and load the stylesheet after the initial load.</p>
+
+<p>So, are you running a PHP based site? Would you like it to be faster? Go ahead, <a href="https://github.com/bocoup/critical-css-boilerplate">fork the repo</a> and use it, because we love fast sites.</p>
+			
