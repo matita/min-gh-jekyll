@@ -1,0 +1,96 @@
+---
+title: "Run npm scripts in a git pre-commit Hook by @elijahmanor"
+description: "Tips, Tricks, and Tools"
+link: "http://elijahmanor.com/npm-precommit-scripts/"
+saved: "2016-06-23 09:34:56"
+---
+
+
+        
+
+        <!-- <aside class="social">
+          <a href="https://twitter.com/elijahmanor" class="twitter-follow-button" data-show-count="false" data-size="large">Follow @elijahmanor</a>
+          <a href="https://twitter.com/share" class="twitter-share-button" data-text="Run npm scripts in a git pre-commit Hook" data-url="" data-via="elijahmanor" data-size="large">Tweet</a>
+          <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
+        </aside> -->
+
+<!--         <header class="post-header">
+            <a id="blog-logo" href="http://elijahmanor.com">
+                
+                    <span class="blog-title">Front-End Manorisms</span>
+                
+            </a>
+        </header> -->
+
+        <!-- <span class="post-meta">
+            <time datetime="2016-06-20">20 Jun 2016</time>
+            
+        </span> -->
+
+        <!-- <h1 class="post-title">Run npm scripts in a git pre-commit Hook</h1> -->
+
+        <section class="post-content">
+            <p>If your team is anything like the one I work with, everyone has their own preferred IDE that they use (<a href="https://www.sublimetext.com/">Sublime Text</a>, <a href="https://atom.io/">Atom</a>, <a href="https://www.jetbrains.com/webstorm/">WebStorm</a>, <a href="http://www.vim.org/">Vim</a>, <a href="https://code.visualstudio.com/">Visual Studio Code</a>, etc…) and although most of them have integrated linting support that doesn’t guarantee all issues have been addressed before a Pull Request is made.</p>
+
+<p>So, we have started to use the node <a href="https://www.npmjs.com/package/pre-commit"><code class="highlighter-rouge">pre-commit</code></a> module which makes it really easy to run linting (or whatever npm scripts you want) before code is committed to a <code class="highlighter-rouge">git</code> repository.</p>
+
+<h2 id="installation">Installation</h2>
+
+<p><code class="highlighter-rouge">npm install pre-commit --save-dev</code></p>
+
+<h2 id="packagejson"><code class="highlighter-rouge">package.json</code></h2>
+
+<p>Once you’ve installed the <code class="highlighter-rouge">pre-commit</code> node module, then you add a new <code class="highlighter-rouge">pre-commit</code> entry in your <code class="highlighter-rouge">package.json</code> file indicating an array of <code class="highlighter-rouge">npm scripts</code> you want to pass before allowing a successful commit.</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="p">{</span><span class="w">
+  </span><span class="nt">"scripts"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nt">"lint"</span><span class="p">:</span><span class="w"> </span><span class="s2">"eslint ./ --cache --ignore-pattern .gitignore"</span><span class="w">
+  </span><span class="p">},</span><span class="w">
+  </span><span class="nt">"pre-commit"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"> </span><span class="s2">"lint"</span><span class="w"> </span><span class="p">],</span><span class="w">
+  </span><span class="nt">"devDependencies"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nt">"eslint"</span><span class="p">:</span><span class="w"> </span><span class="s2">"^2.12.0"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"pre-commit"</span><span class="p">:</span><span class="w"> </span><span class="s2">"^1.1.3"</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
+</div>
+
+<p>😜 Don’t worry, you can force a commit with <code class="highlighter-rouge">--no-verify</code> if you find yourself in the situation where you just want to commit even though your pre-commit hooks don’t succeed.</p>
+
+<p><img src="http://elijahmanor.com/assets/images/2016/Jun/precommit-vim.gif" alt="" class="full-img"></p>
+
+<h2 id="pre-commit-message">Pre-commit Message</h2>
+
+<p>I’ve found that it is best to prepend a script that describes what is happening because it could be confusing if you didn’t realize linting or tests were being checked before the commit happened. Otherwise you might think something was wrong with git or something.</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="p">{</span><span class="w">
+  </span><span class="nt">"scripts"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nt">"lint"</span><span class="p">:</span><span class="w"> </span><span class="s2">"eslint ./ --cache --ignore-pattern .gitignore"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"precommit-msg"</span><span class="p">:</span><span class="w"> </span><span class="s2">"echo 'Pre-commit checks...' &amp;&amp; exit 0"</span><span class="w">
+  </span><span class="p">},</span><span class="w">
+  </span><span class="nt">"pre-commit"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"> </span><span class="s2">"precommit-msg"</span><span class="p">,</span><span class="w"> </span><span class="s2">"lint"</span><span class="w"> </span><span class="p">],</span><span class="w">
+  </span><span class="nt">"devDependencies"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nt">"eslint"</span><span class="p">:</span><span class="w"> </span><span class="s2">"^2.12.0"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"pre-commit"</span><span class="p">:</span><span class="w"> </span><span class="s2">"^1.1.3"</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
+</div>
+
+<p><img src="http://elijahmanor.com/assets/images/2016/Jun/precommit-vim-message.gif" alt="" class="full-img"></p>
+
+<h2 id="other-ideas">Other ideas</h2>
+
+<p>You could take this idea a bit further by adding other scripts in the <code class="highlighter-rouge">pre-commit</code> array such as running unit tests (<a href="https://github.com/avajs/ava"><code class="highlighter-rouge">ava</code></a>, <a href="https://github.com/mochajs/mocha"><code class="highlighter-rouge">mocha</code></a>, <a href="https://github.com/jasmine/jasmine"><code class="highlighter-rouge">jasmine</code></a>, etc…) or enforcing a unit test coverage threshold (<a href="https://github.com/bcoe/nyc"><code class="highlighter-rouge">nyc</code></a>, <a href="https://github.com/gotwarlost/istanbul"><code class="highlighter-rouge">istanbul</code></a>, etc…). However, the more scripts you add during the pre-commit hook the longer you’ll need to wait every time you commit code.</p>
+
+<h2 id="conclusion">Conclusion</h2>
+
+<p>Adding <a href="https://www.npmjs.com/package/pre-commit"><code class="highlighter-rouge">pre-commit</code></a> to your project can be helpful to encourage consistency and quality of your code repository. Have you found other use cases other than linting and testing? If so, I’d love to hear from you about it. You can reach me on twitter at <a href="http://twitter.com/elijahmanor">@elijahmanor</a>.</p>
+
+        </section>
+
+        
+
+        
+
+    
