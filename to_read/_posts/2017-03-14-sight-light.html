@@ -1,0 +1,149 @@
+---
+title: "Sight & Light"
+description: "How to create 2D visibility/shadow effects for your game."
+link: "http://ncase.me/sight-and-light/"
+saved: "2017-03-14 12:21:11"
+---
+
+
+			Hello! Today, I will show you how to make something like this:<br>
+			<b>(move your mouse around in the box below)</b>
+
+			<iframe src="http://ncase.me/sight-and-light/draft7.html" width="840" height="360"></iframe>
+			
+			This effect is used in my open-source indie game,
+			<a href="http://nothingtohide.cc/">Nothing To Hide.</a>
+			It's also found in many other 2D games, like Monaco, Gish,
+			and if this tutorial does its job... maybe <i>your</i> next game!
+
+			<br><br>
+			<img src="http://ncase.me/sight-and-light/games.png">
+			<br><br>
+
+			I will show the steps &amp; mistakes I personally made while learning how to create this effect.
+			First, some boilerplate code. The demo below just draws a bunch of line segments
+			and tracks your mouse position. (note: there are four line segments for the box's border)
+
+			<iframe src="http://ncase.me/sight-and-light/draft0.html" width="640" height="360"></iframe>
+
+			Next is the most math-y step. Don't worry, it'll be a refreshing refresher in algebra.
+			<br><br>
+			
+			We need to find the closest intersection between the ray and all the line segments.
+			Any line can be written in parametric form as:
+			<span class="code">Point + Direction * T</span>
+			<br><br>
+
+			This gives us 4 equations describing the x &amp; y components of a ray &amp; line segment:<br>
+			<div class="code">
+				Ray X = r_px+r_dx*T1<br>
+				Ray Y = r_py+r_dy*T1<br>
+				Segment X = s_px+s_dx*T2<br>
+				Segment Y = s_py+s_dy*T2
+			</div>
+
+			NOTE: Before we do anything else, check to make sure that the Ray &amp; Segment aren't parallel, that is, that the directions aren't the same.
+			If they're parallel, there is no intersection. Alright, carry on.
+			<br><br>
+
+			If the ray &amp; segment intersect, their X &amp; Y components will be the same:
+			<div class="code">
+				r_px+r_dx*T1 = s_px+s_dx*T2<br>
+				r_py+r_dy*T1 = s_py+s_dy*T2
+			</div>
+
+			We do a little symbol-shifting dance to solve for T1 &amp; T2...
+
+			<div class="code">
+				
+				<span>// Isolate T1 for both equations, getting rid of T1</span><br>
+				T1 = (s_px+s_dx*T2-r_px)/r_dx = (s_py+s_dy*T2-r_py)/r_dy<br><br>
+
+				<span>// Multiply both sides by r_dx * r_dy</span><br>
+				s_px*r_dy + s_dx*T2*r_dy - r_px*r_dy = s_py*r_dx + s_dy*T2*r_dx - r_py*r_dx<br><br>
+
+				<span>// Solve for T2!</span><br>
+				T2 = (r_dx*(s_py-r_py) + r_dy*(r_px-s_px))/(s_dx*r_dy - s_dy*r_dx)<br><br>
+
+				<span>// Plug the value of T2 to get T1</span><br>
+				T1 = (s_px+s_dx*T2-r_px)/r_dx
+
+			</div>
+
+			Make sure that <span class="code">T1&gt;0</span> and <span class="code">0&lt;T2&lt;1</span>.
+			If they aren't, then the supposed intersection is not on the ray/segment,
+			and there is no intersection after all. But if they are, great! You've found an intersect.
+			Now just loop through all other line segments with the same ray,
+			in order to find the closest intersection. (It will be the one with the lowest T1 value)
+			<br><br>
+
+			Here's what all that math looks like: <b>(move your mouse over the box)</b>
+
+			<iframe src="http://ncase.me/sight-and-light/draft1.html" width="640" height="360"></iframe>
+
+			Whew! Now that that's over with, let's have some fun!
+			I cast out 50 rays in all directions:
+
+			<iframe src="http://ncase.me/sight-and-light/draft2.html" width="640" height="360"></iframe>
+
+			Then, I thought, I could just simply connect the dots, where rays intersect with line segments,
+			and get a good visibility polygon. However, this is what it ended up looking like...
+
+			<iframe src="http://ncase.me/sight-and-light/draft3.html" width="640" height="360"></iframe>
+
+			Darn. And it didn't matter even if I had 360 rays for 360 degrees, it still looked jittery.
+			This was my biggest stumbling block, until I realized - I don't <i>have</i> to cast rays in all directions.
+			I only need to cast them towards <i>the ends of each line segment</i>.
+			<br><br>
+			For each (unique) line segment end point, I cast a ray directly towards it, plus two more rays offset by +/- 0.00001 radians.
+			The two extra rays are needed to hit the wall(s) behind any given segment corner.
+
+			<iframe src="http://ncase.me/sight-and-light/draft4.html" width="640" height="360"></iframe>
+
+			Next, I sort the intersection points in order of their ray's angle.
+			This lets me simply connect the dots clockwise, and draw a smooth visibility polygon like this:
+
+			<iframe src="http://ncase.me/sight-and-light/draft5.html" width="640" height="360"></iframe>
+
+			Finally! Something that actually looks decent. By drawing extra visibility polygons,
+			casting rays from a slightly offset position, I can create "fuzzy" shadows like the ones below.
+			The red dots show each of the 11 origin points - yes, there are 11 visibility polygons!
+
+			<iframe src="http://ncase.me/sight-and-light/draft6.html" width="640" height="360"></iframe>
+
+			And just to top it all off, I drew these two images...
+			
+			<br><br>
+			<img src="http://ncase.me/sight-and-light/foreground.png" width="415"><img src="http://ncase.me/sight-and-light/background.png" width="415">
+			<br><br>
+
+			...and blended them together, using the fuzzy shadows as an alpha mask.
+			I already showed you the creepy result of that at the top of this page,
+			so here is a different iteration, with <i>multiple</i> light sources.
+
+			<iframe src="http://ncase.me/sight-and-light/draft8.html" width="840" height="360"></iframe>
+
+			Multiple light sources. Casting shadows. A giant laser bomb. Showing what your player/enemies can or can't see.
+			The 2D visibility/lighting effect can be very flexible, and with the right creative touch,
+			can add a lot of extra <i>oomph</i>* to your game.
+
+			<br><br>
+			<b>LET THERE BE LIGHT</b>
+
+			<br><br>
+			* totally a real technical term
+
+			<br><br><br>
+			<hr>
+			<br><br>
+			<div>
+				<a href="https://github.com/ncase/sight-and-light">Fork this on Github</a>
+				||
+				<a target="_blank" href="https://twitter.com/share?via=ncasenmare&amp;url=http%3A%2F%2Fncase.github.io%2Fsight-and-light&amp;text=Sight%20%26%20Light%20-%20How%20to%20create%202D%20visibility%2Fshadow%20effects%20for%20your%20game">Share on Twitter</a>
+				||
+				<a target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http%3A%2F%2Fncase.github.io%2Fsight-and-light&amp;t=Sight%20%26%20Light%20-%20How%20to%20create%202D%20visibility%2Fshadow%20effects%20for%20your%20game">Share on Facebook</a>
+				||
+				<a target="_blank" href="http://www.reddit.com/submit?url=http%3A%2F%2Fncase.github.io%2Fsight-and-light&amp;title=Sight%20%26%20Light%20-%20How%20to%20create%202D%20visibility%2Fshadow%20effects%20for%20your%20game">Share on Reddit</a>
+			</div>
+			
+		
