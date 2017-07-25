@@ -1,0 +1,131 @@
+---
+title: "Pixel Perfect 2D – Unity Blog"
+description: "How do I make a pixel art game that looks great? We get that question a lot. If you start your pixel game with all the default settings in Unity, it will l..."
+link: "https://blogs.unity3d.com/2015/06/19/pixel-perfect-2d/"
+saved: "2017-07-25 17:50:04"
+---
+
+          <h3>How do I make a pixel art game that looks great? We get that question a lot. If you start your pixel game with all the default settings in Unity, it will look terrible! But the current version of Unity can be made to render pixelated games that don’t suck. Read on for a rundown of do’s and dont’s.</h3>
+<p><a href="https://blogs.unity3d.com/wp-content/uploads/2015/06/goodbad.png"><img class="aligncenter size-postimage-full wp-image-27131" src="https://blogs.unity3d.com/wp-content/uploads/2015/06/goodbad-800x200.png" alt="goodbad"></a></p>
+<p><em>Image on the left is rendered on a poorly calibrated camera while the one on the right is properly calibrated. (click on image to see full-res)</em></p>
+<h3>The Secret Sauce</h3>
+<p>The secret to making your pixelated game look nice is to ensure that your sprite is <b>rendered on a nice pixel boundary</b>. In other words, ensure that each pixel of your sprite is rendered on one screen pixel (or any other round number). The trick to achieving this result is tweaking the camera’s orthographic size (and live with the consequences).</p>
+<h3>The Basics: What Is Orthographic Size?</h3>
+<p>On an orthographic camera, the orthographic size dictates how many units in world space the screen’s height is divided into. So on a screen height of 1080 with orthographic size of 5, each world space unit will take up 108 pixels (1080 / (5*2)). It’s 5 * 2 because orthographic size specifies the size going from the center of the screen to the top.</p>
+<p>Therefore if your Sprite’s Pixels Per Unit (PPU) settings is 108, it will be rendered nicely.</p>
+<h3>Practical Approach To Achieving Pixel Perfect.</h3>
+<p>To apply this on an actual project requires a bit more considerations and planning ahead. Since you can’t tweak the physical resolution of the target device and you only have a very limited range of PPU (by way of asset bundle variant), the only real number that you can play with is the orthographic size.</p>
+<p>Changing the orthographic size will have the effect of increasing or decreasing the visible world space. This impacts your game code directly and need to be accounted for. Here’s a table with various scaling scenarios</p>
+<table width="794">
+<tbody>
+<tr>
+<td>Vertical Resolution</td>
+<td>PPU</td>
+<td>PPU Scale</td>
+<td>Orthographics Size</td>
+<td>Size Change</td>
+</tr>
+<tr>
+<td>768</td>
+<td>32</td>
+<td>1x</td>
+<td>12</td>
+<td>100%</td>
+</tr>
+<tr>
+<td>1080</td>
+<td>32</td>
+<td>1x</td>
+<td>16.875</td>
+<td>140%</td>
+</tr>
+<tr>
+<td>1080</td>
+<td>48</td>
+<td>1x</td>
+<td>11.25</td>
+<td>93.75%</td>
+</tr>
+<tr>
+<td>1080</td>
+<td>32</td>
+<td>2x</td>
+<td>8.4375</td>
+<td>70.31%</td>
+</tr>
+<tr>
+<td>1440</td>
+<td>32</td>
+<td>2x</td>
+<td>11.25</td>
+<td>93.75%</td>
+</tr>
+<tr>
+<td>1536</td>
+<td>32</td>
+<td>2x</td>
+<td>12</td>
+<td>100%</td>
+</tr>
+</tbody>
+</table>
+<p>* Orthographic size = ((Vert Resolution)/(PPUScale * PPU)) * 0.5</p>
+<p>There are three well known techniques to handle the scaling and it is quite plausible that you will employ all three in your project.</p>
+<h3>Technique #1: Thick Borders</h3>
+<p>For a small difference, a simple ‘thick border’ will suffice. Depending on your game’s design, a few percentage bigger or smaller than your reference screen size can be easily filled with the thick border.<a href="https://blogs.unity3d.com/wp-content/uploads/2015/06/border.png"><img class="aligncenter size-full wp-image-27128" src="https://blogs.unity3d.com/wp-content/uploads/2015/06/border.png" alt="border" srcset="https://blogs.unity3d.com/wp-content/uploads/2015/06/border.png 1538w, https://blogs.unity3d.com/wp-content/uploads/2015/06/border-800x400.png 800w, https://blogs.unity3d.com/wp-content/uploads/2015/06/border-400x200.png 400w, https://blogs.unity3d.com/wp-content/uploads/2015/06/border-266x133.png 266w, https://blogs.unity3d.com/wp-content/uploads/2015/06/border-200x100.png 200w" sizes="(max-width: 1538px) 100vw, 1538px"></a>The overall screen size grows but the art size stays the same. This can be easily dealt with by increasing the thickness of the floor/roof.</p>
+<p>However, when the screen increases beyond a certain size, a thick border will no longer be practical.</p>
+<h3>Technique #2: Increase Asset Resolution</h3>
+<p>If you start out with a reference screen height of 768 and PPU of 32, going to 1080 is going to be troublesome as your assets will not scale nicely.</p>
+<p>The table above illustrates scaling a game starting from 768 all to way to 1536 with three alternatives on how to deal with 1080. The most interesting number to look at is the orthographic size. The ideal situation is that as your screen size grows, the orthographic size remains the same. This will ensure that your assets will take up the same amount of screen space as they do with your reference resolution.</p>
+<p>From the table above, using an alternate sprite at PPU 48 would create a visible world space that’s only 6.25% smaller than your reference size. This could be easily dealt with using the thick border approach.</p>
+<p><a href="https://blogs.unity3d.com/wp-content/uploads/2015/06/1080.png"><img class="aligncenter size-full wp-image-27124" src="https://blogs.unity3d.com/wp-content/uploads/2015/06/1080.png" alt="1080" srcset="https://blogs.unity3d.com/wp-content/uploads/2015/06/1080.png 2158w, https://blogs.unity3d.com/wp-content/uploads/2015/06/1080-800x400.png 800w, https://blogs.unity3d.com/wp-content/uploads/2015/06/1080-400x200.png 400w, https://blogs.unity3d.com/wp-content/uploads/2015/06/1080-266x133.png 266w, https://blogs.unity3d.com/wp-content/uploads/2015/06/1080-200x100.png 200w" sizes="(max-width: 2158px) 100vw, 2158px"></a></p>
+<p><em>PPU 32 vs PPU 48 at 1080 with ortho size 11.25. Notice the terrible looking PPU 32 sprites on the left.&nbsp;Color shifted on the right to clearly show swapped asset variants.</em></p>
+<p>Swapping the sprite assets can be easily done at runtime using <a href="http://docs.unity3d.com/Manual/BuildingAssetBundles5x.html">AssetBundle Variants</a>. See a <a href="https://bitbucket.org/Unity-Technologies/2ddemos/branch/assetbundle">demo here</a>.</p>
+<h3>Technique #3: Halving Orthographic Size</h3>
+<p>If your screen grows big enough, we could display your sprites at 2x by applying a scaling factor to the calculation of the orthographic size. For the case of 1440, we could keep using the PPU 32 sprites but calculate the orthographic size as such (1440/(<b>2</b>*32)) * 0.5 which gives you 11.25.</p>
+<p>This means, each world space units will contain 64 screen pixels. This effectively tells the engine to render 32 pixels from the sprite onto 64 pixels on screen. This gives a nice whole number factor of 2 which will look good at the same time giving you a world space that’s just 6.25% smaller than your reference setup.</p>
+<p>This technique does not require new assets to be created.</p>
+<p><a href="https://blogs.unity3d.com/wp-content/uploads/2015/06/image00.png"><img class="  aligncenter wp-image-27151 size-full" src="https://blogs.unity3d.com/wp-content/uploads/2015/06/image00.png" alt="image00" srcset="https://blogs.unity3d.com/wp-content/uploads/2015/06/image00.png 1374w, https://blogs.unity3d.com/wp-content/uploads/2015/06/image00-800x448.png 800w, https://blogs.unity3d.com/wp-content/uploads/2015/06/image00-400x224.png 400w, https://blogs.unity3d.com/wp-content/uploads/2015/06/image00-266x149.png 266w, https://blogs.unity3d.com/wp-content/uploads/2015/06/image00-200x112.png 200w" sizes="(max-width: 1374px) 100vw, 1374px"></a></p>
+<p>* The PPU 32 sprites are now rendered twice as big but still look fantastic. This only works for whole number enlargement.</p>
+<h3>Other Tweaks</h3>
+<p>These other settings are essential to make things as crisp as possible.</p>
+<p>On the sprite:</p>
+<ul>
+<li>Ensure your sprites are using lossless compression e.g. True Color</li>
+<li>Turn off mipmapping</li>
+<li>Use Point sampling</li>
+</ul>
+<p>In Render Quality Settings:</p>
+<ul>
+<li>Turn off anisotropic filtering</li>
+<li>Turn off anti aliasing</li>
+</ul>
+<p>(Optional) Turn on pixel snapping in the sprite shader by creating a custom material that uses the Sprite/Default shader and attaching it to the SpriteRenderer.</p>
+<h3>Implementation Details</h3>
+<p>To implement the above system requires 2 parts.</p>
+<ol>
+<li>Create a simple component that calculates the orthographic size for the camera based on the screen height.
+<ol>
+<li>Allow for overrides for certain resolutions so that the user could dictate the PPU settings for that resolution</li>
+<li>This calculation takes place at the start of the scene</li>
+</ol>
+</li>
+<li>Load the right asset bundle variant based on the screen height. Either load the default bundle or one that’s based on the override settings.
+<p><a href="https://blogs.unity3d.com/wp-content/uploads/2015/06/pixelperfectcomponent.png"><img class="aligncenter size-full wp-image-27133" src="https://blogs.unity3d.com/wp-content/uploads/2015/06/pixelperfectcomponent.png" alt="pixelperfectcomponent" srcset="https://blogs.unity3d.com/wp-content/uploads/2015/06/pixelperfectcomponent.png 583w, https://blogs.unity3d.com/wp-content/uploads/2015/06/pixelperfectcomponent-400x150.png 400w, https://blogs.unity3d.com/wp-content/uploads/2015/06/pixelperfectcomponent-266x100.png 266w, https://blogs.unity3d.com/wp-content/uploads/2015/06/pixelperfectcomponent-200x75.png 200w" sizes="(max-width: 583px) 100vw, 583px"></a><em>PixelPerfect component</em></p>
+</li>
+</ol>
+<p>Check out a <a href="https://bitbucket.org/Unity-Technologies/2ddemos/branch/PixelPerfect">demo project that demonstrates this approach</a></p>
+<h3>Known Issues</h3>
+<p>Even with all these number tweaking, there are still a few issues:</p>
+<ul>
+<li>Physics and animation systems might move/rotate your object to a position or rotation that’s not ideal.</li>
+<li>Single-pixel width art assets will render poorly if they are allowed to be rotated arbitrarily. This is true no matter what you do. The only real solution to this is to either:
+<ul>
+<li>Avoid single pixel art</li>
+<li>Always ensure they are axis aligned</li>
+</ul>
+</li>
+</ul>
+<h3>Conclusion</h3>
+<p>Making pixel perfect 2D games is possible with the current version of Unity. However, as detailed above, there are consequences and known issues, but they are not insurmountable nor are they blockers. Long live retro style games!</p>
+        
