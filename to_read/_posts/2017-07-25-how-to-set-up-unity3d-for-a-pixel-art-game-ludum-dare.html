@@ -1,0 +1,57 @@
+---
+title: "How to set up Unity3D for a pixel art game! | Ludum Dare"
+description: "null"
+link: "http://ludumdare.com/compo/2015/04/17/how-to-set-up-unity3d-for-a-pixel-art-game/"
+saved: "2017-07-25 17:48:11"
+---
+
+				<p>This is a quick tutorial I’m putting together as a part of my warm up for Ludum Dare. Lots of people love Unity but sometimes things can take a while to do. This is one of those awkward things: pixel art.</p>
+<p><strong>Create a sprite</strong></p>
+<p>Grab your lovely pixel sprite texture and put it into a ‘Sprites’ folder in Unity. Click on the texture and set it up as follows:</p>
+<ul>
+<li>Texture Type: Sprite (2D and UI)</li>
+<li>Pixels Per Unit: The pixel size of your sprite, try to keep this to a power of 2 e.g.: 16, 32, 64</li>
+<li>Generate Mip Maps: Off</li>
+<li>Filter Mode: Point</li>
+</ul>
+<p>Apply these settings. In 2D mode on the Unity Scene Editor, draw the sprite from the Project window to the scene. Follow the dialog for making an animation.</p>
+<p><a href="http://ludumdare.com/compo/wp-content/uploads/2015/04/SpriteSetup.png"><img class="alignnone size-medium wp-image-441823" src="http://ludumdare.com/compo/wp-content/uploads/2015/04/SpriteSetup-284x300.png" alt="Unity 3D Pixel Art Tutorial" width="284" height="300" srcset="http://ludumdare.com/compo/wp-content/uploads/2015/04/SpriteSetup-284x300.png 284w, http://ludumdare.com/compo/wp-content/uploads/2015/04/SpriteSetup.png 319w" sizes="(max-width: 284px) 100vw, 284px"></a></p>
+<p>&nbsp;</p>
+<p><b>Create a sprite material</b></p>
+<p>Create a new material in a ‘Materials’ folder. Set it up as follows:</p>
+<ul>
+<li>Shader: Sprite/Default</li>
+<li>Pixel Snap: On</li>
+</ul>
+<p>Apply the material to your sprite by dragging it from the Project window to the sprite object in your scene.</p>
+<p><a href="http://ludumdare.com/compo/wp-content/uploads/2015/04/MaterialSetup.png"><img class="alignnone size-medium wp-image-441821" src="http://ludumdare.com/compo/wp-content/uploads/2015/04/MaterialSetup-300x173.png" alt="Unity 3D Pixel Art Tutorial" width="300" height="173" srcset="http://ludumdare.com/compo/wp-content/uploads/2015/04/MaterialSetup-300x173.png 300w, http://ludumdare.com/compo/wp-content/uploads/2015/04/MaterialSetup.png 317w" sizes="(max-width: 300px) 100vw, 300px"></a></p>
+<p>&nbsp;</p>
+<p><strong>Modify the camera</strong></p>
+<p>Select the ‘Main Camera’ in the Hierarchy and set the values of the ‘Camera Component’ to:</p>
+<ul>
+<li>Projection: Orthographic</li>
+<li>Size: Now this is the key part. Choose a screen size, for example 480×320 and stick to it. In a minute we’ll change the Game window to reflect this size. Set the size value of the camera to be <strong>Screen Height / 2 / Pixels Per Unit</strong> of your sprites.</li>
+</ul>
+<p><a href="http://ludumdare.com/compo/wp-content/uploads/2015/04/CameraSetup.png"><img class="alignnone size-medium wp-image-441825" src="http://ludumdare.com/compo/wp-content/uploads/2015/04/CameraSetup-300x283.png" alt="Unity 3D Pixel Art Tutorial" width="300" height="283" srcset="http://ludumdare.com/compo/wp-content/uploads/2015/04/CameraSetup-300x283.png 300w, http://ludumdare.com/compo/wp-content/uploads/2015/04/CameraSetup.png 318w" sizes="(max-width: 300px) 100vw, 300px"></a></p>
+<p>(in this case I was using a 24×24 size sprite and a screen height of 320 which gave me 6.66666, I wasn’t happy with that so I doubled it. I would recommend not using 24×24 size sprites.)</p>
+<p>&nbsp;</p>
+<p><strong>Preparing the game window</strong></p>
+<p>Select the Game window and click the drop down to choose the screen aspect ratio, usually ‘Free Aspect’. Click the plus button to add a new screen setup and then enter in the screen size you chose. Give it a name and click okay. Then select that screen size.</p>
+<p><a href="http://ludumdare.com/compo/wp-content/uploads/2015/04/GameWindowSetup.png"><img class="alignnone size-medium wp-image-441827" src="http://ludumdare.com/compo/wp-content/uploads/2015/04/GameWindowSetup-300x291.png" alt="Unity 3D Pixel Art Tutorial" width="300" height="291" srcset="http://ludumdare.com/compo/wp-content/uploads/2015/04/GameWindowSetup-300x291.png 300w, http://ludumdare.com/compo/wp-content/uploads/2015/04/GameWindowSetup.png 413w" sizes="(max-width: 300px) 100vw, 300px"></a></p>
+<p>&nbsp;</p>
+<p><strong>Preparing the build output</strong></p>
+<p>To setup the resolution for the built version of the game, go to Edit &gt; Settings &gt; Player Settings and then modify the following values for the platform you want to build to:</p>
+<ul>
+<li>Default Is Native: No</li>
+<li>Default Screen Width: Your Screen Width</li>
+<li>Default Screen Height: Your Screen Height</li>
+<li>Display Resolution Dialog: Disabled</li>
+</ul>
+<p>There may be other things you want to change such as ‘Default Full Screen’.</p>
+<p><a href="http://ludumdare.com/compo/wp-content/uploads/2015/04/BuildSetup.png"><img class="alignnone size-medium wp-image-441824" src="http://ludumdare.com/compo/wp-content/uploads/2015/04/BuildSetup-300x282.png" alt="Unity 3D Pixel Art Tutorial" width="300" height="282" srcset="http://ludumdare.com/compo/wp-content/uploads/2015/04/BuildSetup-300x282.png 300w, http://ludumdare.com/compo/wp-content/uploads/2015/04/BuildSetup.png 317w" sizes="(max-width: 300px) 100vw, 300px"></a></p>
+<p>&nbsp;</p>
+<p><strong>Try it out!</strong></p>
+<p>&nbsp;</p>
+<p>Let me know if any of that didn’t make sense. Good luck for the weekend!</p>
+
+															
