@@ -1,0 +1,389 @@
+---
+title: "Automatically Build your Unity3D Project in the Cloud using TravisCI for free"
+description: "Adventures in diy, electronics, programming, remote control and anything else.
+"
+link: "https://jonathan.porta.codes/2015/04/17/automatically-build-your-unity3d-project-in-the-cloud-using-travisci-for-free/"
+saved: "2017-11-15 17:59:29"
+---
+
+<p>This post is meant to help you get started with a simple automated CI pipeline, using <a href="https://travis-ci.org/">Travis-CI</a> for Unity3D projects.</p>
+<p>Unity3D’s ability to cross-compile your game for tons of platforms is pretty badass. It solves the multi-platform problem well. But, it still leaves a lot up to the developer, like, actually making the game (duh!) and getting the finished game builds to the player. Often developers use some sort of distribution service/platform/store to get their game to the player. But, there are some steps missing. How do I generate builds for testing every single time there is a code change? How does the final product make it to the distribution service?</p>
+<h3 id="cool-why">Cool. Why?</h3>
+<p>Whenever I find myself doing something over and over and over again I usually get bored. I am kind of an impatient guy when it comes to software and the process of developing software. I don’t like having to manually setup, transpile, package, and upload my Unity3D builds. The majority of projects that I work on have a continuous integration pipeline, and this is something I have really missed in my Unity3D projects.</p>
+<h3 id="some-dependencies---do-this-first">Some Dependencies - Do this first!</h3>
+<p>If you want to implement your own version of that I am about to describe you are going to need a few development tools available on your machine and you’re going to need free accounts for several online services.</p>
+<h4 id="development-tools-needed">Development Tools Needed:</h4>
+<ul>
+<li>Unity3D 5.0 Personal Edition (at least)</li>
+<li>git</li>
+<li>to test locally you’ll need an environment that allows you to execute bash scripts - If you’re using OS X then you are good to go. If you are using Windows you will need something like ConEmu and gitBash. You can get away without these, but it will be more difficult since you won’t be able to test your work locally. You’ll have to push each little change to your GitHub repository and rely on CircleCI’s output to debug. The script examples I am providing are all specific to OS X and would need to be modified to support running them on Windows.</li>
+</ul>
+<h4 id="accounts">Accounts:</h4>
+<ul>
+<li><a href="https://github.com/">Github.com</a> - This is one of the most popular online code hosting services, and my favorite. They have definitely earned their popularity by building a great service that helps developers do their job. Plus, it’s free if your repository is open to the public, and super cheap if you want to have private repositories. There are other places to host a git repository, but for this guide I am only going to cover <a class="vglnk" href="http://github.com/" rel="nofollow"><span>GitHub</span><span>.</span><span>com</span></a>.</li>
+<li><a href="https://travis-ci.org/">Travis-CI.org</a> - Travis is a continuous integration service that is super flexible. I’ve used it to build tons of different project types, run thousands of tests, and even check the status of the <a href="https://github.com/JonathanPorta/where_in_the_steam_is_the_rust_linux_server">Linux Rust multiplayer server</a>. Use your GitHub account to signin and create an account. Travis will need to be able to see your GitHub repositories, so it’s easiest to just signup with your GitHub account. I am using Travis-CI because it is free for public projects, and they offer OS X build environments. Since the Unity3D editor doesn’t run on Linux (Please add Linux editor support, Unity!) we need to use an OS that Unity supports. Travis doesn’t have Windows build environments, so OS X it is! Plus, it’s easier to run a bash script out-of-the-box on OS X than it is on Windows.</li>
+</ul>
+<h3 id="overview">Overview</h3>
+<ol>
+<li>Create a Unity3D project, <a href="http://stackoverflow.com/a/18225479/555017">set the project settings</a> to be compatible with git, set the default scene for builds, and finally commit and push your sample project.</li>
+<li>Whip up some scripts that handle building your project.</li>
+<li>Install the TravisCI gem and create a <code>travis.yml</code> file to use the build scripts we wrote in the previous step.</li>
+<li>Setup S3 Bucket Upload and/or GitHub tagged releases.</li>
+</ol>
+<h3 id="step-1-create-a-unity3d-project-compatible-with-git">Step 1: Create a Unity3D Project Compatible with Git</h3>
+<p>First, create a Unity3D project as normal. Once the project is created, create and save at least one scene file. There doesn’t need to be anything in the scene file. For my example, I just created the scene and save it with no changes to the defaults.</p>
+<p>Second, in order for your project to work correctly with git, you need to make some changes to the project config. Instead copy-pasting those settings here, take a look at <a href="http://stackoverflow.com/a/18225479/555017">this great answer</a> on StackOverflow. Don’t forget to setup the .gitignore file.</p>
+<p>Third, commit your initial project files and push to the GitHub repo that you setup for your project.</p>
+<h3 id="step-2-write-the-build-scripts">Step 2: Write the Build Scripts</h3>
+<p>In order to have our project built automatically, we need some scripts to drive that process. I am using two scripts total. One script will download and install the Unity3D editor. The second script will do the actual work of building the project.</p>
+<h4 id="unity3d-install-script">Unity3D Install Script</h4>
+<p>Since Unity3D isn’t installed in the Travis-CI environment we have to handle that ourselves.</p>
+<ol>
+<li>In the root of your repository create a directory named <code>Scripts</code>. This is where we will put all of the shell scripts used in CI.</li>
+<li>Create a file named <code>install.sh</code> in the <code>Scripts</code> directory. <link rel="stylesheet" href="https://assets-cdn.github.com/assets/gist-embed-3cc724162479db25e452fdf621f2349adef3e742b53552c2a93f82d28156cb96.css"><div id="gist21528244" class="gist">
+    <div class="gist-file">
+      <div class="gist-data">
+        <div class="js-gist-file-update-container js-task-list-container file-box">
+  <div id="file-install-sh" class="file">
+    
+
+  <div itemprop="text" class="blob-wrapper data type-shell">
+      <table class="highlight tab-size js-file-line-container" data-tab-size="8">
+      <tbody><tr>
+        <td id="file-install-sh-L1" class="blob-num js-line-number" data-line-number="1"></td>
+        <td id="file-install-sh-LC1" class="blob-code blob-code-inner js-file-line"><span class="pl-c"><span class="pl-c">#!</span> /bin/sh</span></td>
+      </tr>
+      <tr>
+        <td id="file-install-sh-L2" class="blob-num js-line-number" data-line-number="2"></td>
+        <td id="file-install-sh-LC2" class="blob-code blob-code-inner js-file-line">
+</td>
+      </tr>
+      <tr>
+        <td id="file-install-sh-L3" class="blob-num js-line-number" data-line-number="3"></td>
+        <td id="file-install-sh-LC3" class="blob-code blob-code-inner js-file-line"><span class="pl-c"><span class="pl-c">#</span> Example install script for Unity3D project. See the entire example: <a class="vglnk" href="https://github.com/JonathanPorta/ci-build" rel="nofollow"><span>https</span><span>://</span><span>github</span><span>.</span><span>com</span><span>/</span><span>JonathanPorta</span><span>/</span><span>ci</span><span>-</span><span>build</span></a></span></td>
+      </tr>
+      <tr>
+        <td id="file-install-sh-L4" class="blob-num js-line-number" data-line-number="4"></td>
+        <td id="file-install-sh-LC4" class="blob-code blob-code-inner js-file-line">
+</td>
+      </tr>
+      <tr>
+        <td id="file-install-sh-L5" class="blob-num js-line-number" data-line-number="5"></td>
+        <td id="file-install-sh-LC5" class="blob-code blob-code-inner js-file-line"><span class="pl-c"><span class="pl-c">#</span> This link changes from time to time. I haven't found a reliable hosted installer package for doing regular</span></td>
+      </tr>
+      <tr>
+        <td id="file-install-sh-L6" class="blob-num js-line-number" data-line-number="6"></td>
+        <td id="file-install-sh-LC6" class="blob-code blob-code-inner js-file-line"><span class="pl-c"><span class="pl-c">#</span> installs like this. You will probably need to grab a current link from: <a class="vglnk" href="http://unity3d.com/get-unity/download/archive" rel="nofollow"><span>http</span><span>://</span><span>unity3d</span><span>.</span><span>com</span><span>/</span><span>get</span><span>-</span><span>unity</span><span>/</span><span>download</span><span>/</span><span>archive</span></a></span></td>
+      </tr>
+      <tr>
+        <td id="file-install-sh-L7" class="blob-num js-line-number" data-line-number="7"></td>
+        <td id="file-install-sh-LC7" class="blob-code blob-code-inner js-file-line"><span class="pl-c1">echo</span> <span class="pl-s"><span class="pl-pds">'</span>Downloading from <a class="vglnk" href="http://netstorage.unity3d.com/unity/3757309da7e7/MacEditorInstaller/Unity-5.2.2f1.pkg" rel="nofollow"><span>http</span><span>://</span><span>netstorage</span><span>.</span><span>unity3d</span><span>.</span><span>com</span><span>/</span><span>unity</span><span>/</span><span>3757309da7e7</span><span>/</span><span>MacEditorInstaller</span><span>/</span><span>Unity</span><span>-</span><span>5</span><span>.</span><span>2</span><span>.</span><span>2f1</span><span>.</span><span>pkg</span></a>: <span class="pl-pds">'</span></span></td>
+      </tr>
+      <tr>
+        <td id="file-install-sh-L8" class="blob-num js-line-number" data-line-number="8"></td>
+        <td id="file-install-sh-LC8" class="blob-code blob-code-inner js-file-line">curl -o Unity.pkg <a class="vglnk" href="http://netstorage.unity3d.com/unity/3757309da7e7/MacEditorInstaller/Unity-5.2.2f1.pkg" rel="nofollow"><span>http</span><span>://</span><span>netstorage</span><span>.</span><span>unity3d</span><span>.</span><span>com</span><span>/</span><span>unity</span><span>/</span><span>3757309da7e7</span><span>/</span><span>MacEditorInstaller</span><span>/</span><span>Unity</span><span>-</span><span>5</span><span>.</span><span>2</span><span>.</span><span>2f1</span><span>.</span><span>pkg</span></a></td>
+      </tr>
+      <tr>
+        <td id="file-install-sh-L9" class="blob-num js-line-number" data-line-number="9"></td>
+        <td id="file-install-sh-LC9" class="blob-code blob-code-inner js-file-line">
+</td>
+      </tr>
+      <tr>
+        <td id="file-install-sh-L10" class="blob-num js-line-number" data-line-number="10"></td>
+        <td id="file-install-sh-LC10" class="blob-code blob-code-inner js-file-line"><span class="pl-c1">echo</span> <span class="pl-s"><span class="pl-pds">'</span>Installing Unity.pkg<span class="pl-pds">'</span></span></td>
+      </tr>
+      <tr>
+        <td id="file-install-sh-L11" class="blob-num js-line-number" data-line-number="11"></td>
+        <td id="file-install-sh-LC11" class="blob-code blob-code-inner js-file-line">sudo installer -dumplog -package Unity.pkg -target /</td>
+      </tr>
+</tbody></table>
+
+
+  </div>
+
+  </div>
+  
+</div>
+
+      </div>
+      
+    </div>
+</div>
+</li>
+</ol>
+<p>This script could be more robust by retrying the download if it fails the first time. But, I haven’t had that happen yet, so, I haven’t had to come up with anything better. ;)</p>
+<h4 id="project-build-script">Project Build Script</h4>
+<p>Now that we have Unity3D installed, we can actually build our project. This script will build your project for three different platforms: Windows, Linux and OS X. If you want to support other platforms, just copy, paste, and change one of the examples. However, some platforms, such as iOS and Android require quit a few other dependencies. While I have gone to the trouble of getting an iOS project building in CI on Travis, I am not going to go into details in this post. If you are super interested in doing that, you can see how I did it on <a href="https://github.com/JonathanPorta/verb-ios/tree/master/scripts">another project</a>. (It was a pain in the ass. I had a lot of issues with Travis’ version of Xcode. Uhg.)</p>
+<ol>
+<li>In the <code>Scripts</code> folder, add another file named <code>build.sh</code>. <link rel="stylesheet" href="https://assets-cdn.github.com/assets/gist-embed-3cc724162479db25e452fdf621f2349adef3e742b53552c2a93f82d28156cb96.css"><div id="gist21527985" class="gist">
+    <div class="gist-file">
+      <div class="gist-data">
+        <div class="js-gist-file-update-container js-task-list-container file-box">
+  <div id="file-build-sh" class="file">
+    
+
+  <div itemprop="text" class="blob-wrapper data type-shell">
+      <table class="highlight tab-size js-file-line-container" data-tab-size="8">
+      <tbody><tr>
+        <td id="file-build-sh-L1" class="blob-num js-line-number" data-line-number="1"></td>
+        <td id="file-build-sh-LC1" class="blob-code blob-code-inner js-file-line"><span class="pl-c"><span class="pl-c">#!</span> /bin/sh</span></td>
+      </tr>
+      <tr>
+        <td id="file-build-sh-L2" class="blob-num js-line-number" data-line-number="2"></td>
+        <td id="file-build-sh-LC2" class="blob-code blob-code-inner js-file-line">
+</td>
+      </tr>
+      <tr>
+        <td id="file-build-sh-L3" class="blob-num js-line-number" data-line-number="3"></td>
+        <td id="file-build-sh-LC3" class="blob-code blob-code-inner js-file-line"><span class="pl-c"><span class="pl-c">#</span> Example build script for Unity3D project. See the entire example: <a class="vglnk" href="https://github.com/JonathanPorta/ci-build" rel="nofollow"><span>https</span><span>://</span><span>github</span><span>.</span><span>com</span><span>/</span><span>JonathanPorta</span><span>/</span><span>ci</span><span>-</span><span>build</span></a></span></td>
+      </tr>
+      <tr>
+        <td id="file-build-sh-L4" class="blob-num js-line-number" data-line-number="4"></td>
+        <td id="file-build-sh-LC4" class="blob-code blob-code-inner js-file-line">
+</td>
+      </tr>
+      <tr>
+        <td id="file-build-sh-L5" class="blob-num js-line-number" data-line-number="5"></td>
+        <td id="file-build-sh-LC5" class="blob-code blob-code-inner js-file-line"><span class="pl-c"><span class="pl-c">#</span> Change this the name of your project. This will be the name of the final executables as well.</span></td>
+      </tr>
+      <tr>
+        <td id="file-build-sh-L6" class="blob-num js-line-number" data-line-number="6"></td>
+        <td id="file-build-sh-LC6" class="blob-code blob-code-inner js-file-line">project=<span class="pl-s"><span class="pl-pds">"</span>ci-build<span class="pl-pds">"</span></span></td>
+      </tr>
+      <tr>
+        <td id="file-build-sh-L7" class="blob-num js-line-number" data-line-number="7"></td>
+        <td id="file-build-sh-LC7" class="blob-code blob-code-inner js-file-line">
+</td>
+      </tr>
+      <tr>
+        <td id="file-build-sh-L8" class="blob-num js-line-number" data-line-number="8"></td>
+        <td id="file-build-sh-LC8" class="blob-code blob-code-inner js-file-line"><span class="pl-c1">echo</span> <span class="pl-s"><span class="pl-pds">"</span>Attempting to build <span class="pl-smi">$project</span> for Windows<span class="pl-pds">"</span></span></td>
+      </tr>
+      <tr>
+        <td id="file-build-sh-L9" class="blob-num js-line-number" data-line-number="9"></td>
+        <td id="file-build-sh-LC9" class="blob-code blob-code-inner js-file-line">/Applications/Unity/Unity.app/Contents/MacOS/Unity \</td>
+      </tr>
+      <tr>
+        <td id="file-build-sh-L10" class="blob-num js-line-number" data-line-number="10"></td>
+        <td id="file-build-sh-LC10" class="blob-code blob-code-inner js-file-line">  -batchmode \</td>
+      </tr>
+      <tr>
+        <td id="file-build-sh-L11" class="blob-num js-line-number" data-line-number="11"></td>
+        <td id="file-build-sh-LC11" class="blob-code blob-code-inner js-file-line">  -nographics \</td>
+      </tr>
+      <tr>
+        <td id="file-build-sh-L12" class="blob-num js-line-number" data-line-number="12"></td>
+        <td id="file-build-sh-LC12" class="blob-code blob-code-inner js-file-line">  -silent-crashes \</td>
+      </tr>
+      <tr>
+        <td id="file-build-sh-L13" class="blob-num js-line-number" data-line-number="13"></td>
+        <td id="file-build-sh-LC13" class="blob-code blob-code-inner js-file-line">  -logFile <span class="pl-s"><span class="pl-pds">$(</span>pwd<span class="pl-pds">)</span></span>/unity.log \</td>
+      </tr>
+      <tr>
+        <td id="file-build-sh-L14" class="blob-num js-line-number" data-line-number="14"></td>
+        <td id="file-build-sh-LC14" class="blob-code blob-code-inner js-file-line">  -projectPath <span class="pl-s"><span class="pl-pds">$(</span>pwd<span class="pl-pds">)</span></span> \</td>
+      </tr>
+      <tr>
+        <td id="file-build-sh-L15" class="blob-num js-line-number" data-line-number="15"></td>
+        <td id="file-build-sh-LC15" class="blob-code blob-code-inner js-file-line">  -buildWindowsPlayer <span class="pl-s"><span class="pl-pds">"</span><span class="pl-s"><span class="pl-pds">$(</span>pwd<span class="pl-pds">)</span></span>/Build/windows/<span class="pl-smi">$project</span>.exe<span class="pl-pds">"</span></span> \</td>
+      </tr>
+      <tr>
+        <td id="file-build-sh-L16" class="blob-num js-line-number" data-line-number="16"></td>
+        <td id="file-build-sh-LC16" class="blob-code blob-code-inner js-file-line">  -quit</td>
+      </tr>
+      <tr>
+        <td id="file-build-sh-L17" class="blob-num js-line-number" data-line-number="17"></td>
+        <td id="file-build-sh-LC17" class="blob-code blob-code-inner js-file-line">
+</td>
+      </tr>
+      <tr>
+        <td id="file-build-sh-L18" class="blob-num js-line-number" data-line-number="18"></td>
+        <td id="file-build-sh-LC18" class="blob-code blob-code-inner js-file-line"><span class="pl-c1">echo</span> <span class="pl-s"><span class="pl-pds">"</span>Attempting to build <span class="pl-smi">$project</span> for OS X<span class="pl-pds">"</span></span></td>
+      </tr>
+      <tr>
+        <td id="file-build-sh-L19" class="blob-num js-line-number" data-line-number="19"></td>
+        <td id="file-build-sh-LC19" class="blob-code blob-code-inner js-file-line">/Applications/Unity/Unity.app/Contents/MacOS/Unity \</td>
+      </tr>
+      <tr>
+        <td id="file-build-sh-L20" class="blob-num js-line-number" data-line-number="20"></td>
+        <td id="file-build-sh-LC20" class="blob-code blob-code-inner js-file-line">  -batchmode \</td>
+      </tr>
+      <tr>
+        <td id="file-build-sh-L21" class="blob-num js-line-number" data-line-number="21"></td>
+        <td id="file-build-sh-LC21" class="blob-code blob-code-inner js-file-line">  -nographics \</td>
+      </tr>
+      <tr>
+        <td id="file-build-sh-L22" class="blob-num js-line-number" data-line-number="22"></td>
+        <td id="file-build-sh-LC22" class="blob-code blob-code-inner js-file-line">  -silent-crashes \</td>
+      </tr>
+      <tr>
+        <td id="file-build-sh-L23" class="blob-num js-line-number" data-line-number="23"></td>
+        <td id="file-build-sh-LC23" class="blob-code blob-code-inner js-file-line">  -logFile <span class="pl-s"><span class="pl-pds">$(</span>pwd<span class="pl-pds">)</span></span>/unity.log \</td>
+      </tr>
+      <tr>
+        <td id="file-build-sh-L24" class="blob-num js-line-number" data-line-number="24"></td>
+        <td id="file-build-sh-LC24" class="blob-code blob-code-inner js-file-line">  -projectPath <span class="pl-s"><span class="pl-pds">$(</span>pwd<span class="pl-pds">)</span></span> \</td>
+      </tr>
+      <tr>
+        <td id="file-build-sh-L25" class="blob-num js-line-number" data-line-number="25"></td>
+        <td id="file-build-sh-LC25" class="blob-code blob-code-inner js-file-line">  -buildOSXUniversalPlayer <span class="pl-s"><span class="pl-pds">"</span><span class="pl-s"><span class="pl-pds">$(</span>pwd<span class="pl-pds">)</span></span>/Build/osx/<span class="pl-smi">$project</span>.app<span class="pl-pds">"</span></span> \</td>
+      </tr>
+      <tr>
+        <td id="file-build-sh-L26" class="blob-num js-line-number" data-line-number="26"></td>
+        <td id="file-build-sh-LC26" class="blob-code blob-code-inner js-file-line">  -quit</td>
+      </tr>
+      <tr>
+        <td id="file-build-sh-L27" class="blob-num js-line-number" data-line-number="27"></td>
+        <td id="file-build-sh-LC27" class="blob-code blob-code-inner js-file-line">
+</td>
+      </tr>
+      <tr>
+        <td id="file-build-sh-L28" class="blob-num js-line-number" data-line-number="28"></td>
+        <td id="file-build-sh-LC28" class="blob-code blob-code-inner js-file-line"><span class="pl-c1">echo</span> <span class="pl-s"><span class="pl-pds">"</span>Attempting to build <span class="pl-smi">$project</span> for Linux<span class="pl-pds">"</span></span></td>
+      </tr>
+      <tr>
+        <td id="file-build-sh-L29" class="blob-num js-line-number" data-line-number="29"></td>
+        <td id="file-build-sh-LC29" class="blob-code blob-code-inner js-file-line">/Applications/Unity/Unity.app/Contents/MacOS/Unity \</td>
+      </tr>
+      <tr>
+        <td id="file-build-sh-L30" class="blob-num js-line-number" data-line-number="30"></td>
+        <td id="file-build-sh-LC30" class="blob-code blob-code-inner js-file-line">  -batchmode \</td>
+      </tr>
+      <tr>
+        <td id="file-build-sh-L31" class="blob-num js-line-number" data-line-number="31"></td>
+        <td id="file-build-sh-LC31" class="blob-code blob-code-inner js-file-line">  -nographics \</td>
+      </tr>
+      <tr>
+        <td id="file-build-sh-L32" class="blob-num js-line-number" data-line-number="32"></td>
+        <td id="file-build-sh-LC32" class="blob-code blob-code-inner js-file-line">  -silent-crashes \</td>
+      </tr>
+      <tr>
+        <td id="file-build-sh-L33" class="blob-num js-line-number" data-line-number="33"></td>
+        <td id="file-build-sh-LC33" class="blob-code blob-code-inner js-file-line">  -logFile <span class="pl-s"><span class="pl-pds">$(</span>pwd<span class="pl-pds">)</span></span>/unity.log \</td>
+      </tr>
+      <tr>
+        <td id="file-build-sh-L34" class="blob-num js-line-number" data-line-number="34"></td>
+        <td id="file-build-sh-LC34" class="blob-code blob-code-inner js-file-line">  -projectPath <span class="pl-s"><span class="pl-pds">$(</span>pwd<span class="pl-pds">)</span></span> \</td>
+      </tr>
+      <tr>
+        <td id="file-build-sh-L35" class="blob-num js-line-number" data-line-number="35"></td>
+        <td id="file-build-sh-LC35" class="blob-code blob-code-inner js-file-line">  -buildLinuxUniversalPlayer <span class="pl-s"><span class="pl-pds">"</span><span class="pl-s"><span class="pl-pds">$(</span>pwd<span class="pl-pds">)</span></span>/Build/linux/<span class="pl-smi">$project</span>.exe<span class="pl-pds">"</span></span> \</td>
+      </tr>
+      <tr>
+        <td id="file-build-sh-L36" class="blob-num js-line-number" data-line-number="36"></td>
+        <td id="file-build-sh-LC36" class="blob-code blob-code-inner js-file-line">  -quit</td>
+      </tr>
+      <tr>
+        <td id="file-build-sh-L37" class="blob-num js-line-number" data-line-number="37"></td>
+        <td id="file-build-sh-LC37" class="blob-code blob-code-inner js-file-line">
+</td>
+      </tr>
+      <tr>
+        <td id="file-build-sh-L38" class="blob-num js-line-number" data-line-number="38"></td>
+        <td id="file-build-sh-LC38" class="blob-code blob-code-inner js-file-line"><span class="pl-c1">echo</span> <span class="pl-s"><span class="pl-pds">'</span>Logs from build<span class="pl-pds">'</span></span></td>
+      </tr>
+      <tr>
+        <td id="file-build-sh-L39" class="blob-num js-line-number" data-line-number="39"></td>
+        <td id="file-build-sh-LC39" class="blob-code blob-code-inner js-file-line">cat <span class="pl-s"><span class="pl-pds">$(</span>pwd<span class="pl-pds">)</span></span>/unity.log</td>
+      </tr>
+</tbody></table>
+
+
+  </div>
+
+  </div>
+  
+</div>
+
+      </div>
+      
+    </div>
+</div>
+</li>
+<li>Change the project variable to better fit your project.</li>
+</ol>
+<p>You probably want to take a look at the <a href="http://docs.unity3d.com/Manual/CommandLineArguments.html">Unity3D Command Line docs</a> to get a better idea of the options available and how to customize your build parameters to your project.</p>
+<h3 id="step-3-setting-up-travis">Step 3: Setting up Travis</h3>
+<p>In order or Travis to know what to do we need to put a file named <code>.travis.yml</code> in the root of our git repository. To make things easy, install the <a href="https://github.com/travis-ci/travis.rb#readme">Travis cli gem</a>. After installing the travis gem, just run <code>travis init</code> from the root of your repository. For the language type enter <code>objective-c</code> this will ensure that our build executes on an OS X machine. Once done, commit and push your changes. You should be able to see the build start by logging into your Travis account.</p>
+<p><a href="https://jonathan.porta.codes/images/posts/2015/04/travis-ci-gem-install-travis-init.png"><img src="https://jonathan.porta.codes/images/posts/2015/04/travis-ci-gem-install-travis-init.png" alt="travis-cli-screenshot"></a></p>
+<p>If you want to create the Travis config by hand:<br>
+1. Create a file name <code>.travis.yml</code> in the root of your repository. <link rel="stylesheet" href="https://assets-cdn.github.com/assets/gist-embed-3cc724162479db25e452fdf621f2349adef3e742b53552c2a93f82d28156cb96.css"></p><div id="gist21529586" class="gist">
+    <div class="gist-file">
+      <div class="gist-data">
+        <div class="js-gist-file-update-container js-task-list-container file-box">
+  <div id="file-travis-yml" class="file">
+    
+
+  <div itemprop="text" class="blob-wrapper data type-yaml">
+      <table class="highlight tab-size js-file-line-container" data-tab-size="8">
+      <tbody><tr>
+        <td id="file-travis-yml-L1" class="blob-num js-line-number" data-line-number="1"></td>
+        <td id="file-travis-yml-LC1" class="blob-code blob-code-inner js-file-line"><span class="pl-c"><span class="pl-c">#</span> Example Travis config. See the entire example: <a class="vglnk" href="https://github.com/JonathanPorta/ci-build" rel="nofollow"><span>https</span><span>://</span><span>github</span><span>.</span><span>com</span><span>/</span><span>JonathanPorta</span><span>/</span><span>ci</span><span>-</span><span>build</span></a></span></td>
+      </tr>
+      <tr>
+        <td id="file-travis-yml-L2" class="blob-num js-line-number" data-line-number="2"></td>
+        <td id="file-travis-yml-LC2" class="blob-code blob-code-inner js-file-line">
+</td>
+      </tr>
+      <tr>
+        <td id="file-travis-yml-L3" class="blob-num js-line-number" data-line-number="3"></td>
+        <td id="file-travis-yml-LC3" class="blob-code blob-code-inner js-file-line"><span class="pl-ent">language</span>: <span class="pl-s">objective-c</span></td>
+      </tr>
+      <tr>
+        <td id="file-travis-yml-L4" class="blob-num js-line-number" data-line-number="4"></td>
+        <td id="file-travis-yml-LC4" class="blob-code blob-code-inner js-file-line"><span class="pl-ent">osx_image</span>: <span class="pl-s">xcode61</span></td>
+      </tr>
+      <tr>
+        <td id="file-travis-yml-L5" class="blob-num js-line-number" data-line-number="5"></td>
+        <td id="file-travis-yml-LC5" class="blob-code blob-code-inner js-file-line"><span class="pl-ent">rvm</span>:</td>
+      </tr>
+      <tr>
+        <td id="file-travis-yml-L6" class="blob-num js-line-number" data-line-number="6"></td>
+        <td id="file-travis-yml-LC6" class="blob-code blob-code-inner js-file-line">- <span class="pl-s">2.1.2</span></td>
+      </tr>
+      <tr>
+        <td id="file-travis-yml-L7" class="blob-num js-line-number" data-line-number="7"></td>
+        <td id="file-travis-yml-LC7" class="blob-code blob-code-inner js-file-line"><span class="pl-ent">install</span>:</td>
+      </tr>
+      <tr>
+        <td id="file-travis-yml-L8" class="blob-num js-line-number" data-line-number="8"></td>
+        <td id="file-travis-yml-LC8" class="blob-code blob-code-inner js-file-line">- <span class="pl-s">./Scripts/install.sh</span></td>
+      </tr>
+      <tr>
+        <td id="file-travis-yml-L9" class="blob-num js-line-number" data-line-number="9"></td>
+        <td id="file-travis-yml-LC9" class="blob-code blob-code-inner js-file-line"><span class="pl-ent">script</span>:</td>
+      </tr>
+      <tr>
+        <td id="file-travis-yml-L10" class="blob-num js-line-number" data-line-number="10"></td>
+        <td id="file-travis-yml-LC10" class="blob-code blob-code-inner js-file-line">- <span class="pl-s">./Scripts/build.sh</span></td>
+      </tr>
+</tbody></table>
+
+
+  </div>
+
+  </div>
+  
+</div>
+
+      </div>
+      
+    </div>
+</div>
+<br>
+2. Login to your Travis account and enable Travis for your project’s repository.<br>
+3. To make sure your Travis config is correct, you can use the <a href="http://lint.travis-ci.org/">Travis Linter</a><br>
+4. Commit and push your changes. You should be able to see the build start by logging into your Travis account.<p></p>
+<h3 id="step-4-put-your-built-assets-somewhere">Step 4: Put your built assets somewhere</h3>
+<p>If everything has went as planned, you should now have a project that gets built in Travis automatically everytime you push code to your repository. Yay! Except, we aren’t putting the built files anywhere, so let’s fix that!</p>
+<p>I am going to use S3 as the example, but you could put them anywhere. Travis makes it super easy to dump your assets in S3. You will need to first create an S3 bucket and copy your access credentials. We are going to use the travis command line interface to setup the deployment. It will encrypt our S3 credentials to keep them safe from prying eyes.</p>
+<ol>
+<li>Run <code>travis setup s3</code> from your repository’s root and follow the instructions. Checkout the <a href="http://docs.travis-ci.com/user/deployment/s3/">Travis S3 Deployment docs</a> if you get stuck on this part.</li>
+<li>Double check your <code>.travis.yml</code> to make sure that your S3 secret key is NOT in plaintext.</li>
+<li>Commit and push.</li>
+<li>Check the travis build output to see if anything went wrong. If not, your build files should be sitting in your S3 bucket ready to share with the world, or whoever.</li>
+</ol>
+<p>And, that’s it!</p>
+<h3 id="thats-all-folks">That’s all folks!</h3>
+<p>I haven’t done any automated testing with Unity3D yet, but, when I do I plan to update my CI scripts to run those tests and only deploy if the build is passing the test suite(s).</p>
+<p>I hope this post was helpful. Let me know what you think in the comments. Happy building!</p>
