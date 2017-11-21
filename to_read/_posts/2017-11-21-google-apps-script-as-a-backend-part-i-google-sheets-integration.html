@@ -1,0 +1,184 @@
+---
+title: "Google Apps Script as a Backend Part I: Google Sheets Integration"
+description: "Did you know that your Google Docs can be given APIs and even turned into WebApps? Do you want to learn how? This multi-part tutorial will get you started."
+link: "https://x-team.com/blog/google-apps-script-your-new-backend/"
+saved: "2017-11-21 17:44:58"
+---
+
+			<img class="post-author-avatar" src="https://res.cloudinary.com/dukp6c7f7/image/fetch/f_auto,fl_lossy,q_auto/https://dyjthiud1naa0.cloudfront.net/2017/07/Heroized_Ben_1490884805534-1499956821990.png" itemprop="image">
+
+			<ul class="post-header">
+				<li class="post-author-name" itemprop="author">
+						<a class="author-name" href="https://x-team.com/blog/author/rolando-benjamin-vaz-ferreira/">
+							<span class="byline-author" itemscope="" itemtype="http://schema.org/Person">
+								<span itemprop="name">Ben Ferreira</span>
+							</span>
+						</a>
+				</li>
+				<li class="post-date">
+					<span itemprop="datePublished" content="Nov 02, 2017">Nov 02, 2017</span>
+				</li>
+			</ul>
+
+			<h1 class="wrapper-m title post-title" itemprop="headline">Google Apps Script as a Backend Part I: Google Sheets Integration</h1>
+
+			<section class="clearfix wrapper-m post-body" itemprop="articleBody">
+				<p>If you are like me, when you have an idea, you like to jump on it and build a proof-of-concept app for it. That is all nice and well, but what if it is a shared idea and the other participants know nothing about coding?</p>
+
+<p>Have you ever tried explaining curl or postman to a complete beginner? The intricacies of how to properly make a POST request to fill the database with data can confuse any non-tech-savvy person.</p>
+
+<p>Well, it turns out that you do not really have to do it since just about everyone knows how to enter data in Google Sheets.</p>
+
+<p>In this multi-part guide, I will show you how you can use Google Docs with Google Apps Script — a flavor of Javascript used for programmatic control of Google Apps — as your backend, easily integrate it with a few of the Google Apps, and finally, expose it to the web, so your client app can consume it.</p>
+
+<p>In this first part, we will learn some of the fundamental interactions between Google Sheets and Google Apps Script.</p>
+
+<h2 id="googlesheetsgas">Google Sheets + GAS</h2>
+
+<p>This is going to be easy. Create a new folder in your Google Drive and give it a descriptive name, perhaps "GAS Tutorial". Within that, create a new Google Sheets file, and name it <code>Hello World</code>, because why not. Open the Hello World spreadsheet.</p>
+
+<p>You are greeted with the usual empty sheet. Here is where it gets interesting. Click on <code>Tools</code> -&gt; <code>Script Editor</code>, and a new window will take you to the GAS editor — not the best piece of editing software ever, but good enough for our current needs. Name this one <code>Hello World</code> as well, to make it obvious it goes together with the spreadsheet.</p>
+
+<p>In the editor, you will see the empty <code>myFunction</code> placeholder. However, before we get to writing our functions let us first get some necessary details out of the way, so delete the placeholder for now.</p>
+
+<p>To work with spreadsheets in GAS, we will make use of the <a href="https://developers.google.com/apps-script/reference/spreadsheet/">Spreadsheet service</a>.</p>
+
+<p>First, we will open the desired spreadsheet. To do that, we will need the ID of the spreadsheet, however. You can find it in the web browser's location field when the spreadsheet is open. The ID is the part between the <em>*</em>* of the URL, though yours will obviously be different. <br>
+  E.g.:
+  <code>docs.google.com/spreadsheets/d/**27AMFzNschc8zhDZJnpxTfZwHm8x0dKNSsVoB67116Cg**/edit#gid=0</code></p>
+
+<p>We start the file with the following code:</p>
+
+<pre><code class="hljs cs"><span class="hljs-keyword">var</span> spreadsheetId = <span class="hljs-string">'27AMFzNschc8zhDZJnpxTfZwHm8x0dKNSsVoB67116Cg'</span>  
+<span class="hljs-keyword">var</span> spreadsheet = SpreadsheetApp.openById(spreadsheetId);  
+</code></pre>
+
+<p><a href="https://developers.google.com/apps-script/reference/spreadsheet/spreadsheet-app"><code>SpreadsheetApp</code></a> is the most fundamental class we will be using to handle the Google Sheets CRUD, select ranges, select sheets, etc.</p>
+
+<p>Next, we will populate the sheet with some values, so we have something to work with.</p>
+
+<p>Let us create a price list.</p>
+
+<p>Append the following to the code:</p>
+
+<pre><code class="hljs cs"><span class="hljs-keyword">var</span> products = [  
+  [<span class="hljs-string">'lettuce'</span>, <span class="hljs-number">4</span>],
+  [<span class="hljs-string">'angus beef'</span>, <span class="hljs-number">10</span>],
+  [<span class="hljs-string">'black bread'</span>, <span class="hljs-number">2</span>],
+  [<span class="hljs-string">'butter'</span>, <span class="hljs-number">2.4</span>],
+  [<span class="hljs-string">'orange juice'</span>, <span class="hljs-number">4.5</span>]
+]
+</code></pre>
+
+<p>Each element of the <code>products</code> array is one row. Each element of the internal arrays is one column.</p>
+
+<p>Now that our price list data is prepared, it is time to add it to the sheet.</p>
+
+<pre><code class="hljs javascript"><span class="hljs-keyword">var</span> activeSheet = spreadsheet  
+  .getSheetByName(<span class="hljs-string">'Sheet1'</span>)
+
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">resetPriceList</span> (<span class="hljs-params">priceListSheet</span>) </span>{  
+  priceListSheet
+  .getRange(<span class="hljs-string">'a:b'</span>)
+  .clear()
+
+  priceListSheet
+  .getRange(<span class="hljs-string">'a1:b'</span> + products.length)
+  .setValues(products)
+}
+
+resetPriceList(activeSheet)
+
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">myFunction</span> (<span class="hljs-params"></span>) </span>{  
+  activeSheet
+  .appendRow([<span class="hljs-string">'white bread'</span>, <span class="hljs-number">1.75</span>])
+}
+</code></pre>
+
+<p>All right, so, what is happening here?</p>
+
+<p><a href="https://developers.google.com/apps-script/reference/spreadsheet/spreadsheet#getsheetbynamename"><code>Spreadsheet.getSheetByName()</code></a> will let you select a specific sheet within the spreadsheet by referencing its name and return its <a href="https://developers.google.com/apps-script/reference/spreadsheet/sheet"><code>Sheet</code></a> object.</p>
+
+<p>We then create a little function <code>resetPriceList()</code> that will</p>
+
+<ol>
+<li>select a range with <a href="https://developers.google.com/apps-script/reference/spreadsheet/sheet#getrangea1notation"><code>Sheet.getRange()</code></a>,  </li>
+<li>clear it completely with <a href="https://developers.google.com/apps-script/reference/spreadsheet/range#clear()"><code>Range.clear()</code></a>,  </li>
+<li>get a range of the exact dimensions of our <code>products</code> nested array and  </li>
+<li>fill it with the <code>products</code> nested array's values.</li>
+</ol>
+
+<p>Finally, we use the menu option <code>run</code> -&gt; <code>run function</code> -&gt; <code>myFunction</code> to run everything and append another row to the file.</p>
+
+<h2 id="conclusion">Conclusion</h2>
+
+<p>This is it for this part. You now know the basic operations to generate spreadsheets with code. If you are having any problems, you can use <code>Logger.log()</code> to print into the logger (<code>ctrl+enter</code> or <code>View</code> -&gt; <code>Logs</code>).</p>
+
+<p>In the next part, we will turn this script into a very basic web app backend by exposing its functionalities to the internet with a rudimentary API. Stay tuned!</p>
+
+<p>Below, you can find the full code in one piece:</p>
+
+<pre><code class="hljs javascript"><span class="hljs-keyword">var</span> spreadsheetId = <span class="hljs-string">'17NMFzNschc8zhDZJnpxTfZwHm8x0dKNSnVoBl7016Cg'</span>  
+<span class="hljs-keyword">var</span> spreadsheet = SpreadsheetApp.openById(spreadsheetId)
+
+<span class="hljs-keyword">var</span> products = [  
+  [<span class="hljs-string">'lettuce'</span>, <span class="hljs-number">4</span>],
+  [<span class="hljs-string">'angus beef'</span>, <span class="hljs-number">10</span>],
+  [<span class="hljs-string">'black bread'</span>, <span class="hljs-number">2</span>],
+  [<span class="hljs-string">'butter'</span>, <span class="hljs-number">2.4</span>],
+  [<span class="hljs-string">'orange juice'</span>, <span class="hljs-number">4.5</span>]
+]
+
+<span class="hljs-keyword">var</span> activeSheet = spreadsheet  
+  .getSheetByName(<span class="hljs-string">'Sheet1'</span>)
+
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">resetPriceList</span> (<span class="hljs-params">priceListSheet</span>) </span>{  
+  priceListSheet
+  .getRange(<span class="hljs-string">'a:b'</span>)
+  .clear()
+
+  priceListSheet
+  .getRange(<span class="hljs-string">'a1:b'</span> + products.length)
+  .setValues(products)
+}
+
+resetPriceList(activeSheet)
+
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">myFunction</span> (<span class="hljs-params"></span>) </span>{  
+  activeSheet
+  .appendRow([<span class="hljs-string">'white bread'</span>, <span class="hljs-number">1.75</span>])
+}
+</code></pre>
+			</section>
+
+			<div class="clearfix wrapper-m post-footer">
+	<ul class="button-action save-to dropit">
+		<li class="option-box dropit-trigger">
+			<a class="selector" href="https://x-team.com/blog/google-apps-script-your-new-backend/#">Save to ...</a>
+			<ul class="option-list dropit-submenu">
+				<li class="icon-pocket"><a target="_blank" href="https://getpocket.com/edit?url=https://x-team.com/blog/google-apps-script-your-new-backend/">Pocket</a></li>
+				<li class="icon-pinboard"><a target="_blank" href="https://pinboard.in/add?url=https://x-team.com/blog/google-apps-script-your-new-backend/">Pinboard</a></li>
+				<li class="icon-instapaper"><a target="_blank" href="http://www.instapaper.com/hello2?url=https://x-team.com/blog/google-apps-script-your-new-backend/">Instapaper</a></li>
+			</ul>
+		</li>
+	</ul>
+
+	
+	<ul class="button-action posted-under dropit">
+		<li class="option-box dropit-trigger">
+			<a class="selector" href="https://x-team.com/blog/google-apps-script-your-new-backend/#">Tags ...</a>
+				<ul class="option-list dropit-submenu">
+					<li>
+						<a href="https://x-team.com/blog/tag/code/" title="code" class="tag-465">code</a>
+					</li>
+					<li>
+						<a href="https://x-team.com/blog/tag/javascript/" title="javascript" class="tag-459">javascript</a>
+					</li>
+					<li>
+						<a href="https://x-team.com/blog/tag/google-apps-script/" title="google apps script" class="tag-583">google apps script</a>
+					</li>
+				</ul>
+		</li>
+	</ul>
+</div>
+		
