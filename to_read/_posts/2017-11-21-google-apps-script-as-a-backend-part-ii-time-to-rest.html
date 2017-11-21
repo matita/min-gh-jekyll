@@ -1,0 +1,220 @@
+---
+title: "Google Apps Script as a Backend Part II: Time to REST"
+description: "You've learned how to throw around spreadsheet data, but now, it's time to let them have some REST, so others can play with them too."
+link: "https://x-team.com/blog/google-apps-script-rest/"
+saved: "2017-11-21 17:45:29"
+---
+
+			<img class="post-author-avatar" src="https://res.cloudinary.com/dukp6c7f7/image/fetch/f_auto,fl_lossy,q_auto/https://dyjthiud1naa0.cloudfront.net/2017/07/Heroized_Ben_1490884805534-1499956821990.png" itemprop="image">
+
+			<ul class="post-header">
+				<li class="post-author-name" itemprop="author">
+						<a class="author-name" href="https://x-team.com/blog/author/rolando-benjamin-vaz-ferreira/">
+							<span class="byline-author" itemscope="" itemtype="http://schema.org/Person">
+								<span itemprop="name">Ben Ferreira</span>
+							</span>
+						</a>
+				</li>
+				<li class="post-date">
+					<span itemprop="datePublished" content="Nov 10, 2017">Nov 10, 2017</span>
+				</li>
+			</ul>
+
+			<h1 class="wrapper-m title post-title" itemprop="headline">Google Apps Script as a Backend Part II: Time to REST</h1>
+
+			<section class="clearfix wrapper-m post-body" itemprop="articleBody">
+				<p>In <a href="https://x-team.com/blog/google-apps-script-your-new-backend/">Part I</a> of the tutorial, we handled very basic data retrieval from our "database", i.e., spreadsheet. Today, we will build a basic "REST-ish" API to access it. It will not adhere to all the rules of REST because of some Google-Apps-Script limitations, but it will be intuitive enough for anyone who has ever worked with REST. It will also be very simplistic, since the point of the tutorial is to give you a basic understanding of how this could easily be done, rather than building a production-ready app.</p>
+
+<h2 id="givinggasarest">Giving GAS a REST</h2>
+
+<p>Before we delve into the not-so-gory details, we need to improve some details regarding our script from <a href="https://x-team.com/blog/google-apps-script-your-new-backend/">Part I</a>.</p>
+
+<p>First, having our script inextricably bound to our spreadsheet file is a bad idea. Thus, go to <br>
+  <a href="https://script.google.com/">https://script.google.com/</a> and start a new project there. This project will replace our previous file-bound script.</p>
+
+<p>Name the project whatever you want. Then delete <code>Code.gs</code> and create the following files:</p>
+
+<ul>
+<li>config.gs</li>
+<li>router.gs</li>
+<li>routes.gs</li>
+<li>svc_priceList.gs</li>
+<li>repo_priceList.gs</li>
+</ul>
+
+<p>Before we continue, keep in mind, that you do not need to import the various files in one another. All the variables and functions you declare in all files share the same global scope, so be careful you do not overwrite any of them accidentally.</p>
+
+<p>Note, everything is wrapped in functions, because, otherwise, the order of files influences the availability of variables, and we do not want to have to keep track of that at this time.</p>
+
+<p>Now, the fun begins!</p>
+
+<h3 id="configgs">config.gs</h3>
+
+<p>This file will, as you may have expected hold our "environment variables" and general config. Mine looks as follows:</p>
+
+<pre><code class="hljs javascript"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">Config</span>(<span class="hljs-params"></span>) </span>{  
+  spreadsheetId = <span class="hljs-string">'1RhG_TiNYXmZFqk7ocep9a9SGEcu7hg6etzAxi_XErhA'</span>
+  spreadsheet = SpreadsheetApp.openById(<span class="hljs-keyword">this</span>.spreadsheetId)  
+  activeSheet = <span class="hljs-keyword">this</span>.spreadsheet.getSheetByName(<span class="hljs-string">'Sheet1'</span>)
+
+  <span class="hljs-keyword">return</span> {
+    spreadsheetId: spreadsheetId,
+    spreadsheet: spreadsheet,
+    activeSheet: activeSheet
+  }
+}
+</code></pre>
+
+<p>Nothing new or complicated here. Just make sure you set the spreadsheetId to the same one you used in Part I (or create a new copy thereof and set it to that).</p>
+
+<h3 id="routergs">router.gs</h3>
+
+<p>This is where it gets interesting. Here is the beginning of the code. Let us go through it line by line:</p>
+
+<pre><code class="hljs javascript"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">doGet</span>(<span class="hljs-params">e</span>) </span>{  
+  <span class="hljs-keyword">var</span> result = route(<span class="hljs-string">'get'</span>, e.parameter[<span class="hljs-string">'q'</span>])
+  <span class="hljs-keyword">return</span> respond(<span class="hljs-built_in">JSON</span>.stringify(result, <span class="hljs-number">0</span>, <span class="hljs-number">2</span>))
+}
+
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">respond</span>(<span class="hljs-params">response</span>) </span>{  
+  <span class="hljs-keyword">return</span> ContentService
+  .createTextOutput(response)
+  .setMimeType(ContentService.MimeType.JSON)
+}
+</code></pre>
+
+<p>GAS Web Apps support only GET and POST requests. When one of those is received, either the <code>doGet(e)</code> or <code>doPost(e)</code> function is executed. You can find a full property list of the event <code>e</code> <a href="https://developers.google.com/apps-script/guides/web">here</a>, along with a short general explanation of GAS Web Apps and how to make them happen.</p>
+
+<p>Our first function, <code>doGet(e)</code> receives the GET request, calls the router's <code>route</code> function with the request type and the first query parameter under the key <code>q</code> (<code>e.parameters</code> contains an array for each key, while <code>e.parameter</code> contains only the first element of a potential multi-element key). It then JSONifies the result and passes it to <code>respond()</code>. The latter then fires up <a href="https://developers.google.com/apps-script/reference/content/content-service">ContentService</a>, which serves a <a href="https://developers.google.com/apps-script/reference/content/text-output.html">TextOutput</a> back to the client.</p>
+
+<p>The most interesting is the <code>route()</code> function, however.</p>
+
+<pre><code class="hljs javascript"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">route</span>(<span class="hljs-params">method, path, data</span>) </span>{  
+  <span class="hljs-keyword">if</span> (!path) <span class="hljs-keyword">return</span> { error: <span class="hljs-string">'You will need to be a bit more specific...'</span> }
+  <span class="hljs-keyword">var</span> routingPath = path.split(<span class="hljs-string">'/'</span>)
+  <span class="hljs-keyword">var</span> routes = Routes()
+
+  <span class="hljs-keyword">if</span> (!routes[routingPath[<span class="hljs-number">0</span>]]) <span class="hljs-keyword">return</span> { error: <span class="hljs-string">'That route does not exist'</span>, routingPath: routingPath }
+
+  <span class="hljs-keyword">try</span> {
+    <span class="hljs-keyword">return</span> routes[routingPath[<span class="hljs-number">0</span>]][method](routingPath[<span class="hljs-number">1</span>], {data: data, path: path })
+  } <span class="hljs-keyword">catch</span>(e) {
+    <span class="hljs-keyword">return</span> e
+  }
+}
+</code></pre>
+
+<p>This is the rudimentary router we will use to handle requests. <br>
+<code>route()</code> expects <code>path</code> to be something along the lines of <code>https://script.google.com/.../exec?q=&lt;REST-style-path&gt;</code>.
+In our specific example, the <code>REST-style-path</code> should be something like <code>priceList</code> or <code>priceList/a1</code>, or <code>priceList/a1:b3</code>.</p>
+
+<p>The function starts out with a simple check for <code>q</code>'s existence, then splits the path and checks if we have any routes defined (in <code>routes.gs</code>) for whatever the first part of our desired route is (i.e. <code>priceList</code> in our case).</p>
+
+<p>If it exists, we then call the priceList service, which we can find defined in <code>svc_priceList.gs</code> and referenced in <code>routes.gs</code>.</p>
+
+<p>We will get to the service in a minute. First, we need to take a look at <code>routes.gs</code>. The route definition file is really simple.</p>
+
+<h3 id="routesgs">routes.gs</h3>
+
+<pre><code class="hljs cs"><span class="hljs-function">function <span class="hljs-title">Routes</span>(<span class="hljs-params"></span>) </span>{  
+  <span class="hljs-keyword">var</span> priceListService = PriceListService()
+  <span class="hljs-keyword">return</span> {
+    priceList: {
+      <span class="hljs-keyword">get</span>: priceListService.<span class="hljs-keyword">get</span>
+    }
+  }
+}
+</code></pre>
+
+<p>Not much to explain here. A simple object with the routes defined inside.</p>
+
+<p>And this gets us to the <code>priceListService</code>, i.e. <code>svc_priceList.gs</code>.</p>
+
+<h3 id="svc_pricelistgs">svc_priceList.gs</h3>
+
+<pre><code class="hljs javascript"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">PriceListService</span>(<span class="hljs-params"></span>) </span>{  
+  <span class="hljs-keyword">var</span> priceListRepository = PriceListRepository()
+  <span class="hljs-keyword">return</span> {
+    get: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">id, data</span>) </span>{
+      <span class="hljs-keyword">return</span> !id
+      ? priceListRepository.get(<span class="hljs-literal">null</span>, data)
+      : priceListRepository.get(id, data)
+    }
+  }
+}
+</code></pre>
+
+<p>The priceListService is the place you want to stick your business logic. Since we do not have any at the moment, it simply defines a <code>get</code> function and then passes the arguments onwards to the repository in a format that depends on the existence of the <code>id</code> argument — essentially, this is a <code>get all</code> vs <code>get many</code> vs <code>get one</code> decision.</p>
+
+<p>And once the decision is made, we have to look at our final layer, the <code>repo_priceList.gs</code>, i.e. the <code>priceListRepository</code>.</p>
+
+<h3 id="repo_pricelistgs">repo_priceList.gs</h3>
+
+<pre><code class="hljs javascript"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">PriceListRepository</span>(<span class="hljs-params"></span>) </span>{  
+  <span class="hljs-keyword">var</span> activeSheet = Config().activeSheet
+  <span class="hljs-keyword">return</span> {
+    get: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">id</span>) </span>{
+      <span class="hljs-keyword">return</span> id
+      ? activeSheet.getRange(id).getValues()
+      : activeSheet.getRange(<span class="hljs-string">'a1:b'</span>)
+        .getValues()
+        .filter(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">row</span>) </span>{ <span class="hljs-keyword">return</span> !!row[<span class="hljs-number">0</span>] })
+    }
+  }
+}
+</code></pre>
+
+<p>Another simple file that holds the data CRUD logic. For now, it only contains the option to <code>get</code> data based on the presence of an <code>id</code>, which can be either <code>null</code>, a single cell in a1notation, e.g. <code>a1</code>, or a range in a1notation, e.g. <code>a1:b4</code>.</p>
+
+<p>If the <code>id</code> exists, it will return the desired cell or range.</p>
+
+<p>If the <code>id</code> does not exist, the function will return the complete A and B columns, filtered for empty rows.</p>
+
+<h2 id="conclusion">Conclusion</h2>
+
+<p>And that is pretty much all there is to writing a REST-ish API for GAS. Of course, it is not an ideal system, but with a bit of imagination, you can do plenty.</p>
+
+<p>All that is left for today is for you to click <code>Publish -&gt; Deploy as web app</code>, set the desired values and click <code>Deploy</code>.</p>
+
+<p>You will get the URL for the web app. To pass query parameters, simply add <code>?q=</code> after <code>/exec</code> or <code>/dev</code> of that URL.</p>
+
+<p>You may have to give the app some permissions, for which you will be prompted.</p>
+
+<p>I will leave the implementation of <code>doPost(e)</code> to your imagination, but with the mini-framework we built, it should be trivial. Check <a href="https://developers.google.com/apps-script/guides/web">this page</a> to see what kind of parameters you get with the POST request.</p>
+
+<p>This is all, for now. In Part III, we will cover our first cross-app integration, however, so make sure you check back next week.</p>
+
+<p>Merry Coding!</p>
+			</section>
+
+			<div class="clearfix wrapper-m post-footer">
+	<ul class="button-action save-to dropit">
+		<li class="option-box dropit-trigger">
+			<a class="selector" href="https://x-team.com/blog/google-apps-script-rest/?utm_source=SitePoint&amp;utm_medium=email&amp;utm_campaign=Versioning#">Save to ...</a>
+			<ul class="option-list dropit-submenu">
+				<li class="icon-pocket"><a target="_blank" href="https://getpocket.com/edit?url=https://x-team.com/blog/google-apps-script-rest/">Pocket</a></li>
+				<li class="icon-pinboard"><a target="_blank" href="https://pinboard.in/add?url=https://x-team.com/blog/google-apps-script-rest/">Pinboard</a></li>
+				<li class="icon-instapaper"><a target="_blank" href="http://www.instapaper.com/hello2?url=https://x-team.com/blog/google-apps-script-rest/">Instapaper</a></li>
+			</ul>
+		</li>
+	</ul>
+
+	
+	<ul class="button-action posted-under dropit">
+		<li class="option-box dropit-trigger">
+			<a class="selector" href="https://x-team.com/blog/google-apps-script-rest/?utm_source=SitePoint&amp;utm_medium=email&amp;utm_campaign=Versioning#">Tags ...</a>
+				<ul class="option-list dropit-submenu">
+					<li>
+						<a href="https://x-team.com/blog/tag/code/" title="code" class="tag-465">code</a>
+					</li>
+					<li>
+						<a href="https://x-team.com/blog/tag/javascript/" title="javascript" class="tag-459">javascript</a>
+					</li>
+					<li>
+						<a href="https://x-team.com/blog/tag/google-apps-script/" title="google apps script" class="tag-583">google apps script</a>
+					</li>
+				</ul>
+		</li>
+	</ul>
+</div>
+		
