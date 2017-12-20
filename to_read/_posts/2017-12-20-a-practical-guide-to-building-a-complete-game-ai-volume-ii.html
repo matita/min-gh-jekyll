@@ -1,0 +1,234 @@
+---
+title: "A Practical Guide to Building a Complete Game AI: Volume II"
+description: "Part 2 covers unit goals and pathfinding."
+link: "https://www.gamedev.net/articles/programming/artificial-intelligence/a-practical-guide-to-building-a-complete-game-a-r785/"
+saved: "2017-12-20 14:43:17"
+---
+
+<meta itemprop="mainEntityOfPage" content="https://www.gamedev.net/articles/programming/artificial-intelligence/a-practical-guide-to-building-a-complete-game-a-r785/">
+<span>10/12/99 05:35 PM</span>
+<meta itemprop="dateModified" content="1999-10-12T15:35:00Z">
+<meta itemprop="datePublished" content="1999-10-12T15:35:00Z">
+<meta itemprop="author" content="Myopic Rhino">
+<meta itemprop="headline" content="A Practical Guide to Building a Complete Game AI: Volume II">
+<div itemprop="publisher" itemscope="" itemtype="https://schema.org/Organization">
+<meta itemprop="name" content="GameDev.net">
+<div itemprop="logo" itemscope="" itemtype="https://schema.org/ImageObject">
+<meta itemprop="url" content="https://www.gamedev.net/uploads/defaults/gamedev-logo-500px-blacktext.png">
+<meta itemprop="width" content="424">
+<meta itemprop="height" content="86">
+</div>
+</div>
+<div class="ipsPageHeader ipsClearfix">
+<div class="ipsPos_right ipsResponsive_noFloat ipsResponsive_hidePhone">
+<div data-followapp="cms" data-followarea="records1" data-followid="785" data-controller="core.front.core.followButton">
+<span class="ipsType_light ipsType_blendLinks ipsResponsive_hidePhone ipsResponsive_inline"><i class="fa fa-info-circle"></i> <a href="https://www.gamedev.net/login/" title="Go to the sign in page">Sign in to follow this</a>&nbsp;&nbsp;</span>
+<div class="ipsFollow ipsPos_middle ipsButton ipsButton_link ipsButton_verySmall ipsButton_disabled" data-role="followButton">
+<span>Followers</span>
+<span class="ipsCommentCount">0</span>
+</div>
+</div>
+</div>
+<h1 class="ipsType_pageTitle ipsContained_container">
+<div class="ipsType_break ipsContained">A Practical Guide to Building a Complete Game AI: Volume II</div>
+<meta itemprop="name" content="A Practical Guide to Building a Complete Game AI: Volume II">
+</h1>
+<div class="ipsType_light" itemprop="articleSection">Artificial Intelligence</div>
+<div itemprop="aggregateRating" itemscope="" itemtype="http://schema.org/AggregateRating">
+<meta itemprop="ratingValue" content="5">
+<meta itemprop="reviewCount" content="1">
+<meta itemprop="bestRating" content="5">
+<div class="ipsClearfix ipsRating  ipsRating_large">
+<ul class="ipsRating_collective">
+<li class="ipsRating_on">
+<i class="fa fa-star"></i>
+</li>
+<li class="ipsRating_on">
+<i class="fa fa-star"></i>
+</li>
+<li class="ipsRating_on">
+<i class="fa fa-star"></i>
+</li>
+<li class="ipsRating_on">
+<i class="fa fa-star"></i>
+</li>
+<li class="ipsRating_on">
+<i class="fa fa-star"></i>
+</li>
+</ul>
+</div>&nbsp;&nbsp; <span class="ipsType_normal ipsType_light"><a href="https://www.gamedev.net/articles/programming/artificial-intelligence/a-practical-guide-to-building-a-complete-game-a-r785/#replies">(0 reviews)</a></span>
+</div>
+</div>
+<hr class="ipsHr">
+<div class="ipsPhotoPanel ipsPhotoPanel_tiny ipsClearfix ipsSpacer_bottom">
+<a href="https://www.gamedev.net/profile/6-dave-astle/" data-ipshover="" data-ipshover-target="https://www.gamedev.net/profile/6-dave-astle/?do=hovercard" class="ipsUserPhoto ipsUserPhoto_tiny" title="Go to Myopic Rhino's profile">
+<img src="https://secure.gravatar.com/avatar/16f4f23aa8088c2c27c829623874b42e?d=https://www.gamedev.net/uploads/monthly_2017_08/M.png.3d2e4bcade48bd80a1d6554f9c036e99.png" alt="" data-pagespeed-url-hash="1622229000" onload="pagespeed.CriticalImages.checkImageForCriticality(this);"></a>
+<div>
+<p itemprop="name" class="ipsType_reset ipsType_large ipsType_blendLinks">
+By Geoff Howland
+<!--Geoff Howland-->
+</p>
+<ul class="ipsList gd_articleByline">
+<li><time datetime="1999-10-12T15:35:00Z" title="10/12/99 05:35  PM" data-short="18 yr">October 12, 1999</time></li>
+<li>Posted By
+<a href="https://www.gamedev.net/profile/6-dave-astle/" data-ipshover="" data-ipshover-target="https://www.gamedev.net/profile/6-dave-astle/?do=hovercard&amp;referrer=https%253A%252F%252Fwww.gamedev.net%252Farticles%252Fprogramming%252Fartificial-intelligence%252Fa-practical-guide-to-building-a-complete-game-a-r785%252F" title="Go to Myopic Rhino's profile">
+Myopic Rhino
+</a>
+</li>
+<!--
+				
+					Geoff Howland
+				
+			
+				
+			
+				
+			
+				
+					Part 2 covers unit goals and pathfinding.
+				
+			
+				
+			-->
+</ul>
+</div>
+</div>
+<div class="ipsContained ipsSpacer_top">
+<div class="ipsClearfix">
+<div itemprop="image" itemscope="" itemtype="https://schema.org/ImageObject">
+<img itemprop="image" src="https://www.gamedev.net/uploads/defaults/xgamedev-g-new-50-ink.png.pagespeed.ic.N574bRmDIg.webp" data-pagespeed-url-hash="3455614889" onload="pagespeed.CriticalImages.checkImageForCriticality(this);">
+<meta itemprop="url" content="https://www.gamedev.net/uploads/defaults/gamedev-g-new-50-ink.png">
+<meta itemprop="width" content="50">
+<meta itemprop="height" content="50">
+</div>
+<section itemprop="articleBody" class="ipsType_richText ipsType_normal" data-controller="core.front.core.lightboxedImages">Artificial Intelligence (AI) is based on making intelligent looking decisions, for the units in our games to look intelligent they have to perform actions that seem reasonable for the situations they are in.<br>
+<br>
+In a Real-Time Strategy (RTS) type game these actions would consist of moving, patrolling, avoiding obstacles, targeting enemies and pursuing them. Lets take a look at what it would take to implement each of these actions.<br>
+<br>
+[size="5"]<span>Movement</span><br>
+<br>
+<p><a href="https://www.gamedev.net/uploads/monthly_06_2011/ccs-8549-0-55619400-1307095318.jpg" class="ipsAttachLink ipsAttachLink_image" data-ipslightbox="" data-ipslightbox-group="g59543"><img data-fileid="2710" src="https://www.gamedev.net/uploads/monthly_06_2011/ccs-8549-0-55619400-1307095318.jpg" class="ipsImage ipsImage_thumbnailed" alt="moving.jpg" data-pagespeed-url-hash="1019877989" onload="pagespeed.CriticalImages.checkImageForCriticality(this);"></a> </p><br>
+Moving, in its most basic form, consists of simply advancing from one set of coordinates to another set over a period of time. This can be performed easily by finding a distance vector and multiplying it by the speed the unit is moving and the time since we last calculated the position.<br>
+<br>
+Because we are working from a mouse based input system, we don't expect the user to have to make all the movements around obstacles like they would in a joystick or first-person shooter. The way to keep the user from having to click their way around obstacles is to create an action queue so that we can have more than one action in a row completed. This way if a path has to avoid an obstacle we can add the additional paths in front of the final destination to walk the unit around the obstacle without player intervention.<br>
+<br>
+<br>
+[size="5"]<span>Patrolling</span><br>
+<br>
+<p><a href="https://www.gamedev.net/uploads/monthly_06_2011/ccs-8549-0-57680900-1307095340.jpg" class="ipsAttachLink ipsAttachLink_image" data-ipslightbox="" data-ipslightbox-group="g59543"><img data-fileid="2711" src="https://www.gamedev.net/uploads/monthly_06_2011/ccs-8549-0-57680900-1307095340.jpg" class="ipsImage ipsImage_thumbnailed" alt="patrol.jpg" data-pagespeed-url-hash="11390679" onload="pagespeed.CriticalImages.checkImageForCriticality(this);"></a></p><br>
+Patrolling consists of moving to a series of specified positions in order. At the time when a unit has moved to a destination and has nowhere else to go, we can compare his current position to his list of patrol points and set a new destination to the one after where he is closest to.<br>
+<br>
+There isn't a lot to this, but having units moving on the screen, as opposed to standing still and waiting, makes the world look a lot more alive and gives them a lot less chance of being snuck up on and catching intruders.<br>
+<br>
+<br>
+[size="5"]<span>Obstacle Avoidance</span><br>
+<br>
+<p><a href="https://www.gamedev.net/uploads/monthly_06_2011/ccs-8549-0-51772600-1307095366.jpg" class="ipsAttachLink ipsAttachLink_image" data-ipslightbox="" data-ipslightbox-group="g59543"><img data-fileid="2712" src="https://www.gamedev.net/uploads/monthly_06_2011/ccs-8549-0-51772600-1307095366.jpg" class="ipsImage ipsImage_thumbnailed" alt="obstacles.jpg" data-pagespeed-url-hash="2827016816" onload="pagespeed.CriticalImages.checkImageForCriticality(this);"></a><br>
+</p><br>
+Avoidance algorithms require the understanding of how your maps are going to work and how you want your units to interact with them while moving around. In our case we are going to assume an outdoor environment with relatively small and simple obstacles such as small buildings and objects. We will also assume that you cannot go inside an obstacle and that obstacles are convex polygons with 4 vertices.<br>
+<br>
+In an environment such as this we are mostly dealing with open movement and obstacles that have to be avoided can be with only 1-2 avoidance movements.<br>
+<br>
+<p> <a href="https://www.gamedev.net/uploads/monthly_06_2011/ccs-8549-0-98675700-1307095388.jpg" class="ipsAttachLink ipsAttachLink_image" data-ipslightbox="" data-ipslightbox-group="g59543"><img data-fileid="2713" src="https://www.gamedev.net/uploads/monthly_06_2011/ccs-8549-0-98675700-1307095388.jpg" class="ipsImage ipsImage_thumbnailed" alt="action_queue.jpg" data-pagespeed-url-hash="199651406" onload="pagespeed.CriticalImages.checkImageForCriticality(this);"></a></p> <br>
+In the example to the left we have a very thin 4 point poly that is between the unit and the destination. In this case we move away from the closest vertex to the destination and move several units away in the perpendicular angle from the unit's collision. This gives us the buffer space we need to move around the obstacle.<br>
+<br>
+Obstacle avoidance has to be determined by the type of the obstacles you are going to be providing. In this simple example we are going to use convex 4 point polygons, which will usually be in a diamond or square shape. Because of these obstacle limitations we can simply find the edge closest to the destination which the unit trying to get to and move out from the obstacle a little thereby creating a simple way to avoid obstacles which works fairly well as long as obstacles dont get too close together.<br>
+<br>
+When you want to get into some more advanced path finding algorithms, you should look into A*, which is a popular algorithm for finding the shortest path through very maze-like areas. Beyond A* there are various steering algorithms for gradually moving around obstacles and other more hard-coded situations such as creating funneling intersections that can be used to get to different areas of the map.<br>
+<br>
+<br clear="all"> [size="5"]<span>Targeting Enemies</span><br>
+<br>
+<p><a href="https://www.gamedev.net/uploads/monthly_06_2011/ccs-8549-0-88093000-1307095426.jpg" class="ipsAttachLink ipsAttachLink_image" data-ipslightbox="" data-ipslightbox-group="g59543"><img data-fileid="2714" src="https://www.gamedev.net/uploads/monthly_06_2011/ccs-8549-0-88093000-1307095426.jpg" class="ipsImage ipsImage_thumbnailed" alt="aiming.jpg" data-pagespeed-url-hash="1423322787" onload="pagespeed.CriticalImages.checkImageForCriticality(this);"></a></p><br>
+Targeting for other units will greatly depend on what you want your player to be doing in your game. You may want your player's units to automatically fire on enemies they see, so that player can devote themselves to the big picture. You may want your units to only attack if specifically told to keep your player's attention on the units and their surroundings.<br>
+<br>
+Either way, you will want your enemies to be on the look out for the player's units to provide the challenge of on-the-ball enemies.<br>
+<br>
+In a situation where you have split up your directions 8 ways, you can assume that for a unit to be facing another unit, within vision range, they must be either directly in front of the unit or in one of the adjacent directions. A simple test to determine if the unit is within maximum sight distance and is in one of these three directions from the unit can give you good result with a minimal amount of time to test cases.<br>
+<br>
+Of course you will want to add in a test for obstacles to see if the units are blocked, most likely you can use the same test for obstacle avoidance for this, as you usually either have a clear path or not . Adding in height to visibility testing will of course totally change the nature of these tests, but that is for another article.<br>
+<br>
+<br>
+[size="5"]<span>Pursuit</span><br>
+<br>
+<p><a href="https://www.gamedev.net/uploads/monthly_06_2011/ccs-8549-0-46181700-1307095452.jpg" class="ipsAttachLink ipsAttachLink_image" data-ipslightbox="" data-ipslightbox-group="g59543"><img data-fileid="2715" src="https://www.gamedev.net/uploads/monthly_06_2011/ccs-8549-0-46181700-1307095452.jpg" class="ipsImage ipsImage_thumbnailed" alt="pursuit.jpg" data-pagespeed-url-hash="3345413223" onload="pagespeed.CriticalImages.checkImageForCriticality(this);"></a></p><br>
+Once your enemies have found a target, you won't want them to just wander around aimlessly if they lose sight of their prey. At this point you need to make a choice about how you wish to handle your searching though. Up until now we have only talked about spotting units based on actually being able to see them. In some cases this may get a little tricky when pursuing an enemy, so you may opt to cheat and just set the destination of the unit being tracked as the tracker's destination.<br>
+<br>
+If you wish to keep things more realistic and do less "cheating", then you need to store the last position the target was seen in to give a place to start searching for them. For our example we will just take a random search approach. First you would set the last position the target was seen as the first destination. Then as the next destination you would make a random distance in the direction that the target was originally from the unit before he lost sight of the target.<br>
+<br>
+In this way we assume that the target ran away from the unit and if we are correct, the unit will hopefully find him quickly after passing the first destination. In case the unit did not find his target, we can make a back up plan of setting a patrol at random distances around where the first destination was. So the unit will go back to the spot his target was last seen and will walk in a pattern searching for him.<br>
+<br>
+While this doesn't cover a lot of possibilities, it does give us a reasonable response given the situation.<br>
+<br>
+<br>
+[size="5"]<span>Conclusion</span><br>
+<br>
+The secret to implementing all game AI is the understanding the cases you are trying to deal with and the results of what you want it to look like. If you can picture what you want the actions to look like and formulate an algorithm to make them turn out that way you are 90% of the way done. However the last 10%, getting it to work, can easily take 10 times as long as figuring out how to do it...<br>
+<br>
+[email="ghowland@<span class="skimlinks-unlinked">lupinegames.com</span>"]-Geoff Howland[/email]<br>
+<a href="http://www.lupinegames.com/">Lupine Games</a><br>
+<br>
+<br>
+The first article: <a href="http://www.gamedev.net/reference/articles/article784.asp">Practical Guide to Building a Complete Game AI: Volume I</a></section>
+</div>
+<!--
+		<hr class='ipsHr ipsClear ipsClearfix'>
+		
+			
+				
+<span class='ipsBadge ipsBadge_style6'>Content License: GameDev.net Open License</span>
+			
+		
+	-->
+<div class="ipsPos_right">
+<div data-controller="core.front.core.reaction" class="ipsItemControls_right ipsClearfix ">
+<div class="ipsReact ipsPos_right">
+<div class="ipsReact_reactCountOnly ipsAreaBackground_light ipsType_blendLinks ipsHide" data-role="reactCount">
+0
+</div>
+</div>
+</div>
+<br>
+</div>
+<hr class="ipsHr ipsClear ipsClearfix">
+&nbsp;&nbsp;<a href="https://www.gamedev.net/articles/programming/artificial-intelligence/a-practical-guide-to-building-a-complete-game-a-r785/?do=report&amp;d=1&amp;id=785" data-ipsdialog="" data-ipsdialog-size="medium" data-ipsdialog-title="Report Article" data-ipsdialog-remotesubmit="" data-ipsdialog-flashmessage="Thanks for your report." title="Report Article">Report Article</a>
+</div>
+<div class="ipsResponsive_showPhone ipsResponsive_block ipsSpacer_top">
+<div data-followapp="cms" data-followarea="records1" data-followid="785" data-controller="core.front.core.followButton">
+<span class="ipsType_light ipsType_blendLinks ipsResponsive_hidePhone ipsResponsive_inline"><i class="fa fa-info-circle"></i> <a href="https://www.gamedev.net/login/" title="Go to the sign in page">Sign in to follow this</a>&nbsp;&nbsp;</span>
+<div class="ipsFollow ipsPos_middle ipsButton ipsButton_link ipsButton_verySmall ipsButton_disabled" data-role="followButton">
+<span>Followers</span>
+<span class="ipsCommentCount">0</span>
+</div>
+</div>
+</div>
+<div class="ipsGrid ipsGrid_collapsePhone ipsPager ipsClearfix ipsSpacer_top">
+<div class="ipsGrid_span6 ipsType_left ipsPager_prev">
+<a href="https://www.gamedev.net/articles/programming/artificial-intelligence/" title="Go to Artificial Intelligence" rel="up">
+<span class="ipsPager_type">Go to articles</span>
+<span class="ipsPager_title ipsType_light ipsTruncate ipsTruncate_line">Artificial Intelligence</span>
+</a>
+</div>
+</div>
+<hr class="ipsHr">
+<ul class="ipsList_inline ipsList_noSpacing ipsClearfix" data-controller="core.front.core.sharelink">
+<li>
+<a href="http://twitter.com/share?text=A%20Practical%20Guide%20to%20Building%20a%20Complete%20Game%20AI%3A%20Volume%20II&amp;url=https%3A%2F%2Fwww.gamedev.net%2Farticles%2Fprogramming%2Fartificial-intelligence%2Fa-practical-guide-to-building-a-complete-game-a-r785%2F" class="cShareLink cShareLink_twitter" target="_blank" data-role="shareLink" title="Share on Twitter" data-ipstooltip="" rel="noopener">
+<i class="fa fa-twitter"></i>
+</a></li>
+<li>
+<a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fwww.gamedev.net%2Farticles%2Fprogramming%2Fartificial-intelligence%2Fa-practical-guide-to-building-a-complete-game-a-r785%2F" class="cShareLink cShareLink_facebook" target="_blank" data-role="shareLink" title="Share on Facebook" data-ipstooltip="" rel="noopener">
+<i class="fa fa-facebook"></i>
+</a></li>
+<li>
+<a href="https://plus.google.com/share?url=https%3A%2F%2Fwww.gamedev.net%2Farticles%2Fprogramming%2Fartificial-intelligence%2Fa-practical-guide-to-building-a-complete-game-a-r785%2F" class="cShareLink cShareLink_google" target="_blank" data-role="shareLink" title="Share on Google+" data-ipstooltip="" rel="noopener">
+<i class="fa fa-google-plus"></i>
+</a></li>
+<li>
+<a href="http://www.reddit.com/submit?url=https%3A%2F%2Fwww.gamedev.net%2Farticles%2Fprogramming%2Fartificial-intelligence%2Fa-practical-guide-to-building-a-complete-game-a-r785%2F&amp;title=A+Practical+Guide+to+Building+a+Complete+Game+AI%3A+Volume+II" class="cShareLink cShareLink_reddit" target="_blank" title="Share on Reddit" data-ipstooltip="" rel="noopener">
+<i class="fa fa-reddit"></i>
+</a></li>
+<li>
+<a href="http://www.linkedin.com/shareArticle?mini=true&amp;url=https%3A%2F%2Fwww.gamedev.net%2Farticles%2Fprogramming%2Fartificial-intelligence%2Fa-practical-guide-to-building-a-complete-game-a-r785%2F&amp;title=A+Practical+Guide+to+Building+a+Complete+Game+AI%3A+Volume+II" class="cShareLink cShareLink_linkedin" target="_blank" data-role="shareLink" title="Share on LinkedIn" data-ipstooltip="" rel="noopener">
+<i class="fa fa-linkedin"></i>
+</a></li>
+</ul>
