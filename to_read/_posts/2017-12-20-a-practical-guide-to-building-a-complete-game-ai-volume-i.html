@@ -1,0 +1,365 @@
+---
+title: "A Practical Guide to Building a Complete Game AI: Volume I"
+description: "Part I of this series covers state machines, unit actions, and grouping."
+link: "https://www.gamedev.net/articles/programming/artificial-intelligence/a-practical-guide-to-building-a-complete-game-a-r784/"
+saved: "2017-12-20 14:42:24"
+---
+
+<meta itemprop="mainEntityOfPage" content="https://www.gamedev.net/articles/programming/artificial-intelligence/a-practical-guide-to-building-a-complete-game-a-r784/">
+<span>10/12/99 04:54 PM</span>
+<meta itemprop="dateModified" content="1999-10-12T14:54:00Z">
+<meta itemprop="datePublished" content="1999-10-12T14:54:00Z">
+<meta itemprop="author" content="Myopic Rhino">
+<meta itemprop="headline" content="A Practical Guide to Building a Complete Game AI: Volume I">
+<div itemprop="publisher" itemscope="" itemtype="https://schema.org/Organization">
+<meta itemprop="name" content="GameDev.net">
+<div itemprop="logo" itemscope="" itemtype="https://schema.org/ImageObject">
+<meta itemprop="url" content="https://www.gamedev.net/uploads/defaults/gamedev-logo-500px-blacktext.png">
+<meta itemprop="width" content="424">
+<meta itemprop="height" content="86">
+</div>
+</div>
+<div class="ipsPageHeader ipsClearfix">
+<div class="ipsPos_right ipsResponsive_noFloat ipsResponsive_hidePhone">
+<div data-followapp="cms" data-followarea="records1" data-followid="784" data-controller="core.front.core.followButton">
+<span class="ipsType_light ipsType_blendLinks ipsResponsive_hidePhone ipsResponsive_inline"><i class="fa fa-info-circle"></i> <a href="https://www.gamedev.net/login/" title="Go to the sign in page">Sign in to follow this</a>&nbsp;&nbsp;</span>
+<div class="ipsFollow ipsPos_middle ipsButton ipsButton_link ipsButton_verySmall ipsButton_disabled" data-role="followButton">
+<span>Followers</span>
+<span class="ipsCommentCount">0</span>
+</div>
+</div>
+</div>
+<h1 class="ipsType_pageTitle ipsContained_container">
+<div class="ipsType_break ipsContained">A Practical Guide to Building a Complete Game AI: Volume I</div>
+<meta itemprop="name" content="A Practical Guide to Building a Complete Game AI: Volume I">
+</h1>
+<div class="ipsType_light" itemprop="articleSection">Artificial Intelligence</div>
+<div itemprop="aggregateRating" itemscope="" itemtype="http://schema.org/AggregateRating">
+<meta itemprop="ratingValue" content="5">
+<meta itemprop="reviewCount" content="1">
+<meta itemprop="bestRating" content="5">
+<div class="ipsClearfix ipsRating  ipsRating_large">
+<ul class="ipsRating_collective">
+<li class="ipsRating_on">
+<i class="fa fa-star"></i>
+</li>
+<li class="ipsRating_on">
+<i class="fa fa-star"></i>
+</li>
+<li class="ipsRating_on">
+<i class="fa fa-star"></i>
+</li>
+<li class="ipsRating_on">
+<i class="fa fa-star"></i>
+</li>
+<li class="ipsRating_on">
+<i class="fa fa-star"></i>
+</li>
+</ul>
+</div>&nbsp;&nbsp; <span class="ipsType_normal ipsType_light"><a href="https://www.gamedev.net/articles/programming/artificial-intelligence/a-practical-guide-to-building-a-complete-game-a-r784/#replies">(0 reviews)</a></span>
+</div>
+</div>
+<hr class="ipsHr">
+<div class="ipsPhotoPanel ipsPhotoPanel_tiny ipsClearfix ipsSpacer_bottom">
+<a href="https://www.gamedev.net/profile/6-dave-astle/" data-ipshover="" data-ipshover-target="https://www.gamedev.net/profile/6-dave-astle/?do=hovercard" class="ipsUserPhoto ipsUserPhoto_tiny" title="Go to Myopic Rhino's profile">
+<img src="https://secure.gravatar.com/avatar/16f4f23aa8088c2c27c829623874b42e?d=https://www.gamedev.net/uploads/monthly_2017_08/M.png.3d2e4bcade48bd80a1d6554f9c036e99.png" alt="" data-pagespeed-url-hash="1622229000" onload="pagespeed.CriticalImages.checkImageForCriticality(this);"></a>
+<div>
+<p itemprop="name" class="ipsType_reset ipsType_large ipsType_blendLinks">
+By Geoff Howland
+<!--Geoff Howland-->
+</p>
+<ul class="ipsList gd_articleByline">
+<li><time datetime="1999-10-12T14:54:00Z" title="10/12/99 04:54  PM" data-short="18 yr">October 12, 1999</time></li>
+<li>Posted By
+<a href="https://www.gamedev.net/profile/6-dave-astle/" data-ipshover="" data-ipshover-target="https://www.gamedev.net/profile/6-dave-astle/?do=hovercard&amp;referrer=https%253A%252F%252Fwww.gamedev.net%252Farticles%252Fprogramming%252Fartificial-intelligence%252Fa-practical-guide-to-building-a-complete-game-a-r784%252F" title="Go to Myopic Rhino's profile">
+Myopic Rhino
+</a>
+</li>
+<!--
+				
+					Geoff Howland
+				
+			
+				
+			
+				
+			
+				
+					Part I of this series covers state machines, unit actions, and grouping.
+				
+			
+				
+			-->
+</ul>
+</div>
+</div>
+<div class="ipsContained ipsSpacer_top">
+<div class="ipsClearfix">
+<div itemprop="image" itemscope="" itemtype="https://schema.org/ImageObject">
+<img itemprop="image" src="https://www.gamedev.net/uploads/defaults/xgamedev-g-new-50-ink.png.pagespeed.ic.N574bRmDIg.webp" data-pagespeed-url-hash="3455614889" onload="pagespeed.CriticalImages.checkImageForCriticality(this);">
+<meta itemprop="url" content="https://www.gamedev.net/uploads/defaults/gamedev-g-new-50-ink.png">
+<meta itemprop="width" content="50">
+<meta itemprop="height" content="50">
+</div>
+<section itemprop="articleBody" class="ipsType_richText ipsType_normal" data-controller="core.front.core.lightboxedImages">Artificial Intelligence (AI) in games has taken the backseat in development for a long time for many reasons but the future of games is definitely going to be weighted heavily with increasingly detailed game AI. If your game's AI is not up to the current level that game player's expectations demand then your game will feel dated and suffer for it in their opinions.<br>
+<br>
+Game AI is not just neural networks and learning systems and complex mathematical structures, although it can be, but primarily game AI is about creating an environment and the appearance of thought from units. Game AI is behavioral, not scientific.<br>
+<br>
+The key to understanding how to create game AI is understanding what you want your final results to be and then building the system to provide those results. It all comes down to what the player can see; if they can't tell it's happening, then it might as well not be.<br>
+<br>
+<span> The examples and discussion will be given based on the format of Real-Time Strategy (RTS) games, however some of these concepts can be translated into being appropriate for other genres as well. All data examples are done in standard C format.</span><br>
+<br>
+<br>
+[size="5"]<span>State Machines</span><br>
+<br>
+[size="3"]<span>Finite State Machine</span><br>
+<br>
+A finite state machine (FSM) is a system that has a limited number of states of operation. A real world example could be a light switch which is either on or off, or an alarm clock that is either idling by telling time, ringing an alarm or having its time or alarm set. Any system that has a limited number of possibilities where something can be defined by one state (even combinations) can be represented as a finite state machine.<br>
+<br>
+Finite state machines are natural for any type of computer program and understanding how to use them effectively to create game AI is only as hard as understanding the system you are trying to represent, which is as detailed or simple as you make it.<br>
+<br>
+[size="3"]<span>Using Finite State Machines</span><br>
+<br>
+There are many purposes for using FSMs in games but one of the more intricate ones you have to deal with is trying to model unit behavior since trying to simulate human beings is the toughest simulation there is. As guaranteed hard as it is to simulate human behavior there have been many stories of detailed game AI's that were mistaken for human players and vice versa by other players and spectators of the games, especially some detailed FSMs systems.<br>
+<br>
+While some other systems are designed to more accurately model the way humans think and learn, sometimes you can just never beat the simplicity of having a choice, weighing the factors and deciding, as a human, which one you would make given that choice. When learning more about AI decision and learning systems always keep this in mind as often the best system for the job is the simplest and not the most scientifically accurate.<br>
+<br>
+Don't misunderstand this as opposition to Neural Network, Genetic Algorithms or any other artificial intelligence systems, just don't mistake clever routines and interesting algorithms as being a better solution if they wont give better results. Weigh your choices based off what you need to get your end result, not the latest trends.<br>
+<br>
+[size="3"]<span>Game State Machines</span><br>
+<br>
+Creating a believable environment for your game means that you need to consider as many detailed elements that the player might possibly focus their attention on as you can. The more of these you anticipate by planning and testing, the more immersive the environment will be for the player when they are discovering your creation.<br>
+<br>
+In your total game state there will be at least two division of state machines that you will need to keep your game going. The first state machine will deal with the game interface, which includes whether the game is paused, if there are different modes the player can be looking at the world in, then which one, what things the player can and can't see and any other flags you might use for your particular interface.<br>
+<br>
+The second state machine will deal with what is actually going on in the game, the current state of the environment, objects in the level, objectives completed or failed in the mission and all other variables that you use to guide and challenge the player.<br>
+<br>
+You may have an alert system where the enemies will be actively patrolling if the player has been spotted or has fired shots, or flags for whether certain critical pieces have been destroyed or not. All of these items can be contained inside of a structure such as the example one below.<br>
+<br>
+<div><code class="hljs cpp"><span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">GameLevelState</span> {</span><br>
+<span class="hljs-keyword">int</span> alert; <span class="hljs-comment">// Alert status of enemies //</span><br>
+<span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">Positionshot</span>;</span> <span class="hljs-comment">// Position of last shot fired //</span><br>
+<span class="hljs-keyword">int</span> shotTime; <span class="hljs-comment">// Game cycle last shot was fired //</span><br>
+<span class="hljs-keyword">int</span> hostage; <span class="hljs-comment">// Hostage rescued //</span><br>
+<span class="hljs-keyword">int</span> explosives; <span class="hljs-comment">// Explosives set or not //</span><br>
+<span class="hljs-keyword">int</span> tank; <span class="hljs-comment">// Tank destroyed //</span><br>
+<span class="hljs-keyword">int</span> dialogue; <span class="hljs-comment">// Dialogue variable //</span><br>
+<span class="hljs-keyword">int</span> complete; <span class="hljs-comment">// Mission completed //</span><br>
+};</code><br>
+</div>[size="3"] <span>Flexibility</span><br>
+<br>
+Keeping your AI flexible is extremely important. The more modular you make your routines, the more you will be able to expand them as you go on. Its important to understand that designing a game AI is very much an iterative process, you need to try things out and build upon them.<br>
+<br>
+The goal in creating a good AI is to have units that react in situations that seem realistic in an environment they seem to be interacting with. If you box in what your units will be able to do too early it will be difficult to expand the breadth of their actions later on when you decide to augment the game world to feel more complete or interactive.<br>
+<br>
+<br>
+[size="5"]<span>Unit Actions</span><br>
+<br>
+In a game where the player controls units, it is all important to have meaningful and well organized information on them. Without this, adapting the units to the players will become difficult and the users interface with the game could suffer. If the player doesn't feel he is controlling the units and getting appropriate information back from them, then all he is doing is clicking around in an interface and all immersive aspects the game held will be lost. Meaning the player won't be having any fun and could be becoming frustrated.<br>
+<br>
+[size="3"]<span>Anatomy 101</span><br>
+<br>
+To get a sense of what kind of information you may want to provide to the player with let's take a look at a sample data structure.<br>
+<br>
+<div><code class="hljs cpp"><span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">Character</span> {</span><br>
+<span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">Positionpos</span>;</span> <span class="hljs-comment">// Map position //</span><br>
+<span class="hljs-keyword">int</span> screenX, screenY; <span class="hljs-comment">// Screen position //</span><br>
+<span class="hljs-keyword">int</span> animDir, animAction, animNum; <span class="hljs-comment">// Animation information, action and animation frame number //</span><br>
+<span class="hljs-keyword">int</span> rank; <span class="hljs-comment">// Rank //</span><br>
+<span class="hljs-keyword">int</span> health; <span class="hljs-comment">// Health //</span><br>
+<span class="hljs-keyword">int</span> num; <span class="hljs-comment">// Number of unit //</span><br>
+<span class="hljs-keyword">int</span> group; <span class="hljs-comment">// Group number //</span><br>
+<span class="hljs-keyword">int</span> style; <span class="hljs-comment">// Style of unit (elf, human) //</span><br>
+<span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">AnimationObject</span> <span class="hljs-title">animObj</span>;</span> <span class="hljs-comment">// Animation object for complex animations //</span><br>
+};</code><br>
+</div> Now some definitions of the variables:<br>
+<br>
+The <span>pos</span> variable determines the unit's position in the game world and the <span>screenX, screenY</span> variables are useful for easily adding information around the unit on the screen such as health or selection information.<br>
+<br>
+The <span>animDir, animAction and animNum</span> all refer to the units current animated state that will be drawn to the screen.<br>
+<br>
+The <span>rank</span> and <span>health</span> variables are both fairly obvious and are extremely simplified for what information they could hold.<br>
+<br>
+The <span>num</span> variable is the number that the unit is in the main unit array. Later, when calling the unit information from its group it is sometimes useful to pass off which unit it is, without giving the actual structure address.<br>
+<br>
+The <span>group</span> variable determines which group the unit belongs to as a unit should belong to a group at almost all times. The only time a unit should not be in a group is if the unit is dead.<br>
+<br>
+The <span>style</span> and <span>animObj</span> variables are both more information about how the unit's graphics will be drawn.<br>
+<br>
+[size="3"]<span>Building Past Basics</span><br>
+<br>
+Once you have your initial routines working based on a simple version of your units, such as the above, its time to start building more information into them to really bring them to life.<br>
+<br>
+You will need to think about what kind of actions and reactions you want the units to have. Do you want them to be controlled by emotions? Do you want them to be able to freeze up? Run away? Charge like a madman?<br>
+<br>
+If you do then adding variables to determining emotional states could be a next step. The best way to try to understand what components your units can have is to try and understand yourself and what you would be dealing with in a situation that they are. In order to create human like reactions, you need to base it off of how a human would react.<br>
+<br>
+There is another side to this, almost an opposite of human reaction, which is providing a synthetic experience that is not based on reality, but instead based on challenging the player. Instead of making your units based on your instincts, you will need to think in whatever manner you want your units to react in. The point is that you have to make the decisions about every facet you can or you will end up with flat, boring reactions that are too easy to predict, or even seemingly random. Either of these traits could ruin an otherwise good game, so put a lot of thought into it, and most importantly, play it to death to make sure it works!<br>
+<br>
+<br>
+[size="5"]<span>Grouping</span><br>
+<br>
+[size="3"]<span>To group or not to group?</span><br>
+<br>
+If you are creating a First Person Shooter game then it comes as no big surprise that grouping isn't for you. However, if you are creating a RTS or a game that has the player controlling more than one unit at a time then you have a question to ask yourself.<br>
+<br>
+Do you need your units to act in a coordinated way?<br>
+<br>
+If the answer is yes, then there is a good chance that grouping is for you. If the answer is no there still may be advantages to grouping but you will have to sort those out on your own as they will no doubt be totally dependent on exactly the kind of actions you want your units to perform.<br>
+<br>
+[size="3"]<span>Benefits of Grouping</span><br>
+<ol><li>Units can move in a formation only accessing one master list of movement information. The advantage here is that you do not have to propagate information to every unit in the group when a destination or target changes as they all get their movement information off of the group source.</li><li>Multi-unit coordinated actions, such as surrounding a building, can be controlled at a central location instead of each unit trying to work out where it is in relation to other units and bumping back and forth until they are in the correct position.</li><li>Groups can maintain their structure so that issuing new orders only takes the same amount of time and data as issuing an order to a single unit. Most important you will create something that can be easily understood and read. Changing around 25 units or so and having them try to pass information to each other can be quite a chore if they don't have any common ground.</li><li>Depending on the formation of the group, obstacle avoidance and detection can be simplified and time to find paths can be reduced, which can be a serious concern when dealing with a large amount of units.</li></ol> [size="3"]<span>The Big Picture</span><br>
+<br>
+Organizing your group, just like everything else in creating a game AI, is about understand the final affect you want to gain with control of the units. The idea is to create a place where there is a central repository of information which can be found quickly and shared between units. The idea is also not to duplicate any data, you want data to be found at one source and one source only, and that source needs to be the most logical position for the information so that when you are later working with it and building off of it, other logical extensions will equally seem to be in the correct places.<br>
+<br>
+From my experience I decided that this separation in my work should be split where anything that has to do with the unit as an enclosed entity will be placed in the unit's data structure, while anything that had to do with movement, or actions, since those are what we are trying to organize and share, will be placed in the group data structures.<br>
+<br>
+This means that the units alone will not have any information on where they are going, or what they are doing beyond the physical position they are in, like their animation frame and position in the world. To do this it means that a unit must ALWAYS be in a group as long as they are capable of moving or their actions changing. If they are alone, then they are just a group of one.<br>
+<br>
+[size="3"]<span>One of many</span><br>
+<br>
+While we are ultimately looking for a group to act as a coordinated system, the system is definitely made up of individual pieces and it's important to keep track of what each unit is doing individually so that when we need the group to break formation and move about as separate entities with common or individual purposes we can. For this goal I created a structure similar to the one below.<br>
+<br>
+<div><code class="hljs cpp"><span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">GroupUnit</span> {</span><br>
+<span class="hljs-keyword">int</span> unitNum; <span class="hljs-comment">// Character Number //</span><br>
+<span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">Unit</span> *<span class="hljs-title">unit</span>;</span> <span class="hljs-comment">// Unit character data //</span><br>
+<span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">Positionwaypoint</span>[50];</span> <span class="hljs-comment">// Path in waypoints for units //</span><br>
+<span class="hljs-keyword">int</span> action[<span class="hljs-number">50</span>]; <span class="hljs-comment">// Actions by waypoints //</span><br>
+<span class="hljs-keyword">int</span> stepX, stepY; <span class="hljs-comment">// Step for individual units, when in cover mode // </span><br>
+<span class="hljs-keyword">int</span> run, walk, sneak, fire, hurt, sprint, crawl; <span class="hljs-comment">// Actions //</span><br>
+<span class="hljs-keyword">int</span> target; <span class="hljs-comment">// Targets for units //</span><br>
+<span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">Position</span> <span class="hljs-title">targetPos</span>;</span>	<span class="hljs-comment">// Target Position //</span><br>
+};</code></div> Explanations of the variables:<br>
+<br>
+The <span>unitNum</span> is the number of the unit in the group. If there is a maximum of 10 units in a group, then there will be 10 possible slots that could have units. The first unit would be unitNum 0, following to unitNum 9.<br>
+<br>
+The <span>unit</span> is a pointer to the unit's character data, which holds information like the characters current position, health and every other piece of information on the individual. Its important that a unit's vital signs and other information can be monitored from the group so that you can easily check to see if a group member has been wounded and communicate this to the other members, along with a myriad of other possibilities.<br>
+<br>
+The <span>waypoint</span> array contains all the places that the unit has to move in a queue. All actions and waypoints are only specified in the GroupUnit structure if the group is not in a formation and units need to move about on their own.<br>
+<br>
+The <span>action</span> array contains actions that are associated with the movements to waypoints. This allows you to create more detailed command chains, as telling units to sneak across one area and then sprint across another adds a lot of possibilities to making more strategic and thought out movements by the player.<br>
+<br>
+The <span>stepX, stepY</span> information can be used for simple velocity; every frame move this unit this many world-position-units in any direction on the map. Used properly this can be just as applicable for all situations as doing real physics modeling, only with a simpler system and usually reduced processing time (not to mention ease of implementing the first time or quickly).<br>
+<br>
+The <span>run, walk, sneak...</span>variables all deal with different states the unit are in. These are not animations, but action states that can be toggled easily and even have multiple states that effect each other differently when more than one are turned on.<br>
+<br>
+The <span>target</span> and <span>targetPos</span> variables are used to hold the unit number of the enemy being targeted and his current position. The enemies position, as well as health and other attributes, could just be referenced each time by looking up the enemies unit number, but for readability I decided it would be easier to keep a local copy of the enemies position.<br>
+<br>
+[size="3"]<span>Mob mentality</span><br>
+<br>
+The ultimate goal of course is to have a centralized location for as much of the data as possible to limit the amount of look ups and processing to a minimum and keep things simple. Lets take a look at a sample data structure for doing this.<br>
+<br>
+<div><code class="hljs cpp"><span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">Group</span> {</span><br>
+<span class="hljs-keyword">int</span> numUnits; <span class="hljs-comment">// Units in group //</span><br>
+<span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">GroupUnit</span> <span class="hljs-title">unit</span>[4];</span> <span class="hljs-comment">// Unit info //</span><br>
+<span class="hljs-keyword">int</span> formation; <span class="hljs-comment">// Formation information for units and group //</span><br>
+<span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">Position</span> <span class="hljs-title">destPos</span>;</span> <span class="hljs-comment">// Destination (for dest. circle) //</span><br>
+<span class="hljs-keyword">int</span> destPX, destPY; <span class="hljs-comment">// Destination Screen Coords //</span><br>
+<span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">Position</span> <span class="hljs-title">wayX</span>[50];</span> <span class="hljs-comment">// Path in waypoints for group //</span><br>
+<span class="hljs-keyword">float</span> formStepX, formStepY; <span class="hljs-comment">// Formation step values for group movements //</span><br>
+<span class="hljs-keyword">int</span> formed; <span class="hljs-comment">// If true, then find cover and act as individuals, otherwise move in formation //</span><br>
+<span class="hljs-keyword">int</span> action, plan; <span class="hljs-comment">// Group action and plans //</span><br>
+<span class="hljs-keyword">int</span> run, walk, sneak, sprint, crawl, sniper; <span class="hljs-comment">// Actions //</span><br>
+<span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">Position</span> <span class="hljs-title">spotPos</span>;</span> <span class="hljs-comment">// Sniper Coords //</span><br>
+<span class="hljs-keyword">int</span> strategyMode; <span class="hljs-comment">// Group strategy mode //</span><br>
+<span class="hljs-keyword">int</span> orders[<span class="hljs-number">5</span>]; <span class="hljs-comment">// Orders for group //</span><br>
+<span class="hljs-keyword">int</span> goals[<span class="hljs-number">5</span>]; <span class="hljs-comment">// Goals for group //</span><br>
+<span class="hljs-keyword">int</span> leader; <span class="hljs-comment">// Leader of the group //</span><br>
+<span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">SentryInfo</span> <span class="hljs-title">sentry</span>;</span> <span class="hljs-comment">// Sentry List //</span><br>
+<span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">AIStateaiState</span>;</span> <span class="hljs-comment">// AI State //</span><br>
+};</code><br>
+</div> The <span>numUnits</span> variable refers to the number of units in the group and the <span>unit</span> array holds the GroupUnit information. For this particular group the maximum units has been hard coded to 4.<br>
+<br>
+The <span>formation</span> flag determines what type of formation the group is in. They could be formed in a column, wedge or diamond shape easily by just changing this variable and letting the units reposition themselves appropriately.<br>
+<br>
+The <span>destPos</span> and <span>destPX,destPY</span> are all information for keeping track of the final destination of the group and relaying that information quickly to the player. The waypoints and steps work the same manner as individuals except that when units are in a formation they will all have the same speed so they stay in formation. There is no need to update each unit by its own speed value, as the group's can be used.<br>
+<br>
+The <span>formed</span> variable is one of the most important as it determines whether the units act in formation or as individuals. The concept is that if the group is formed then all the units will have the same operations performed on them each cycle. If there is a reason that they can't all move the same way, such as enemies attacking or a necessary break in formation to get past an obstacle, then the units need to move on their own.<br>
+<br>
+The actions are the same as individual, and you'll notice that there is a variable for a sniper that is not in GroupUnit structure as there is no reason to have one unit in a group be a sniper while the rest are off running around. It is logical to split that unit into its own group and then control the sniper activities at the group level. This is the kind of planning you need to do to figure out what information is best served in what section of your structures.<br>
+<br>
+The <span>strategyMode</span> is a quick variable that determines how the units respond to enemies. Is it aggressive, aggressive with cause, defensive, or run-on-sight? Having an easy to access overview variable that controls basic responses is a good way to cut out a lot of individual unit and group situation calculations. Beyond that it gives the control to the player, who can set different groups in different modes so they know how each group will react if they encounter any enemies.<br>
+<br>
+The <span>orders</span> and <span>goals</span> arrays point to orders and goals described in an order and goal database so that when orders are given they can be assigned to multiple groups easily and each group feeds off the same information.<br>
+<br>
+The <span>sentry</span> and <span>aiState</span> are fairly self explanatory as they contain sentry information and more detailed aiState information for doing detailed pattern matching.<br>
+<br>
+[size="3"]<span>Putting it together</span><br>
+<br>
+Now that we have some structures for our groups, what's next? The next step is to figure out how you are going to use this information by routines in your game.<br>
+<br>
+It's <span><span>crucial</span></span> that you carefully plan for your AI routines to be modular and flexible so that you can add on to them later and easily call different pieces. The concept here, as in data structure organization, is to only do something in one function, and to make that function limited so that it does a specific thing. Then if you need to do that thing again you can call the routine that is already tested and is a known single point of operation on that data. Later if you run into problems with your AI and need to debug it, you don't have to go hunting all over the place for the offending routine, because there is only one routine that would operate on that data, or at least in that manner.<br>
+<br>
+<br>
+[size="5"]<span>Tips</span><br>
+<br>
+Walk before you run. Learn the basics, create the basics, add more advanced routines for your particular game as you need them. Never fall into the trap of using a routine because it is popular and everyone else seems to be using it. Often other people are using a routine because its' benefits fit their needs, but it may not fit yours. Furthermore, people often use routines just because they are the standard, even if they are actually not the best routines for their situation.<br>
+<br>
+Your concern should always be on getting the best results, not having the current fashionable routines; if it works, use it. The game developer mantra used to be, and always should be, "If it looks right, it is right." Don't let the people who are interested in designing real world total physics simulations make you feel bad for creating a simple positional system where you add X to the position each frame. If that is what works in your particular situation, then do it. Correct physics has its place in some games, but not all of them and there are other ways of achieving nearly the same results.<br>
+<br>
+You can never build a perfect replica of reality. That is just a fact. So you need to draw your own line on where <span>good enough</span> is and then make your good enough reality.<br>
+<br>
+<a href="http://www.gamedev.net/reference/articles/article785.asp">Volume II: Unit Goals and Path Finding</a></section>
+</div>
+<!--
+		<hr class='ipsHr ipsClear ipsClearfix'>
+		
+			
+				
+<span class='ipsBadge ipsBadge_style6'>Content License: GameDev.net Open License</span>
+			
+		
+	-->
+<div class="ipsPos_right">
+<div data-controller="core.front.core.reaction" class="ipsItemControls_right ipsClearfix ">
+<div class="ipsReact ipsPos_right">
+<div class="ipsReact_reactCountOnly ipsAreaBackground_light ipsType_blendLinks ipsHide" data-role="reactCount">
+0
+</div>
+</div>
+</div>
+<br>
+</div>
+<hr class="ipsHr ipsClear ipsClearfix">
+&nbsp;&nbsp;<a href="https://www.gamedev.net/articles/programming/artificial-intelligence/a-practical-guide-to-building-a-complete-game-a-r784/?do=report&amp;d=1&amp;id=784" data-ipsdialog="" data-ipsdialog-size="medium" data-ipsdialog-title="Report Article" data-ipsdialog-remotesubmit="" data-ipsdialog-flashmessage="Thanks for your report." title="Report Article">Report Article</a>
+</div>
+<div class="ipsResponsive_showPhone ipsResponsive_block ipsSpacer_top">
+<div data-followapp="cms" data-followarea="records1" data-followid="784" data-controller="core.front.core.followButton">
+<span class="ipsType_light ipsType_blendLinks ipsResponsive_hidePhone ipsResponsive_inline"><i class="fa fa-info-circle"></i> <a href="https://www.gamedev.net/login/" title="Go to the sign in page">Sign in to follow this</a>&nbsp;&nbsp;</span>
+<div class="ipsFollow ipsPos_middle ipsButton ipsButton_link ipsButton_verySmall ipsButton_disabled" data-role="followButton">
+<span>Followers</span>
+<span class="ipsCommentCount">0</span>
+</div>
+</div>
+</div>
+<div class="ipsGrid ipsGrid_collapsePhone ipsPager ipsClearfix ipsSpacer_top">
+<div class="ipsGrid_span6 ipsType_left ipsPager_prev">
+<a href="https://www.gamedev.net/articles/programming/artificial-intelligence/" title="Go to Artificial Intelligence" rel="up">
+<span class="ipsPager_type">Go to articles</span>
+<span class="ipsPager_title ipsType_light ipsTruncate ipsTruncate_line">Artificial Intelligence</span>
+</a>
+</div>
+</div>
+<hr class="ipsHr">
+<ul class="ipsList_inline ipsList_noSpacing ipsClearfix" data-controller="core.front.core.sharelink">
+<li>
+<a href="http://twitter.com/share?text=A%20Practical%20Guide%20to%20Building%20a%20Complete%20Game%20AI%3A%20Volume%20I&amp;url=https%3A%2F%2Fwww.gamedev.net%2Farticles%2Fprogramming%2Fartificial-intelligence%2Fa-practical-guide-to-building-a-complete-game-a-r784%2F" class="cShareLink cShareLink_twitter" target="_blank" data-role="shareLink" title="Share on Twitter" data-ipstooltip="" rel="noopener">
+<i class="fa fa-twitter"></i>
+</a></li>
+<li>
+<a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fwww.gamedev.net%2Farticles%2Fprogramming%2Fartificial-intelligence%2Fa-practical-guide-to-building-a-complete-game-a-r784%2F" class="cShareLink cShareLink_facebook" target="_blank" data-role="shareLink" title="Share on Facebook" data-ipstooltip="" rel="noopener">
+<i class="fa fa-facebook"></i>
+</a></li>
+<li>
+<a href="https://plus.google.com/share?url=https%3A%2F%2Fwww.gamedev.net%2Farticles%2Fprogramming%2Fartificial-intelligence%2Fa-practical-guide-to-building-a-complete-game-a-r784%2F" class="cShareLink cShareLink_google" target="_blank" data-role="shareLink" title="Share on Google+" data-ipstooltip="" rel="noopener">
+<i class="fa fa-google-plus"></i>
+</a></li>
+<li>
+<a href="http://www.reddit.com/submit?url=https%3A%2F%2Fwww.gamedev.net%2Farticles%2Fprogramming%2Fartificial-intelligence%2Fa-practical-guide-to-building-a-complete-game-a-r784%2F&amp;title=A+Practical+Guide+to+Building+a+Complete+Game+AI%3A+Volume+I" class="cShareLink cShareLink_reddit" target="_blank" title="Share on Reddit" data-ipstooltip="" rel="noopener">
+<i class="fa fa-reddit"></i>
+</a></li>
+<li>
+<a href="http://www.linkedin.com/shareArticle?mini=true&amp;url=https%3A%2F%2Fwww.gamedev.net%2Farticles%2Fprogramming%2Fartificial-intelligence%2Fa-practical-guide-to-building-a-complete-game-a-r784%2F&amp;title=A+Practical+Guide+to+Building+a+Complete+Game+AI%3A+Volume+I" class="cShareLink cShareLink_linkedin" target="_blank" data-role="shareLink" title="Share on LinkedIn" data-ipstooltip="" rel="noopener">
+<i class="fa fa-linkedin"></i>
+</a></li>
+</ul>
