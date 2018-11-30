@@ -149,3 +149,59 @@ body:not(.gh-acquirer) .gh-only-acquirer {
 .logged-in .gh-logout {
   display: inline;
 }
+
+body {
+  padding: 0;
+}
+
+.post {
+  margin-left: 0;
+  margin-right: 0;
+  max-width: initial;
+}
+
+.post header {
+  margin-bottom: 0;
+}
+
+p.center {
+  text-align: left;
+}
+
+.post header h1,
+.gh-post-actions,
+main > *,
+header > a,
+footer > p > a {
+  display: block;
+  max-width: 700px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+hr {
+  display: none;
+}
+
+main {
+  background-color: #fff;
+  padding-top: 2em;
+  padding-bottom: 2em;
+}
+
+main h1:first-of-type {
+  margin-top: 0;
+}
+
+.gh-move {
+  margin-left: 0;
+}
+
+@media screen and (max-width: 800px) {
+  header,
+  main,
+  footer {
+    padding-left: 10px;
+    padding-right: 10px;
+  }
+}
