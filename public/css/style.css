@@ -120,3 +120,101 @@ nav {
 #group-by-date:checked ~ section .group-date {
   display: block;
 }
+
+body {
+  background: #eee;
+}
+
+.link {
+  box-shadow: 0 3px 3px rgba(0,0,0,.2);
+  margin-bottom: 1px;
+  background: 22px center no-repeat;
+  background-color: #fff;
+  padding-left: 62px;
+}
+
+.group-year, .group-month, .group-date {
+  margin-top: 2em;
+/*  padding-left: 2.5em;*/
+}
+
+h1, h2, h3, h4, h5, h6 {
+  color: #111;
+  text-align: initial;
+}
+
+.link {
+  transition: .2s all;
+}
+
+.link:hover {
+  box-shadow: 0 6px 20px rgba(0,0,0,.2);
+  z-index: 1000;
+}
+
+.link-title {
+  color: #555;
+  transition: .2s color;
+}
+
+.link:hover .link-title {
+  color: #6a9fb5;
+}
+
+
+/** article view **/
+body {
+  padding: 0;
+}
+
+.post {
+  margin-left: 0;
+  margin-right: 0;
+  max-width: initial;
+}
+
+.post header {
+  margin-bottom: 0;
+}
+
+p.center {
+  text-align: left;
+}
+
+.post header h1,
+.gh-post-actions,
+main > *,
+header > a,
+footer > p > a {
+  display: block;
+  max-width: 700px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+hr {
+  display: none;
+}
+
+main {
+  background-color: #fff;
+  padding-top: 2em;
+  padding-bottom: 2em;
+}
+
+main h1:first-of-type {
+  margin-top: 0;
+}
+
+.gh-move {
+  margin-left: 0;
+}
+
+@media screen and (max-width: 800px) {
+  header,
+  main,
+  footer {
+    padding-left: 10px;
+    padding-right: 10px;
+  }
+}
