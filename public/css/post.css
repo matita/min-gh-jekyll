@@ -151,6 +151,46 @@ body:not(.gh-acquirer) .gh-only-acquirer {
 }
 
 body {
+  background: #eee;
+}
+
+.link {
+  box-shadow: 0 3px 3px rgba(0,0,0,.2);
+  margin-bottom: 1px;
+  background: 22px center no-repeat;
+  background-color: #fff;
+  padding-left: 62px;
+}
+
+.group-year, .group-month, .group-date {
+  margin-top: 2em;
+/*  padding-left: 2.5em;*/
+}
+
+h1, h2, h3, h4, h5, h6 {
+  color: #111;
+  text-align: initial;
+}
+
+.link {
+  transition: .2s all;
+}
+
+.link:hover {
+  box-shadow: 0 6px 20px rgba(0,0,0,.2);
+  z-index: 1000;
+}
+
+.link-title {
+  color: #555;
+  transition: .2s color;
+}
+
+.link:hover .link-title {
+  color: #6a9fb5;
+}
+
+body {
   padding: 0;
 }
 
