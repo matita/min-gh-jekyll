@@ -1,0 +1,155 @@
+---
+title: "The Future of Websites: Headless CMSs"
+description: "Since their introduction, content management systems (CMS) have made life easier for website developers, site owners, and administrators alike. Platforms like WordPress, Joomla, and Drupal account for more than 60% of all web content platforms. The only problem i"
+link: "https://scotch.io/bar-talk/the-future-of-websites-headless-cmss#toc-decoupled-vs-headless-systems"
+saved: "2019-07-14 14:32:44"
+---
+
+<div class="article-background is-left"></div>
+<div class="article-background is-right"></div>
+
+<div class="section content">
+<div class="container m-b-0 is-fluid">
+<div class="columns is-gapless">
+<div class="column is-narrow is-left">
+<div class="article-inner">
+</div>
+</div>
+<div class="column is-middle">
+<div class="article-inner">
+<div class="article-content">
+<p>Since their introduction, <strong>content management systems **(</strong>CMS**) have made life easier for website developers, site owners, and administrators alike. Platforms like WordPress, Joomla, and Drupal account for more than 60% of all web content platforms. The only problem is their relative lack of flexibility. This is mainly due to the fact that the front and back end functionalities are deeply coupled. </p>
+<div class="table-of-contents"><h3>Table of Contents</h3><ul><li class="two"><a href="https://scotch.io/bar-talk/the-future-of-websites-headless-cmss#toc-anatomy-of-a-cms">
+Anatomy of a CMS
+</a></li><li class="two"><a href="https://scotch.io/bar-talk/the-future-of-websites-headless-cmss#toc-cutting-through-the-clutter">
+Cutting Through the Clutter
+</a></li><li class="two"><a href="https://scotch.io/bar-talk/the-future-of-websites-headless-cmss#toc-decoupled-cms">
+Decoupled CMS
+</a></li><li class="two"><a href="https://scotch.io/bar-talk/the-future-of-websites-headless-cmss#toc-decoupled-vs-headless-systems">
+Decoupled vs Headless Systems
+</a></li><li class="two"><a href="https://scotch.io/bar-talk/the-future-of-websites-headless-cmss#toc-losing-your-head-pros-and-cons">
+Losing Your Head: Pros and Cons
+</a></li><li class="three"><a href="https://scotch.io/bar-talk/the-future-of-websites-headless-cmss#toc-future-proofing">Future-proofing</a></li><li class="three"><a href="https://scotch.io/bar-talk/the-future-of-websites-headless-cmss#toc-tech-agnostic">Tech Agnostic</a></li><li class="three"><a href="https://scotch.io/bar-talk/the-future-of-websites-headless-cmss#toc-better-performance">Better performance</a></li><li class="three"><a href="https://scotch.io/bar-talk/the-future-of-websites-headless-cmss#toc-licensing-fees">Licensing fees</a></li><li class="three"><a href="https://scotch.io/bar-talk/the-future-of-websites-headless-cmss#toc-content-as-a-service-caas-">Content-as-a-Service (CaaS)</a></li><li class="three"><a href="https://scotch.io/bar-talk/the-future-of-websites-headless-cmss#toc-security">Security</a></li><li class="two"><a href="https://scotch.io/bar-talk/the-future-of-websites-headless-cmss#toc-cons">
+Cons
+</a></li><li class="three"><a href="https://scotch.io/bar-talk/the-future-of-websites-headless-cmss#toc-no-default-wysiwyg-editor">No default WYSIWYG editor</a></li><li class="three"><a href="https://scotch.io/bar-talk/the-future-of-websites-headless-cmss#toc-fragmented-tech-stack">Fragmented Tech Stack</a></li><li class="two"><a href="https://scotch.io/bar-talk/the-future-of-websites-headless-cmss#toc-picking-a-headless-cms">
+Picking a headless CMS
+</a></li><li class="two"><a href="https://scotch.io/bar-talk/the-future-of-websites-headless-cmss#toc-popular-headless-cmss">
+Popular Headless CMSs
+</a></li><li class="three"><a href="https://scotch.io/bar-talk/the-future-of-websites-headless-cmss#toc-netlify">Netlify</a></li><li class="three"><a href="https://scotch.io/bar-talk/the-future-of-websites-headless-cmss#toc-dotcms">dotCMS</a></li><li class="three"><a href="https://scotch.io/bar-talk/the-future-of-websites-headless-cmss#toc-kentico">Kentico</a></li><li class="three"><a href="https://scotch.io/bar-talk/the-future-of-websites-headless-cmss#toc-contentful">Contentful</a></li><li class="three"><a href="https://scotch.io/bar-talk/the-future-of-websites-headless-cmss#toc-buttercms">ButterCMS</a></li><li class="three"><a href="https://scotch.io/bar-talk/the-future-of-websites-headless-cmss#toc-craftcms">CraftCMS</a></li><li class="three"><a href="https://scotch.io/bar-talk/the-future-of-websites-headless-cmss#toc-wordpress-rest-api">WordPress REST API</a></li><li class="two"><a href="https://scotch.io/bar-talk/the-future-of-websites-headless-cmss#toc-go-forth-go-headless">
+Go Forth, Go Headless
+</a></li></ul></div><p><img alt="" data-src="https://scotch-res.cloudinary.com/image/upload/dpr_2,w_800,q_auto:good,f_auto/v1562167808/bksonfytp0qoekzsbyuc.jpg" class="loaded" src="https://scotch-res.cloudinary.com/image/upload/dpr_2,w_800,q_auto:good,f_auto/v1562167808/bksonfytp0qoekzsbyuc.jpg" data-was-processed="true"></p>
+<p>With the rise in popularity of decoupled architectures like the JAMstack, CMS's have been increasingly shunning traditional database-driven systems in favor of API driven ones, known as the "Headless CMS".</p>
+<h2 id="toc-anatomy-of-a-cms" class="is-first">
+<a href="https://scotch.io/bar-talk/the-future-of-websites-headless-cmss#toc-anatomy-of-a-cms">Anatomy of a CMS</a>
+</h2>
+<p><img alt="" data-src="https://scotch-res.cloudinary.com/image/upload/dpr_2,w_800,q_auto:good,f_auto/v1562167093/e3iyszqmvltfs5v0vgdy.jpg" class="loaded" src="https://scotch-res.cloudinary.com/image/upload/dpr_2,w_800,q_auto:good,f_auto/v1562167093/e3iyszqmvltfs5v0vgdy.jpg" data-was-processed="true"></p>
+<p>The traditional CMS is a monolithic structure which provides out of the box solutions for templating and styling that are customizable via a WYSIWYG. As a result, designers and website builders can create professional-looking sites without needing to write a single line of code.</p>
+<p>Since you’re encouraged to use the templates and style sheets that accompany a particular CMS, your ability to easily update or migrate content is limited.</p>
+<p>As opposed to a traditional CMS, headless CMSes intentionally “chop off the head” thereby decoupling the front end from the back end. It therefore has no default frontend system and completely relinquishes the decision of presenting content to the developer. </p>
+<p>As a result, it provides developers with greater flexibility in deciding their own architecture while letting them harness the strength of a CMS as a database. Moreover, because of the framework agnostic architecture of a headless CMS, you don’t have to worry about platform compatibility or <a href="https://hostingcanada.org/best-wordpress-host/">database connectivity errors</a>, as is common with WordPress.</p>
+<a href="https://bit.ly/2Xeeq5t">
+<strong>Essential Reading</strong>: Learn React from Scratch! (2019 Edition)
+</a>
+<h2 id="toc-cutting-through-the-clutter" class="false">
+<a href="https://scotch.io/bar-talk/the-future-of-websites-headless-cmss#toc-cutting-through-the-clutter">Cutting Through the Clutter</a>
+</h2>
+<p>In order to really grasp the elegance of headless CMS - and its possibilities - you have to cut through the clutter and understand how they work fundamentally. To start, let’s define a few terms: </p>
+<p>Application programming interface (API) - a communication system that sends information to the server and back via user requests. How the API calls are answered depends on the specifications of the front-end protocol. When a content management platform is called API-driven or API-first, that means it's a headless or decoupled CMS. </p>
+<p><strong>Headless CMS</strong> - a content management system that contains only the back-end developer environment, with no default templating system or frameworks. These are a subset of decoupled CMSs. </p>
+<p><strong>Hybrid CMS</strong> - this is another name for a decoupled CMS. Such systems offer many of the benefits of fully headless content management systems, but come with optional tools and frameworks in the box to make the developer's work more efficient. </p>
+<p><strong>Front-end agnostic</strong> - when a CMS doesn't contain a default front-end design platform, it's said to be front-end agnostic. This means it can work with a variety of front-end frameworks. </p>
+<p><img alt="" data-src="https://scotch-res.cloudinary.com/image/upload/dpr_2,w_800,q_auto:good,f_auto/v1562167142/ikqfasfpqh0wie0ucj5h.png" class="loaded" src="https://scotch-res.cloudinary.com/image/upload/dpr_2,w_800,q_auto:good,f_auto/v1562167142/ikqfasfpqh0wie0ucj5h.png" data-was-processed="true"></p>
+<h2 id="toc-decoupled-cms" class="false">
+<a href="https://scotch.io/bar-talk/the-future-of-websites-headless-cmss#toc-decoupled-cms">Decoupled CMS</a>
+</h2>
+<p>In the above section on terminology, I mentioned the idea of a Hybrid CMS or a decoupled CMS. A hybrid CMS is not unlike a headless CMS except for the fact that it offers front end delivery tools like templates or default styles for instance. You can think of this like chopping the head off and making it available as a blueprint of sorts so you aren’t completely on your own when it comes to connecting the head and the tail. </p>
+<h2 id="toc-decoupled-vs-headless-systems" class="false">
+<a href="https://scotch.io/bar-talk/the-future-of-websites-headless-cmss#toc-decoupled-vs-headless-systems">Decoupled vs Headless Systems</a>
+</h2>
+<p>Now that we've teased apart the differences between a headless CMS and a hybrid/decoupled CMS, a common next question would be "which system is better"? Generally speaking, if you want to publish on multiple channels, and you're comfortable with a bare-bones, API-driven system that has limited tooling choose a headless CMS. </p>
+<p>But if you’re looking for a happy medium because you prefer the extra help, choose a hybrid or decoupled platform. </p>
+<h2 id="toc-losing-your-head-pros-and-cons" class="false">
+<a href="https://scotch.io/bar-talk/the-future-of-websites-headless-cmss#toc-losing-your-head-pros-and-cons">Losing Your Head: Pros and Cons</a>
+</h2>
+<p>You may be under the impression that decoupling from your CMS is the only benefit of using a headless CMS. However, there's more than just developer freedom on the line.</p>
+<p>Additional advantages of going headless include: </p>
+<h3 id="toc-future-proofing">Future-proofing</h3>
+<p>As long as the API endpoint is available, you can continue to communicate with it without too much of a maintenance burden.</p>
+<h3 id="toc-tech-agnostic">Tech Agnostic</h3>
+<p>You're not confined to design, style, or generic templates. </p>
+<h3 id="toc-better-performance">Better performance</h3>
+<p>Since there's no front-end, your server will use fewer resources managing layouts and templates for dynamic websites.</p>
+<h3 id="toc-licensing-fees">Licensing fees</h3>
+<p>Headless content management systems often don't require a copy of the CMS engine before deployment. That means the possibility of saving on licensing fees, from using the CMS or any other software. </p>
+<h3 id="toc-content-as-a-service-caas-">Content-as-a-Service (CaaS)</h3>
+<p>Another name for a CMS, this is a subcategory of Software-as-a-Service. These are usually offered by a managed cloud “CaaS” providers like eZ Hosting, Surfcode and Contentful, and sold as a monthly “SaaS” subscriptions, which enables content delivery on demand.</p>
+<h3 id="toc-security">Security</h3>
+<p>CMS-es often come bundled with third party plugins that can introduce security vulnerabilities to your application.</p>
+<h2 id="toc-cons" class="false">
+<a href="https://scotch.io/bar-talk/the-future-of-websites-headless-cmss#toc-cons">Cons</a>
+</h2>
+<p>While there are many benefits to using a headless CMS, they are not without disadvantages.</p>
+<h3 id="toc-no-default-wysiwyg-editor">No default WYSIWYG editor</h3>
+<p>Headless CMSes don't come with a default editor, and often require content in the form of markdown. This can make the content creation process frustrating to those who may be used to WYSIWYG editors like wordpress. </p>
+<h3 id="toc-fragmented-tech-stack">Fragmented Tech Stack</h3>
+<p>Headless CMS-es require devising your own stack. While this gives developers the full flexibility of building a stack, picking a stack introduces a huge cognitive load at the start of a project.</p>
+<h2 id="toc-picking-a-headless-cms" class="false">
+<a href="https://scotch.io/bar-talk/the-future-of-websites-headless-cmss#toc-picking-a-headless-cms">Picking a headless CMS</a>
+</h2>
+<p><img alt="" data-src="https://scotch-res.cloudinary.com/image/upload/dpr_2,w_800,q_auto:good,f_auto/v1562167525/ogvlertdqsxumpzado0l.png" class="loaded" src="https://scotch-res.cloudinary.com/image/upload/dpr_2,w_800,q_auto:good,f_auto/v1562167525/ogvlertdqsxumpzado0l.png" data-was-processed="true"></p>
+<p>In today’s market, you’re spoilt for choice when it comes to picking a headless CMS…..</p>
+<p>*<em>Security and access *</em>- How will these be managed, and by whom? Common CMS platforms like Drupal and WordPress are notorious for having security vulnerabilities, which necessitates regular updates of the CMS software. Conversely, a headless CMS has no database to be attacked; your primary concern as an admin should be protecting sensitive content, and providing access to the appropriate parties.</p>
+<p><strong>Content previews</strong> - How will previews be handled? Because headless CMS systems are newer, many don't include the ability to preview content before going live. If previews are essential to your content strategy, make sure to use a headless CMS that offers them as a feature.</p>
+<p><strong>How will you sync UI/UX across multiple platforms and devices?</strong> When choosing a headless CMS, it pays to do a bit of testing first. Check to see how your content displays on any and every device. You’ll want to maintain the same UI/UX (re: look and style) across all screens.</p>
+<p><strong>Cache management</strong> - Unlike coupled CMS platforms, considerations like when to return to the data repository, when and how to clear the cache, and when a cached version of a CMS needs to be served are considerations that the front-end developer needs to establish.</p>
+<p><strong>Data migration</strong> - Are there options for migrating data from one CMS to another or tailoring it to different devices and operating systems? Many businesses today use “managed” WordPress hosting, <a href="https://websitesetup.org/error-establishing-a-database-connection/">for example</a>. Though convenient (and open source), moving content out of WordPress can be clunky. Headless frameworks like Hugo have tools to help with the migration process.</p>
+<h2 id="toc-popular-headless-cmss" class="false">
+<a href="https://scotch.io/bar-talk/the-future-of-websites-headless-cmss#toc-popular-headless-cmss">Popular Headless CMSs</a>
+</h2>
+<p>Here is a list of popular headless CMS that you can explore and see if they could fit your projects.</p>
+<h3 id="toc-netlify">Netlify</h3>
+<p><a href="https://www.netlify.com/">Netlify</a> is a great site and we even use it here at Scotch for our dashboard.</p>
+<p><img alt="" data-src="https://scotch-res.cloudinary.com/image/upload/dpr_2,w_800,q_auto:good,f_auto/v1562171371/fw03o3ytdgsaruhg6kuk.jpg" class="loaded" src="https://scotch-res.cloudinary.com/image/upload/dpr_2,w_800,q_auto:good,f_auto/v1562171371/fw03o3ytdgsaruhg6kuk.jpg" data-was-processed="true"></p>
+<h3 id="toc-dotcms">dotCMS</h3>
+<p><a href="https://dotcms.com/">Check out dotCMS</a> </p>
+<p><img alt="" data-src="https://scotch-res.cloudinary.com/image/upload/dpr_2,w_800,q_auto:good,f_auto/v1562171397/kvigf9lzbug17od9fl9i.jpg" class="loaded" src="https://scotch-res.cloudinary.com/image/upload/dpr_2,w_800,q_auto:good,f_auto/v1562171397/kvigf9lzbug17od9fl9i.jpg" data-was-processed="true"></p>
+<h3 id="toc-kentico">Kentico</h3>
+<p><a href="https://www.kentico.com/">Check out Kentico</a></p>
+<p><img alt="" data-src="https://scotch-res.cloudinary.com/image/upload/dpr_2,w_800,q_auto:good,f_auto/v1562171490/wh3xwaccxqx6yqwqt6fu.jpg" class="loaded" src="https://scotch-res.cloudinary.com/image/upload/dpr_2,w_800,q_auto:good,f_auto/v1562171490/wh3xwaccxqx6yqwqt6fu.jpg" data-was-processed="true"></p>
+<h3 id="toc-contentful">Contentful</h3>
+<p><a href="https://www.contentful.com/">Check out Contentful</a></p>
+<p><img alt="" data-src="https://scotch-res.cloudinary.com/image/upload/dpr_2,w_800,q_auto:good,f_auto/v1562171520/oua8eizkt2atijurfuzy.jpg" class="loaded" src="https://scotch-res.cloudinary.com/image/upload/dpr_2,w_800,q_auto:good,f_auto/v1562171520/oua8eizkt2atijurfuzy.jpg" data-was-processed="true"></p>
+<h3 id="toc-buttercms">ButterCMS</h3>
+<p><a href="https://buttercms.com/">Check out ButterCMS</a></p>
+<p><img alt="" data-src="https://scotch-res.cloudinary.com/image/upload/dpr_2,w_800,q_auto:good,f_auto/v1562171678/wkbdesqme8r3ce22nzdj.png" class="loaded" src="https://scotch-res.cloudinary.com/image/upload/dpr_2,w_800,q_auto:good,f_auto/v1562171678/wkbdesqme8r3ce22nzdj.png" data-was-processed="true"></p>
+<h3 id="toc-craftcms">CraftCMS</h3>
+<p><a href="https://craftcms.com/">Check out CraftCMS</a></p>
+<p><img alt="" data-src="https://scotch-res.cloudinary.com/image/upload/dpr_2,w_800,q_auto:good,f_auto/v1562171712/aw3xrcs4azvbep74qlta.png" class="loaded" src="https://scotch-res.cloudinary.com/image/upload/dpr_2,w_800,q_auto:good,f_auto/v1562171712/aw3xrcs4azvbep74qlta.png" data-was-processed="true"></p>
+<p>### </p>
+<h3 id="toc-wordpress-rest-api">WordPress REST API</h3>
+<p>WordPress has adapted well with the times. You can now use WordPress dashboard as your headless CMS and they provide a <a href="https://developer.wordpress.org/rest-api/">REST API</a> that you can consume with any frontend technology!</p>
+<p><img alt="" data-src="https://scotch-res.cloudinary.com/image/upload/dpr_2,w_800,q_auto:good,f_auto/v1562171767/w08byu0vcaljxia1tkha.png" class="loaded" src="https://scotch-res.cloudinary.com/image/upload/dpr_2,w_800,q_auto:good,f_auto/v1562171767/w08byu0vcaljxia1tkha.png" data-was-processed="true"></p>
+<h2 id="toc-go-forth-go-headless" class="false">
+<a href="https://scotch.io/bar-talk/the-future-of-websites-headless-cmss#toc-go-forth-go-headless">Go Forth, Go Headless</a>
+</h2>
+<p>Today, we no longer engage with content on a single device or channel when surfing the web. It’s common to use desktop computers, smartphones, tablets, and any number of internet-connected IoT devices. If you want your content to remain fresh, dynamic, and available on any platform, consider using a headless or hybrid CMS.</p>
+</div>
+<p class="m-t-md">
+Like this article?
+<a href="https://twitter.com/_danfries" title="Follow @_danfries on Twitter">
+Follow @_danfries on Twitter
+</a>
+</p>
+
+ 
+</div>
+</div>
+<div class="column is-narrow is-right">
+<div class="article-inner">
+
+</div>
+</div>
+</div>
+</div>
+</div>
+
