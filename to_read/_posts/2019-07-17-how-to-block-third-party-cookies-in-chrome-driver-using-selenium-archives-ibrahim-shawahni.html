@@ -1,0 +1,93 @@
+---
+title: "how to block third party cookies in chrome driver using selenium Archives - Ibrahim Shawahni"
+description: "null"
+link: "http://shawahni.co.nf/tag/how-to-block-third-party-cookies-in-chrome-driver-using-selenium/"
+saved: "2019-07-17 09:50:21"
+---
+
+	
+	<!-- .entry-header -->
+
+	<div class="entry-content">
+		<p>In this article I’m going to guide you through the easiest way to disable third party cookies while using Selenium web driver with Chrome driver.</p>
+<figure id="attachment_29" class="wp-caption aligncenter"><a href="https://youtu.be/k4c17X6cXxQ"><img class="size-medium wp-image-29" src="http://shawahni.co.nf/wp-content/uploads/2016/07/browser-cookie-work-735x400-300x163.jpg" alt="disable third party cookies" width="300" height="163" srcset="http://shawahni.co.nf/wp-content/uploads/2016/07/browser-cookie-work-735x400-300x163.jpg 300w, http://shawahni.co.nf/wp-content/uploads/2016/07/browser-cookie-work-735x400.jpg 735w" sizes="(max-width: 300px) 100vw, 300px"></a><figcaption class="wp-caption-text">Web browser cookies</figcaption></figure>
+<h1>How to disable third party cookies:</h1>
+<p>First we need to create a new project:</p>
+<p><a href="http://shawahni.co.nf/tag/how-to-block-third-party-cookies-in-chrome-driver-using-selenium/new%20project"><img class="aligncenter size-medium wp-image-30" src="http://shawahni.co.nf/wp-content/uploads/2016/07/Create-Project-300x178.jpg" alt="Create " width="300" height="178" srcset="http://shawahni.co.nf/wp-content/uploads/2016/07/Create-Project-300x178.jpg 300w, http://shawahni.co.nf/wp-content/uploads/2016/07/Create-Project-768x456.jpg 768w, http://shawahni.co.nf/wp-content/uploads/2016/07/Create-Project-1024x608.jpg 1024w, http://shawahni.co.nf/wp-content/uploads/2016/07/Create-Project-1200x713.jpg 1200w, http://shawahni.co.nf/wp-content/uploads/2016/07/Create-Project.jpg 1212w" sizes="(max-width: 300px) 100vw, 300px"></a></p>
+<p>Then we need to visit <a href="http://docs.seleniumhq.org/download/" target="_blank">Selenium</a> and download Selenium library for Java. Then we need to install chrome <a href="http://chromedriver.storage.googleapis.com/index.html?path=2.22/" target="_blank">driver</a> version 2.22.&nbsp;The latest until the date of this article.</p>
+<p>after that, we need to create a new folder into the project. call it “lib”.</p>
+<p>Drag and drop all the .jar files you have downloaded from the web.</p>
+<p>Then drag and drop the chromerdriver.exe file into the “src” package.</p>
+<p>After all these the above is done, we need to create a new JUnit test case.</p>
+<p>it must contain at lease the following methods :<br>
+@before, @after, @test.</p>
+<p>once every thing done.</p>
+<figure id="attachment_31" class="wp-caption aligncenter"><img class="size-medium wp-image-31" src="http://shawahni.co.nf/wp-content/uploads/2016/07/project-explorer-145x300.png" alt="project explorer image" width="145" height="300" srcset="http://shawahni.co.nf/wp-content/uploads/2016/07/project-explorer-145x300.png 145w, http://shawahni.co.nf/wp-content/uploads/2016/07/project-explorer.png 362w" sizes="(max-width: 145px) 100vw, 145px"><figcaption class="wp-caption-text">the final content of project.</figcaption></figure>
+<p>add the following code to your Project :</p>
+<h3>The following code will disable third party cookies</h3>
+<pre>import static org.junit.Assert.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
+
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.remote.DesiredCapabilities;
+
+public class RunChrome {
+
+WebDriver driver;
+final static int TIMEOUT = 30;
+@Before
+public void setUp() throws Exception {
+System.setProperty("webdriver.chrome.driver", "C:\\Users\\Ibra\\workspace\\DisableThirdparty\\src\\chromedriver.exe");
+
+ChromeOptions options = new ChromeOptions();
+
+Map&lt;String, Object&gt; prefs = new HashMap&lt;String,Object&gt;();
+
+prefs.put("profile.block_third_party_cookies", true);
+
+options.setExperimentalOption("prefs",prefs);
+
+DesiredCapabilities cap = DesiredCapabilities.chrome();
+
+cap.setCapability(ChromeOptions.CAPABILITY,options);
+
+driver = new ChromeDriver(cap);
+
+driver.manage().timeouts().implicitlyWait(TIMEOUT, TimeUnit.SECONDS);
+}
+
+@After
+public void tearDown() throws Exception {
+driver.quit();
+}
+
+@Test
+public void test() throws InterruptedException {
+driver.get("https://www.google.com");
+
+Thread.sleep(10000);
+}
+
+}
+</pre>
+<p>After all above work is done, try to run the project as a JUnit.</p>
+<p>When chrome driver is shown up it must contain an icon after the URL shows that the third party cookies are disabled.</p>
+<figure id="attachment_32" class="wp-caption aligncenter"><img class="size-medium wp-image-32" src="http://shawahni.co.nf/wp-content/uploads/2016/07/disabled-third-party-cookies-300x135.png" alt="disabled third party cookeis" width="300" height="135" srcset="http://shawahni.co.nf/wp-content/uploads/2016/07/disabled-third-party-cookies-300x135.png 300w, http://shawahni.co.nf/wp-content/uploads/2016/07/disabled-third-party-cookies-768x345.png 768w, http://shawahni.co.nf/wp-content/uploads/2016/07/disabled-third-party-cookies-1024x460.png 1024w, http://shawahni.co.nf/wp-content/uploads/2016/07/disabled-third-party-cookies.png 1025w" sizes="(max-width: 300px) 100vw, 300px"><figcaption class="wp-caption-text">disabled third party cookeis</figcaption></figure>
+<p>IF you want a shorter way, please refer to this video.</p>
+<p>it contains all above description, step by step.</p>
+<p><iframe src="https://www.youtube.com/embed/k4c17X6cXxQ" width="420" height="315" frameborder="0" allowfullscreen="allowfullscreen"></iframe></p>
+<h2>Please feel free to contact me if you have any concerns or further questions.</h2>
+<p>you can communicate me any time I’m available 24/7.</p>
+<p>thanks for reading, watching and posting a comment.</p>
+	</div><!-- .entry-content -->
+
+	
+	<!-- .entry-footer -->
+
