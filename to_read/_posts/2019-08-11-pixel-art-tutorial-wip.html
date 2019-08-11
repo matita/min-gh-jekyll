@@ -1,0 +1,601 @@
+---
+title: "Pixel Art Tutorial WIP"
+description: "Pixel art tutorial WIP."
+link: "http://androidarts.com/pixtut/pixelart.htm"
+saved: "2019-08-11 21:13:22"
+---
+
+
+
+
+
+
+<h2><font color="Red">This page is maybe 26.2% done! Lots of placeholder blurbs!</font></h2>
+
+<h2 id="Top">Pixel Art Tutorial</h2>
+
+<h3>Preramble</h3>
+
+<div class="imgbox">
+<img src="http://androidarts.com/pixtut/GHERKING.Iff.png">
+
+<p>
+"GHERKING" was found lurking on one of my old Amiga floppy disks. It was done in Deluxe Paint III sometime in the late 80's or early 90's (note dragon-mullet). It's less an attempt at pixel art and more an attempt at "awesome picture" (demo scene style). Nowadays I would not attempt to pixel something this big - I'd just paint it instead.
+</p>
+
+</div>
+
+
+<p>
+I don't think I quite understood the nature of pixels until I got ahold of Deluxe Paint in the late 80's. I knew about pixels since the C64 days, but never access to any kind of editor which allowed me to see what was going on behind the distortions of the TV shadow mask, scanlines, phosphor glow and RF-modulator signal compression (distortion).
+</p>
+<p>
+The first thing I pixeled was probably a hammer from the Super Mario Bros manual (which for some reason had line art pixel drawings in it). Before this, I had actually drawn tiles from games like Megaman on cardboard and built my own levels, but working with pixels inside of a computer gave me a much stronger feeling of being privy with the game world realm.
+</p>
+<p>
+I spent a lot of time working on projects in Deluxe Paint, mostly experimenting with my own techniques because no one else around me was doing pixel art. Trying to see what games were doing with the pixels and frames while playing a game was hard. Ripping reference graphics from games was a hassle. I remember trying to use "3rd Day", a program which would analyze the residual RAM contents after a reboot, but it was difficulty to get results. I also did a bit of programming and released a handful of tiny games and silly things into the local geek community (I didn't really know what a BBS was back then).
+</p>
+<p>
+I work in Photoshop nowadays, even though it's in some ways inferior to Deluxe Paint. There are other modern programs out there for doing pixel art, animation and tiles specifically, but I haven't really bothered with them. I've adapted my work methods so I can take advantage of the features which PS does offer. 
+</p>
+
+
+
+<h3>Approaching pixel art as a painter</h3>
+<p>
+Painting for painting's sake is not something I have done much of recently (is that where people encounter the infamous "artist block"?), but I noticed early on that I was much better at painting than at drawing. I don't think I started to address that imbalance until mid 200X, and I think my pixel art benefitted much from it.
+</p>
+<p>
+Computer graphics is something I have enjoyed doing since before I got my hands on a computer. Back then, even professional developers (such as Miyamoto) drew the graphics on grid paper first. In a way, pixel art is like analog art scaled down, but the pixel space can force certain exaggerations, detail reductions, alignments, graphical simplifications and iconographies. It has to be adapted so it's readable, but a lot of the functionally effective ideas and wisdoms from analog art (be it more abstract graphical ideas or realistic-ish painting styles) can be ported and applied, I think.
+</p>
+<p>
+However, when a human is presented with the very structural pixel art space she tends to ignore that and go into telephone doodle mode, making patterns, symmetries, outlines around outlines, little pointless ramps of colors, and other needless additions because the spatial forms somehow encourage it. When I fall into that mindset it helps to retract my mind from the pixel space and imagine the sprite/tile more like a regular painting done with a very large brush. Each pixel is very important as it actually corresponds to a large blotch of paint rather than a single tiny pixel. I think pixel art is very much about knowing where to make sacrifices of detail due to the scale, and how to make each pixel do double duty.
+</p>
+<p>
+Anyways, I did write that tutorial which mostly concerns rendering/painting, so naturally people have asked me to write one about anatomy, and mechas, and pixel art.
+With this tutorial I won't be covering painting in general, but rather be focusing on the quirks and qualities which are unique to pixel art. I'll also be talking about some of the early hardware limits which still can be used to impose useful (if not enjoyable) restrictions on the artist.
+</p>
+
+
+<h3 id="Index">Index</h3>
+<p>
+&gt;&gt;&gt; I'll put the index list with anchors here if the page grows too long. Will be useful for people who want to link a certain topic.
+</p>
+<ul>
+<li><a href="http://androidarts.com/pixtut/pixelart.htm#Top">Top of page</a>
+</li><li><a href="http://androidarts.com/pixtut/pixelart.htm#Index">This index</a>
+</li><li><a href="http://androidarts.com/pixtut/pixelart.htm#PillowShading">Pillow shading</a>
+</li><li><a href="http://androidarts.com/pixtut/pixelart.htm#LightSource">Light source</a>
+</li><li><a href="http://androidarts.com/pixtut/pixelart.htm#AntiAliasing">Anti-aliasing</a>
+</li><li><a href="http://androidarts.com/pixtut/pixelart.htm#Hues">Hues</a>
+</li><li><a href="http://androidarts.com/pixtut/pixelart.htm#ExoticColors">Exotic colors</a>
+</li><li><a href="http://androidarts.com/pixtut/pixelart.htm#LocalColors">Local colors</a>
+</li><li><a href="http://androidarts.com/pixtut/pixelart.htm#Style">Style</a>
+</li><li><a href="http://androidarts.com/pixtut/pixelart.htm#BlackLining">Black-lining</a>
+</li><li><a href="http://androidarts.com/pixtut/pixelart.htm#LostLines">Lost lines</a>
+</li><li><a href="http://androidarts.com/pixtut/pixelart.htm#CleanLines">Clean lines</a>
+</li><li><a href="http://androidarts.com/pixtut/pixelart.htm#Noise">Noise</a>
+</li><li><a href="http://androidarts.com/pixtut/pixelart.htm#Highlights">Highlights</a>
+</li><li><a href="http://androidarts.com/pixtut/pixelart.htm#Adaptation">Adaptation</a>
+
+</li><li><a href="http://androidarts.com/pixtut/pixelart.htm#TheEel">The Eel</a>
+</li><li><a href="http://androidarts.com/pixtut/pixelart.htm#Example">Example</a>
+</li></ul>
+
+
+<h3>Working with pixel art in Photoshop</h3>
+<p>
+&gt;&gt;&gt; This (more technical) section should cover:
+</p>
+<ul>
+<li> Using a zoomed in work view and a 2x "take a step back and look at it" view.
+
+</li><li> How to test tiling and fixing tiling seams. Setting up a grid. Using PS/Filters/Other/Offset or copy pasting manually.
+
+</li><li> Painting pixel art using opacity, still using a palette (external in another window).
+
+</li><li> Working in indexed mode.
+
+</li><li> Short on the usefulness of the .raw file format for doing map editing.  
+</li></ul>
+
+
+
+
+
+<h3>Some practical examples</h3>
+<p>
+&gt;&gt;&gt; This section will take a look at what mistakes people just getting into pixel art tends to make the most. This way people can directly engage a topic, rather than reading general advice and try figure out where those can be applied practically.
+I'll cover: 
+</p>
+
+
+<div class="box" id="PillowShading">
+<img src="http://androidarts.com/pixtut/Pillow%20shading.gif" class="center">
+<p> We start out with some pillow shading compulsions and inappropriate sculpting of three-dimensional form. Pillow shading can look a bit like a pillow, with a soft radial gradient ramping up towards the center of the form. It can make the form look uninteresting or irrelevant to shape of the object. The solution is to make the gradient sculpt something interesting. This requires some painting skills of course. Put briefly, building up value (lightness) then terminating it abruptly against the shade of another gradient can be an effective way to break the pillow shaded look.
+</p>
+</div>
+
+
+<div class="box" id="Banding">
+<img src="http://androidarts.com/pixtut/Banding.gif" class="center">
+<p> When working with a limited palette you can get banding, i.e. visible bands of color. You might think using more colors to make the gradients look smoother is a good idea, but this can be a trap because pixel art actually often looks better with a restrained palette. So how can we remove these bands?
+</p>
+<p>
+Banding draws attention to the borders between color fields (rather than the center of the bands themselves). It will make the eye think, hey, this area is important, there's contrast here. If the area isn't actually important then it's a distraction that should be done away with. 
+</p>
+<p>
+Solution 1: We just dither, but dithering is a solution that I prefer to use sparingly, and I find it's more effective when I can make it do double duty - create a gradient AND portray an appropriate texture. Dithering can look a bit wonky if applied to things which we expect to be smooth, but I suppose it can be used in an artsy, brushstrokey kind of way.
+</p>
+<p>
+Solution 2: By compressing the bands the value change is over so quick the eye doesn't quite see the borders. Also, the banded edge is best placed near a natural looking "terminator" (where shadow begins) because then the eye expects it and it becomes invisible and not distracting.
+
+I think screen print faces some of the same banding problems which pixel art does. If you're gonna have a contrasting edge between two color fields, might as well try to place it where it makes compositional sense, and/or describes a shadow-light plane change, or perhaps just a seemingly natural change in value/coloration.
+</p>
+<p>
+Solution 3: If your shape has potential for detail you can break up the gradient in little manageable clumps.
+</p>
+<p>
+<a href="http://androidarts.com/tuts/banding.jpg">Another illustration.</a>
+</p>
+</div>
+
+
+<div class="box" id="LightSource">
+<img src="http://androidarts.com/pixtut/Top%20light.gif" class="center"><br>
+ Strange light sources such as flat looking rim light / rim shadow can be seen as a variant of pillow shading. I prefer to use a front-side-top light myself as it describes form pretty nicely, but there are situations where you might want to use fancy colored back/rim light to set mood (such as in a portrait).
+<p></p>
+</div>
+
+
+<div class="box" id="AntiAliasing">
+<img src="http://androidarts.com/pixtut/AA.gif" class="center"><br>
+ Excessive Anti-Aliasing can make a piece look blurry and indistinct. Pixel art is more about being graphical than being able to, say, make a circle look stunningly smooth. You have to make every pixel count and when your AA starts to creep out you lose the... pixel space efficiency and graphical clarity which I think is at the heart of pixel art.
+<p></p>
+</div>
+
+
+<div class="box" id="Hues">
+<img src="http://androidarts.com/pixtut/Skin%20tone.gif" class="center"><br>
+Unless you are working with very small palettes (say, 3 colors), you probably need to set up color ramps (gradients) at some point. When creating your ramps I'd advice against mixing in portions of black and white to make the ramp's ends. In nature, the hue of a color often changes as it goes from light to dark, so a black-pink-white ramp can look muddy and artificial. On top of this, an object, such as a human face, often has different hues on different parts. For human skin tones, I like to make the shadow a grayish warm purple, keep the mid tone orange, and the light almost yellowish. When doing outdoor scenes I also mix in some colder grayish tones into the shadow (because of sky ambience) and yellow into the light colors (because of the warm sunlight).
+<p></p>
+</div>
+
+<div class="box" id="ExoticColors">
+<img src="http://androidarts.com/pixtut/Super%20green.gif" class="center"><br>
+There are many colors, but I've found that some are more usable than others, especially when doing realistic looking stuff. I'd avoid building long ramps from super (fully) saturated colors, unless you're doing a neon piece or some kind of more graphical excursion. This doesn't mean that your colors should all be dull or pastel - highly saturated colors can be very effective at adding extra dimensionality to certain spots, but I think their frequency in the palette should be proportional to the likelihood that you're gonna use them. Here I drew a strange little neon creature because it's within the scope of the palette. When doing stuff like faces or nature I'll have to take a more palette-artsy approach. 
+<p></p>
+<p>
+Unrelated, outlines around outlines. I don't like them much, but I suppose they have their use when conveying effects like... shields and auras. It's tempting to throw on an extra outline because it looks kind of neat and splashy, but it's very much a temporary love affair, I've found.
+</p>
+</div>
+
+
+<div class="box" id="LocalColors">
+<img src="http://androidarts.com/pixtut/Template.gif" class="center"><br>
+The use of plain local colors (the color an object is locally, in neutral light, or perhaps in a cartoon) can be effective when working graphically because you need to be clear about what's a tree and what's a mountain. But, when doing a more painterly piece you don't have to make every tree trunk brown and every mountain gray. Colors are shifted in all sorts of directions in nature.
+ <p></p>
+</div>
+
+<div class="box" id="Style">
+<img src="http://androidarts.com/pixtut/Style.gif" class="center"><br>
+Slightly related, doing template objects results in a lack of style. On the earlier piece I avoided doing regular trees with brown trunks. Here I'm trying to get away from the silvery box-robot. This is a bit of a tug-o-war when doing pixel art. One one hand, your designs need to be very clear, and on the other hand you want them to be a little unfamiliar so they are interesting and new to the viewer...
+
+<p></p>
+</div>
+
+
+
+<div class="box" id="BlackLining">
+<img src="http://androidarts.com/pixtut/Black%20lining.gif" class="center"><br>
+Excessive black lining might arise from some sort of compulsion to mark and separate every detail. When colors are surrounded by the black they look darker and a bit muddy. You also lose pixel space to the lines and the whole figure is flattened because the lines seemingly pushes every detail into the same plane (especially if the color ramps used are very low contrast). 
+Another way to separate details is by using contrast and lighter additive lines (black lines are subtractive). The style that I use benefits from a mix of subtractive lines, lost lines (somehow suggested, but not drawn) and additive lines. 
+<p></p>
+</div>
+
+
+<div class="box" id="LostLines">
+<img src="http://androidarts.com/pixtut/Bottom%20lines.gif" class="center"><br>
+Another consideration when doing black lined figures is that the lines at the base of a shape looks a bit like a shadow and can make the whole figure seem like it's floating. Once removed, the figure seems to grow out of the ground. However, if you skip the line art altogether you can gain much more room for internal details, but then you have to rely on contrast against the background for the figure's silhouette to read.
+<p></p>
+</div>
+
+
+<div class="box" id="CleanLines">
+<img src="http://androidarts.com/pixtut/Clean%20lines.gif" class="center"><br>
+Quickly drawn pixel lines will probably look jaggy and disorderly, not unlike a pencil sketch done by someone who can't draw and is rubbing the lines down too much (barbwire lines). Certain details does warrant quirks in the lines, but often you want to use the 1,1,2,3 or 2,1,2 (or some such) kind of curve. On the shadow side of object I sometimes fill in the diagonals (see boulder higher up), but it can look a bit untidy.
+<p></p>
+</div>
+
+
+<div class="box" id="Noise">
+<img src="http://androidarts.com/pixtut/Noise.gif" class="center"><br>
+Noise and needlessly orphaned pixels is what you get when you try to cram too many details in.
+It's tempting to put as many details as you possibly can in there, but you have to consider the scale at which you're painting and how to be clear, and also ease of animation (details convenient on one frame might be hard to replicate in the next, slightly rotated frame).
+You might know the intention behind specific pixels, but the viewer generally doesn't so she'll more likely see them as noise (and so will you once you come back to the piece later on).
+That said, it's nice to have some noisy areas to provide variation in texture.
+<p></p>
+</div>
+
+
+<div class="box" id="Highlights">
+<img src="http://androidarts.com/pixtut/Highlights.gif" class="center"><br>
+Adding little highlights here and there is super satisfying, but I think it does this already greebly spaceship a disservice as it becomes very noisy. Try to pick a few sweet spots for them and prune the rest. Here I'm trying to give examples of the two extremes. There are (or were, back in the Amiga days) chrome-happy styles which embrace highlights and make them work. Keep in mind that a flat red would become some kind of shiny pink when highlighted excessively, i.e. it will lose its color identity. Dull materials are probably inappropriate to highlight unless you're doing strong light source stuff. When it comes to gloss materials I prefer to make the highlight pop with a few pixels, rather than building up to it with a long ramp. Metals (&amp; chrome) gets the longer ramp.
+<p></p>
+</div>
+
+
+<div class="box" id="Adaptation">
+<img src="http://androidarts.com/pixtut/NotDaleks.gif" class="center"><br>
+Certain things are difficult to build out of LEGO bricks, and the same goes for pixels. Daleks might be one example. They have the flat, sloped faces forming the round skirt, and a million little round bumps. If I have the choice, I just avoid doing the problematic parts of the design and change them to something which is more compatible with the pixel space. 
+<p></p>
+<p>
+Anyways, someone sent me these Dalek sprites and asked me if I could do something with them, so I quickly applied the style I've been using a lot on this page so far. It can sort of be summarized by the gradient shown above the Not-Daleks. Note the compression of the terminator/edge and sparingly used highlights. The design was moved away from Dalek to something less detailed and more chunky. I kept the conical shape but avoided the longer slopes by breaking them into steps of 90 and 45 degrees. 
+</p>
+</div>
+
+
+<div class="box" id="TheEel">
+<img src="http://androidarts.com/pixtut/Eel.gif" class="center"><br>
+This one I call... What are you trying to do and who are you trying to impress? The palette has a bunch of low contrast grays and seemingly random hue shifts in the "color" ramp, then BAM, full black. And two useless greens with no larger difference. And what's this compulsion to do little pixel patterns? Perhaps our artist here saw a transparent and oily looking eel before his inner eye, or perhaps he was just mindlessly throwing down some pixels.
+<p></p>
+<p>
+Now, there's a chance the strange palette can be used for something (like a moody misty lighthouse shot), and we stumbled upon a fresh aesthetic with these subtle hues and reoccurring structures taking command over traditional forms, and the black point topping it off, creating an unusual return point for the human eye.
+</p>
+<p>
+I thought about doing fixed version, but this piece has no set form which it strives for. The Eel stands defiant on an inherent pedestal labeled "To change me is to violate me" <font size="1"><a href="http://androidarts.com/pixtut/Eelpic.jpg">?</a></font>
+</p>
+</div>
+
+
+<h3>Pixel level optimizations</h3>
+<p>
+&gt;&gt;&gt; Write about the finer points of pixel to pixel relations.
+</p>
+<ul>
+<li> Micro-banding (e.g. staircases).
+</li><li> About pixel suitable alignments of detail and line art. How this can affect style (Take a look at Z from Bitmap Brothers for the angularity, or Dodonpachi).
+</li><li> Use of diagonal displacements to squeeze in more details per line (e.g. Gameboy RPG characters).
+</li><li> Using dither for shading versus texture (e.g. chainmail). Also note dithering used for separation of ground planes in Chaos Engine. And, it can be used to achieve duality in colors.
+</li><li> Using orphan pixels for texture, and...
+</li><li> More about partially lost outlines.
+
+</li></ul>
+
+
+
+
+
+
+<h3 id="Example">Enter... the gem hunter</h3>
+<p>Blentard the gem hunter has found a gem, but he needs to take it home and polish it. I'll guide you on your way, Bloenard!</p>
+<!--
+Game mechanics
+Exit a screen to the edges. Enter new world. Load assets. Bloenard.bmp and Map.bmp
+Start at house. Move over terrain, Grass fast, trees slower, mountains slower, water impassable. 
+Find all gems and return to house in 60 seconds. Walk off edge to new map. If die, respawn at house.
+-->
+
+<div class="box">
+<img src="http://androidarts.com/pixtut/PixelArtTut%20Start.gif" class="leftfloat">
+<p>Here I've crafted a piece which exhibits many of the common mistakes listed above. I have the dirty strange gradients going towards white, and details lost in these gradients, such as the roof tiling. The mountain has a mono-gray pillow shading whilst the trees have gradients with banding (going upwards). The grass is noisy and the lines are jaggy. The sea is blue, the grass is green and mountains are gray, like in a kid's drawing. I've attempted to give the human teeth, pupils and a bunch of details which become unnecessary noise. Also not the attempt to draw four separated window panes.</p>
+<br clear="left">
+</div>
+
+<div class="box">
+<img src="http://androidarts.com/pixtut/PixelArtTut%20Forms.gif" class="leftfloat">
+<p>I'll address a few things at a time. First out is the sculpting of the forms. The trees and mountains now look like they have some sort of shape. The Jewel shows off some new bold color adjacencies. The roof texture, while simple, conveys the general idea with only two colors. A roof is mostly a flat plane so a gradient there isn't really suitable.
+<br clear="left">
+</p><p>
+</p></div>
+
+<div class="box">
+<img src="http://androidarts.com/pixtut/PixelArtTut%20Hues.gif" class="leftfloat">
+<p>Now I've fiddles a bit with the colors. Note the dark teal in the tree's shadow color, and the warmer, yellowish light green. The mountain has also gotten a cold shadow color and a somewhat warmer light color. The water goes from a deep blue to a teal color. However, these colors are still a bit too "local" (grass is green, water is blue, rock is gray etc.).
+<br clear="left">
+</p>
+</div>
+
+<div class="box">
+<img src="http://androidarts.com/pixtut/PixelArtTut%20Hues%202.gif" class="leftfloat">
+<p>
+Time to throw in some less saturated hues to play against the otherwise overwhelming saturation.  I've added some beach sand, but made it a gray-green yellow instead of cartoony yellow. Sand gets darker when wet, so I also suggested that. The mountain now has several colors and is no longer a chunk of gray resting on the grass.
+<br clear="left">
+</p>
+</div>
+
+<div class="box">
+<img src="http://androidarts.com/pixtut/PixelArtTut%20Ground%20Contact.gif" class="leftfloat">
+
+<p>Actually, the mountain did look like it was almost floating, didn't it? I generally try to not do black lines underneath shapes which have ground contact. Here I've removed the lines under the mountain, tree, house and guy. It's possible to skip outlines all together and simply rely on color contrast to separate things, but I'll stick with the outlines for my fix here.
+</p>
+<p>
+<img src="http://androidarts.com/tuts/meeting_edge.jpg">
+</p>
+</div>
+
+
+
+<div class="box">
+<img src="http://androidarts.com/pixtut/PixelArtTut%20Internals.gif" class="leftfloat">
+
+<p>Internal black lines can take up unnecessary pixel space (external outlines too) and tend to gray the adjacent colors (it's like mixing in black). Getting rid of the internal lines gives our guy a bit more silhouette, but he still has a lot of internal details creating a mess. Note that internal black lines are by no means "forbidden", they can be used to separate things which need separation (such as the head from the torso in this front+top view). Stuff like the shirt and pants can simply be separated by color difference. Other areas can be separated by color contrast, such as his hairline.
+<br clear="left"></p>
+</div>
+
+
+<div class="box">
+<img src="http://androidarts.com/pixtut/PixelArtTut%20Done.gif" class="leftfloat">
+<img src="http://androidarts.com/pixtut/PixelArtTut%20line%20cleanup%202.gif" class="rightfloat">
+
+<img src="http://androidarts.com/pixtut/PixelArtTut%20line%20cleanup.gif" class="rightfloat">
+
+<p>
+Whoa! What happened here?
+</p>
+
+
+<p>
+Simplification and structure happened. First I cleaned up the black outlines, removing jaggies (pixels which make a line look jagged and rough).<br clear="left"></p>
+
+
+
+
+
+<p>
+I then chose to lighten up the upmost black lines, especially those which surround a lighter color. I like to do this because the color of the line rubs off on the surrounded color, making it more pleasant, and with a light source coming from the top, it sort of makes sense to only use black for the lower (shadowed) outlines. A full black line works too, especially if you're working with a limited 4 colors per character palette, however, for shiny stuff like suns and plasma blasts I'd go for a fully colored outline (if any). Fluffy materials might also have a softer colored outline. For some type of gun barrels, I omit the outline to suggest openness.
+</p>
+
+<p>
+The grass was a noisy mess and needed some structure. One approach is to make little islands of detail. Imagine the pixels gravitating towards each other to form little patches/clusters. Then, grass structure had to be conveyed, so I chose a dark green to suggest individual strands popping up.Grass is flat in games and shouldn't interfere with the characters treading upon it (like the noisy earlier version did).
+</p>
+<p>
+Doing two or more different grass tiles is a good idea (a busy tile and a more empty tile). This allows the larger plains to look a bit less uniform and this having some areas of interest.  The ocean received a similar treatment, but different structure. Before, the grass and ocean had the same structure (noise).
+</p>
+
+<p>
+The little darker vertical lines on the window and door helps to give those areas color and separation from the wall (which would be harder with just a flat light brown and light blue).
+</p>
+
+<p>
+Finally, I fiddled around a bit with the character, moving down the face to suggest a front-top view. I brought back some of the internal black lines for the blue armour because it's rather dark and it also has more forms likely to cast shadows and cause overlap. A thin white t-shirt would've been a different deal.
+<br clear="left"></p>
+</div>
+
+
+
+<div class="box">
+<img src="http://androidarts.com/pixtut/Blentard043.png" class="leftfloat">
+
+<p> Of course, when I tried out the tiling on a larger scale, it didn't look very good. Tiling is one of those things which has to be solved by trying out the stuff in-game. My grass still looked very noisy/dotty when filling half a screen, so I made a very quiet version and a more busy version.
+</p>
+<p>
+The mountains were a different story. Mountains are very hard to do in 16px tile engines like this, because they are either squares (such as Zelda 2) or cones sticking out of the grass at even intervals (Dragon Quest 1). Here I tried making a version with a little grass and one that's more square and it seemed to work the best (some failures can be seen below). I added some texture to the greenish base of the mountains to suggest vegetation rather than some form of discolor. 
+</p>
+It helps to use rhyming shapes. The alternative versions need to look different, but the same! Note the forms on the trees.
+<p>
+</p>
+The beaches got a little dithering on the shadow side, doing the double duty thing I mentioned earlier (texture and shadow combined). I caved in and gave the house some front-top perspective. This meant widening the chimney so I could put in a perspective dot. <a href="http://androidarts.com/pixtut/Blentard_v041.png">In engine.</a>.
+<p></p>
+<p>
+I added some fogged stuff for enemy encounters. 
+<br clear="left"></p>
+</div>
+
+
+
+<h4>Second opinion</h4>
+
+<p>I invited a few other pixel artists to do something with the image because I felt that my own attempt lacked range, i.e. I didn't want to suggest that my way is the only way to fix up the original image. My attempt also stayed rather close to the original.</p>
+
+
+
+
+<div class="box">
+<img src="http://androidarts.com/pixtut/Ryumaru.gif" class="leftfloat">
+<p>
+<b>Ryumaru</b> &gt; Quickly became unsatisfied with this but thought I'd show anyway. Perhaps at least it fixes some of the issues :p
+
+Gradients and unnecessary colors were prevalent in the original, that was the first issue I addressed with each asset. Instead I focused on tightly placed pixels and kept a light source direction in mind to convey form in the small area given. Focus was placed on how different surface materials reflect light to better convey them. Single pixel noise was minimized to allow the eye rest in areas that would have large expanses such as the grass and water.
+<br clear="left"></p>
+</div>
+
+
+<div class="box">
+<img src="http://androidarts.com/pixtut/YellowLime.gif" class="leftfloat">
+<p>
+<b>YellowLime</b> &gt; 
+Anything I have to say is mostly a repeat of Ryumaru's... I reduced the amount of colors (maybe way too much) and created assets in a 3/4 perspective instead of the previous flat look. Obviously I did without the (irregular) black lines. Overall I went for a simplistic look and didn't go into detail, both to save time and because I probably wouldn't pull it off :lol:
+<br clear="left"></p>
+</div>
+
+<div class="box">
+<img src="http://androidarts.com/pixtut/Fickludd.gif" class="leftfloat">
+<p>
+<b>Fickludd</b> &gt; I focused on removing unnecessary colors, black lines and single pixel noise (although the water speculars were kinda nice =)). Tile colors were desaturated compared to sprites. Duplicated tiles were used to make double versions to try to break the grid. 
+<br clear="left"></p>
+</div>
+
+<div class="box">
+<img src="http://androidarts.com/pixtut/markus_rosse.gif" class="leftfloat">
+<p>
+<b>Rosse</b> &gt; I don't care about color-count (36 up to 43). Because the tile are so small, clarity is most important. Each tile has its own sub-palette, no reuse of colors. Increases readability through color-coding. For the pixel-clusters: I use mainly flats, tried to avoid gradients and single-pixel noise. No black outlines or lines inside forms to separate different parts. The design of the objects are symbols, abstracted forms which should convey a general idea, not something specific. The perspective changed from side-view to somewhat top-down-front-ish. Light comes from above, object cast shadows underneath them to increase the feel of 3d space. The character is 23px out of 24px high, so it can bob 1px while walking.
+<br clear="left"></p>
+</div>
+
+
+
+<div class="box">
+<img src="http://androidarts.com/pixtut/Decroded.gif" class="leftfloat">
+<p>
+<b>Decroded</b> &gt;
+
+Removed all noise and kept contrast limited to points of interest such as the edges of game space.
+Added a red cape to the character to help him pop.
+Character probably still needs more brightness but I'm out of time.
+* concerned that grass is too noisy*
+<br clear="left"></p>
+</div>
+
+
+
+<div class="box">
+<img src="http://androidarts.com/pixtut/Jeremy.gif" class="leftfloat">
+<p>
+<b>Jeremy</b> &gt;
+  I'm inexperienced with tiling, so I've probably messed up the water edge ones somewhere :yell:
+
+I tried to keep bubblegum sorts of colours, just less eye-burning than the original. Also simplify, remove single-pixel noise, etc.
+<br clear="left"></p>
+</div>
+
+
+<div class="box">
+<img src="http://androidarts.com/pixtut/LetMeThink.gif" class="leftfloat">
+<p>
+<b>LetMeThink</b> &gt;
+Here's my half hour effort.
+
+What I did:
+
+CLEANED UP THE OUTLINES.
+DESATURATED THE COLOURS.
+Chose a light source.
+Drew in form.
+Made some bad grass.
+Adjusted hues slightly.
+Made some awful water.
+Decided that 1 gem wasn't enough, so made 3.
+Added some shadows.
+Made an awful effort at a character as i cannot draw them
+Tidied things up slightly.
+<br clear="left"></p>
+</div>
+
+
+
+<div class="box">
+<img src="http://androidarts.com/pixtut/Pix3M.gif" class="leftfloat">
+<p>
+<b>Pix3M</b> &gt;
+ Generally, I made the shapes and forms more interesting. I also went for something that could look like you're in a mystical, dangerous world. I went with pines trees because they're great for environments that is pretty much apathetic to you, while deciduous trees are more extroverted and open. I changed the house from being a plain square house to something a little more unconventional.
+
+Possible directions to take this farther are adding cast shadows and polishing up the colors, possibly bouncelight, maybe.
+<br clear="left"></p>
+</div>
+
+
+<div class="box">
+<img src="http://androidarts.com/pixtut/MrFahrenheit.gif" class="leftfloat">
+<p>
+<b>MrFahrenheit</b> &gt;
+ Messed around with shapes and colors. It would've been up sooner but my computer lost power and I hadn't saved...  :D . I had fun doing it at least!
+<br clear="left"></p>
+</div>
+
+
+<div class="box">
+<img src="http://androidarts.com/pixtut/DawnBringer.gif" class="leftfloat">
+<p>
+<b>DawnBringer</b> &gt;
+ Couldn't resist playing with that mini stuff. Stole all your best designs and tweaked them! ;) Lottsa colors, mostly due to separate palettes for most items. Iso house! works ok me thinks, right? Character is 1 pixel too wide...didn't wanna compromise it :/ 
+<br clear="left"></p>
+</div>
+
+
+<div class="box">
+<img src="http://androidarts.com/pixtut/Wolfenoctis.gif" class="leftfloat">
+<p>
+<b>Wolfenoctis</b> &gt;
+Had fun doing this
+<br clear="left"></p>
+</div>
+
+
+
+<div class="box">
+<img src="http://androidarts.com/pixtut/Yaomon17.gif" class="leftfloat">
+<p>
+<b>Yaomon17</b> &gt;
+arrr, didn't do the edges of the water. No time to change it now...
+
+Tried to use less saturated colors. I just like less saturated colors.
+
+<br clear="left"></p>
+</div>
+
+
+
+
+<h4>Some alternative retro versions</h4>
+
+<div class="box">
+<img src="http://androidarts.com/pixtut/PixelArtTut%20Speccy.gif" class="leftfloat">
+<p>
+Graphics on computers such as the ZX Spectrum had a very flat look and black game backgrounds were very common. When you can't use the colors you want or do fancy sculpting of volumes using light and dark colors, you're almost forced to use iconic/cartoony representations of objects (when dealing with smaller sprites at least).
+<br clear="left"></p><p></p>
+</div>
+
+<div class="box">
+<img src="http://androidarts.com/pixtut/PixelArtTut%20GB.gif" class="leftfloat">
+<p>
+Gameboy plains were sometimes completely barren (flat color) but here I've opted for also adding some triangle formation (often tiles well) grass tufts. I had some fun with a tilted perspective on cliffs and trees and chose to make the trees darker and cliffs lighter to differentiate them.
+The house got a more original hamburger look (in a fantasy game, we don't want dull normal houses, right?). The Gameboy character sprites only had 3 colors because one was used for transparency, but this is not a big problem when not working in color. Only color intensity (value) is important and you can do a lot with just 3 values.  
+<br clear="left"></p><p></p>
+</div>
+
+
+
+
+
+
+<h3>Hardware restrictions</h3>
+<p>
+Undesirable states far outnumber desirable states. You can't just throw paint around and end up with a great painting (Pollock might object). Finding a desirable state of a painting often means that you have to consider certain restrictions, such as how humans look, how light works, and more abstract stuff like our brain's obsession with structure, symmetry and patterns. Harsh hardware restrictions can make it a difficult task to get things to look right, but I've found that the restrictions can also somewhat converge with those of analog art where color count and resolution is much less of an issue. Reducing the amount of colors and unifying the palette is often quite effective, as is removing gritty distracting details.  
+</p>
+<p>
+&gt;&gt;&gt; Move on to discussing the various old palettes, sprite limits etc. Cover the benefits of certain palettes and the benefit of a palette in general. Maybe I'm already doing this above?
+</p>
+
+
+<h3>More!</h3>
+<ul>
+<li> <a href="http://wayofthepixel.net/index.php?topic=9173.5">Add my Batman NES analysis</a> somewhere here.
+</li><li> <a href="http://androidarts.com/palette/16pal.htm">My 16 color palette.</a>
+</li><li> Write something about low key and high key areas. All mid key can look flat. 
+
+</li><li> Talk about my color cube histogram tool?
+</li><li> Talk about my old sparse sample point down-sampler and auto rotation tool?
+</li></ul>
+
+<h3>Style analysis?</h3>
+<p>
+&gt;&gt;&gt; This tutorial is kind of narrow in style (I keep doing my thing), so it would be nice to take a look at different modern styles such as Cave Story, Box humans with 1px legs, etc. Maybe fighting games. There's also games like Raiden II which has graphics which are made to be rotated. Talk a bit about how non-noisy rotation can be made.
+</p>
+
+<!--
+ *********** REPOSITORY ***********
+
+Superfluous & wip
+--------------------------
+
+<h3>Terminology</h3>
+<p>
+<p>
+Pixel artists had to invent terms for various concepts and it's a bit awkward to approach the concepts word-first now. It's a problem with art in general... when others throw terminology around it can sound all artsy fartsy, but once you know the abstract concepts you really enjoy being able to communicate those concepts fast. However, I'm not quite comfortable with some of the terms which are floating around, so I'll... make up my own.
+</p>
+</p>
+<p>
+>>> List of...
+</p>
+
+
+
+-->
+
+
+
+
+<hr>
+<p></p><center>Art by Arne Niklas Jansson</center><p></p>
+<p></p><center><a href="http://androidarts.com/">AndroidArts.com</a></center><p></p>
