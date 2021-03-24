@@ -1,0 +1,46 @@
+---
+title: "Switch off Capybara::ElementNotFound / avoid nested rescue"
+description: "I've got an issue with a method shared across a wide number of integration tests.
+
+The problem is, I need to find one of two buttons, and have so far only come up with the following unwieldy syntax..."
+link: "https://stackoverflow.com/questions/51402007/switch-off-capybaraelementnotfound-avoid-nested-rescue"
+saved: "2021-03-24 17:13:44"
+---
+
+                
+<p>I've got an issue with a method shared across a wide number of integration tests.</p>
+
+<p>The problem is, I need to find one of two buttons, and have so far only come up with the following unwieldy syntax for avoiding Capybara's <code>ElementNotFound</code> error:</p>
+
+<pre class="lang-rb s-code-block hljs ruby"><code>new_button = <span class="hljs-keyword">begin</span>
+      find(<span class="hljs-string">".button_one"</span>)
+    <span class="hljs-keyword">rescue</span> Capybara::ElementNotFound
+      <span class="hljs-keyword">begin</span>
+        find(<span class="hljs-string">'.button_two'</span>)
+      <span class="hljs-keyword">rescue</span> Capybara::ElementNotFound
+        raise Capybara::ElementNotFound, <span class="hljs-string">"Missing Button"</span>
+      <span class="hljs-keyword">end</span>
+    <span class="hljs-keyword">end</span>
+new_button.click
+</code></pre>
+
+<p>This works as expected: if the first button's not found, the second one is, and they're clicked. If neither are present, the error is raised.</p>
+
+<p>Despite this, I really don't like the nested <code>rescues</code> and would like to tidy this up. </p>
+
+<p>The simplest solution which feels like it should exist, though I've not found this <em>anywhere</em>: does anyone know if there's an option to return <code>nil</code> in Capybara's <code>find</code> method, rather than raising the exception?</p>
+
+<p>For example, the following pseudocode...</p>
+
+<pre class="lang-rb s-code-block hljs ruby"><code>new_button = find(<span class="hljs-string">'.button_one'</span>, <span class="hljs-symbol">allow_nil:</span> <span class="hljs-literal">true</span>) <span class="hljs-params">||</span> find(<span class="hljs-string">'.button_two'</span>, <span class="hljs-symbol">allow_nil:</span> <span class="hljs-literal">true</span>)
+new_button ? new_button.click : raise(Capybara::ElementNotFound, <span class="hljs-string">"Missing Button"</span>)
+</code></pre>
+
+<p>...would be perfect.</p>
+
+<p>Otherwise, any suggestion of how best to rescue the two errors and avoid the horrible nested rescue?</p>
+
+<hr>
+
+<p>Footnote: this code exists within a large existing structure, which previously worked fine where it shouldn't have. Fixing another issue has caused this problem, which is used widely throughout the suite. I'd love to adjust the calls and use the correct elements (and so avoid this altogether), though that's going to be a big project a little later in the day.</p>
+    
