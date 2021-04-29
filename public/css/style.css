@@ -16,6 +16,7 @@ body {
 
 .link {
   display: block;
+  position: relative;
   color: #333;
   padding-top: 1em;
   padding-bottom: 1em;
@@ -28,6 +29,13 @@ body {
 
 .link > :last-child {
   margin-bottom: 0;
+}
+
+.link-icon {
+  position: absolute;
+  left: 22px;
+  top: 50%;
+  transform: translateY(-50%);
 }
 
 .link-title {
@@ -78,9 +86,9 @@ h1, h2, h3, h4, h5, h6 {
   color: #ccc;
 }
 
-a[href] { 
-  color: #6a9fb5; 
-  text-decoration: none; 
+a[href] {
+  color: #6a9fb5;
+  text-decoration: none;
 }
 
 nav {

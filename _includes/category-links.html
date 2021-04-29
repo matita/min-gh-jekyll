@@ -14,18 +14,18 @@
 
 
 <section class="category-links {{ category_name }}" id="{{ category_name }}">
-  
+
   <h1>
     {% include functions/title-case.html text=category_name %}
     <span class="category-meta">
-      {{ site.categories[category_name] | size }} links 
-      &middot; 
+      {{ site.categories[category_name] | size }} links
+      &middot;
       {{ time_to_read }} min
     </span>
   </h1>
 
   <div class="links">
-  
+
   {% for page in site.categories[category_name] %}
     {% capture pageyear %}{{ page.date | date: "%Y" }}{% endcapture %}
     {% if pageyear != lastyear %}
@@ -33,7 +33,7 @@
       {% assign lastyear = pageyear %}
     {% endif %}
 
-    
+
     {% capture pagemonth %}{{ page.date | date: "%Y %B" }}{% endcapture %}
     {% if pagemonth != lastmonth %}
       <h2 class="group-month">{{ pagemonth }}</h2>
@@ -49,6 +49,7 @@
 
 
     <a class="link post" href="{{ site.baseurl }}{{ page.url }}" data-path="{{ page.path }}" data-category="{{ page.categories[0] }}" style="background-image: url('//www.google.com/s2/favicons?domain={{ page.link }}')">
+      <img class="link-icon" src="https://www.google.com/s2/favicons?domain={{ page.link }}" loading="lazy" width="16" height="16">
       <h3 class="link-title">{{ page.title }}{% unless page.title %}{% assign parts = page.url | split:'/' %}{% assign size = parts.last | size | minus: 11 %}{{ parts.last | slice: 11, size | replace: '-', ' ' | capitalize }}{% endunless %}</h3>
       <p class="link-url">
         <span class="gh-read-time">{% include reading-time.html %}</span>
